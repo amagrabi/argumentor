@@ -1,168 +1,62 @@
+import os
 import random
 import uuid
 from datetime import datetime
 
+import yaml
 from flask import Flask, jsonify, render_template, request, session
 
 app = Flask(__name__)
 app.secret_key = "your-secret-key-here"
 
-# Database of questions with full descriptions
-QUESTIONS = {
-    "Philosophy": [
-        {
-            "description": "Is truth absolute or relative?",
-            "category": "Philosophy",
-        },
-        {
-            "description": "Is free will an illusion?",
-            "category": "Philosophy",
-        },
-        {
-            "description": "Is time travel possible?",
-            "category": "Philosophy",
-        },
-        {
-            "description": "Is reality subjective or objective?",
-            "category": "Philosophy",
-        },
-        {
-            "description": "Are we living in a simulation?",
-            "category": "Philosophy",
-        },
-        {
-            "description": "Is there a meaning of life?",
-            "category": "Philosophy",
-        },
-        {
-            "description": "Can the universe be infinite or must it have a boundary?",
-            "category": "Philosophy",
-        },
-        {
-            "description": "Is there life after death?",
-            "category": "Philosophy",
-        },
-        {
-            "description": "Is capitalism the best available system to maximize human prosperity?",
-            "category": "Philosophy",
-        },
-    ],
-    "Ethics": [
-        {
-            "description": "Is it ever justifiable to break the law for the greater good?",
-            "category": "Ethics",
-        },
-        {
-            "description": 'If no one gets hurt, is anything truly "wrong"?',
-            "category": "Ethics",
-        },
-    ],
-    "Business & Risk": [
-        {
-            "description": "How should risk be managed in a startup?",
-            "category": "Business & Risk",
-        },
-        {
-            "description": "Should a company invest in risky innovation or focus on stable revenue streams?",
-            "category": "Business & Risk",
-        },
-        {
-            "description": "Is it better to diversify investments or concentrate on areas of expertise?",
-            "category": "Business & Risk",
-        },
-        {
-            "description": "Should companies prioritize short-term profits or long-term sustainability?",
-            "category": "Business & Risk",
-        },
-        {
-            "description": "Is it worth taking on debt to expand a successful business?",
-            "category": "Business & Risk",
-        },
-    ],
-    "Thought Experiments": [
-        {
-            "description": "You're given a button that grants you $1 million, but it causes an unknown person to die. Do you press it?",
-            "category": "Thought Experiments",
-        },
-        {
-            "description": "If you could erase one invention from history, what would it be?",
-            "category": "Thought Experiments",
-        },
-    ],
-    "Politics": [
-        {
-            "description": "Should governments implement universal basic income?",
-            "category": "Politics",
-        },
-        {
-            "description": "Should all votes in a democracy count equally?",
-            "category": "Politics",
-        },
-    ],
-    "Biases & Fallacies": [
-        {
-            "description": "A new cancer drug shows a 90% survival rate in trials, but some experts doubt its effectiveness. Should it be approved?",
-            "category": "Biases & Fallacies",
-        },
-        {
-            "description": "A study finds that people who drink coffee live longer. Should the World Health Organization therefore publish a recommendation to drink coffee?",
-            "category": "Biases & Fallacies",
-        },
-    ],
-    "AI & Future": [
-        {
-            "description": "Could a machine ever experience emotions like humans?",
-            "category": "AI & Future",
-        },
-        {
-            "description": "Should the progress of AI be regulated?",
-            "category": "AI & Future",
-        },
-        {
-            "description": "Should intelligent AIs ever have rights?",
-            "category": "AI & Future",
-        },
-        {
-            "description": "Could intelligent AIs be creative?",
-            "category": "AI & Future",
-        },
-        {
-            "description": "Should self-driving cars prioritize passengers or pedestrians in an unavoidable crash?",
-            "category": "Ethics",
-        },
-    ],
-    "Fun & Casual": [
-        {
-            "description": "Apples or oranges?",
-            "category": "Fun & Casual",
-        },
-        {
-            "description": "Who would win in a fight, a Grizzly bear or a gorilla?",
-            "category": "Fun & Casual",
-        },
-        {
-            "description": "Is a hotdog a sandwich?",
-            "category": "Fun & Casual",
-        },
-    ],
-}
+
+def load_questions():
+    base_dir = os.path.dirname(__file__)
+    data_path = os.path.join(base_dir, "data", "questions.yaml")
+    with open(data_path, "r") as f:
+        questions_by_category = yaml.safe_load(f)
+    # Assign a unique id and the category to each question.
+    for category, questions in questions_by_category.items():
+        new_questions = []
+        for i, q in enumerate(questions):
+            new_questions.append(
+                {
+                    "id": f"{category}-{i}",
+                    "description": q,
+                    "category": category,
+                }
+            )
+        questions_by_category[category] = new_questions
+    return questions_by_category
+
+
+QUESTIONS = load_questions()
 
 
 def get_random_question(categories=None):
-    """Get a random question from selected categories."""
+    """Get a random question from selected categories, avoiding repeats until all have been seen."""
     if not categories:
         categories = list(QUESTIONS.keys())
-
-    # Get all questions from selected categories
-    available_questions = []
+    candidate_questions = []
     for category in categories:
         if category in QUESTIONS:
-            available_questions.extend(QUESTIONS[category])
-
-    if not available_questions:
-        return None
-
-    return random.choice(available_questions)
+            candidate_questions.extend(QUESTIONS[category])
+    seen_ids = session.get("seen_question_ids", [])
+    # Filter out questions that have already been shown.
+    unseen_questions = [q for q in candidate_questions if q["id"] not in seen_ids]
+    # If all questions in these categories were already shown, reset the seen list for them.
+    if not unseen_questions:
+        seen_ids = [
+            qid
+            for qid in seen_ids
+            if not any(qid.startswith(f"{cat}-") for cat in categories)
+        ]
+        session["seen_question_ids"] = seen_ids
+        unseen_questions = candidate_questions
+    chosen_question = random.choice(unseen_questions)
+    # Mark the chosen question as seen.
+    session.setdefault("seen_question_ids", []).append(chosen_question["id"])
+    return chosen_question
 
 
 def evaluate_answer(answer):
@@ -170,7 +64,6 @@ def evaluate_answer(answer):
     Evaluate user's answer. In production, this would call an actual LLM API.
     For now, it provides placeholder scoring and feedback.
     """
-    # Placeholder scoring logic
     scores = {
         "Logical Structure": random.randint(6, 9),
         "Clarity": random.randint(6, 9),
@@ -178,9 +71,7 @@ def evaluate_answer(answer):
         "Objectivity": random.randint(6, 9),
         "Creativity": random.randint(6, 9),
     }
-
     total_score = sum(scores.values()) / len(scores)
-
     feedback = {
         "Logical Structure": "Your argument structure shows good coherence. Consider strengthening the connection between premises and conclusion.",
         "Clarity": "Your points are clearly expressed. Try to be even more concise in future responses.",
@@ -188,28 +79,37 @@ def evaluate_answer(answer):
         "Objectivity": "Well-balanced perspective. Watch for potential emotional appeals.",
         "Creativity": "Interesting approach to the problem. Consider exploring even more unconventional angles.",
     }
-
     return {"scores": scores, "total_score": total_score, "feedback": feedback}
 
 
 @app.route("/")
 def home():
+    # Initialize the session if it's a new visit.
     if "user_id" not in session:
         session["user_id"] = str(uuid.uuid4())
         session["points"] = 0
         session["answers"] = []
+        session["seen_question_ids"] = []
     return render_template("index.html")
 
 
 @app.route("/get_question", methods=["GET"])
 def get_question():
+    # If no questions have been shown yet in this session, return the fixed starting question.
+    if not session.get("seen_question_ids"):
+        fixed_question = {
+            "id": "Philosophy-0",
+            "description": "Does free will exist if all decisions are ultimately influenced by biological/physical factors?",
+            "category": "Philosophy",
+        }
+        session.setdefault("seen_question_ids", []).append(fixed_question["id"])
+        return jsonify(fixed_question)
+
     categories_param = request.args.get("categories", "")
     categories = categories_param.split(",") if categories_param else None
     question = get_random_question(categories)
-
     if question is None:
         return jsonify({"error": "No questions available"}), 404
-
     return jsonify(question)
 
 
@@ -227,14 +127,10 @@ def submit_answer():
     if len(answer) > 200:
         return jsonify({"error": "Answer exceeds maximum length"}), 400
 
-    # Evaluate answer
     evaluation = evaluate_answer(answer)
-
-    # Update user points
     points_earned = int(evaluation["total_score"] * 10)
     session["points"] = session.get("points", 0) + points_earned
 
-    # Store answer history
     session["answers"].append(
         {
             "timestamp": datetime.now().isoformat(),
