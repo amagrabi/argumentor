@@ -9,7 +9,7 @@ description = "A platform to improve reasoning skills and make better decisions.
 readme = "README.md"
 keywords = ["reasoning", "decision-making"]
 dependencies = [
-    "streamlit",
+    "flask",
 ]
 
 [project.optional-dependencies]

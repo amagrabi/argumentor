@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArguMentor - Sharpen Your Reasoning</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Category item styles: selected items have black background, unselected ones are white */
+        .category-item.selected {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
+        }
+        .category-item {
+            background-color: #fff;
+            color: #000;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-6">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-4">
+            <div class="flex items-center space-x-3">
+                <!-- Brain-inspired logo -->
+                <!-- <img width="35" height="35" src="https://img.icons8.com/ios/50/brain--v1.png" alt="brain--v1"/> -->
+                <!-- <img width="40" height="40" src="https://img.icons8.com/external-justicon-lineal-justicon/64/external-brain-human-organs-justicon-lineal-justicon.png" alt="external-brain-human-organs-justicon-lineal-justicon"/> -->
+                 <img width="40" height="40" src="https://img.icons8.com/external-outline-berkahicon/64/external-Brain-health-app-outline-berkahicon.png" alt="external-Brain-health-app-outline-berkahicon"/>
+
+                <h1 class="text-2xl font-bold">ArguMentor</h1>
+            </div>
+            <div class="flex items-center space-x-2 text-sm">
+                <div class="bg-gray-100 rounded-full px-3 py-1 flex items-center">
+                    <span>Score: <strong id="totalPoints">0</strong></span>
+                </div>
+                <button id="soloMode" class="bg-gray-900 text-white px-4 py-1 rounded-full text-sm">Solo</button>
+                <button id="versusMode" class="bg-white border border-gray-200 px-4 py-1 rounded-full text-sm" disabled>Versus</button>
+                <button id="categoriesButton" class="bg-blue-500 text-white px-4 py-1 rounded-full text-sm">
+                    Select Categories
+                </button>
+            </div>
+        </header>
+        
+        <!-- Category Selection Modal Overlay -->
+        <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+            <div id="categoriesPanel" class="bg-white border border-gray-200 rounded-xl shadow-lg p-4">
+                <h3 class="text-lg font-bold mb-2">Select Categories</h3>
+                <div id="categoriesList" class="flex flex-wrap gap-2">
+                    <div class="category-item cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm selected whitespace-nowrap" data-value="Philosophy">Philosophy</div>
+                    <div class="category-item cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm selected whitespace-nowrap" data-value="Ethics">Ethics</div>
+                    <div class="category-item cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm selected whitespace-nowrap" data-value="Business & Risk">Business & Risk</div>
+                    <div class="category-item cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm selected whitespace-nowrap" data-value="Thought Experiments">Thought Experiments</div>
+                    <div class="category-item cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm selected whitespace-nowrap" data-value="Politics">Politics</div>
+                    <div class="category-item cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm selected whitespace-nowrap" data-value="Biases & Fallacies">Biases & Fallacies</div>
+                    <div class="category-item cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm selected whitespace-nowrap" data-value="AI & Future">AI & Future</div>
+                    <div class="category-item cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm selected whitespace-nowrap" data-value="Fun & Casual">Fun & Casual</div>
+                </div>
+                <div id="categoriesError" class="text-red-500 mt-2 hidden"></div>
+                <div class="mt-4 text-right">
+                    <button id="closeCategories" class="bg-blue-500 text-white px-4 py-2 rounded-full">Done</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slogan -->
+        <p class="text-gray-600 text-center mb-8">
+            Sharpen your reasoning skills. Craft arguments, tackle challenging questions, and get AI-powered feedback to improve.
+        </p>
+        
+        <!-- Main Content -->
+        <main class="bg-white rounded-3xl shadow-sm p-8 mb-8">
+            <!-- Question Section -->
+            <!-- Category badge above the question -->
+            <div class="mb-2">
+                <span id="categoryBadge" class="bg-gray-900 text-white px-4 py-2 rounded-full text-sm"></span>
+            </div>
+            <div class="flex items-start">
+                <h2 id="questionDescription" class="text-3xl font-bold flex-1"></h2>
+                <button id="rerollButton" class="ml-6 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1 self-start">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span>Reroll</span>
+                </button>
+            </div>
+            
+            <!-- Answer Section -->
+            <div class="space-y-6">
+                <div class="mt-8">
+                    <label class="block text-lg font-medium mb-2">Your Answer</label>
+                    <textarea 
+                        id="answerInput"
+                        class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0 h-32"
+                        placeholder="Type your answer here..."
+                        maxlength="200"
+                    ></textarea>
+                    <div class="mt-2">
+                        <div class="flex justify-between text-sm text-gray-500">
+                            <span>Characters remaining: <span id="charCount">200</span></span>
+                            <button id="submitAnswer" class="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors">
+                                Submit Answer
+                            </button>
+                        </div>
+                        <div id="errorMessage" class="text-sm text-red-500 mt-1"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Evaluation Results -->
+        <div id="evaluationResults" class="hidden bg-white rounded-3xl shadow-sm p-8">
+            <h2 class="text-2xl font-bold mb-6">Evaluation</h2>
+            <div id="scores" class="grid gap-4 mb-8">
+                <!-- Scores and feedback for each category will be populated here -->
+            </div>
+            <div class="mt-6 text-center">
+                <button id="nextQuestion" class="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors">
+                    Next Question
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Category icons mapping with updated icons
+        const categoryIcons = {
+            "Philosophy": "📚",
+            "Ethics": "⚖️",
+            "Business & Risk": "💼",
+            "Thought Experiments": "💡",
+            "Politics": "🏛️",
+            "Biases & Fallacies": "🔍",
+            "AI & Future": "🤖",
+            "Fun & Casual": "🍻"
+        };
+
+        // Global variable to store selected categories (default all)
+        let selectedCategories = Object.keys(categoryIcons);
+
+        // Utility functions for color interpolation
+        function hexToRgb(hex) {
+            hex = hex.replace('#', '');
+            let bigint = parseInt(hex, 16);
+            let r = (bigint >> 16) & 255;
+            let g = (bigint >> 8) & 255;
+            let b = bigint & 255;
+            return { r, g, b };
+        }
+
+        function rgbToHex(r, g, b) {
+            return "#" + [r, g, b].map(x => {
+                const hex = x.toString(16);
+                return hex.length === 1 ? "0" + hex : hex;
+            }).join('');
+        }
+
+        function interpolateColor(color1, color2, factor) {
+            const r = Math.round(color1.r + factor * (color2.r - color1.r));
+            const g = Math.round(color1.g + factor * (color2.g - color1.g));
+            const b = Math.round(color1.b + factor * (color2.b - color1.b));
+            return { r, g, b };
+        }
+
+        // Function to determine color based on score using linear interpolation
+        function scoreToColor(score) {
+            const minScore = 6, maxScore = 9;
+            const clampedScore = Math.min(maxScore, Math.max(minScore, score));
+            const factor = (clampedScore - minScore) / (maxScore - minScore);
+            const startColor = hexToRgb("#f6ad55"); // orange
+            const endColor = hexToRgb("#2f855a");   // dark green
+            const interpolated = interpolateColor(startColor, endColor, factor);
+            return rgbToHex(interpolated.r, interpolated.g, interpolated.b);
+        }
+
+        // Initialize
+        async function getNewQuestion() {
+            try {
+                const response = await fetch('/get_question', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        categories: selectedCategories
+                    })
+                });
+                
+                const question = await response.json();
+                
+                // Update category with icon and question description
+                const categoryText = categoryIcons[question.category] ? `${categoryIcons[question.category]} ${question.category}` : question.category;
+                document.getElementById('categoryBadge').textContent = categoryText;
+                document.getElementById('questionDescription').textContent = question.description;
+                
+                // Reset UI
+                document.getElementById('answerInput').value = '';
+                document.getElementById('charCount').textContent = '200';
+                document.getElementById('evaluationResults').classList.add('hidden');
+                document.getElementById('errorMessage').textContent = '';
+            } catch (error) {
+                console.error('Error fetching question:', error);
+            }
+        }
+
+        // Character counter and clear error messages on input
+        const answerInput = document.getElementById('answerInput');
+        const charCount = document.getElementById('charCount');
+        answerInput.addEventListener('input', () => {
+            const remaining = 200 - answerInput.value.length;
+            charCount.textContent = remaining;
+            document.getElementById('errorMessage').textContent = '';
+        });
+
+        // Submit answer and display evaluation with scores and feedback
+        document.getElementById('submitAnswer').addEventListener('click', async () => {
+            const answer = answerInput.value.trim();
+            if (!answer) {
+                document.getElementById('errorMessage').textContent = "Please provide an answer before submitting.";
+                return;
+            }
+            try {
+                const response = await fetch('/submit_answer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ answer })
+                });
+                
+                const data = await response.json();
+                
+                const scoresDiv = document.getElementById('scores');
+                scoresDiv.innerHTML = '';
+                Object.entries(data.evaluation.scores).forEach(([category, score]) => {
+                    const color = scoreToColor(score);
+                    const feedbackText = data.evaluation.feedback[category] || '';
+                    scoresDiv.innerHTML += `
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium">${category}</span>
+                                <span class="font-medium" style="color: ${color};">${score}/10</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+                                <div class="rounded-full h-2" style="width: ${score * 10}%; background-color: ${color};"></div>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">${feedbackText}</p>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('totalPoints').textContent = data.total_points;
+                document.getElementById('evaluationResults').classList.remove('hidden');
+            } catch (error) {
+                console.error('Error submitting answer:', error);
+            }
+        });
+
+        // Next question button
+        document.getElementById('nextQuestion').addEventListener('click', getNewQuestion);
+        // Reroll button to fetch new question
+        document.getElementById('rerollButton').addEventListener('click', getNewQuestion);
+
+        // Categories Modal behavior
+        const categoriesButton = document.getElementById('categoriesButton');
+        const modalOverlay = document.getElementById('modalOverlay');
+        categoriesButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            modalOverlay.classList.remove('hidden');
+            document.getElementById('categoriesError').classList.add('hidden');
+        });
+
+        // Category item toggle for selection
+        document.querySelectorAll('.category-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (this.classList.contains('selected')) {
+                    if (document.querySelectorAll('.category-item.selected').length === 1) {
+                        document.getElementById('categoriesError').textContent = "At least one category must be selected.";
+                        document.getElementById('categoriesError').classList.remove('hidden');
+                        return;
+                    } else {
+                        this.classList.remove('selected');
+                    }
+                } else {
+                    this.classList.add('selected');
+                    document.getElementById('categoriesError').classList.add('hidden');
+                }
+            });
+        });
+
+        // Prevent modal overlay from closing when clicking outside
+        modalOverlay.addEventListener('click', (e) => {
+            // If click is on overlay (and not inside the modal), do nothing and show error if no selection
+            if (e.target === modalOverlay) {
+                if (document.querySelectorAll('.category-item.selected').length === 0) {
+                    document.getElementById('categoriesError').textContent = "At least one category must be selected.";
+                    document.getElementById('categoriesError').classList.remove('hidden');
+                }
+                // Do not close modal overlay
+            }
+        });
+
+        // Close modal on "Done" click, only if at least one category is selected
+        document.getElementById('closeCategories').addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (document.querySelectorAll('.category-item.selected').length === 0) {
+                document.getElementById('categoriesError').textContent = "At least one category must be selected.";
+                document.getElementById('categoriesError').classList.remove('hidden');
+                return;
+            }
+            modalOverlay.classList.add('hidden');
+            updateSelectedCategories();
+        });
+
+        // Update selectedCategories based on selected items
+        function updateSelectedCategories() {
+            selectedCategories = Array.from(document.querySelectorAll('.category-item.selected')).map(el => el.getAttribute('data-value'));
+        }
+
+        // Load the first question when the page loads
+        window.addEventListener('DOMContentLoaded', getNewQuestion);
+    </script>
+</body>
+</html>
