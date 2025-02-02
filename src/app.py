@@ -11,6 +11,10 @@ app.secret_key = "your-secret-key-here"
 QUESTIONS = {
     "Philosophy": [
         {
+            "description": "Is truth absolute or relative?",
+            "category": "Philosophy",
+        },
+        {
             "description": "Is free will an illusion?",
             "category": "Philosophy",
         },
@@ -54,6 +58,10 @@ QUESTIONS = {
         },
     ],
     "Business & Risk": [
+        {
+            "description": "How should risk be managed in a startup?",
+            "category": "Business & Risk",
+        },
         {
             "description": "Should a company invest in risky innovation or focus on stable revenue streams?",
             "category": "Business & Risk",
@@ -193,10 +201,10 @@ def home():
     return render_template("index.html")
 
 
-@app.route("/get_question", methods=["POST"])
+@app.route("/get_question", methods=["GET"])
 def get_question():
-    data = request.json
-    categories = data.get("categories", list(QUESTIONS.keys()))
+    categories_param = request.args.get("categories", "")
+    categories = categories_param.split(",") if categories_param else None
     question = get_random_question(categories)
 
     if question is None:
