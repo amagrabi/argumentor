@@ -10,6 +10,7 @@ readme = "README.md"
 keywords = ["reasoning", "decision-making"]
 dependencies = [
     "flask",
+    "flask-sqlalchemy"
 ]
 
 [project.optional-dependencies]

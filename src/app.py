@@ -1,13 +1,25 @@
 import os
 import random
 import uuid
-from datetime import datetime
 
 import yaml
 from flask import Flask, jsonify, render_template, request, session
 
+from models import Answer, User, db
+
 app = Flask(__name__)
 app.secret_key = "your-secret-key-here"
+
+# Configure SQLAlchemy to use a SQLite database (you can change this later)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///argumentor.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# Initialize the database with the app
+db.init_app(app)
+
+# Create tables if they don't exist
+with app.app_context():
+    db.create_all()
 
 LEVEL_DEFINITIONS = [
     (0, "Novice Thinker"),
@@ -146,11 +158,14 @@ def evaluate_answer(answer):
 def home():
     if "user_id" not in session:
         session["user_id"] = str(uuid.uuid4())
-        session["points"] = 0
-        session["xp"] = 0  # Initialize XP
-        session["answers"] = []
-        session["seen_question_ids"] = []
-    xp = session.get("xp", 0)
+    # Load user progress data from the database instead of session variables
+    user = User.query.filter_by(uuid=session["user_id"]).first()
+    if not user:
+        # Create the user record if it does not exist
+        user = User(uuid=session["user_id"], xp=0)
+        db.session.add(user)
+        db.session.commit()
+    xp = user.xp
     level_info = get_level_info(xp)
     return render_template("index.html", xp=xp, level_info=level_info)
 
@@ -181,45 +196,58 @@ def submit_answer():
         return jsonify({"error": "Content-Type must be application/json"}), 400
 
     data = request.json
-    answer = data.get("answer", "").strip()
+    answer_text = data.get("answer", "").strip()
 
-    if not answer:
+    if not answer_text:
         return jsonify({"error": "Answer cannot be empty"}), 400
 
-    if len(answer) > 200:
+    if len(answer_text) > 200:
         return jsonify({"error": "Answer exceeds maximum length"}), 400
 
-    evaluation = evaluate_answer(answer)
-    # Use the sum of the individual rating scores for XP
+    evaluation = evaluate_answer(answer_text)
+    # Sum of individual scores for XP
     xp_gained = sum(evaluation["scores"].values())
 
+    # Update XP stored in session (could also be derived from DB)
     old_xp = session.get("xp", 0)
     new_xp = old_xp + xp_gained
     session["xp"] = new_xp
 
+    # Manage the user record. Use the session's user_id (a UUID) to find or create a user.
+    user_uuid = session.get("user_id")
+    user = User.query.filter_by(uuid=user_uuid).first()
+    if not user:
+        # Create a new user record if not found
+        user = User(uuid=user_uuid, xp=new_xp)
+        db.session.add(user)
+    else:
+        user.xp = new_xp  # update XP
+
+    # Create an Answer record for this submission
+    new_answer = Answer(
+        user=user,
+        question_id=data.get("question_id"),
+        answer_text=answer_text,
+        evaluation_scores=evaluation["scores"],
+        evaluation_feedback=evaluation["feedback"],
+        points_earned=xp_gained,
+    )
+    db.session.add(new_answer)
+    db.session.commit()
+
+    # Level-up logic (you can keep your existing logic or derive level from user's XP)
     old_level = get_level(old_xp)
     new_level = get_level(new_xp)
     leveled_up = old_level != new_level
 
-    # Since XP and points are the same in your setup:
-    session["points"] = new_xp
-
-    session["answers"].append(
-        {
-            "timestamp": datetime.now().isoformat(),
-            "answer": answer,
-            "evaluation": evaluation,
-            "points_earned": xp_gained,
-        }
-    )
-
+    # For simplicity, we use XP in place of points
     level_info = get_level_info(new_xp)
 
     return jsonify(
         {
             "evaluation": evaluation,
             "points_earned": xp_gained,
-            "total_points": session["points"],
+            "total_points": new_xp,
             "xp_gained": xp_gained,
             "current_xp": new_xp,
             "current_level": level_info["display_name"],
@@ -265,14 +293,11 @@ def select_question():
 
 @app.route("/profile")
 def profile():
-    xp = session.get("xp", 0)
+    user_uuid = session.get("user_id")
+    user = User.query.filter_by(uuid=user_uuid).first()
+    xp = user.xp if user else 0
     level_info = get_level_info(xp)
-    return render_template(
-        "profile.html",
-        points=session.get("points", 0),
-        xp=xp,
-        level_info=level_info,
-    )
+    return render_template("profile.html", xp=xp, level_info=level_info)
 
 
 @app.route("/get_new_question", methods=["GET"])

@@ -117,11 +117,12 @@ function updateQuestionDisplay(question) {
 // 2. After fetching a new question, it stores that question in sessionStorage.
 async function getNewQuestion() {
   try {
-    // Build query string from selectedCategories to filter questions
-    let query =
-      selectedCategories.length > 0
-        ? `?categories=${selectedCategories.join(",")}`
-        : "";
+    // Build query string by URL-encoding each selected category to handle special characters
+    let query = "";
+    if (selectedCategories.length > 0) {
+      const encodedCategories = selectedCategories.map(encodeURIComponent);
+      query = `?categories=${encodedCategories.join(",")}`;
+    }
     const response = await fetch("/get_new_question" + query);
     const question = await response.json();
     if (question.error) {
