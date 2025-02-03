@@ -1,5 +1,6 @@
 import os
 import random
+import re
 import uuid
 
 import yaml
@@ -31,6 +32,13 @@ LEVEL_DEFINITIONS = [
 ]
 
 
+# Helper function to slugify category names.
+def slugify(s: str) -> str:
+    # Convert to lowercase, replace any sequence of non-alphanumeric characters with a hyphen,
+    # and strip hyphens from the beginning and end.
+    return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
+
+
 def load_questions():
     base_dir = os.path.dirname(__file__)
     data_path = os.path.join(base_dir, "data", "questions.yaml")
@@ -42,7 +50,7 @@ def load_questions():
         for i, q in enumerate(questions):
             new_questions.append(
                 {
-                    "id": f"{category}-{i}",
+                    "id": f"{slugify(category)}-{i}",
                     "description": q,
                     "category": category,
                 }
@@ -219,9 +227,23 @@ def submit_answer():
     else:
         user.xp = new_xp
 
+    # Get question_id from the request and look up the question text.
+    question_id = data.get("question_id")
+    question_text = ""
+    if question_id:
+        # search through loaded QUESTIONS to find the matching question description
+        for questions in QUESTIONS.values():
+            for q in questions:
+                if q["id"] == question_id:
+                    question_text = q["description"]
+                    break
+            if question_text:
+                break
+
     new_answer = Answer(
         user=user,
-        question_id=data.get("question_id"),
+        question_id=question_id,
+        question_text=question_text,
         answer_text=answer_text,
         evaluation_scores=evaluation["scores"],
         evaluation_feedback=evaluation["feedback"],

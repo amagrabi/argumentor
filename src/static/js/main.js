@@ -208,13 +208,20 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       "Please provide an answer before submitting.";
     return;
   }
+
+  // Build the payload to include the question_id using the correct variable
+  const payload = { answer };
+  if (currentQuestion && currentQuestion.id) {
+    payload.question_id = currentQuestion.id;
+  }
+
   try {
     const response = await fetch("/submit_answer", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ answer }),
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {

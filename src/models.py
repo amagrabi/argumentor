@@ -21,6 +21,7 @@ class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     question_id = db.Column(db.String(50), nullable=True)
+    question_text = db.Column(db.Text, nullable=True)
     answer_text = db.Column(db.Text, nullable=False)
     # Store ratings per dimension as a JSON object, e.g. {"Clarity": 7, ...}
     evaluation_scores = db.Column(db.JSON, nullable=False)
