@@ -17,19 +17,20 @@
         <h1 class="text-2xl font-bold">ArguMentor</h1>
       </div>
       <div class="flex items-center space-x-2 text-sm">
-        <a href="/profile" class="flex items-center">
-          <div class="flex flex-col items-end mr-2">
-            <span id="userLevel" class="text-xs text-gray-500">{{ level_info.display_name }}</span>
-            <div id="miniXpBar" class="w-20 h-1 bg-gray-200 rounded-full mt-1">
-              <div class="h-full bg-green-500 rounded-full" style="width: {{ level_info.progress_percent }}%;"></div>
-            </div>
+        <div class="flex flex-col items-end mr-2">
+          <span id="userLevel" class="text-xs text-gray-500">{{ level_info.display_name }}</span>
+          <div id="miniXpBar" class="w-20 h-1 bg-gray-200 rounded-full mt-1">
+            <div class="h-full bg-green-500 rounded-full" style="width: {{ level_info.progress_percent }}%;"></div>
           </div>
-          <img class="profile-icon" width="32" height="32" src="https://img.icons8.com/fluency-systems-filled/48/user.png" alt="Profile Icon">
-        </a>
+        </div>
+        <button id="profileButton" onclick="window.location.href='/profile'" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center">
+          <img width="22" height="22" src="https://img.icons8.com/windows/32/gender-neutral-user.png" alt="gender-neutral-user"/>
+        </button>
         <button id="settingsButton" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center">
-          <!-- SVG for settings icon -->
+          <!-- Settings SVG -->
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
           </svg>
         </button>
