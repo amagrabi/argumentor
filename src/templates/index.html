@@ -66,7 +66,7 @@
         
         <!-- Slogan -->
         <p class="text-gray-600 text-center mb-8">
-            Sharpen your reasoning skills. Tackle challenging questions, craft arguments, improve with AI-powered feedback.
+            Sharpen your reasoning skills. Tackle new questions, craft arguments, improve with AI-powered feedback.
         </p>
         
         <!-- Main Content -->
@@ -78,12 +78,22 @@
             </div>
             <div class="flex items-start">
                 <h2 id="questionDescription" class="text-3xl font-bold flex-1"></h2>
-                <button id="rerollButton" class="ml-6 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1 self-start">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <span>Reroll</span>
-                </button>
+                <div class="flex flex-col ml-6 items-end">
+                    <!-- Reroll Button -->
+                    <button id="rerollButton" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Reroll</span>
+                    </button>
+                    <!-- Select Question Button placed below the Reroll button -->
+                    <button id="selectQuestionButton" class="mt-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>Select Question</span>
+                    </button>
+                </div>
             </div>
             
             <!-- Answer Section -->
@@ -119,6 +129,18 @@
                 <button id="nextQuestion" class="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors">
                     Next Question
                 </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="questionSelectionOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-11/12 max-w-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Select a Question</h3>
+                <button id="closeQuestionSelection" class="bg-red-500 text-white px-3 py-1 rounded-full text-sm">X</button>
+            </div>
+            <div id="questionList" class="max-h-96 overflow-y-auto">
+                <!-- List of questions will be dynamically populated here -->
             </div>
         </div>
     </div>
@@ -312,6 +334,72 @@
             // Initialize selectedCategories based on default selected items.
             updateSelectedCategories();
             getNewQuestion();
+        });
+
+        document.getElementById('selectQuestionButton').addEventListener('click', () => {
+            fetch('/get_all_questions')
+                .then(response => response.json())
+                .then(questions => {
+                    const questionList = document.getElementById('questionList');
+                    questionList.innerHTML = '';
+
+                    // Group questions by category and record category order based on first appearance.
+                    const groups = {};
+                    const categoryOrder = [];
+                    questions.forEach(question => {
+                        if (!groups[question.category]) {
+                            groups[question.category] = [];
+                            categoryOrder.push(question.category);
+                        }
+                        groups[question.category].push(question);
+                    });
+
+                    // Display questions in the order as they appear in the YAML file.
+                    categoryOrder.forEach(category => {
+                        const heading = document.createElement('h4');
+                        heading.className = 'mt-4 mb-2 font-bold text-lg';
+                        heading.textContent = category;
+                        questionList.appendChild(heading);
+
+                        groups[category].forEach(question => {
+                            const item = document.createElement('div');
+                            item.className = 'question-item cursor-pointer p-2 border-b hover:bg-gray-100';
+                            item.textContent = question.description;
+                            item.dataset.id = question.id;
+                            item.addEventListener('click', () => {
+                                fetch('/select_question', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ question_id: question.id })
+                                })
+                                .then(response => response.json())
+                                .then(selected => {
+                                    // Update the current question on the UI
+                                    currentQuestion = selected;
+                                    const categoryText = categoryIcons[selected.category]
+                                        ? categoryIcons[selected.category] + " " + selected.category
+                                        : selected.category;
+                                    document.getElementById('categoryBadge').textContent = categoryText;
+                                    document.getElementById('questionDescription').textContent = selected.description;
+                                    document.getElementById('answerInput').value = '';
+                                    document.getElementById('charCount').textContent = '200';
+                                    document.getElementById('evaluationResults').classList.add('hidden');
+                                    document.getElementById('errorMessage').textContent = '';
+                                    // Close the modal
+                                    document.getElementById('questionSelectionOverlay').classList.add('hidden');
+                                })
+                                .catch(error => console.error('Error selecting question:', error));
+                            });
+                            questionList.appendChild(item);
+                        });
+                    });
+                    document.getElementById('questionSelectionOverlay').classList.remove('hidden');
+                })
+                .catch(error => console.error('Error fetching questions:', error));
+        });
+
+        document.getElementById('closeQuestionSelection').addEventListener('click', () => {
+            document.getElementById('questionSelectionOverlay').classList.add('hidden');
         });
     </script>
 </body>

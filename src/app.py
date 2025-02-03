@@ -149,5 +149,39 @@ def submit_answer():
     )
 
 
+@app.route("/get_all_questions", methods=["GET"])
+def get_all_questions():
+    all_questions = []
+    for questions in QUESTIONS.values():
+        all_questions.extend(questions)
+    return jsonify(all_questions)
+
+
+@app.route("/select_question", methods=["POST"])
+def select_question():
+    if not request.is_json:
+        return jsonify({"error": "Content-Type must be application/json"}), 400
+
+    data = request.json
+    question_id = data.get("question_id", "").strip()
+    if not question_id:
+        return jsonify({"error": "Question ID is required"}), 400
+
+    selected_question = None
+    for questions in QUESTIONS.values():
+        for q in questions:
+            if q["id"] == question_id:
+                selected_question = q
+                break
+        if selected_question:
+            break
+
+    if not selected_question:
+        return jsonify({"error": "Question not found"}), 404
+
+    session.setdefault("seen_question_ids", []).append(selected_question["id"])
+    return jsonify(selected_question)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
