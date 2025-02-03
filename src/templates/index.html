@@ -34,30 +34,34 @@
                 <div class="bg-gray-100 rounded-full px-3 py-1 flex items-center">
                     <span>Score: <strong id="totalPoints">0</strong></span>
                 </div>
-                <button id="categoriesButton" class="bg-gray-800 text-white px-4 py-1 rounded-full text-sm">
-                    Select Categories
+                <button id="settingsButton" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
                 </button>
             </div>
         </header>
         
         <!-- Category Selection Modal Overlay -->
         <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-            <div id="categoriesPanel" class="bg-white border border-gray-200 rounded-xl shadow-lg p-4">
-                <h3 class="text-lg font-bold mb-2">
-                    All categories are enabled by default. Deselect categories below to exclude questions:
-                </h3>
-                <div id="categoriesList" class="flex flex-col gap-2 items-center">
-                    <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm inline-flex items-center justify-center whitespace-nowrap w-max" data-value="Philosophy">Philosophy</div>
-                    <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm inline-flex items-center justify-center whitespace-nowrap w-max" data-value="Ethics">Ethics</div>
-                    <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm inline-flex items-center justify-center whitespace-nowrap w-max" data-value="Business & Risk">Business & Risk</div>
-                    <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm inline-flex items-center justify-center whitespace-nowrap w-max" data-value="Thought Experiments">Thought Experiments</div>
-                    <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm inline-flex items-center justify-center whitespace-nowrap w-max" data-value="Politics">Politics</div>
-                    <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm inline-flex items-center justify-center whitespace-nowrap w-max" data-value="Biases & Fallacies">Biases & Fallacies</div>
-                    <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm inline-flex items-center justify-center whitespace-nowrap w-max" data-value="AI & Future">AI & Future</div>
-                    <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-3 py-1 text-center text-sm inline-flex items-center justify-center whitespace-nowrap w-max" data-value="Fun & Casual">Fun & Casual</div>
+            <div id="settingsPanel" class="bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-11/12 max-w-md">
+                <h3 class="text-lg font-bold mb-2">Settings</h3>
+                <hr class="border-t border-gray-200 my-2" />
+                <div class="mb-4">
+                    <h4 class="font-bold text-md mb-3">Filter Categories</h4>
+                    <div class="flex gap-2 flex-wrap">
+                        <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Philosophy">Philosophy</div>
+                        <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Ethics">Ethics</div>
+                        <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Business & Risk">Business & Risk</div>
+                        <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Thought Experiments">Thought Experiments</div>
+                        <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Politics">Politics</div>
+                        <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Biases & Fallacies">Biases & Fallacies</div>
+                        <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Fun & Casual">Fun & Casual</div>
+                        <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="AI & Future">AI & Future</div>
+                    </div>
                 </div>
-                <!-- Error message displayed if no category is selected -->
-                <div id="categoriesError" class="text-red-500 mt-2 hidden">At least one category must be selected.</div>
+                <div id="categoriesError" class="text-red-500 mt-2 text-xs hidden">At least one category must be selected.</div>
                 <div class="mt-4 text-right">
                     <button id="closeCategories" class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">Done</button>
                 </div>
@@ -281,12 +285,12 @@
         document.getElementById('rerollButton').addEventListener('click', getNewQuestion);
 
         // Categories Modal behavior
-        const categoriesButton = document.getElementById('categoriesButton');
+        const settingsButton = document.getElementById('settingsButton');
         const modalOverlay = document.getElementById('modalOverlay');
-        categoriesButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            modalOverlay.classList.remove('hidden');
-            document.getElementById('categoriesError').classList.add('hidden');
+        settingsButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        modalOverlay.classList.remove('hidden');
+        document.getElementById('categoriesError').classList.add('hidden');
         });
 
         // Category item toggle for selection
@@ -343,10 +347,13 @@
                     const questionList = document.getElementById('questionList');
                     questionList.innerHTML = '';
 
+                    // Filter questions based on the currently selected categories.
+                    const filteredQuestions = questions.filter(q => selectedCategories.includes(q.category));
+
                     // Group questions by category and record category order based on first appearance.
                     const groups = {};
                     const categoryOrder = [];
-                    questions.forEach(question => {
+                    filteredQuestions.forEach(question => {
                         if (!groups[question.category]) {
                             groups[question.category] = [];
                             categoryOrder.push(question.category);
@@ -354,45 +361,53 @@
                         groups[question.category].push(question);
                     });
 
-                    // Display questions in the order as they appear in the YAML file.
-                    categoryOrder.forEach(category => {
-                        const heading = document.createElement('h4');
-                        heading.className = 'mt-4 mb-2 font-bold text-lg';
-                        heading.textContent = category;
-                        questionList.appendChild(heading);
+                    // If no questions are available for the selected categories, display a message.
+                    if (filteredQuestions.length === 0) {
+                        const noQuestionsItem = document.createElement('div');
+                        noQuestionsItem.className = 'text-gray-600 py-2';
+                        noQuestionsItem.textContent = 'No questions available for the selected categories.';
+                        questionList.appendChild(noQuestionsItem);
+                    } else {
+                        // Display questions in the order as they appear in the YAML file.
+                        categoryOrder.forEach(category => {
+                            const heading = document.createElement('h4');
+                            heading.className = 'mt-4 mb-2 font-bold text-lg';
+                            heading.textContent = category;
+                            questionList.appendChild(heading);
 
-                        groups[category].forEach(question => {
-                            const item = document.createElement('div');
-                            item.className = 'question-item cursor-pointer p-2 border-b hover:bg-gray-100';
-                            item.textContent = question.description;
-                            item.dataset.id = question.id;
-                            item.addEventListener('click', () => {
-                                fetch('/select_question', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ question_id: question.id })
-                                })
-                                .then(response => response.json())
-                                .then(selected => {
-                                    // Update the current question on the UI
-                                    currentQuestion = selected;
-                                    const categoryText = categoryIcons[selected.category]
-                                        ? categoryIcons[selected.category] + " " + selected.category
-                                        : selected.category;
-                                    document.getElementById('categoryBadge').textContent = categoryText;
-                                    document.getElementById('questionDescription').textContent = selected.description;
-                                    document.getElementById('answerInput').value = '';
-                                    document.getElementById('charCount').textContent = '200';
-                                    document.getElementById('evaluationResults').classList.add('hidden');
-                                    document.getElementById('errorMessage').textContent = '';
-                                    // Close the modal
-                                    document.getElementById('questionSelectionOverlay').classList.add('hidden');
-                                })
-                                .catch(error => console.error('Error selecting question:', error));
+                            groups[category].forEach(question => {
+                                const item = document.createElement('div');
+                                item.className = 'question-item cursor-pointer p-2 border-b hover:bg-gray-100';
+                                item.textContent = question.description;
+                                item.dataset.id = question.id;
+                                item.addEventListener('click', () => {
+                                    fetch('/select_question', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ question_id: question.id })
+                                    })
+                                    .then(response => response.json())
+                                    .then(selected => {
+                                        // Update the current question on the UI.
+                                        currentQuestion = selected;
+                                        const categoryText = categoryIcons[selected.category]
+                                            ? categoryIcons[selected.category] + " " + selected.category
+                                            : selected.category;
+                                        document.getElementById('categoryBadge').textContent = categoryText;
+                                        document.getElementById('questionDescription').textContent = selected.description;
+                                        document.getElementById('answerInput').value = '';
+                                        document.getElementById('charCount').textContent = '200';
+                                        document.getElementById('evaluationResults').classList.add('hidden');
+                                        document.getElementById('errorMessage').textContent = '';
+                                        // Close the modal.
+                                        document.getElementById('questionSelectionOverlay').classList.add('hidden');
+                                    })
+                                    .catch(error => console.error('Error selecting question:', error));
+                                });
+                                questionList.appendChild(item);
                             });
-                            questionList.appendChild(item);
                         });
-                    });
+                    }
                     document.getElementById('questionSelectionOverlay').classList.remove('hidden');
                 })
                 .catch(error => console.error('Error fetching questions:', error));
