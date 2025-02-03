@@ -1,0 +1,40 @@
+/* Custom styles for ArguMentor */
+
+/* When selected, the category items now use gray-800 (a tiny bit darker) */
+.category-item.selected {
+  background-color: #1F2937; /* Tailwind gray-800 */
+  color: #fff;
+  border-color: #1F2937;
+}
+
+.category-item {
+  background-color: #fff;
+  color: #000;
+}
+
+/* Animate the progress bar fill */
+.progress-fill {
+  transition: width 0.4s ease-out, background-color 0.4s ease-out;
+}
+
+/* Fade-in effect for evaluation results */
+.fade-in {
+  animation: fadeInAnimation 0.5s ease-in-out;
+}
+
+@keyframes fadeInAnimation {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Profile icon styling */
+.profile-icon {
+  filter: grayscale(100%);
+}
+
+/* Focus style for the answer input */
+#answerInput:focus {
+  border-color: #4B5563; /* Dark gray */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(75, 85, 99, 0.5);
+}
