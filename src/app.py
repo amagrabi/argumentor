@@ -205,49 +205,42 @@ def submit_answer():
         return jsonify({"error": "Answer exceeds maximum length"}), 400
 
     evaluation = evaluate_answer(answer_text)
-    # Sum of individual scores for XP
     xp_gained = sum(evaluation["scores"].values())
 
-    # Update XP stored in session (could also be derived from DB)
     old_xp = session.get("xp", 0)
     new_xp = old_xp + xp_gained
     session["xp"] = new_xp
 
-    # Manage the user record. Use the session's user_id (a UUID) to find or create a user.
     user_uuid = session.get("user_id")
     user = User.query.filter_by(uuid=user_uuid).first()
     if not user:
-        # Create a new user record if not found
         user = User(uuid=user_uuid, xp=new_xp)
         db.session.add(user)
     else:
-        user.xp = new_xp  # update XP
+        user.xp = new_xp
 
-    # Create an Answer record for this submission
     new_answer = Answer(
         user=user,
         question_id=data.get("question_id"),
         answer_text=answer_text,
         evaluation_scores=evaluation["scores"],
         evaluation_feedback=evaluation["feedback"],
-        points_earned=xp_gained,
+        xp_earned=xp_gained,
     )
     db.session.add(new_answer)
     db.session.commit()
 
-    # Level-up logic (you can keep your existing logic or derive level from user's XP)
     old_level = get_level(old_xp)
     new_level = get_level(new_xp)
     leveled_up = old_level != new_level
 
-    # For simplicity, we use XP in place of points
     level_info = get_level_info(new_xp)
 
     return jsonify(
         {
             "evaluation": evaluation,
-            "points_earned": xp_gained,
-            "total_points": new_xp,
+            "xp_earned": xp_gained,
+            "total_xp": new_xp,
             "xp_gained": xp_gained,
             "current_xp": new_xp,
             "current_level": level_info["display_name"],
@@ -315,6 +308,17 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return response
+
+
+@app.cli.command("recreate_db")
+def recreate_db():
+    """Drop and recreate the database."""
+    from models import db
+
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
+    print("Database recreated!")
 
 
 if __name__ == "__main__":

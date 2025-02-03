@@ -26,7 +26,7 @@ class Answer(db.Model):
     evaluation_scores = db.Column(db.JSON, nullable=False)
     # Store LLM explanations as a JSON object, e.g. {"Clarity": "Your points are clear…", ...}
     evaluation_feedback = db.Column(db.JSON, nullable=False)
-    points_earned = db.Column(db.Integer, nullable=False)
+    xp_earned = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):

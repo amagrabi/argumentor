@@ -46,3 +46,9 @@ Run tests:
 ```sh
 pytest tests/
 ```
+
+Recreate db for local development:
+
+```sh
+flask recreate_db
+```
