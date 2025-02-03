@@ -35,6 +35,8 @@ Install dev dependencies:
 uv pip install -e ".[dev]"
 ```
 
+Create a `.env` file from `.env_template` and specify values.
+
 Install pre-commit hooks for auto-formatting:
 
 ```sh

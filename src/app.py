@@ -6,14 +6,11 @@ import uuid
 import yaml
 from flask import Flask, jsonify, render_template, request, session
 
+from config import Config
 from models import Answer, User, db
 
 app = Flask(__name__)
-app.secret_key = "your-secret-key-here"
-
-# Configure SQLAlchemy to use a SQLite database (you can change this later)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///argumentor.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config.from_object(Config)
 
 # Initialize the database with the app
 db.init_app(app)

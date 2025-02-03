@@ -10,7 +10,8 @@ readme = "README.md"
 keywords = ["reasoning", "decision-making"]
 dependencies = [
     "flask",
-    "flask-sqlalchemy"
+    "flask-sqlalchemy",
+    "python-dotenv"
 ]
 
 [project.optional-dependencies]
