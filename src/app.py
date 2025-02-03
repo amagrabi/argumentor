@@ -12,10 +12,10 @@ app.secret_key = "your-secret-key-here"
 LEVEL_DEFINITIONS = [
     (0, "Novice Thinker"),
     (50, "Curious Mind"),
-    (200, "Inquisitive Brain"),
-    (400, "Critical Debater"),
-    (800, "Rational Maestro"),
-    (1600, "ArguMentor Grandmaster"),
+    (150, "Inquisitive Brain"),
+    (300, "Critical Debater"),
+    (600, "Rational Maestro"),
+    (1000, "ArguMentor Grandmaster"),
 ]
 
 
@@ -144,15 +144,15 @@ def evaluate_answer(answer):
 
 @app.route("/")
 def home():
-    # Initialize the session for new visits.
     if "user_id" not in session:
         session["user_id"] = str(uuid.uuid4())
         session["points"] = 0
         session["xp"] = 0  # Initialize XP
         session["answers"] = []
         session["seen_question_ids"] = []
-    # Pass the current XP to the template.
-    return render_template("index.html", xp=session.get("xp", 0))
+    xp = session.get("xp", 0)
+    level_info = get_level_info(xp)
+    return render_template("index.html", xp=xp, level_info=level_info)
 
 
 @app.route("/get_question", methods=["GET"])
