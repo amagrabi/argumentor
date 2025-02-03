@@ -65,11 +65,11 @@ def evaluate_answer(answer):
     For now, it provides placeholder scoring and feedback.
     """
     scores = {
-        "Logical Structure": random.randint(6, 9),
-        "Clarity": random.randint(6, 9),
-        "Depth": random.randint(6, 9),
-        "Objectivity": random.randint(6, 9),
-        "Creativity": random.randint(6, 9),
+        "Logical Structure": random.randint(1, 10),
+        "Clarity": random.randint(1, 10),
+        "Depth": random.randint(1, 10),
+        "Objectivity": random.randint(1, 10),
+        "Creativity": random.randint(1, 10),
     }
     total_score = sum(scores.values()) / len(scores)
     feedback = {
