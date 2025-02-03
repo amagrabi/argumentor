@@ -273,49 +273,49 @@
         }
     }
 
-    window.addEventListener('load', () => {
-        fetch('/get_question')
-            .then(response => response.json())
-            .then(question => {
-            if (question.error) {
-                console.error('Error fetching question:', question.error);
-                return;
-            }
-            document.getElementById('questionDescription').textContent = question.description;
-            // Update the category badge as well, if needed.
-            const categoryText = question.category ? question.category : '';
-            document.getElementById('categoryBadge').textContent = categoryText;
-            })
-            .catch(err => console.error('Error fetching initial question:', err));
-        });
+    // Helper function for typewriter effect
+    function typeWriter(element, text, speed) {
+      if (element._typewriterTimer) {
+        clearInterval(element._typewriterTimer);
+      }
+      element.textContent = '';
+      let i = 0;
+      element._typewriterTimer = setInterval(() => {
+        element.textContent += text.charAt(i);
+        i++;
+        if (i >= text.length) {
+          clearInterval(element._typewriterTimer);
+          element._typewriterTimer = null;
+        }
+      }, speed);
+    }
 
     async function getNewQuestion() {
-        try {
-            const response = await fetch('/get_new_question');
-            const question = await response.json();
-            if (question.error) {
-            console.error('Error fetching new question:', question.error);
-            return;
-            }
-            
-            // Update the question description:
-            const questionElem = document.getElementById('questionDescription');
-            if (questionElem) {
-            questionElem.textContent = question.description;
-            }
-            
-            // Update the category badge:
-            const categoryBadge = document.getElementById('categoryBadge');
-            if (categoryBadge) {
-            categoryBadge.textContent = question.category || '';
-            }
-            
-            // Automatically scroll up to the new question
-            questionElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            
-        } catch (error) {
-            console.error('Error in getNewQuestion:', error);
+      try {
+        const response = await fetch('/get_new_question');
+        const question = await response.json();
+        if (question.error) {
+          console.error('Error fetching new question:', question.error);
+          return;
         }
+
+        // Animate the new question description
+        const questionElem = document.getElementById('questionDescription');
+        if (questionElem) {
+          typeWriter(questionElem, question.description, 15);
+        }
+
+        // Update the category badge
+        const categoryBadge = document.getElementById('categoryBadge');
+        if (categoryBadge) {
+          categoryBadge.textContent = question.category || '';
+        }
+
+        // Automatically scroll up to the new question
+        questionElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch (error) {
+        console.error('Error in getNewQuestion:', error);
+      }
     }
 
     // Replace existing event listener with delegated event handling
@@ -359,19 +359,6 @@
         }
         element.textContent = Math.floor(current) + '/10';
       }, 30);
-    }
-
-    // Helper function for typewriter effect
-    function typeWriter(element, text, speed) {
-      element.textContent = ''; // clear existing text
-      let i = 0;
-      const timer = setInterval(() => {
-        element.textContent += text.charAt(i);
-        i++;
-        if (i >= text.length) {
-          clearInterval(timer);
-        }
-      }, speed);
     }
 
     // Submit answer and display evaluation with scores and feedback
@@ -490,7 +477,7 @@
         evaluationResults.classList.remove('hidden');
         evaluationResults.classList.add('fade-in');
         evaluationResults.scrollIntoView({ behavior: 'smooth' });
-
+        
         document.getElementById('userLevel').textContent = data.current_level;
         document.getElementById('miniXpBar').firstElementChild.style.width = 
           data.level_info.progress_percent + '%';
@@ -612,12 +599,12 @@
                       ? categoryIcons[selected.category] + " " + selected.category
                       : selected.category;
                     document.getElementById('categoryBadge').textContent = categoryText;
-                    document.getElementById('questionDescription').textContent = selected.description;
+                    // Animate the new question description
+                    typeWriter(document.getElementById('questionDescription'), selected.description, 15);
                     document.getElementById('answerInput').value = '';
                     document.getElementById('charCount').textContent = '200';
                     document.getElementById('evaluationResults').classList.add('hidden');
                     document.getElementById('errorMessage').textContent = '';
-                    // Close the modal.
                     document.getElementById('questionSelectionOverlay').classList.add('hidden');
                   })
                   .catch(error => console.error('Error selecting question:', error));
