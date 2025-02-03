@@ -7,5 +7,14 @@
         },
         "editor.defaultFormatter": "charliermarsh.ruff",
     },
-    "python.terminal.activateEnvironment": true
+    "python.terminal.activateEnvironment": true,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit",
+        "source.fixAll": "explicit"
+    },
+    "eslint.validate": [
+        "javascript"
+    ],
+    "files.trimTrailingWhitespace": true
 }
