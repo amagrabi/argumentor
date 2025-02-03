@@ -28,6 +28,14 @@
       from { opacity: 0; }
       to { opacity: 1; }
     }
+    .profile-icon {
+      filter: grayscale(100%);
+    }
+    #answerInput:focus {
+      border-color: #4B5563; /* Dark gray */
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(75, 85, 99, 0.5);
+    }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -37,14 +45,16 @@
       <div class="flex items-center space-x-3">
         <!-- Brain-inspired logo -->
         <!-- <img width="35" height="35" src="https://img.icons8.com/ios/50/brain--v1.png" alt="brain--v1"/> -->
-        <!-- <img width="40" height="40" src="https://img.icons8.com/external-justicon-lineal-justicon/64/external-brain-human-organs-justicon-lineal-justicon.png" alt="external-brain-human-organs-justicon-lineal-justicon"/> -->
+        <!-- <img width="40" height="40" src="https://img.icons8.com/external-justicon-lineal-justicon/64/external-brain-human-organs-justicon-lineal-justicon"/> -->
         <img width="40" height="40" src="https://img.icons8.com/external-outline-berkahicon/64/external-Brain-health-app-outline-berkahicon.png" alt="external-Brain-health-app-outline-berkahicon"/>
         <h1 class="text-2xl font-bold">ArguMentor</h1>
       </div>
       <div class="flex items-center space-x-2 text-sm">
-        <div class="bg-gray-100 rounded-full px-3 py-1 flex items-center">
-          <span>Score: <strong id="totalPoints">0</strong></span>
-        </div>
+        <a href="/profile" class="flex items-center">
+          <!-- Use the XP passed to the template -->
+          <span id="totalPoints"><strong>{{ xp }}</strong></span>
+          <img class="profile-icon" width="32" height="32" src="https://img.icons8.com/fluency-systems-filled/48/user.png" alt="Profile Icon"/>
+        </a>
         <button id="settingsButton" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -74,7 +84,9 @@
         </div>
         <div id="categoriesError" class="text-red-500 mt-2 text-xs hidden">At least one category must be selected.</div>
         <div class="mt-4 text-right">
-          <button id="closeCategories" class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">Done</button>
+          <button id="closeCategories" class="bg-gray-800 text-white px-3 py-1 rounded-full text-sm hover:bg-gray-700 transition-colors">
+            Done
+          </button>
         </div>
       </div>
     </div>
@@ -117,14 +129,14 @@
           <label class="block text-lg font-bold mb-2">Your Answer</label>
           <textarea 
             id="answerInput"
-            class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-0 h-32"
+            class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 focus:ring focus:ring-gray-500 h-32"
             placeholder="Type your answer here..."
             maxlength="200"
           ></textarea>
           <div class="mt-2">
             <div class="flex justify-between text-sm text-gray-500">
               <span>Characters remaining: <span id="charCount">200</span></span>
-              <button id="submitAnswer" class="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors">
+              <button id="submitAnswer" class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors">
                 Submit Answer
               </button>
             </div>
@@ -136,17 +148,34 @@
     
     <!-- Evaluation Results -->
     <div id="evaluationResults" class="hidden bg-white rounded-3xl shadow-sm p-8">
-      <h2 class="text-2xl font-bold mb-6">Evaluation</h2>
-      <div id="scores" class="grid gap-4 mb-8">
-        <!-- Scores and feedback for each category will be populated here -->
-      </div>
-      <div class="mt-6 text-center">
-        <button id="nextQuestion" class="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors">
-          Next Question
-        </button>
-      </div>
+    <h2 class="text-2xl font-bold mb-6">Evaluation</h2>
+    <div id="scores" class="grid gap-4 mb-8">
+        <!-- Dynamically populated scores and feedback -->
     </div>
-  </div>
+    <!-- XP and Level Info Section -->
+    <div id="xpInfo" class="mt-4 text-center">
+        <p id="levelUpMessage" class="text-green-600 font-bold"></p>
+        <p>Experience Points Gained: <span id="xpGained"><strong>0</strong></span></p>
+        <p>Current Level: <span id="currentLevel"><strong>Level 1 (Novice Thinker)</strong></span></p>
+        <div id="xpBarContainer" class="w-full bg-gray-200 relative rounded-full h-4 mx-auto max-w-md mt-2">
+        <!-- Old XP portion (base progress) in neutral gray -->
+        <div id="xpOldBar" class="absolute left-0 h-full bg-gray-500 rounded-l-full" style="width: 0%;"></div>
+        <!-- New XP portion overlay in green -->
+        <div id="xpNewBar" class="absolute h-full bg-green-500 rounded-r-full" style="width: 0%; left: 0%;"></div>
+        </div>
+        <p class="text-sm mt-1">
+        Progress: <span id="xpProgressText">0 / 0</span> XP
+        </p>
+        <p class="text-sm mt-1">
+        Next Level: <span id="nextLevel">Level 2 (Inquisitive Mind)</span>
+        </p>
+    </div>
+    <div class="mt-6 text-center">
+        <button id="nextQuestion" class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors">
+        Next Question
+        </button>
+    </div>
+    </div>
   
   <div id="questionSelectionOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
     <div class="bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-11/12 max-w-2xl">
@@ -242,29 +271,53 @@
         }
     }
 
-    function getNewQuestion() {
-      // Use URLSearchParams for proper encoding of query parameters
-      let params = new URLSearchParams();
-      if (selectedCategories.length) {
-        params.set("categories", selectedCategories.join(","));
-      }
-      fetch("/get_question?" + params.toString())
-        .then(response => response.json())
-        .then(question => {
-          currentQuestion = question; // Save the current question globally
-          const categoryText = categoryIcons[question.category] ? categoryIcons[question.category] + " " + question.category : question.category;
-          document.getElementById('categoryBadge').textContent = categoryText;
-          document.getElementById('questionDescription').textContent = question.description;
-          // Reset UI elements if needed...
-          document.getElementById('answerInput').value = '';
-          document.getElementById('charCount').textContent = '200';
-          document.getElementById('evaluationResults').classList.add('hidden');
-          document.getElementById('errorMessage').textContent = '';
-        })
-        .catch(error => {
-          console.error('Error fetching question:', error);
+    window.addEventListener('load', () => {
+        fetch('/get_question')
+            .then(response => response.json())
+            .then(question => {
+            if (question.error) {
+                console.error('Error fetching question:', question.error);
+                return;
+            }
+            document.getElementById('questionDescription').textContent = question.description;
+            // Update the category badge as well, if needed.
+            const categoryText = question.category ? question.category : '';
+            document.getElementById('categoryBadge').textContent = categoryText;
+            })
+            .catch(err => console.error('Error fetching initial question:', err));
         });
+
+    async function getNewQuestion() {
+        try {
+            const response = await fetch('/get_new_question');
+            const question = await response.json();
+            if (question.error) {
+            console.error('Error fetching new question:', question.error);
+            return;
+            }
+            
+            // Update the question description:
+            const questionElem = document.getElementById('questionDescription');
+            if (questionElem) {
+            questionElem.textContent = question.description;
+            }
+            
+            // Update the category badge:
+            const categoryBadge = document.getElementById('categoryBadge');
+            if (categoryBadge) {
+            categoryBadge.textContent = question.category || '';
+            }
+            
+            // Automatically scroll up to the new question
+            questionElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+        } catch (error) {
+            console.error('Error in getNewQuestion:', error);
+        }
     }
+
+    // Make sure the Next Question button triggers the above function:
+    document.getElementById('nextQuestion').addEventListener('click', getNewQuestion);
 
     // Character counter and clear error messages on input
     const answerInput = document.getElementById('answerInput');
@@ -327,7 +380,7 @@
         });
         
         const data = await response.json();
-        
+
         const scoresDiv = document.getElementById('scores');
         scoresDiv.innerHTML = '';
         Object.entries(data.evaluation.scores).forEach(([category, score]) => {
@@ -352,28 +405,25 @@
           `;
         });
         
-        // A short delay so the DOM has updated, then animate with staggered delays.
         setTimeout(() => {
           document.querySelectorAll('.progress-fill').forEach((fill, index) => {
             const delay = index * 100;
             setTimeout(() => {
               const targetWidth = fill.getAttribute('data-score');
-              const targetColor = fill.getAttribute('data-color'); // Get color from data attribute
+              const targetColor = fill.getAttribute('data-color');
               fill.style.backgroundColor = '#e53e3e';
               fill.style.width = '10%';
-              void fill.offsetWidth; // Force repaint
+              void fill.offsetWidth;
               fill.style.width = targetWidth + '%';
               fill.style.backgroundColor = targetColor;
             }, delay);
           });
-          // Animate the numeric rating from 1 up to its final value with staggered delay.
           document.querySelectorAll('.score-value').forEach((span, index) => {
-              const delay = index * 100;
-              setTimeout(() => {
-                  animateNumber(span, 1, parseInt(span.getAttribute('data-final')), 30);
-              }, delay);
+            const delay = index * 100;
+            setTimeout(() => {
+              animateNumber(span, 1, parseInt(span.getAttribute('data-final')), 30);
+            }, delay);
           });
-          // Animate the feedback explanations with a typewriter effect with staggered delay.
           document.querySelectorAll('.feedback').forEach((paragraph, index) => {
             const delay = index * 100;
             setTimeout(() => {
@@ -382,18 +432,49 @@
           });
         }, 100);
         
-        document.getElementById('totalPoints').textContent = data.total_points;
+        // Update score and XP/progress info in the evaluation section.
+        document.getElementById('totalPoints').innerHTML = '<strong>' + data.total_points + '</strong>';
+        document.getElementById('xpGained').innerHTML = '<strong>' + data.xp_gained + '</strong>';
+        document.getElementById('currentLevel').innerHTML = '<strong>' + data.current_level + '</strong>';
+        document.getElementById('xpProgressText').textContent = data.level_info.xp_into_level + ' / ' + data.level_info.xp_needed;
+        document.getElementById('nextLevel').textContent = data.level_info.next_level;
+        
+        const xpOldBar = document.getElementById('xpOldBar');
+        const xpNewBar = document.getElementById('xpNewBar');
+
+        // If a level up occurred, show only the new level's progress
+        if (data.leveled_up) {
+          xpOldBar.style.display = 'none';
+          xpNewBar.style.left = '0%';
+          xpNewBar.style.width = data.level_info.progress_percent + '%';
+        } else {
+          xpOldBar.style.display = 'block';
+          // Compute the old progress percentage.
+          const oldXpValue = data.current_xp - data.xp_gained;
+          const oldPercent = ((oldXpValue - data.level_info.current_threshold) / data.level_info.xp_needed) * 100;
+          xpOldBar.style.width = oldPercent + '%';
+          // The new portion is the difference between the new progress and the old percentage.
+          xpNewBar.style.left = oldPercent + '%';
+          const newPortion = data.level_info.progress_percent - oldPercent;
+          xpNewBar.style.width = newPortion + '%';
+        }
+
+        if (data.leveled_up) {
+          document.getElementById('levelUpMessage').textContent = "Level Up!";
+        } else {
+          document.getElementById('levelUpMessage').textContent = "";
+        }
+        
         var evaluationResults = document.getElementById('evaluationResults');
         evaluationResults.classList.remove('hidden');
         evaluationResults.classList.add('fade-in');
+        evaluationResults.scrollIntoView({ behavior: 'smooth' });
       } catch (error) {
         console.error('Error submitting answer:', error);
       }
     });
 
-    // Next question button
     document.getElementById('nextQuestion').addEventListener('click', getNewQuestion);
-    // Reroll button to fetch new question
     document.getElementById('rerollButton').addEventListener('click', getNewQuestion);
 
     // Categories Modal behavior

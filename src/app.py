@@ -9,6 +9,15 @@ from flask import Flask, jsonify, render_template, request, session
 app = Flask(__name__)
 app.secret_key = "your-secret-key-here"
 
+LEVEL_DEFINITIONS = [
+    (0, "Novice Thinker"),
+    (50, "Curious Mind"),
+    (200, "Inquisitive Brain"),
+    (400, "Critical Debater"),
+    (800, "Rational Maestro"),
+    (1600, "ArguMentor Grandmaster"),
+]
+
 
 def load_questions():
     base_dir = os.path.dirname(__file__)
@@ -59,6 +68,57 @@ def get_random_question(categories=None):
     return chosen_question
 
 
+def get_level(xp):
+    current_level = LEVEL_DEFINITIONS[0][1]
+    for threshold, name in LEVEL_DEFINITIONS:
+        if xp >= threshold:
+            current_level = name
+        else:
+            break
+    return current_level
+
+
+def get_level_info(xp):
+    level_definitions = LEVEL_DEFINITIONS
+    current_level = level_definitions[0]
+    level_number = 1
+    for i, (threshold, label) in enumerate(level_definitions):
+        if xp >= threshold:
+            current_level = (threshold, label)
+            level_number = i + 1
+        else:
+            break
+    current_threshold = current_level[0]
+    next_threshold = (
+        level_definitions[level_number][0]
+        if level_number < len(level_definitions)
+        else None
+    )
+    xp_into_level = xp - current_threshold
+    xp_needed = next_threshold - current_threshold if next_threshold is not None else 0
+    progress_percent = (
+        (xp_into_level / xp_needed) * 100 if next_threshold and xp_needed > 0 else 100
+    )
+    display_name = f"Level {level_number} ({current_level[1]})"
+    if level_number < len(level_definitions):
+        next_level_display = (
+            f"Level {level_number + 1} ({level_definitions[level_number][1]})"
+        )
+    else:
+        next_level_display = "Max Level"
+    return {
+        "level_number": level_number,
+        "level_label": current_level[1],
+        "display_name": display_name,
+        "current_threshold": current_threshold,
+        "next_threshold": next_threshold,
+        "xp_into_level": xp_into_level,
+        "xp_needed": xp_needed,
+        "progress_percent": progress_percent,
+        "next_level": next_level_display,
+    }
+
+
 def evaluate_answer(answer):
     """
     Evaluate user's answer. In production, this would call an actual LLM API.
@@ -84,13 +144,15 @@ def evaluate_answer(answer):
 
 @app.route("/")
 def home():
-    # Initialize the session if it's a new visit.
+    # Initialize the session for new visits.
     if "user_id" not in session:
         session["user_id"] = str(uuid.uuid4())
         session["points"] = 0
+        session["xp"] = 0  # Initialize XP
         session["answers"] = []
         session["seen_question_ids"] = []
-    return render_template("index.html")
+    # Pass the current XP to the template.
+    return render_template("index.html", xp=session.get("xp", 0))
 
 
 @app.route("/get_question", methods=["GET"])
@@ -128,23 +190,41 @@ def submit_answer():
         return jsonify({"error": "Answer exceeds maximum length"}), 400
 
     evaluation = evaluate_answer(answer)
-    points_earned = int(evaluation["total_score"] * 10)
-    session["points"] = session.get("points", 0) + points_earned
+    # Use the sum of the individual rating scores for XP
+    xp_gained = sum(evaluation["scores"].values())
+
+    old_xp = session.get("xp", 0)
+    new_xp = old_xp + xp_gained
+    session["xp"] = new_xp
+
+    old_level = get_level(old_xp)
+    new_level = get_level(new_xp)
+    leveled_up = old_level != new_level
+
+    # Since XP and points are the same in your setup:
+    session["points"] = new_xp
 
     session["answers"].append(
         {
             "timestamp": datetime.now().isoformat(),
             "answer": answer,
             "evaluation": evaluation,
-            "points_earned": points_earned,
+            "points_earned": xp_gained,
         }
     )
+
+    level_info = get_level_info(new_xp)
 
     return jsonify(
         {
             "evaluation": evaluation,
-            "points_earned": points_earned,
+            "points_earned": xp_gained,
             "total_points": session["points"],
+            "xp_gained": xp_gained,
+            "current_xp": new_xp,
+            "current_level": level_info["display_name"],
+            "leveled_up": leveled_up,
+            "level_info": level_info,
         }
     )
 
@@ -181,6 +261,28 @@ def select_question():
 
     session.setdefault("seen_question_ids", []).append(selected_question["id"])
     return jsonify(selected_question)
+
+
+@app.route("/profile")
+def profile():
+    xp = session.get("xp", 0)
+    level_info = get_level_info(xp)
+    return render_template(
+        "profile.html",
+        points=session.get("points", 0),
+        xp=xp,
+        level_info=level_info,
+    )
+
+
+@app.route("/get_new_question", methods=["GET"])
+def get_new_question():
+    categories_param = request.args.get("categories", "")
+    categories = categories_param.split(",") if categories_param else None
+    question = get_random_question(categories)
+    if question is None:
+        return jsonify({"error": "No questions available"}), 404
+    return jsonify(question)
 
 
 if __name__ == "__main__":
