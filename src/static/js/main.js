@@ -262,13 +262,20 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
         setTimeout(() => {
           const targetWidth = fill.getAttribute("data-score");
           const targetColor = fill.getAttribute("data-color");
+          // Reset animation state
           fill.style.backgroundColor = "#e53e3e";
           fill.style.width = "10%";
-          void fill.offsetWidth;
+          void fill.offsetWidth; // Trigger reflow
           fill.style.width = targetWidth + "%";
           fill.style.backgroundColor = targetColor;
         }, delay);
       });
+
+      // Add this cleanup to remove previous timers
+      document.querySelectorAll(".score-value").forEach((span) => {
+        if (span._animationTimer) clearInterval(span._animationTimer);
+      });
+
       document.querySelectorAll(".score-value").forEach((span, index) => {
         const delay = index * 100;
         setTimeout(() => {
@@ -321,6 +328,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
     const evaluationResults = document.getElementById("evaluationResults");
     evaluationResults.classList.remove("hidden");
+    evaluationResults.style.display = "block";
     evaluationResults.classList.add("fade-in");
     evaluationResults.scrollIntoView({ behavior: "smooth" });
 
