@@ -285,5 +285,12 @@ def get_new_question():
     return jsonify(question)
 
 
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    return response
+
+
 if __name__ == "__main__":
     app.run(debug=True)

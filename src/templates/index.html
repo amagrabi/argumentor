@@ -183,7 +183,7 @@
     <div class="bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-11/12 max-w-2xl">
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-bold">Select a Question</h3>
-        <button id="closeQuestionSelection" class="bg-red-500 text-white px-3 py-1 rounded-full text-sm">X</button>
+        <button id="closeQuestionSelection" class="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">✕</button>
       </div>
       <div id="questionList" class="max-h-96 overflow-y-auto">
         <!-- List of questions will be dynamically populated here -->
@@ -318,8 +318,17 @@
         }
     }
 
-    // Make sure the Next Question button triggers the above function:
-    document.getElementById('nextQuestion').addEventListener('click', getNewQuestion);
+    // Replace existing event listener with delegated event handling
+    document.body.addEventListener('click', (e) => {
+      if (e.target && e.target.id === 'nextQuestion') {
+        document.getElementById('answerInput').value = '';
+        document.getElementById('charCount').textContent = '200';
+        const evaluationResults = document.getElementById('evaluationResults');
+        evaluationResults.classList.add('hidden');
+        evaluationResults.style.display = 'none';
+        getNewQuestion();
+      }
+    });
 
     // Character counter and clear error messages on input
     const answerInput = document.getElementById('answerInput');
@@ -381,7 +390,18 @@
           body: JSON.stringify({ answer })
         });
         
+        if (!response.ok) {
+            const errorData = await response.json();
+            document.getElementById('errorMessage').textContent = errorData.error || 'Submission failed';
+            return;
+        }
+        
         const data = await response.json();
+
+        if (!data || !data.evaluation) {
+            document.getElementById('errorMessage').textContent = 'Invalid response from server';
+            return;
+        }
 
         const scoresDiv = document.getElementById('scores');
         scoresDiv.innerHTML = '';
@@ -435,7 +455,6 @@
         }, 100);
         
         // Update score and XP/progress info in the evaluation section.
-        document.getElementById('totalPoints').innerHTML = '<strong>' + data.total_points + '</strong>';
         document.getElementById('xpGained').innerHTML = '<strong>' + data.xp_gained + '</strong>';
         document.getElementById('currentLevel').innerHTML = '<strong>' + data.current_level + '</strong>';
         document.getElementById('xpProgressText').textContent = data.level_info.xp_into_level + ' / ' + data.level_info.xp_needed;
@@ -471,12 +490,16 @@
         evaluationResults.classList.remove('hidden');
         evaluationResults.classList.add('fade-in');
         evaluationResults.scrollIntoView({ behavior: 'smooth' });
+
+        document.getElementById('userLevel').textContent = data.current_level;
+        document.getElementById('miniXpBar').firstElementChild.style.width = 
+          data.level_info.progress_percent + '%';
       } catch (error) {
         console.error('Error submitting answer:', error);
+        document.getElementById('errorMessage').textContent = 'Submission failed - server error';
       }
     });
 
-    document.getElementById('nextQuestion').addEventListener('click', getNewQuestion);
     document.getElementById('rerollButton').addEventListener('click', getNewQuestion);
 
     // Categories Modal behavior
@@ -610,6 +633,13 @@
 
     document.getElementById('closeQuestionSelection').addEventListener('click', () => {
       document.getElementById('questionSelectionOverlay').classList.add('hidden');
+    });
+
+    // Add click outside handler for question selection
+    document.getElementById('questionSelectionOverlay').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('questionSelectionOverlay')) {
+        document.getElementById('questionSelectionOverlay').classList.add('hidden');
+      }
     });
   </script>
 </body>
