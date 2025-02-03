@@ -16,5 +16,6 @@
     "eslint.validate": [
         "javascript"
     ],
-    "files.trimTrailingWhitespace": true
+    "files.trimTrailingWhitespace": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

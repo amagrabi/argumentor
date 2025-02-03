@@ -1,170 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ArguMentor - Sharpen Your Reasoning</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-  <!-- Link to custom CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body class="bg-gray-50 min-h-screen">
-  <div class="max-w-5xl mx-auto px-4 py-6">
-    <!-- Header -->
-    <header class="flex justify-between items-center mb-4">
-      <div class="flex items-center space-x-3">
-        <img width="40" height="40" src="https://img.icons8.com/external-outline-berkahicon/64/external-Brain-health-app-outline-berkahicon.png" alt="Brain Health Icon">
-        <h1 class="text-2xl font-bold">ArguMentor</h1>
-      </div>
-      <div class="flex items-center space-x-2 text-sm">
-        <div class="flex flex-col items-end mr-2">
-          <span id="userLevel" class="text-xs text-gray-500">{{ level_info.display_name }}</span>
-          <div id="miniXpBar" class="w-20 h-1 bg-gray-200 rounded-full mt-1">
-            <div class="h-full bg-green-500 rounded-full" style="width: {{ level_info.progress_percent }}%;"></div>
-          </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ArguMentor - Sharpen Your Reasoning</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <!-- Link to custom CSS -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-6">
+      <!-- Header -->
+      <header class="flex justify-between items-center mb-4">
+        <div class="flex items-center space-x-3">
+          <img
+            width="40"
+            height="40"
+            src="https://img.icons8.com/external-outline-berkahicon/64/external-Brain-health-app-outline-berkahicon.png"
+            alt="Brain Health Icon"
+          />
+          <h1 class="text-2xl font-bold">ArguMentor</h1>
         </div>
-        <button id="profileButton" onclick="window.location.href='/profile'" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center">
-          <img width="22" height="22" src="https://img.icons8.com/windows/32/gender-neutral-user.png" alt="gender-neutral-user"/>
-        </button>
-        <button id="settingsButton" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center">
-          <!-- Settings SVG -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-        </button>
-      </div>
-    </header>
-
-    <!-- Category Selection Modal Overlay -->
-    <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-      <div id="settingsPanel" class="bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-11/12 max-w-md">
-        <h3 class="text-lg font-bold mb-2">Settings</h3>
-        <hr class="border-t border-gray-200 my-2" />
-        <div class="mb-4">
-          <h4 class="font-bold text-md mb-3">Filter Categories</h4>
-          <div class="flex gap-2 flex-wrap">
-            <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Philosophy">Philosophy</div>
-            <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Ethics">Ethics</div>
-            <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Business & Risk">Business & Risk</div>
-            <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Thought Experiments">Thought Experiments</div>
-            <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Politics">Politics</div>
-            <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Biases & Fallacies">Biases & Fallacies</div>
-            <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="Fun & Casual">Fun & Casual</div>
-            <div class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap" data-value="AI & Future">AI & Future</div>
-          </div>
-        </div>
-        <div id="categoriesError" class="text-red-500 mt-2 text-xs hidden">At least one category must be selected.</div>
-        <div class="mt-4 text-right">
-          <button id="closeCategories" class="bg-gray-800 text-white px-3 py-1 rounded-full text-sm hover:bg-gray-700 transition-colors">
-            Done
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Slogan -->
-    <p class="text-gray-600 text-center mb-8">
-      Sharpen your reasoning skills. Tackle new questions, craft arguments, and improve with AI-powered feedback.
-    </p>
-
-    <!-- Main Content -->
-    <main class="bg-white rounded-3xl shadow-sm p-8 mb-8">
-      <!-- Question Section -->
-      <!-- Category badge above the question -->
-      <div class="mb-2">
-        <span id="categoryBadge" class="bg-gray-800 text-white px-4 py-2 rounded-full text-sm"></span>
-      </div>
-      <div class="flex items-start">
-        <h2 id="questionDescription" class="text-3xl font-bold flex-1"></h2>
-        <div class="flex flex-col ml-6 items-end">
-          <!-- Reroll Button -->
-          <button id="rerollButton" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span>Reroll</span>
-          </button>
-          <!-- Select Question Button placed below the Reroll button -->
-          <button id="selectQuestionButton" class="mt-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span>Select Question</span>
-          </button>
-        </div>
-      </div>
-      
-      <!-- Answer Section -->
-      <div class="space-y-6">
-        <div class="mt-8">
-          <label class="block text-lg font-bold mb-2">Your Answer</label>
-          <textarea 
-            id="answerInput"
-            class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 focus:ring focus:ring-gray-500 h-32"
-            placeholder="Type your answer here..."
-            maxlength="200"
-          ></textarea>
-          <div class="mt-2">
-            <div class="flex justify-between text-sm text-gray-500">
-              <span>Characters remaining: <span id="charCount">200</span></span>
-              <button id="submitAnswer" class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors">
-                Submit Answer
-              </button>
+        <div class="flex items-center space-x-2 text-sm">
+          <div class="flex flex-col items-end mr-2">
+            <span id="userLevel" class="text-xs text-gray-500"
+              >{{ level_info.display_name }}</span
+            >
+            <div id="miniXpBar" class="w-20 h-1 bg-gray-200 rounded-full mt-1">
+              <div
+                class="h-full bg-green-500 rounded-full"
+                style="width: {{ level_info.progress_percent }}%;"
+              ></div>
             </div>
-            <div id="errorMessage" class="text-sm text-red-500 mt-1"></div>
+          </div>
+          <button
+            id="profileButton"
+            onclick="window.location.href='/profile'"
+            class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center"
+          >
+            <img
+              width="22"
+              height="22"
+              src="https://img.icons8.com/windows/32/gender-neutral-user.png"
+              alt="gender-neutral-user"
+            />
+          </button>
+          <button
+            id="settingsButton"
+            class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center"
+          >
+            <!-- Settings SVG -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Category Selection Modal Overlay -->
+      <div
+        id="modalOverlay"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden"
+      >
+        <div
+          id="settingsPanel"
+          class="bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-11/12 max-w-md"
+        >
+          <h3 class="text-lg font-bold mb-2">Settings</h3>
+          <hr class="border-t border-gray-200 my-2" />
+          <div class="mb-4">
+            <h4 class="font-bold text-md mb-3">Filter Categories</h4>
+            <div class="flex gap-2 flex-wrap">
+              <div
+                class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap"
+                data-value="Philosophy"
+              >
+                Philosophy
+              </div>
+              <div
+                class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap"
+                data-value="Ethics"
+              >
+                Ethics
+              </div>
+              <div
+                class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap"
+                data-value="Business & Risk"
+              >
+                Business & Risk
+              </div>
+              <div
+                class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap"
+                data-value="Thought Experiments"
+              >
+                Thought Experiments
+              </div>
+              <div
+                class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap"
+                data-value="Politics"
+              >
+                Politics
+              </div>
+              <div
+                class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap"
+                data-value="Biases & Fallacies"
+              >
+                Biases & Fallacies
+              </div>
+              <div
+                class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap"
+                data-value="Fun & Casual"
+              >
+                Fun & Casual
+              </div>
+              <div
+                class="category-item selected cursor-pointer rounded-full border border-gray-200 px-2 py-1 text-center text-xs inline-flex items-center justify-center whitespace-nowrap"
+                data-value="AI & Future"
+              >
+                AI & Future
+              </div>
+            </div>
+          </div>
+          <div id="categoriesError" class="text-red-500 mt-2 text-xs hidden">
+            At least one category must be selected.
+          </div>
+          <div class="mt-4 text-right">
+            <button
+              id="closeCategories"
+              class="bg-gray-800 text-white px-3 py-1 rounded-full text-sm hover:bg-gray-700 transition-colors"
+            >
+              Done
+            </button>
           </div>
         </div>
       </div>
-    </main>
-    
-    <!-- Evaluation Results -->
-    <div id="evaluationResults" class="hidden bg-white rounded-3xl shadow-sm p-8">
-    <h2 class="text-2xl font-bold mb-6">Evaluation</h2>
-    <div id="scores" class="grid gap-4 mb-8">
-        <!-- Dynamically populated scores and feedback -->
-    </div>
-    <!-- XP and Level Info Section -->
-    <div id="xpInfo" class="mt-4 text-center">
-        <p id="levelUpMessage" class="text-green-600 font-bold"></p>
-        <p>Experience Points Gained: <span id="xpGained"><strong>0</strong></span></p>
-        <p>Current Level: <span id="currentLevel"><strong>Level 1 (Novice Thinker)</strong></span></p>
-        <div id="xpBarContainer" class="w-full bg-gray-200 relative rounded-full h-4 mx-auto max-w-md mt-2">
-        <!-- Old XP portion (base progress) in neutral gray -->
-        <div id="xpOldBar" class="absolute left-0 h-full bg-gray-500 rounded-l-full" style="width: 0%;"></div>
-        <!-- New XP portion overlay in green -->
-        <div id="xpNewBar" class="absolute h-full bg-green-500 rounded-r-full" style="width: 0%; left: 0%;"></div>
+
+      <!-- Slogan -->
+      <p class="text-gray-600 text-center mb-8">
+        Sharpen your reasoning skills. Tackle new questions, craft arguments,
+        and improve with AI-powered feedback.
+      </p>
+
+      <!-- Main Content -->
+      <main class="bg-white rounded-3xl shadow-sm p-8 mb-8">
+        <!-- Question Section -->
+        <!-- Category badge above the question -->
+        <div class="mb-2">
+          <span
+            id="categoryBadge"
+            class="bg-gray-800 text-white px-4 py-2 rounded-full text-sm"
+          ></span>
         </div>
-        <p class="text-sm mt-1">
-        Progress: <span id="xpProgressText">0 / 0</span> XP
-        </p>
-        <p class="text-sm mt-1">
-        Next Level: <span id="nextLevel">Level 2 (Inquisitive Mind)</span>
-        </p>
-    </div>
-    <div class="mt-6 text-center">
-        <button id="nextQuestion" class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors">
-        Next Question
-        </button>
-    </div>
-    </div>
-  
-  <div id="questionSelectionOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-11/12 max-w-2xl">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-bold">Select a Question</h3>
-        <button id="closeQuestionSelection" class="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">✕</button>
+        <div class="flex items-start">
+          <h2 id="questionDescription" class="text-3xl font-bold flex-1"></h2>
+          <div class="flex flex-col ml-6 items-end">
+            <!-- Reroll Button -->
+            <button
+              id="rerollButton"
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1"
+            >
+              <svg
+                class="w-4 h-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span>Reroll</span>
+            </button>
+            <!-- Select Question Button placed below the Reroll button -->
+            <button
+              id="selectQuestionButton"
+              class="mt-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1"
+            >
+              <svg
+                class="w-4 h-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span>Select Question</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Answer Section -->
+        <div class="space-y-6">
+          <div class="mt-8">
+            <label class="block text-lg font-bold mb-2">Your Answer</label>
+            <textarea
+              id="answerInput"
+              class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 focus:ring focus:ring-gray-500 h-32"
+              placeholder="Type your answer here..."
+              maxlength="200"
+            ></textarea>
+            <div class="mt-2">
+              <div class="flex justify-between text-sm text-gray-500">
+                <span
+                  >Characters remaining: <span id="charCount">200</span></span
+                >
+                <button
+                  id="submitAnswer"
+                  class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"
+                >
+                  Submit Answer
+                </button>
+              </div>
+              <div id="errorMessage" class="text-sm text-red-500 mt-1"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Evaluation Results -->
+      <div
+        id="evaluationResults"
+        class="hidden bg-white rounded-3xl shadow-sm p-8"
+      >
+        <h2 class="text-2xl font-bold mb-6">Evaluation</h2>
+        <div id="scores" class="grid gap-4 mb-8">
+          <!-- Dynamically populated scores and feedback -->
+        </div>
+        <!-- XP and Level Info Section -->
+        <div id="xpInfo" class="mt-4 text-center">
+          <p id="levelUpMessage" class="text-green-600 font-bold"></p>
+          <p>
+            Experience Points Gained:
+            <span id="xpGained"><strong>0</strong></span>
+          </p>
+          <p>
+            Current Level:
+            <span id="currentLevel"
+              ><strong>Level 1 (Novice Thinker)</strong></span
+            >
+          </p>
+          <div
+            id="xpBarContainer"
+            class="w-full bg-gray-200 relative rounded-full h-4 mx-auto max-w-md mt-2"
+          >
+            <!-- Old XP portion (base progress) in neutral gray -->
+            <div
+              id="xpOldBar"
+              class="absolute left-0 h-full bg-gray-500 rounded-l-full"
+              style="width: 0%"
+            ></div>
+            <!-- New XP portion overlay in green -->
+            <div
+              id="xpNewBar"
+              class="absolute h-full bg-green-500 rounded-r-full"
+              style="width: 0%; left: 0%"
+            ></div>
+          </div>
+          <p class="text-sm mt-1">
+            Progress: <span id="xpProgressText">0 / 0</span> XP
+          </p>
+          <p class="text-sm mt-1">
+            Next Level: <span id="nextLevel">Level 2 (Inquisitive Mind)</span>
+          </p>
+        </div>
+        <div class="mt-6 text-center">
+          <button
+            id="nextQuestion"
+            class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"
+          >
+            Next Question
+          </button>
+        </div>
       </div>
-      <div id="questionList" class="max-h-96 overflow-y-auto">
-        <!-- List of questions will be dynamically populated here -->
+
+      <div
+        id="questionSelectionOverlay"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden"
+      >
+        <div
+          class="bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-11/12 max-w-2xl"
+        >
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold">Select a Question</h3>
+            <button
+              id="closeQuestionSelection"
+              class="bg-gray-800 text-white px-3 py-1 rounded-full text-sm"
+            >
+              ✕
+            </button>
+          </div>
+          <div id="questionList" class="max-h-96 overflow-y-auto">
+            <!-- List of questions will be dynamically populated here -->
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  
-  </div>
-  
-  <!-- Include custom JavaScript -->
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-</body>
+
+    <!-- Include custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
 </html>

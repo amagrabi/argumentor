@@ -16,28 +16,33 @@ source .venv/bin/activate
 ```
 
 Install dependencies in editable mode:
+
 ```sh
 uv pip install -e .
 ```
 
-Start game:
+Start app:
+
 ```sh
-argumentor
+python -m src.app
 ```
 
 ## Development
 
 Install dev dependencies:
+
 ```sh
 uv pip install -e ".[dev]"
 ```
 
 Install pre-commit hooks for auto-formatting:
+
 ```sh
 pre-commit install
 ```
 
 Run tests:
+
 ```sh
 pytest tests/
 ```
