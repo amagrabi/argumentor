@@ -1,4 +1,9 @@
-/* Custom styles for ArguMentor */
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #4b5563;
+  box-shadow: 0 0 0 1px rgba(75, 85, 99, 0.5);
+}
 
 .category-item.selected {
   background-color: #2f363f;
@@ -33,13 +38,6 @@
 /* Profile icon styling */
 .profile-icon {
   filter: grayscale(100%);
-}
-
-/* Focus style for the answer input */
-#answerInput:focus {
-  border-color: #4b5563;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(75, 85, 99, 0.5);
 }
 
 /* Educational Cards */
