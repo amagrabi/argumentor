@@ -21,6 +21,11 @@ textarea:focus {
   color: #000000;
 }
 
+.total-progress-bar {
+  transition: width 0.5s ease-out, background-color 0.5s ease-out;
+  height: 100%;
+}
+
 /* Animate the progress bar fill */
 .progress-fill {
   transition: width 0.4s ease-out, background-color 0.4s ease-out;

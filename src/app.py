@@ -142,10 +142,11 @@ def get_level_info(xp):
     }
 
 
-def evaluate_answer(answer):
+def evaluate_answer(claim, argument, counterargument):
     """
-    Evaluate user's answer. In production, this would call an actual LLM API.
-    For now, it provides placeholder scoring and feedback.
+    Evaluate the user's answer based on its components: claim, argument, and counterargument.
+    This placeholder version returns random scores, individual feedback,
+    and an overall performance summary.
     """
     scores = {
         "Logical Structure": random.randint(1, 10),
@@ -162,7 +163,25 @@ def evaluate_answer(answer):
         "Objectivity": "Well-balanced perspective. Watch for potential emotional appeals.",
         "Creativity": "Interesting approach to the problem. Consider exploring even more unconventional angles.",
     }
-    return {"scores": scores, "total_score": total_score, "feedback": feedback}
+
+    # Generate an overall feedback message based on the total score.
+    if total_score >= 8:
+        overall_feedback = (
+            "Excellent work! Your argument is well-structured and communicated clearly."
+        )
+    elif total_score >= 6:
+        overall_feedback = (
+            "Good effort! There is room for improvement in clarity and depth."
+        )
+    else:
+        overall_feedback = "Your response shows potential but needs significant refinement in its reasoning."
+
+    return {
+        "scores": scores,
+        "total_score": total_score,
+        "feedback": feedback,
+        "overall_feedback": overall_feedback,
+    }
 
 
 @app.route("/")
@@ -240,9 +259,7 @@ def submit_answer():
     ):
         return jsonify({"error": "Character limit exceeded"}), 400
 
-    evaluation = evaluate_answer(
-        f"Claim: {claim}\nArgument: {argument}\nCounterarguments: {counterargument}"
-    )
+    evaluation = evaluate_answer(claim, argument, counterargument)
     xp_gained = sum(evaluation["scores"].values())
 
     old_xp = session.get("xp", 0)

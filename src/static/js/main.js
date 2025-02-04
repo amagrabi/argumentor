@@ -205,7 +205,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
   const payload = {
     claim,
     argument,
-    counterargument: counterargument || null, // Store empty as null
+    counterargument: counterargument || null,
   };
 
   if (currentQuestion && currentQuestion.id) {
@@ -236,6 +236,32 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       return;
     }
 
+    // First display overall evaluation with a prominent total score bar
+    const overallEvalDiv = document.getElementById("overallEvaluation");
+    const totalScore = data.evaluation.total_score;
+    const totalScorePercent = totalScore * 10; // converts out of 10 to percent (e.g. 7 -> 70%)
+    const totalScoreColor = scoreToColor(totalScore);
+
+    overallEvalDiv.innerHTML = `
+      <p id="totalScoreText" class="text-xl font-bold mb-2">
+        Total Score: ${totalScore.toFixed(1)}/10
+      </p>
+      <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+        <div id="totalScoreBar" class="rounded-full total-progress-bar" style="width: 10%; background-color: #e53e3e;"></div>
+      </div>
+      <p id="overallFeedback" class="text-md">
+        ${data.evaluation.overall_feedback}
+      </p>
+    `;
+
+    // Animate the total score bar (a short delay allows a smooth transition)
+    setTimeout(() => {
+      const totalScoreBar = document.getElementById("totalScoreBar");
+      totalScoreBar.style.width = totalScorePercent + "%";
+      totalScoreBar.style.backgroundColor = totalScoreColor;
+    }, 50);
+
+    // Now populate the detailed individual factor scores (the look and animation remain unchanged)
     const scoresDiv = document.getElementById("scores");
     scoresDiv.innerHTML = "";
     Object.entries(data.evaluation.scores).forEach(([category, score]) => {
@@ -266,7 +292,6 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
         setTimeout(() => {
           const targetWidth = fill.getAttribute("data-score");
           const targetColor = fill.getAttribute("data-color");
-          // Reset animation state
           fill.style.backgroundColor = "#e53e3e";
           fill.style.width = "10%";
           void fill.offsetWidth; // Trigger reflow
@@ -274,13 +299,6 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
           fill.style.backgroundColor = targetColor;
         }, delay);
       });
-
-      // Add this cleanup to remove previous timers
-      document.querySelectorAll(".score-value").forEach((span) => {
-        if (span._animationTimer) clearInterval(span._animationTimer);
-      });
-
-      // Update the score display logic in the evaluation results
       document
         .querySelectorAll(".score-value")
         .forEach((scoreElement, index) => {
@@ -288,11 +306,10 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
           const targetColor = scoreElement.dataset.color;
           const startColor = hexToRgb("#e53e3e");
           const endColor = hexToRgb(targetColor);
-
           let current = 1;
           const updateScore = () => {
             if (current <= finalScore) {
-              const factor = (current - 1) / 9; // Normalize to 0-1 based on 10-point scale
+              const factor = (current - 1) / 9;
               const interpolated = interpolateColor(
                 startColor,
                 endColor,
@@ -310,7 +327,6 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
           };
           requestAnimationFrame(updateScore);
         });
-
       document.querySelectorAll(".feedback").forEach((paragraph, index) => {
         const delay = index * 100;
         setTimeout(() => {
@@ -319,7 +335,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       });
     }, 100);
 
-    // Update score and XP/progress info
+    // Update XP and level info as before...
     document.getElementById("xpGained").innerHTML =
       "<strong>" + data.xp_gained + "</strong>";
     document.getElementById("currentLevel").innerHTML =
@@ -360,7 +376,6 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     evaluationResults.style.display = "block";
     evaluationResults.classList.add("fade-in");
     evaluationResults.scrollIntoView({ behavior: "smooth" });
-
     document.getElementById("userLevel").textContent = data.current_level;
     document.getElementById("miniXpBar").firstElementChild.style.width =
       data.level_info.progress_percent + "%";
