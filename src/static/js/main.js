@@ -406,7 +406,7 @@ function updateSelectedCategories() {
     currentQuestion &&
     !selectedCategories.includes(currentQuestion.category)
   ) {
-    getNewQuestion();
+    getNewQuestion(false);
   }
 }
 
