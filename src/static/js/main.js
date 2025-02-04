@@ -7,7 +7,7 @@ const categoryIcons = {
   Politics: "🏛️",
   "Biases & Fallacies": "🔍",
   "AI & Future": "🤖",
-  "Fun & Casual": "🍻",
+  "Fun & Casual": "🎉",
 };
 
 // Global variable that stores your selected category values.
@@ -108,7 +108,10 @@ function updateQuestionDisplay(question) {
   }
   const categoryBadge = document.getElementById("categoryBadge");
   if (categoryBadge) {
-    categoryBadge.textContent = question.category || "";
+    const categoryText = categoryIcons[question.category]
+      ? `${categoryIcons[question.category]} ${question.category}`
+      : question.category;
+    categoryBadge.textContent = categoryText;
   }
 }
 
@@ -138,11 +141,8 @@ async function getNewQuestion() {
     if (questionElem) {
       typeWriter(questionElem, question.description, 15);
     }
-    // Update the category badge
-    const categoryBadge = document.getElementById("categoryBadge");
-    if (categoryBadge) {
-      categoryBadge.textContent = question.category || "";
-    }
+    // Update the question display
+    updateQuestionDisplay(question);
     // Scroll into view
     if (questionElem) {
       questionElem.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -469,13 +469,7 @@ document
                   .then((response) => response.json())
                   .then((selected) => {
                     currentQuestion = selected;
-                    const categoryText = categoryIcons[selected.category]
-                      ? categoryIcons[selected.category] +
-                        " " +
-                        selected.category
-                      : selected.category;
-                    document.getElementById("categoryBadge").textContent =
-                      categoryText;
+                    updateQuestionDisplay(selected);
                     typeWriter(
                       document.getElementById("questionDescription"),
                       selected.description,

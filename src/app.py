@@ -184,7 +184,7 @@ def get_question():
     # If no questions have been shown yet in this session, return the fixed starting question.
     if not session.get("seen_question_ids"):
         fixed_question = {
-            "id": "Philosophy-0",
+            "id": "philosophy-0",
             "description": "Does free will exist if all decisions are ultimately influenced by biological/physical factors?",
             "category": "Philosophy",
         }
