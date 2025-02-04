@@ -118,9 +118,8 @@ function updateQuestionDisplay(question) {
 // Modified getNewQuestion function:
 // 1. It appends the selectedCategories as a query parameter to the request URL.
 // 2. After fetching a new question, it stores that question in sessionStorage.
-async function getNewQuestion() {
+async function getNewQuestion(shouldScroll = true) {
   try {
-    // Build query string by URL-encoding each selected category to handle special characters
     let query = "";
     if (selectedCategories.length > 0) {
       const encodedCategories = selectedCategories.map(encodeURIComponent);
@@ -133,7 +132,6 @@ async function getNewQuestion() {
       return;
     }
     currentQuestion = question;
-    // Save the current question to sessionStorage to persist it across navigations
     sessionStorage.setItem("currentQuestion", JSON.stringify(question));
 
     // Animate the new question description
@@ -141,10 +139,17 @@ async function getNewQuestion() {
     if (questionElem) {
       typeWriter(questionElem, question.description, 15);
     }
-    // Update the question display
-    updateQuestionDisplay(question);
-    // Scroll into view
-    if (questionElem) {
+
+    // Update only the category badge, and not the question text again
+    const categoryBadge = document.getElementById("categoryBadge");
+    if (categoryBadge) {
+      const categoryText = categoryIcons[question.category]
+        ? `${categoryIcons[question.category]} ${question.category}`
+        : question.category;
+      categoryBadge.textContent = categoryText;
+    }
+
+    if (questionElem && shouldScroll) {
       questionElem.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   } catch (error) {
@@ -351,7 +356,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
 document
   .getElementById("rerollButton")
-  .addEventListener("click", getNewQuestion);
+  .addEventListener("click", () => getNewQuestion(false));
 
 // Categories Modal behavior
 const settingsButton = document.getElementById("settingsButton");
