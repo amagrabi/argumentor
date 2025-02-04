@@ -9,32 +9,11 @@
       rel="stylesheet"
     />
   </head>
-  <body class="bg-gray-50 min-h-screen">
-    <div class="max-w-4xl mx-auto px-4 py-6">
-      <header class="flex justify-between items-center mb-4">
-        <h1 class="text-3xl font-bold">Your Profile</h1>
-        <a href="/" class="text-black-500 hover:underline">Go Back</a>
-      </header>
-      <div class="bg-white shadow rounded-xl p-6">
-        <h2 class="text-xl font-bold mb-4">Progress</h2>
-        <div class="space-y-2">
-          <p>Total Experience Points: <strong>{{ xp }}</strong></p>
-          <p>Current Level: <strong>{{ level_info.display_name }}</strong></p>
-          <div
-            class="w-full bg-gray-200 relative rounded-full h-4 mx-auto max-w-md mt-2"
-          >
-            <div
-              class="absolute h-full bg-green-500 rounded-r-full"
-              style="width: {{ level_info.progress_percent }}%;"
-            ></div>
-          </div>
-          <p class="text-sm mt-1">
-            Progress: {{ level_info.xp_into_level }} / {{ level_info.xp_needed
-            }} XP
-          </p>
-          <p class="text-sm mt-1">Next Level: {{ level_info.next_level }}</p>
-        </div>
-      </div>
+  <!-- Change bg-gray-50 to bg-white -->
+  <body class="bg-white min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-6">
+      <!-- Profile header and content -->
+      ...
     </div>
   </body>
 </html>
