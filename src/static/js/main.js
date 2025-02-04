@@ -499,6 +499,13 @@ document
               item.textContent = question.description;
               item.dataset.id = question.id;
               item.addEventListener("click", () => {
+                // Immediately hide the question selection overlay
+                const overlay = document.getElementById(
+                  "questionSelectionOverlay"
+                );
+                overlay.classList.add("hidden");
+
+                // Now fetch and update with the selected question
                 fetch("/select_question", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
@@ -513,14 +520,12 @@ document
                       selected.description,
                       15
                     );
+                    // Clear the input fields
                     document.getElementById("claimInput").value = "";
                     document.getElementById("argumentInput").value = "";
                     document.getElementById("counterargumentInput").value = "";
                     document.getElementById("charCount").textContent = "200";
                     document.getElementById("errorMessage").textContent = "";
-                    document
-                      .getElementById("questionSelectionOverlay")
-                      .classList.add("hidden");
                   })
                   .catch((error) =>
                     console.error("Error selecting question:", error)
