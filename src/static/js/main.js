@@ -170,18 +170,6 @@ async function getNewQuestion(shouldScroll = true) {
   }
 }
 
-// Delegated event listener for handling the Next Question click
-document.body.addEventListener("click", (e) => {
-  if (e.target && e.target.id === "nextQuestion") {
-    document.getElementById("answerInput").value = "";
-    document.getElementById("charCount").textContent = "200";
-    const evaluationResults = document.getElementById("evaluationResults");
-    evaluationResults.classList.add("hidden");
-    evaluationResults.style.display = "none";
-    getNewQuestion();
-  }
-});
-
 // Update character counters
 const setupCharCounter = (inputId, countId, maxLength) => {
   const input = document.getElementById(inputId);
@@ -379,7 +367,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
   } catch (error) {
     console.error("Error submitting answer:", error);
     document.getElementById("errorMessage").textContent =
-      "Submission failed - server error";
+      "Submission failed, server error. It's not you it's me, sorry. Send me feedback if the issues persists.";
   }
 });
 
@@ -560,30 +548,29 @@ document
 
 document.getElementById("nextQuestion").addEventListener("click", async () => {
   try {
-    // Clear evaluation results completely
+    // Completely clear the evaluation section
     const evaluationResults = document.getElementById("evaluationResults");
+    // Hide the entire evaluation container
     evaluationResults.classList.add("hidden");
-    document.getElementById("scores").innerHTML = "";
-    document.getElementById("xpGained").innerHTML = "<strong>0</strong>";
-    document.getElementById("currentLevel").innerHTML =
-      "<strong>Level 1 (Novice Thinker)</strong>";
-    document.getElementById("xpProgressText").textContent = "0 / 0";
+    evaluationResults.style.display = "none";
+    // Clear all inner content so nothing remains visible:
+    const scoresDiv = document.getElementById("scores");
+    scoresDiv.innerHTML = "";
 
-    // Get new question and scroll to it
+    // Now get a new question and scroll to it
     await getNewQuestion(true);
 
-    // Reset form fields
+    // Reset input fields
     document.getElementById("claimInput").value = "";
     document.getElementById("argumentInput").value = "";
     document.getElementById("counterargumentInput").value = "";
 
-    // Force scroll to question section
+    // Scroll to the question section
     document.getElementById("questionDescription").scrollIntoView({
       behavior: "smooth",
       block: "start",
       inline: "nearest",
     });
-
     window.scrollTo({
       top: 0,
       behavior: "smooth",
