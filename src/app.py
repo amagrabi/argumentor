@@ -176,7 +176,20 @@ def home():
         db.session.commit()
     xp = user.xp
     level_info = get_level_info(xp)
-    return render_template("index.html", xp=xp, level_info=level_info)
+
+    # Load and select the bias of the day from the YAML file
+    biases_path = os.path.join(app.root_path, "data", "cognitive_biases.yaml")
+    with open(biases_path, "r") as f:
+        biases_data = yaml.safe_load(f)
+    biases = biases_data.get("cognitive_biases", [])
+    if biases:
+        day_of_year = datetime.now().timetuple().tm_yday
+        bias_index = day_of_year % len(biases)
+        bias = biases[bias_index]
+    else:
+        bias = {"name": "N/A", "description": "", "example": ""}
+
+    return render_template("index.html", xp=xp, level_info=level_info, bias=bias)
 
 
 @app.route("/how_it_works")
@@ -342,6 +355,34 @@ def get_new_question():
     if question is None:
         return jsonify({"error": "No questions available"}), 404
     return jsonify(question)
+
+
+@app.route("/cognitive_bias_day")
+def cognitive_bias_day():
+    import os
+    from datetime import datetime
+
+    import yaml
+
+    # Load the cognitive biases from the YAML file
+    data_path = os.path.join(app.root_path, "data", "cognitive_biases.yaml")
+    with open(data_path, "r") as f:
+        biases_data = yaml.safe_load(f)
+    biases = biases_data.get("cognitive_biases", [])
+    if not biases:
+        return "No cognitive biases available.", 404
+    # Select a bias of the day deterministically based on the current day.
+    day_of_year = datetime.now().timetuple().tm_yday
+    index = day_of_year % len(biases)
+    bias_of_the_day = biases[index]
+    return render_template(
+        "cognitive_bias_day.html", bias=bias_of_the_day, biases=biases
+    )
+
+
+@app.route("/reasoning_guide")
+def reasoning_guide():
+    return render_template("reasoning_guide.html")
 
 
 @app.after_request
