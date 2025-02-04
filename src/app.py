@@ -382,7 +382,16 @@ def cognitive_bias_day():
 
 @app.route("/reasoning_guide")
 def reasoning_guide():
-    return render_template("reasoning_guide.html")
+    data_path = os.path.join(app.root_path, "data", "cognitive_biases.yaml")
+    with open(data_path, "r") as f:
+        biases_data = yaml.safe_load(f)
+    biases = biases_data.get("cognitive_biases", [])
+    return render_template("reasoning_guide.html", biases=biases)
+
+
+@app.route("/support")
+def support():
+    return render_template("support.html")
 
 
 @app.after_request

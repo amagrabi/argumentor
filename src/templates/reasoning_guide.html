@@ -96,6 +96,19 @@
         </p>
       </section>
 
+      <!-- Cognitive Biases List Section -->
+      <section class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Cognitive Biases Overview</h2>
+        <div class="grid gap-4 md:grid-cols-2">
+          {% for bias in biases %}
+          <div class="bg-white p-4 rounded-lg border border-gray-200">
+            <h3 class="font-bold text-lg mb-2">{{ bias.name }}</h3>
+            <p class="text-gray-600">{{ bias.description }}.</p>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
       <!-- Bottom Go Back Button -->
       <div class="text-center my-4">
         <a
@@ -105,12 +118,5 @@
         >
       </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 p-4">
-      <div class="max-w-5xl mx-auto text-center text-white">
-        &copy; 2023 ArguMentor. All rights reserved.
-      </div>
-    </footer>
   </body>
 </html>
