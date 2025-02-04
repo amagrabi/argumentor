@@ -1,0 +1,40 @@
+cognitive_biases:
+  - name: Confirmation Bias
+    description: Tendency to search for, interpret, favor, and recall information that confirms one's preexisting beliefs
+    example: "Only reading news sources that align with your political views"
+
+  - name: Anchoring Bias
+    description: Relying too heavily on the first piece of information encountered
+    example: "First price quoted sets expectations for all subsequent negotiations"
+
+  - name: Availability Heuristic
+    description: Overestimating the importance of information that is readily available
+    example: "Thinking plane crashes are common after seeing news reports about them"
+
+  - name: Dunning-Kruger Effect
+    description: People with low ability overestimate their skill level
+    example: "Novice chess players thinking they could beat experienced players"
+
+  - name: Sunk Cost Fallacy
+    description: Continuing a behavior due to previously invested resources
+    example: "Finishing a boring movie because you already paid for the ticket"
+
+  - name: Halo Effect
+    description: Letting one positive quality influence overall perception
+    example: "Assuming attractive people are more competent"
+
+  - name: Fundamental Attribution Error
+    description: Attributing others' behavior to character rather than situation
+    example: "Thinking someone's late because they're lazy rather than considering traffic"
+
+  - name: Bandwagon Effect
+    description: Adopting beliefs because many others hold them
+    example: "Believing a claim because it has many social media shares"
+
+  - name: Negativity Bias
+    description: Giving more weight to negative experiences
+    example: "Remembering criticisms more vividly than praises"
+
+  - name: Planning Fallacy
+    description: Underestimating time needed to complete tasks
+    example: "Assuming a project will take 2 weeks when it actually takes 2 months"

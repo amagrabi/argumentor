@@ -179,6 +179,14 @@ def home():
     return render_template("index.html", xp=xp, level_info=level_info)
 
 
+@app.route("/how_it_works")
+def how_it_works():
+    criteria_path = os.path.join(app.root_path, "data", "evaluation_criteria.yaml")
+    with open(criteria_path, "r") as f:
+        criteria = yaml.safe_load(f)
+    return render_template("how_it_works.html", criteria=criteria)
+
+
 @app.route("/get_question", methods=["GET"])
 def get_question():
     # If no questions have been shown yet in this session, return the fixed starting question.

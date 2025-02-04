@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How It Works - ArguMentor</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-white font-sans leading-normal tracking-normal text-gray-900">
+    <!-- Header -->
+    <header class="bg-gray-800 p-4">
+      <div class="max-w-5xl mx-auto">
+        <h1 class="text-white text-3xl font-bold">How It Works</h1>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto p-4">
+      <!-- Platform Overview Section -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Platform Overview</h2>
+        <p class="mb-4">
+          ArguMentor is designed to help you sharpen your reasoning and
+          decision-making skills. Here's what you can expect:
+        </p>
+        <ul class="list-disc list-inside mb-4">
+          <li>
+            <strong>Challenge Yourself:</strong> Tackle thought-provoking
+            questions across diverse fields.
+          </li>
+          <li>
+            <strong>Construct Your Argument:</strong> Formulate clear claims and
+            support them with coherent reasoning.
+          </li>
+          <li>
+            <strong>Receive Feedback:</strong> Obtain in-depth, AI-driven
+            evaluations based on key dimensions.
+          </li>
+          <li>
+            <strong>Earn XP and Level Up:</strong> Track your progress as you
+            earn XP and advance through levels.
+          </li>
+        </ul>
+        <p>
+          Every step is designed to provide insights into your reasoning style,
+          helping you evolve and master the art of argumentation.
+        </p>
+      </section>
+
+      <!-- Evaluation Criteria Table Section -->
+      <section id="evaluation_criteria_table" class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Evaluation Criteria Overview</h2>
+        <p class="mb-4 text-gray-700">
+          The table below summarizes our evaluation criteria. The columns
+          represent the key dimensions, and the rows list scores from 1 (lowest)
+          to 10 (highest). Each cell details what is expected at that score
+          level.
+        </p>
+        <div class="overflow-x-auto">
+          <table class="min-w-full border-collapse">
+            <thead>
+              <tr>
+                <th class="border px-4 py-2 bg-gray-200">Score</th>
+                {% for criterion in criteria.scoring_dimensions.keys() %}
+                <th class="border px-4 py-2 bg-gray-200">{{ criterion }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for score in range(1, 11) %}
+              <tr>
+                <td class="border px-4 py-2 font-bold text-center">
+                  {{ score }}
+                </td>
+                {% for criterion, details in criteria.scoring_dimensions.items()
+                %}
+                <td class="border px-4 py-2 text-sm">
+                  {{ details.levels[score] }}
+                </td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 p-4">
+      <div class="max-w-5xl mx-auto text-center text-white">
+        &copy; 2023 ArguMentor. All rights reserved.
+      </div>
+    </footer>
+  </body>
+</html>

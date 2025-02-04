@@ -1,0 +1,73 @@
+# Evaluation Criteria for Argument Evaluation
+# Each dimension is rated on a scale from 1 (lowest quality) to 10 (highest quality).
+
+scoring_dimensions:
+  Logical Structure:
+    description: "Assessment of the argument's logical consistency, clarity in premises, and validity of connections."
+    levels:
+      1: "Multiple logical fallacies; the structure is chaotic and incoherent."
+      2: "Several significant logical gaps; many invalid or missing connections."
+      3: "Some logical connections are present, but notable errors or omissions weaken the structure."
+      4: "Basic logical structure exists, though weak links or minor errors are evident."
+      5: "Adequate flow in reasoning; most connections are clear, though further strengthening may be needed."
+      6: "Good logical progression with only minor inconsistencies in connections."
+      7: "Well-structured argument with coherent and sound reasoning."
+      8: "Very strong logical framework; arguments are sophisticated with robust connections."
+      9: "Expert-level logical construction; nuances are addressed with very few issues."
+      10: "Flawless logic and structure with complete clarity and precision."
+
+  Clarity:
+    description: "Evaluation of how clearly ideas are expressed, organized, and communicated."
+    levels:
+      1: "Incoherent language; ideas are very difficult or impossible to follow."
+      2: "Severely disorganized and obscure expression impede understanding."
+      3: "Frequent unclear sections; the message is partially lost in disjointed delivery."
+      4: "Some clear expression is available, but overall layout and phrasing are disjointed."
+      5: "Generally understandable language; some areas could benefit from conciseness."
+      6: "Clear and articulate expression with occasional verbosity."
+      7: "Precisely articulated ideas with effective organization and appropriate conciseness."
+      8: "Exceptionally clear and structured; minor enhancements may be possible."
+      9: "Masterful clarity in presentation, significantly enhancing persuasiveness."
+      10: "Perfect clarity and optimal information density throughout."
+
+  Depth:
+    description: "Degree of insight and thorough exploration of the subject's complexities and implications."
+    levels:
+      1: "Superficial treatment with no exploration of underlying complexities."
+      2: "Fails to address significant aspects; very limited exploration."
+      3: "Basic surface-level analysis with minimal insight into complexities."
+      4: "Initial exploration present, but key dimensions remain underdeveloped."
+      5: "Adequate coverage of the main aspects with a reasonable level of insight."
+      6: "Good analysis that examines multiple angles, albeit with room for deeper exploration."
+      7: "Insightful and thoughtful analysis that addresses less-obvious implications."
+      8: "Advanced depth with creative and novel perspectives that enhance understanding."
+      9: "Groundbreaking exploration; deep and complex aspects are thoroughly examined."
+      10: "Comprehensive and definitive treatment; all dimensions are exhaustively explored."
+
+  Objectivity:
+    description: "Evaluation of the balance and impartiality when considering diverse perspectives."
+    levels:
+      1: "Extremely biased with no acknowledgment of alternative views."
+      2: "Heavily one-sided; relies on misleading or straw man arguments."
+      3: "Clearly biased, though there is some minimal acknowledgment of other perspectives."
+      4: "Attempts to balance differing views, but the treatment is uneven and somewhat skewed."
+      5: "Provides a fair presentation of opposing perspectives with balanced coverage."
+      6: "Engages counterarguments with sincerity; minor imbalances are present."
+      7: "Demonstrates nuanced analysis with thoughtful consideration of multiple viewpoints."
+      8: "Exhibits exceptional fairness and thorough evaluation of all relevant alternatives."
+      9: "Masterfully synthesizes competing perspectives with insightful integration."
+      10: "Paragon of objectivity; presents an entirely balanced and equitable analysis."
+
+  Creativity:
+    description: "Examination of originality, novel approaches, and unique insights."
+    levels:
+      1: "Entirely derivative with no indication of original thought."
+      2: "Minimal creativity; only slight deviations from conventional approaches."
+      3: "Some new phrasing or concepts, but largely unoriginal in ideas."
+      4: "Occasional creative sparks that emerge inconsistently across the argument."
+      5: "Moderately creative; introduces fresh ideas in parts of the argument."
+      6: "Distinctive perspective with noticeable originality in analysis."
+      7: "Highly creative framework that offers fresh and compelling angles."
+      8: "Innovative approach that challenges standard thinking with bold insights."
+      9: "Revolutionary creativity; transforms the perspective and approach markedly."
+      10: "Unprecedented and groundbreaking creativity that defines new paradigms."
