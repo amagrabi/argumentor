@@ -12,8 +12,50 @@
   <!-- Change bg-gray-50 to bg-white -->
   <body class="bg-white min-h-screen">
     <div class="max-w-5xl mx-auto px-4 py-6">
-      <!-- Profile header and content -->
-      ...
+      <h1 class="text-3xl font-bold mb-4">Your Profile</h1>
+      <div class="mb-6">
+        <p class="text-lg">Total XP: <strong>{{ xp }}</strong></p>
+        <p class="text-lg">
+          Current Level: <strong>{{ level_info.display_name }}</strong>
+        </p>
+        <div class="w-full bg-gray-200 h-4 rounded-full mt-2">
+          <div
+            class="bg-green-500 h-full rounded-full"
+            style="width: {{ level_info.progress_percent }}%"
+          ></div>
+        </div>
+        <p class="text-sm mt-1">
+          Progress: {{ level_info.xp_into_level }} / {{ level_info.xp_needed }}
+          XP
+        </p>
+      </div>
+      <div>
+        <h2 class="text-2xl font-bold mb-4">Your Answers</h2>
+        {% if user and user.answers %}
+        <ul class="space-y-2">
+          {% for answer in user.answers %}
+          <li class="border p-4 rounded">
+            <p class="font-bold">{{ answer.question_text }}</p>
+            <p>{{ answer.answer_text }}</p>
+            <p class="text-sm">XP Earned: {{ answer.xp_earned }}</p>
+            <p class="text-sm">
+              Submitted on: {{ answer.created_at.strftime('%Y-%m-%d %H:%M') }}
+            </p>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>You haven't submitted any answers yet.</p>
+        {% endif %}
+      </div>
+      <div class="mt-6 text-center">
+        <button
+          onclick="window.history.back();"
+          class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"
+        >
+          Go Back
+        </button>
+      </div>
     </div>
   </body>
 </html>

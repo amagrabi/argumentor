@@ -313,7 +313,7 @@ def profile():
     user = User.query.filter_by(uuid=user_uuid).first()
     xp = user.xp if user else 0
     level_info = get_level_info(xp)
-    return render_template("profile.html", xp=xp, level_info=level_info)
+    return render_template("profile.html", xp=xp, level_info=level_info, user=user)
 
 
 @app.route("/get_new_question", methods=["GET"])
