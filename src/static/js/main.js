@@ -134,6 +134,10 @@ async function getNewQuestion(shouldScroll = true) {
     currentQuestion = question;
     sessionStorage.setItem("currentQuestion", JSON.stringify(question));
 
+    document.getElementById("claimInput").value = "";
+    document.getElementById("argumentInput").value = "";
+    document.getElementById("counterargumentInput").value = "";
+
     // Animate the new question description
     const questionElem = document.getElementById("questionDescription");
     if (questionElem) {
@@ -150,7 +154,16 @@ async function getNewQuestion(shouldScroll = true) {
     }
 
     if (questionElem && shouldScroll) {
-      questionElem.scrollIntoView({ behavior: "smooth", block: "start" });
+      questionElem.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     }
   } catch (error) {
     console.error("Error fetching new question:", error);
@@ -169,53 +182,44 @@ document.body.addEventListener("click", (e) => {
   }
 });
 
-// Character counter for the answer input field
-const answerInput = document.getElementById("answerInput");
-const charCount = document.getElementById("charCount");
-if (answerInput) {
-  answerInput.addEventListener("input", () => {
-    const remaining = 200 - answerInput.value.length;
-    charCount.textContent = remaining;
-    document.getElementById("errorMessage").textContent = "";
-  });
-}
+// Update character counters
+const setupCharCounter = (inputId, countId, maxLength) => {
+  const input = document.getElementById(inputId);
+  const count = document.getElementById(countId);
+  if (input && count) {
+    input.addEventListener("input", () => {
+      const remaining = maxLength - input.value.length;
+      count.textContent = remaining;
+      document.getElementById("errorMessage").textContent = "";
+    });
+  }
+};
 
-// Helper function for number animation
-function animateNumber(element, start, end, interval) {
-  let current = start;
-  const steps = 15;
-  const stepValue = (end - start) / steps;
-  const startColor = hexToRgb("#e53e3e");
-  const endColor = hexToRgb(element.getAttribute("data-color"));
+// Initialize all counters
+setupCharCounter("claimInput", "claimCount", 200);
+setupCharCounter("argumentInput", "argumentCount", 500);
+setupCharCounter("counterargumentInput", "counterargumentCount", 500);
 
-  const timer = setInterval(() => {
-    current += stepValue;
-    const factor = (current - start) / (end - start);
-    const color = interpolateColor(startColor, endColor, factor);
-    element.style.color = rgbToHex(color.r, color.g, color.b);
-
-    if (
-      (stepValue > 0 && current >= end) ||
-      (stepValue < 0 && current <= end)
-    ) {
-      current = end;
-      clearInterval(timer);
-    }
-    element.textContent = Math.floor(current) + "/10";
-  }, 30);
-}
-
-// Answer submission handling
+// Updated submission handler
 document.getElementById("submitAnswer").addEventListener("click", async () => {
-  const answer = answerInput.value.trim();
-  if (!answer) {
+  const claim = document.getElementById("claimInput").value.trim();
+  const argument = document.getElementById("argumentInput").value.trim();
+  const counterargument = document
+    .getElementById("counterargumentInput")
+    .value.trim();
+
+  if (!claim || !argument) {
     document.getElementById("errorMessage").textContent =
-      "Please provide an answer before submitting.";
+      "Please fill in both required fields (Claim and Argument) before submitting.";
     return;
   }
 
-  // Build the payload to include the question_id using the correct variable
-  const payload = { answer };
+  const payload = {
+    claim,
+    argument,
+    counterargument: counterargument || null, // Store empty as null
+  };
+
   if (currentQuestion && currentQuestion.id) {
     payload.question_id = currentQuestion.id;
   }
@@ -288,12 +292,37 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
         if (span._animationTimer) clearInterval(span._animationTimer);
       });
 
-      document.querySelectorAll(".score-value").forEach((span, index) => {
-        const delay = index * 100;
-        setTimeout(() => {
-          animateNumber(span, 1, parseInt(span.getAttribute("data-final")), 30);
-        }, delay);
-      });
+      // Update the score display logic in the evaluation results
+      document
+        .querySelectorAll(".score-value")
+        .forEach((scoreElement, index) => {
+          const finalScore = parseFloat(scoreElement.dataset.final);
+          const targetColor = scoreElement.dataset.color;
+          const startColor = hexToRgb("#e53e3e");
+          const endColor = hexToRgb(targetColor);
+
+          let current = 1;
+          const updateScore = () => {
+            if (current <= finalScore) {
+              const factor = (current - 1) / 9; // Normalize to 0-1 based on 10-point scale
+              const interpolated = interpolateColor(
+                startColor,
+                endColor,
+                factor
+              );
+              scoreElement.style.color = rgbToHex(
+                interpolated.r,
+                interpolated.g,
+                interpolated.b
+              );
+              scoreElement.textContent = `${current}/10`;
+              current++;
+              requestAnimationFrame(updateScore);
+            }
+          };
+          requestAnimationFrame(updateScore);
+        });
+
       document.querySelectorAll(".feedback").forEach((paragraph, index) => {
         const delay = index * 100;
         setTimeout(() => {
@@ -406,7 +435,11 @@ function updateSelectedCategories() {
     currentQuestion &&
     !selectedCategories.includes(currentQuestion.category)
   ) {
-    getNewQuestion(false);
+    getNewQuestion(false).then(() => {
+      document.getElementById("claimInput").value = "";
+      document.getElementById("argumentInput").value = "";
+      document.getElementById("counterargumentInput").value = "";
+    });
   }
 }
 
@@ -480,11 +513,10 @@ document
                       selected.description,
                       15
                     );
-                    document.getElementById("answerInput").value = "";
+                    document.getElementById("claimInput").value = "";
+                    document.getElementById("argumentInput").value = "";
+                    document.getElementById("counterargumentInput").value = "";
                     document.getElementById("charCount").textContent = "200";
-                    document
-                      .getElementById("evaluationResults")
-                      .classList.add("hidden");
                     document.getElementById("errorMessage").textContent = "";
                     document
                       .getElementById("questionSelectionOverlay")
@@ -520,3 +552,40 @@ document
         .classList.add("hidden");
     }
   });
+
+document.getElementById("nextQuestion").addEventListener("click", async () => {
+  try {
+    // Clear evaluation results completely
+    const evaluationResults = document.getElementById("evaluationResults");
+    evaluationResults.classList.add("hidden");
+    document.getElementById("scores").innerHTML = "";
+    document.getElementById("xpGained").innerHTML = "<strong>0</strong>";
+    document.getElementById("currentLevel").innerHTML =
+      "<strong>Level 1 (Novice Thinker)</strong>";
+    document.getElementById("xpProgressText").textContent = "0 / 0";
+
+    // Get new question and scroll to it
+    await getNewQuestion(true);
+
+    // Reset form fields
+    document.getElementById("claimInput").value = "";
+    document.getElementById("argumentInput").value = "";
+    document.getElementById("counterargumentInput").value = "";
+
+    // Force scroll to question section
+    document.getElementById("questionDescription").scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest",
+    });
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  } catch (error) {
+    console.error("Error loading new question:", error);
+    document.getElementById("errorMessage").textContent =
+      "Failed to load new question";
+  }
+});

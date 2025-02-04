@@ -228,18 +228,62 @@
         <!-- Answer Section -->
         <div class="space-y-6">
           <div class="mt-8">
-            <label class="block text-lg font-bold mb-2">Your Answer</label>
-            <textarea
-              id="answerInput"
-              class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 focus:ring focus:ring-gray-500 h-32"
-              placeholder="Type your answer here..."
-              maxlength="200"
-            ></textarea>
-            <div class="mt-2">
-              <div class="flex justify-between text-sm text-gray-500">
-                <span
-                  >Characters remaining: <span id="charCount">200</span></span
+            <div class="space-y-4">
+              <div>
+                <label class="block text-lg font-bold mb-2">Your Claim</label>
+                <textarea
+                  id="claimInput"
+                  class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 focus:ring focus:ring-gray-500 h-20"
+                  placeholder='State the position you will defend (e.g. "Free will is an illusion.")...'
+                  maxlength="150"
+                ></textarea>
+                <div class="mt-1 text-sm text-gray-500">
+                  <span
+                    >Characters remaining:
+                    <span id="claimCount">150</span></span
+                  >
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-lg font-bold mb-2"
+                  >Your Reasoning</label
                 >
+                <textarea
+                  id="argumentInput"
+                  class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 focus:ring focus:ring-gray-500 h-32"
+                  placeholder="Formulate arguments to support your claim..."
+                  maxlength="500"
+                ></textarea>
+                <div class="mt-1 text-sm text-gray-500">
+                  <span
+                    >Characters remaining:
+                    <span id="argumentCount">500</span></span
+                  >
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-lg font-bold mb-2"
+                  >Anticipate Counterarguments (Optional)</label
+                >
+                <textarea
+                  id="counterargumentInput"
+                  class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 focus:ring focus:ring-gray-500 h-24"
+                  placeholder="Consider opposing views and refute them..."
+                  maxlength="500"
+                ></textarea>
+                <div class="mt-1 text-sm text-gray-500">
+                  <span
+                    >Characters remaining:
+                    <span id="counterargumentCount">500</span></span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="flex justify-between items-center">
                 <button
                   id="submitAnswer"
                   class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"

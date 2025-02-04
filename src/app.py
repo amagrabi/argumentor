@@ -205,15 +205,23 @@ def submit_answer():
         return jsonify({"error": "Content-Type must be application/json"}), 400
 
     data = request.json
-    answer_text = data.get("answer", "").strip()
+    claim = data.get("claim", "").strip()
+    argument = data.get("argument", "").strip()
+    counterargument = (data.get("counterargument", "") or "").strip()
 
-    if not answer_text:
-        return jsonify({"error": "Answer cannot be empty"}), 400
+    if not claim or not argument:
+        return jsonify({"error": "Both claim and argument are required"}), 400
 
-    if len(answer_text) > 200:
-        return jsonify({"error": "Answer exceeds maximum length"}), 400
+    if (
+        len(claim) > 150
+        or len(argument) > 300
+        or (counterargument and len(counterargument) > 400)
+    ):
+        return jsonify({"error": "Character limit exceeded"}), 400
 
-    evaluation = evaluate_answer(answer_text)
+    evaluation = evaluate_answer(
+        f"Claim: {claim}\nArgument: {argument}\nCounterarguments: {counterargument}"
+    )
     xp_gained = sum(evaluation["scores"].values())
 
     old_xp = session.get("xp", 0)
@@ -245,7 +253,9 @@ def submit_answer():
         user_uuid=user_uuid,
         question_id=question_id,
         question_text=question_text,
-        answer_text=answer_text,
+        claim=claim,
+        argument=argument,
+        counterargument=counterargument if counterargument else None,
         evaluation_scores=evaluation["scores"],
         evaluation_feedback=evaluation["feedback"],
         xp_earned=xp_gained,
