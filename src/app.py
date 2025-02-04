@@ -2,12 +2,13 @@ import os
 import random
 import re
 import uuid
+from datetime import UTC, datetime
 
 import yaml
 from flask import Flask, jsonify, render_template, request, session
 
 from config import Config
-from models import Answer, User, db
+from models import Answer, User, Visit, db
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -163,10 +164,8 @@ def evaluate_answer(answer):
 def home():
     if "user_id" not in session:
         session["user_id"] = str(uuid.uuid4())
-    # Load user progress data from the database instead of session variables
     user = User.query.filter_by(uuid=session["user_id"]).first()
     if not user:
-        # Create the user record if it does not exist
         user = User(uuid=session["user_id"], xp=0)
         db.session.add(user)
         db.session.commit()
@@ -238,7 +237,7 @@ def submit_answer():
                 break
 
     new_answer = Answer(
-        user=user,
+        user_uuid=user_uuid,
         question_id=question_id,
         question_text=question_text,
         answer_text=answer_text,
@@ -338,6 +337,28 @@ def recreate_db():
         db.drop_all()
         db.create_all()
     print("Database recreated!")
+
+
+@app.before_request
+def ensure_user_id():
+    if "user_id" not in session:
+        session["user_id"] = str(uuid.uuid4())
+
+
+@app.before_request
+def log_visit():
+    if request.endpoint and request.endpoint != "static":
+        today_str = datetime.now(UTC).strftime("%Y-%m-%d")
+        if session.get("last_visit_date") != today_str:
+            session["last_visit_date"] = today_str
+            ip_address = request.remote_addr
+            user_agent = request.headers.get("User-Agent")
+            user_uuid = session.get("user_id")
+            new_visit = Visit(
+                ip_address=ip_address, user_agent=user_agent, user_uuid=user_uuid
+            )
+            db.session.add(new_visit)
+            db.session.commit()
 
 
 if __name__ == "__main__":
