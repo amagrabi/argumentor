@@ -21,12 +21,17 @@ with app.app_context():
     db.create_all()
 
 LEVEL_DEFINITIONS = [
-    (0, "Novice Thinker"),
-    (50, "Curious Mind"),
-    (150, "Inquisitive Brain"),
-    (300, "Critical Debater"),
-    (600, "Rational Maestro"),
-    (1000, "ArguMentor Grandmaster"),
+    (0, "Curious Mind"),
+    (50, "Socratic Apprentice"),
+    (150, "Cognitive Cartographer"),
+    (300, "Argument Architect"),
+    (500, "Epistemic Engineer"),
+    (750, "Debate Ninja"),
+    (1000, "Thought Tactician"),
+    (1500, "Dialectical Strategist"),
+    (2000, "Rational Maestro"),
+    (3000, "Grandmaster of Reason"),
+    (5000, "Legendary Logician"),
 ]
 
 

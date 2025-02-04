@@ -4,7 +4,7 @@
     <img width="400" height="400" src="demo.gif" alt="Demo">
 </p> -->
 
-Platform to train reasoning and decision-making skills. Users can answer interesting questions, construct arguments and get AI-driven feedback to improve and track their progress.
+ArguMentor is a platform to train reasoning and decision-making skills. Users can construct arguments to challenging questions, improve with AI-driven feedback and track their progress.
 
 ## Installation
 
