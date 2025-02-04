@@ -1,15 +1,14 @@
 /* Custom styles for ArguMentor */
 
-/* When selected, the category items now use gray-800 (a tiny bit darker) */
 .category-item.selected {
-  background-color: #1f2937; /* Tailwind gray-800 */
+  background-color: #2f363f;
   color: #fff;
-  border-color: #1f2937;
+  border-color: #000000;
 }
 
 .category-item {
   background-color: #fff;
-  color: #000;
+  color: #000000;
 }
 
 /* Animate the progress bar fill */
@@ -38,7 +37,44 @@
 
 /* Focus style for the answer input */
 #answerInput:focus {
-  border-color: #4b5563; /* Dark gray */
+  border-color: #4b5563;
   outline: none;
   box-shadow: 0 0 0 2px rgba(75, 85, 99, 0.5);
+}
+
+/* Educational Cards */
+.educational-card {
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  background-color: #2e3746;
+  color: white;
+}
+
+.card-content {
+  padding: 0.75rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Remove previous card animation styles */
+.educational-card:hover {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 768px) {
+  .educational-card {
+    min-height: 110px;
+  }
 }
