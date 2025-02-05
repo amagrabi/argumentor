@@ -27,6 +27,8 @@ class Answer(db.Model):
     xp_earned = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
 
+    __table_args__ = (db.Index("ix_user_question", "user_uuid", "question_id"),)
+
     def __repr__(self):
         return f"<Answer {self.id} for user {self.user_uuid}>"
 

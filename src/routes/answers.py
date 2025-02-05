@@ -1,3 +1,5 @@
+from difflib import SequenceMatcher
+
 from flask import Blueprint, jsonify, request, session
 
 from config import get_settings
@@ -61,6 +63,29 @@ def submit_answer():
     session["xp"] = new_xp
 
     user_uuid = session.get("user_id")
+    existing_answers = Answer.query.filter_by(
+        user_uuid=user_uuid, question_id=data.get("question_id")
+    ).all()
+
+    SIMILARITY_THRESHOLD = 0.8  # 80% similarity
+
+    for existing in existing_answers:
+        # Compare both claim and argument
+        claim_similarity = SequenceMatcher(None, claim, existing.claim).ratio()
+        argument_similarity = SequenceMatcher(None, argument, existing.argument).ratio()
+
+        if (
+            claim_similarity > SIMILARITY_THRESHOLD
+            and argument_similarity > SIMILARITY_THRESHOLD
+        ):
+            return jsonify(
+                {
+                    "error": """
+                        You already submitted a very similar answer to this question.
+                        Change your argument to receive a new evaluation.
+                    """
+                }
+            ), 400
     user = User.query.filter_by(uuid=user_uuid).first()
     if not user:
         user = User(uuid=user_uuid, xp=new_xp)
