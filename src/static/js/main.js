@@ -243,7 +243,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     const totalScoreColor = scoreToColor(totalScore);
 
     overallEvalDiv.innerHTML = `
-      <p id="totalScoreText" class="text-xl font-bold mb-2">
+      <p id="totalScoreText" class="text-l font-bold mb-2">
         Total Score: ${totalScore.toFixed(1)}/10
       </p>
       <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
