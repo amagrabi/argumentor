@@ -125,7 +125,7 @@ async function getNewQuestion(shouldScroll = true) {
       const encodedCategories = selectedCategories.map(encodeURIComponent);
       query = `?categories=${encodedCategories.join(",")}`;
     }
-    const response = await fetch("/get_new_question" + query);
+    const response = await fetch("/get_question" + query);
     const question = await response.json();
     if (question.error) {
       console.error("Error fetching new question:", question.error);
