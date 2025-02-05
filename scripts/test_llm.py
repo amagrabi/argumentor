@@ -37,7 +37,7 @@ def generate():
     contents = [
         types.Content(
             role="user",
-            parts=[types.Part.from_text(text=ARGUMENT)],
+            parts=[types.Part.from_text(text=PROMPT)],
         ),
     ]
     generate_content_config = types.GenerateContentConfig(

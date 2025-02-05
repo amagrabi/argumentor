@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     GCLOUD_PROJECT_REGION: str = Field(default="us-central1")
     GOOGLE_APPLICATION_CREDENTIALS: str = Field(default="fallback")
 
+    USE_LLM_EVALUATOR: bool = Field(default=True)
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
