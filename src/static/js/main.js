@@ -243,16 +243,20 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     const totalScoreColor = scoreToColor(totalScore);
 
     overallEvalDiv.innerHTML = `
-      <p id="totalScoreText" class="text-l font-bold mb-2">
-        Total Score: ${totalScore.toFixed(1)}/10
-      </p>
-      <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
-        <div id="totalScoreBar" class="rounded-full total-progress-bar" style="width: 10%; background-color: #e53e3e;"></div>
-      </div>
-      <p id="overallFeedback" class="text-md">
-        ${data.evaluation.overall_feedback}
-      </p>
-    `;
+    <p class="text-l font-bold mb-2">
+      Total Score: <span id="totalScoreValue">${totalScore.toFixed(1)}/10</span>
+    </p>
+    <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+      <div id="totalScoreBar" class="rounded-full total-progress-bar" style="width: 10%; background-color: #e53e3e;"></div>
+    </div>
+    <p id="overallFeedback" class="text-md">
+      ${data.evaluation.overall_feedback}
+    </p>
+  `;
+
+    // Remove line 258 that sets the text color of the entire paragraph
+    // Add this instead to color just the score value:
+    document.getElementById("totalScoreValue").style.color = totalScoreColor;
 
     // Animate the total score bar (a short delay allows a smooth transition)
     setTimeout(() => {

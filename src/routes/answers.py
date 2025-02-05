@@ -88,8 +88,14 @@ def submit_answer():
         claim=claim,
         argument=argument,
         counterargument=counterargument if counterargument else None,
-        evaluation_scores=evaluation["scores"],
-        evaluation_feedback=evaluation["feedback"],
+        evaluation_scores={
+            **evaluation["scores"],
+            "Overall": evaluation["total_score"],
+        },
+        evaluation_feedback={
+            **evaluation["feedback"],  # Changed from data["evaluation"]
+            "Overall": evaluation["overall_feedback"],
+        },
         xp_earned=xp_gained,
     )
     db.session.add(new_answer)

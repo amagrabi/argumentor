@@ -4,11 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your Profile - ArguMentor</title>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
-      rel="stylesheet"
-    />
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
+  {% macro score_color(score) -%}
+    {% set score_float = score|float|round(1, 'common') %}
+    {% if score_float >= 9.95 %}
+      text-emerald-600 bg-emerald-50
+    {% elif score_float >= 8 %}
+      text-green-600 bg-green-50
+    {% elif score_float >= 7 %}
+      text-lime-600 bg-lime-50
+    {% elif score_float >= 6 %}
+      text-yellow-600 bg-yellow-50
+    {% elif score_float >= 4 %}
+      text-amber-600 bg-amber-50
+    {% else %}
+      text-red-600 bg-red-50
+    {% endif %}
+  {%- endmacro %}
+
+
   <body class="bg-white min-h-screen">
     <!-- Updated header to match other pages -->
     <header class="bg-gray-800 p-4">
@@ -38,8 +53,7 @@
             ></div>
           </div>
           <p class="text-sm mt-1">
-            Progress: {{ level_info.xp_into_level }} / {{ level_info.xp_needed
-            }} XP
+            Progress: {{ level_info.xp_into_level }} / {{ level_info.xp_needed }} XP
           </p>
         </div>
 
@@ -47,16 +61,100 @@
           <h2 class="text-2xl font-bold mb-4">Your Answers</h2>
           {% if user and user.answers %}
           <ul class="space-y-4">
-            {% for answer in user.answers %}
-            <li class="border p-4 rounded-lg">
-              <p class="font-bold">{{ answer.question_text }}</p>
-              <p class="mt-2">{{ answer.answer_text }}</p>
-              <div class="mt-2 text-sm text-gray-600">
-                <p>XP Earned: {{ answer.xp_earned }}</p>
-                <p>
-                  Submitted on: {{ answer.created_at.strftime('%Y-%m-%d %H:%M')
-                  }}
+            {% for answer in user.answers|sort(attribute='created_at')|reverse %}
+            <li
+              class="border p-4 rounded-lg group hover:bg-gray-50 transition-colors"
+            >
+              <div class="flex justify-between items-start">
+                <p class="font-bold text-gray-800">
+                  {{ answer.question_text }}
                 </p>
+                <div class="text-sm text-gray-500 text-right">
+                  <p>+{{ answer.xp_earned }} XP</p>
+                  <p>{{ answer.created_at.strftime('%Y-%m-%d') }}</p>
+                </div>
+              </div>
+
+                  <div class="mt-2 space-y-2">
+                  <div class="mt-2 space-y-2">
+                    <!-- Claim and Argument Sections -->
+                    <p class="text-sm text-gray-600 break-words">
+                      <span class="font-medium">Your Claim:</span> {{ answer.claim }}
+                    </p>
+                    <p class="text-sm text-gray-600 break-words mt-1">
+                      <span class="font-medium">Your Argument:</span> {{ answer.argument }}
+                    </p>
+                    {% if answer.counterargument %}
+                    <p class="text-sm text-gray-600 break-words mt-1">
+                      <span class="font-medium">Counterargument Rebuttal:</span>
+                      {{ answer.counterargument }}
+                    </p>
+                    {% endif %}
+
+                    <!-- Overall Rating -->
+                    <div class="mt-2">
+                      <div class="flex items-center space-x-2">
+                        <span class="font-medium text-sm">Overall Rating:</span>
+                        <span class="px-2 py-1 rounded-full text-xs {{ score_color((answer.evaluation_scores.values() | sum) / (answer.evaluation_scores.values() | length)) }}">
+                          {{ "%.1f"|format((answer.evaluation_scores.values() | sum) / (answer.evaluation_scores.values() | length)|float) }}/10
+                        </span>
+                      </div>
+
+                    <!-- Category Scores -->
+                    <div class="flex flex-wrap gap-2 mt-2">
+                      {% for category, score in answer.evaluation_scores.items() %}
+                        {% if category != "Overall" %}
+                          <div class="px-2 py-1 rounded-full text-xs {{ score_color(score) }}">
+                            {{ category }}: {{ "%.0f"|format(score) }}/10
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- Feedback Section -->
+              <div class="mt-3 pt-3 border-t border-gray-200">
+                <div
+                  class="flex items-center justify-between cursor-pointer"
+                  onclick="this.nextElementSibling.classList.toggle('hidden')"
+                >
+                  <span class="text-sm font-medium text-gray-600"
+                    >Feedback Details</span
+                  >
+                  <svg
+                    class="w-4 h-4 transform transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+                <div class="hidden mt-2 space-y-2 text-sm text-gray-600">
+                  <!-- Overall Feedback -->
+                  <p>
+                    <span class="font-medium">Overall:</span> {{
+                    answer.evaluation_feedback.Overall }}
+                  </p>
+
+                  <!-- Individual Category Feedback -->
+                  {% for category, feedback in
+                  answer.evaluation_feedback.items() %} {% if category !=
+                  "Overall" %}
+                  <p>
+                    <span class="font-medium">{{ category }}:</span> {{ feedback
+                    }}
+                  </p>
+                  {% endif %} {% endfor %}
+                </div>
               </div>
             </li>
             {% endfor %}

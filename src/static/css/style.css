@@ -86,3 +86,14 @@ textarea:focus {
     min-height: 110px;
   }
 }
+
+/* Answer history text wrapping */
+.answer-content {
+  max-width: 90vw;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.feedback-details {
+  max-width: 95%;
+}
