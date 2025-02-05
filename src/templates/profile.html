@@ -78,16 +78,18 @@
                   <div class="mt-2 space-y-2">
                   <div class="mt-2 space-y-2">
                     <!-- Claim and Argument Sections -->
-                    <p class="text-sm text-gray-600 break-words">
-                      <span class="font-medium">Your Claim:</span> {{ answer.claim }}
+                    <p class="text-sm break-words">
+                      <span class="font-medium text-sm text-black">Claim:</span>
+                      <span class="text-gray-600">{{ answer.claim }}</span>
                     </p>
-                    <p class="text-sm text-gray-600 break-words mt-1">
-                      <span class="font-medium">Your Argument:</span> {{ answer.argument }}
+                    <p class="text-sm break-words mt-1">
+                      <span class="font-medium text-sm text-black">Argument:</span>
+                      <span class="text-gray-600">{{ answer.argument }}</span>
                     </p>
                     {% if answer.counterargument %}
-                    <p class="text-sm text-gray-600 break-words mt-1">
-                      <span class="font-medium">Counterargument Rebuttal:</span>
-                      {{ answer.counterargument }}
+                    <p class="text-sm break-words mt-1">
+                      <span class="font-medium text-sm text-black">Counterargument Rebuttal:</span>
+                      <span class="text-gray-600">{{ answer.counterargument }}</span>
                     </p>
                     {% endif %}
 
@@ -121,7 +123,7 @@
                   class="flex items-center justify-between cursor-pointer"
                   onclick="this.nextElementSibling.classList.toggle('hidden')"
                 >
-                  <span class="text-sm font-medium text-gray-600"
+                  <span class="text-sm font-medium text-black"
                     >Feedback Details</span
                   >
                   <svg
@@ -141,19 +143,16 @@
                 <div class="hidden mt-2 space-y-2 text-sm text-gray-600">
                   <!-- Overall Feedback -->
                   <p>
-                    <span class="font-medium">Overall:</span> {{
-                    answer.evaluation_feedback.Overall }}
+                    <span class="font-medium text-black">Overall:</span> {{ answer.evaluation_feedback.Overall }}
                   </p>
-
                   <!-- Individual Category Feedback -->
-                  {% for category, feedback in
-                  answer.evaluation_feedback.items() %} {% if category !=
-                  "Overall" %}
-                  <p>
-                    <span class="font-medium">{{ category }}:</span> {{ feedback
-                    }}
-                  </p>
-                  {% endif %} {% endfor %}
+                  {% for category, feedback in answer.evaluation_feedback.items() %}
+                    {% if category != "Overall" %}
+                    <p>
+                      <span class="font-medium text-black">{{ category }}:</span> {{ feedback }}
+                    </p>
+                    {% endif %}
+                  {% endfor %}
                 </div>
               </div>
             </li>
