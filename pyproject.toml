@@ -11,7 +11,10 @@ keywords = ["reasoning", "decision-making"]
 dependencies = [
     "flask",
     "flask-sqlalchemy",
-    "python-dotenv"
+    "python-dotenv",
+    "google-genai",
+    "google-cloud-aiplatform",
+    "pydantic-settings"
 ]
 
 [project.optional-dependencies]

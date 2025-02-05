@@ -7,11 +7,13 @@ from datetime import UTC, datetime
 import yaml
 from flask import Flask, jsonify, render_template, request, session
 
-from config import Config
+from config import get_settings
 from models import Answer, User, Visit, db
 
+SETTINGS = get_settings()
+
 app = Flask(__name__)
-app.config.from_object(Config)
+app.config.from_mapping(SETTINGS)
 
 # Initialize the database with the app
 db.init_app(app)
