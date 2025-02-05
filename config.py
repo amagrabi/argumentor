@@ -8,10 +8,14 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
-    SECRET_KEY: str = Field(default="fallback")
+    SECRET_KEY: str = Field(default="fallback")  # Flask
+
     SQLALCHEMY_DATABASE_URI: str = Field(default="sqlite:///argumentor.db")
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = Field(default=False)
+
     GCLOUD_PROJECT_NAME: str = Field(default="fallback")
+    GCLOUD_PROJECT_REGION: str = Field(default="us-central1")
+    GOOGLE_APPLICATION_CREDENTIALS: str = Field(default="fallback")
 
     model_config = SettingsConfigDict(
         env_file=".env",
