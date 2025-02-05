@@ -47,7 +47,7 @@ def submit_answer():
         return jsonify({"error": "Both claim and argument are required"}), 400
 
     if (
-        len(claim) > 150
+        len(claim) > 200
         or len(argument) > 1000
         or (counterargument and len(counterargument) > 500)
     ):
