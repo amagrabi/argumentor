@@ -13,7 +13,7 @@ const categoryIcons = {
 const CHAR_LIMITS = {
   CLAIM: 200,
   ARGUMENT: 1000,
-  COUNTERARGUMENT: 500
+  COUNTERARGUMENT: 500,
 };
 
 // Global variable that stores your selected category values.
@@ -184,16 +184,19 @@ const setupCharCounter = (inputId, countId, fieldName) => {
     const maxLength = CHAR_LIMITS[fieldName.toUpperCase()];
     input.setAttribute("maxlength", maxLength);
     count.textContent = maxLength;
-    
+
     input.addEventListener("input", () => {
-        const remaining = maxLength - input.value.length;
-        count.textContent = remaining;
-        // Clear error message on any input
+      const remaining = maxLength - input.value.length;
+      count.textContent = remaining;
+      // Clear error message on any input
+      document.getElementById("errorMessage").textContent = "";
+      // Additional check to clear message when requirements are met
+      if (
+        input.value.length > 0 &&
+        document.getElementById("errorMessage").textContent
+      ) {
         document.getElementById("errorMessage").textContent = "";
-        // Additional check to clear message when requirements are met
-        if (input.value.length > 0 && document.getElementById("errorMessage").textContent) {
-            document.getElementById("errorMessage").textContent = "";
-        }
+      }
     });
   }
 };
@@ -201,7 +204,11 @@ const setupCharCounter = (inputId, countId, fieldName) => {
 // Initialize all counters
 setupCharCounter("claimInput", "claimCount", "claim");
 setupCharCounter("argumentInput", "argumentCount", "argument");
-setupCharCounter("counterargumentInput", "counterargumentCount", "counterargument");
+setupCharCounter(
+  "counterargumentInput",
+  "counterargumentCount",
+  "counterargument"
+);
 
 // Updated submission handler
 document.getElementById("submitAnswer").addEventListener("click", async () => {
@@ -242,7 +249,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
         errorData.error || "Submission failed";
       return;
     }
-    
+
     // Clear error on successful response
     document.getElementById("errorMessage").textContent = "";
 

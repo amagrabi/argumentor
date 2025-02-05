@@ -8,15 +8,14 @@
         "editor.defaultFormatter": "charliermarsh.ruff",
     },
     "python.terminal.activateEnvironment": true,
-    // ESlint led to unfixable syntax errors in some cases, commenting out for now:
-    // "editor.formatOnSave": true,
-    // "editor.codeActionsOnSave": {
-    //     "source.fixAll.eslint": "explicit",
-    //     "source.fixAll": "explicit"
-    // },
-    // "eslint.validate": [
-    //     "javascript"
-    // ],
-    // "files.trimTrailingWhitespace": true,
-    // "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit",
+        "source.fixAll": "explicit"
+    },
+    "eslint.validate": [
+        "javascript"
+    ],
+    "files.trimTrailingWhitespace": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
