@@ -16,7 +16,8 @@ def load_questions():
             raw_data = yaml.safe_load(f)
 
             def slugify(s: str) -> str:
-                return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
+                slug = re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
+                return slug[:50]  # Limit to 50 characters
 
             _questions = {
                 category: [
@@ -40,11 +41,12 @@ def get_questions():
 
 
 def get_fixed_question():
-    return {
-        "id": "philosophy-0",
-        "description": "Does free will exist if all decisions are ultimately influenced by biological/physical factors?",
-        "category": "Philosophy",
-    }
+    """Get the first question from Philosophy category"""
+    questions = get_questions()
+    philosophy_questions = questions.get("Philosophy", [])
+    if philosophy_questions:
+        return philosophy_questions[0]
+    return None
 
 
 def get_random_question(categories=None):

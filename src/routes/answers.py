@@ -72,14 +72,21 @@ def submit_answer():
     question_id = data.get("question_id")
     question_text = ""
     if question_id:
-        # search through loaded QUESTIONS to find the matching question description
-        for questions in get_questions().values():
-            for q in questions:
-                if q["id"] == question_id:
-                    question_text = q["description"]
+        # First check if it's the fixed question
+        if (
+            question_id
+            == "does-free-will-exist-if-all-decisions-are-ultimately-influenced-by-biologicalphysical-factors"
+        ):
+            question_text = "Does free will exist if all decisions are ultimately influenced by biological/physical factors?"
+        else:
+            # search through loaded QUESTIONS
+            for questions in get_questions().values():
+                for q in questions:
+                    if q["id"] == question_id:
+                        question_text = q["description"]
+                        break
+                if question_text:
                     break
-            if question_text:
-                break
 
     new_answer = Answer(
         user_uuid=user_uuid,
