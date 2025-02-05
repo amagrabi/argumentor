@@ -104,7 +104,7 @@ def evaluate_answer_llm(question_text, claim, argument, counterargument):
     """
 
     response = CLIENT.models.generate_content(
-        model="gemini-exp-1206",
+        model="gemini-2.0-flash-001",
         contents=[
             types.Content(
                 role="user",

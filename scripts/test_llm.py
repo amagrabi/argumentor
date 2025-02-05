@@ -33,7 +33,7 @@ def generate():
         location=SETTINGS.GCLOUD_PROJECT_REGION,
     )
 
-    model = "gemini-exp-1206"  # gemini-2.0-flash-exp   # gemini-1.5-pro-latest
+    model = "gemini-2.0-flash-001"  # previously: gemini-exp-1206
     contents = [
         types.Content(
             role="user",
