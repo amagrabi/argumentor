@@ -185,7 +185,7 @@ const setupCharCounter = (inputId, countId, maxLength) => {
 
 // Initialize all counters
 setupCharCounter("claimInput", "claimCount", 200);
-setupCharCounter("argumentInput", "argumentCount", 500);
+setupCharCounter("argumentInput", "argumentCount", 1000);
 setupCharCounter("counterargumentInput", "counterargumentCount", 500);
 
 // Updated submission handler
