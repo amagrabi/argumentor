@@ -2,9 +2,7 @@ from flask import Blueprint, jsonify, request, session
 
 from config import get_settings
 from extensions import db
-from llm import evaluate_answer_llm
 from models import Answer, User
-from services.evaluator import evaluate_answer_dummy
 from services.leveling import get_level, get_level_info
 from services.question_service import get_questions
 
@@ -14,14 +12,24 @@ answers_bp = Blueprint("answers", __name__)
 SETTINGS = get_settings()
 
 
+def create_evaluator():
+    if SETTINGS.USE_LLM_EVALUATOR:
+        from services.evaluator import LLMEvaluator
+        from services.llm import CLIENT, RESPONSE_SCHEMA, SYSTEM_INSTRUCTION
+
+        return LLMEvaluator(CLIENT, SYSTEM_INSTRUCTION, RESPONSE_SCHEMA)
+    else:
+        from services.evaluator import DummyEvaluator
+
+        return DummyEvaluator()
+
+
 def evaluate_answer(question_text, claim, argument, counterargument):
     """
-    Evaluate the answer using either LLM or dummy evaluator based on settings
+    Evaluate the answer using the configured evaluator
     """
-    if SETTINGS.USE_LLM_EVALUATOR:
-        return evaluate_answer_llm(question_text, claim, argument, counterargument)
-    else:
-        return evaluate_answer_dummy(claim, argument, counterargument)
+    evaluator = create_evaluator()
+    return evaluator.evaluate(question_text, claim, argument, counterargument)
 
 
 @answers_bp.route("/submit_answer", methods=["POST"])

@@ -1,7 +1,4 @@
-import json
-
 from google import genai
-from google.genai import types
 from google.oauth2 import service_account
 
 from config import get_settings
@@ -93,72 +90,3 @@ RESPONSE_SCHEMA = response_schema = {
         "creativity_rating",
     ],
 }
-
-
-def evaluate_answer_llm(question_text, claim, argument, counterargument):
-    prompt = f"""
-        Question: {question_text}
-        Claim: {claim}
-        Argument: {argument}
-        Counterargument Rebuttal (Optional): {counterargument}
-    """
-
-    response = CLIENT.models.generate_content(
-        model="gemini-2.0-flash-001",
-        contents=[
-            types.Content(
-                role="user",
-                parts=[types.Part.from_text(text=prompt)],
-            ),
-        ],
-        config=types.GenerateContentConfig(
-            temperature=0,
-            top_p=0,
-            top_k=1,
-            max_output_tokens=8192,
-            response_modalities=["TEXT"],
-            safety_settings=[
-                types.SafetySetting(
-                    category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"
-                ),
-                types.SafetySetting(
-                    category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="OFF"
-                ),
-                types.SafetySetting(
-                    category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="OFF"
-                ),
-                types.SafetySetting(
-                    category="HARM_CATEGORY_HARASSMENT", threshold="OFF"
-                ),
-            ],
-            response_mime_type="application/json",
-            response_schema=RESPONSE_SCHEMA,
-            system_instruction=[types.Part.from_text(text=SYSTEM_INSTRUCTION)],
-        ),
-    )
-
-    return parse_llm_response(json.loads(response.text))
-
-
-def parse_llm_response(response):
-    """
-    Convert LLM response format to our evaluation format
-    """
-    return {
-        "scores": {
-            "Logical Structure": response["logical_structure_rating"],
-            "Clarity": response["clarity_rating"],
-            "Depth": response["depth_rating"],
-            "Objectivity": response["objectivity_rating"],
-            "Creativity": response["creativity_rating"],
-        },
-        "total_score": response["overall_rating"],
-        "feedback": {
-            "Logical Structure": response["logical_structure_explanation"],
-            "Clarity": response["clarity_explanation"],
-            "Depth": response["depth_explanation"],
-            "Objectivity": response["objectivity_explanation"],
-            "Creativity": response["creativity_explanation"],
-        },
-        "overall_feedback": response["overall_explanation"],
-    }
