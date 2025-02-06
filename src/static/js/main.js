@@ -194,7 +194,7 @@ function showAuthModal() {
         <form id="authForm" class="space-y-4">
           <div id="authErrorMessage" class="text-sm text-red-500 mb-2 hidden"></div>
           <div>
-            <label class="block text-sm font-medium mb-1">Email</label>
+            <label class="block text-sm font-medium mb-1">Username</label>
             <input type="email" id="authEmail" required
                   class="w-full px-3 py-2 border rounded-lg">
           </div>

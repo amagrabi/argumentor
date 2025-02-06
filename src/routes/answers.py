@@ -58,11 +58,12 @@ def submit_answer():
     evaluation = evaluate_answer(question_text, claim, argument, counterargument)
     xp_gained = sum(evaluation["scores"].values())
 
-    old_xp = session.get("xp", 0)
+    user_uuid = session.get("user_id")
+    user = User.query.filter_by(uuid=user_uuid).first()
+    old_xp = user.xp if user else 0
     new_xp = old_xp + xp_gained
     session["xp"] = new_xp
 
-    user_uuid = session.get("user_id")
     existing_answers = Answer.query.filter_by(
         user_uuid=user_uuid, question_id=data.get("question_id")
     ).all()

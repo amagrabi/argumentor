@@ -84,4 +84,6 @@ def profile():
         return redirect(url_for("pages.home"))
 
     level_info = get_level_info(user.xp)
+    # Sync session XP with database
+    session["xp"] = user.xp
     return render_template("profile.html", xp=user.xp, level_info=level_info, user=user)
