@@ -8,9 +8,11 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
+    DEV: bool = False
+
     SECRET_KEY: str = Field(default="fallback")  # Flask
 
-    SQLALCHEMY_DATABASE_URI: str = Field(default="sqlite:///argumentor.db")
+    SQLALCHEMY_DATABASE_URI: str = Field(default="sqlite:////argumentor.db")
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = Field(default=False)
 
     GCLOUD_PROJECT_NAME: str = Field(default="fallback")

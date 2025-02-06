@@ -29,6 +29,10 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
 
+    # Create tables if they don't exist
+    with app.app_context():
+        db.create_all()
+
     # Register blueprints
     app.register_blueprint(pages_bp)
     app.register_blueprint(answers_bp)
@@ -49,4 +53,5 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    debug = True if SETTINGS.DEV else False
+    app.run(debug=debug)

@@ -21,10 +21,16 @@ Install dependencies in editable mode:
 uv pip install -e .
 ```
 
-Start app:
+Start app for development:
 
 ```sh
-python -m src.app
+DEV=true USE_LLM_EVALUATOR=false python -m src.app
+```
+
+Start app in production:
+
+```sh
+gunicorn --bind 0.0.0.0:8000 src.app:app
 ```
 
 ## Development

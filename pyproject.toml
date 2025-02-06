@@ -11,6 +11,7 @@ keywords = ["reasoning", "decision-making"]
 dependencies = [
     "flask",
     "flask-sqlalchemy",
+    "gunicorn",
     "python-dotenv",
     "google-genai",
     "google-cloud-aiplatform",
