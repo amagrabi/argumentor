@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from google.oauth2 import service_account
 
@@ -23,8 +25,16 @@ def add_cors_headers(response):
 
 
 def create_app():
-    app = Flask(__name__)
+    instance_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "..", "instance"
+    )
+    os.makedirs(instance_path, exist_ok=True)
+
+    app = Flask(__name__, instance_path=instance_path)
     app.config.from_mapping(get_settings())
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        f"sqlite:///{os.path.join(instance_path, 'argumentor.db')}"
+    )
 
     # Initialize extensions
     db.init_app(app)
