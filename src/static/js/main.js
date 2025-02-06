@@ -212,8 +212,10 @@ setupCharCounter(
 
 // Updated submission handler
 document.getElementById("submitAnswer").addEventListener("click", async () => {
+  const startTime = Date.now();
   const claim = document.getElementById("claimInput").value.trim();
   const argument = document.getElementById("argumentInput").value.trim();
+  const submitBtn = document.getElementById("submitAnswer");
   const counterargument = document
     .getElementById("counterargumentInput")
     .value.trim();
@@ -230,36 +232,53 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     counterargument: counterargument || null,
   };
 
-  if (currentQuestion && currentQuestion.id) {
+  if (currentQuestion?.id) {
     payload.question_id = currentQuestion.id;
   }
+
+  // Disable button and show loading state
+  submitBtn.innerHTML = `
+    <span class="loading-dots">
+      <span class="animate-pulse">Analyzing</span>
+    </span>
+  `;
+  submitBtn.disabled = true;
 
   try {
     const response = await fetch("/submit_answer", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      document.getElementById("errorMessage").textContent =
-        errorData.error || "Submission failed";
-      return;
+    // Calculate remaining time only for successful responses
+    if (response.ok) {
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 2000) {
+        await new Promise((resolve) => setTimeout(resolve, 2000 - elapsed));
+      }
     }
 
-    // Clear error on successful response
-    document.getElementById("errorMessage").textContent = "";
+    const data = await response.json(); // Single parse here
 
-    const data = await response.json();
+    if (!response.ok) {
+      document.getElementById("errorMessage").textContent =
+        data.error || "Submission failed"; // Use 'data' instead of 'errorData'
+      submitBtn.innerHTML = "Submit";
+      submitBtn.disabled = false;
+      return;
+    }
 
     if (!data || !data.evaluation) {
       document.getElementById("errorMessage").textContent =
         "Invalid response from server";
+      submitBtn.innerHTML = "Submit";
+      submitBtn.disabled = false;
       return;
     }
+
+    submitBtn.innerHTML = "Submit";
+    submitBtn.disabled = false;
 
     // First display overall evaluation with a prominent total score bar
     const overallEvalDiv = document.getElementById("overallEvaluation");
@@ -412,6 +431,8 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     console.error("Error submitting answer:", error);
     document.getElementById("errorMessage").textContent =
       "Submission failed, server error. It's not you it's me, sorry. Send me feedback if the issues persists.";
+    submitBtn.textContent = "Submit";
+    submitBtn.disabled = false;
   }
 });
 
