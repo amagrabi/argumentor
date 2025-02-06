@@ -1,14 +1,24 @@
 import uuid
 from datetime import UTC, datetime
 
+from flask_login import UserMixin
+
 from extensions import db
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     uuid = db.Column(db.String(36), primary_key=True)
     xp = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
     answers = db.relationship("Answer", backref="user", lazy=True)
+    email = db.Column(db.String(255), unique=True, nullable=True)
+    password_hash = db.Column(db.String(255), nullable=True)
+    google_id = db.Column(db.String(255), unique=True, nullable=True)
+    is_active = db.Column(db.Boolean, default=True)
+    profile_pic = db.Column(db.String(512), nullable=True)
+
+    def get_id(self):
+        return str(self.uuid)
 
     def __repr__(self):
         return f"<User {self.uuid}>"

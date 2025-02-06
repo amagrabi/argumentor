@@ -31,6 +31,15 @@
       <!-- Profile Content -->
       <div class="mb-8">
         <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-2">Account Info</h3>
+          <p>Email: {{ user.email or 'Not set' }}</p>
+          {% if user.profile_pic %}
+          <img
+            src="{{ user.profile_pic }}"
+            alt="Profile Picture"
+            class="w-16 h-16 rounded-full mt-2"
+          />
+          {% endif %}
           <p class="text-lg">Total XP: <strong>{{ xp }}</strong></p>
           <p class="text-lg">
             Current Level: <strong>{{ level_info.display_name }}</strong>

@@ -4,6 +4,7 @@ from datetime import datetime
 
 import yaml
 from flask import Blueprint, current_app, redirect, render_template, session, url_for
+from flask_login import current_user
 
 from extensions import db
 from models import User
@@ -14,13 +15,23 @@ pages_bp = Blueprint("pages", __name__)
 
 @pages_bp.route("/")
 def home():
-    if "user_id" not in session:
-        session["user_id"] = str(uuid.uuid4())
-    user = User.query.filter_by(uuid=session["user_id"]).first()
-    if not user:
-        user = User(uuid=session["user_id"], xp=0)
-        db.session.add(user)
-        db.session.commit()
+    # Use the authenticated user's ID if logged in
+    if current_user.is_authenticated:
+        user = current_user
+        session["user_id"] = current_user.uuid  # Sync session with logged-in user
+    else:
+        # Existing anonymous user handling
+        if "user_id" not in session:
+            session["user_id"] = str(uuid.uuid4())
+        user = User.query.filter_by(uuid=session["user_id"]).first()
+        if not user:
+            user = User(uuid=session["user_id"], xp=0)
+            db.session.add(user)
+            db.session.commit()
+
+    xp = user.xp
+    level_info = get_level_info(xp)
+    # ... rest of the function remains the same
     xp = user.xp
     level_info = get_level_info(xp)
 

@@ -11,18 +11,20 @@ keywords = ["reasoning", "decision-making"]
 dependencies = [
     "flask",
     "flask-sqlalchemy",
-    "gunicorn",
-    "python-dotenv",
+    "flask-login",
+    "google-auth",
     "google-genai",
     "google-cloud-aiplatform",
-    "pydantic-settings"
+    "gunicorn",
+    "pydantic-settings",
+    "python-dotenv",
 ]
 
 [project.optional-dependencies]
 dev = [
+    "pre-commit",
     "pytest",
     "ruff",
-    "pre-commit",
 ]
 
 [project.urls]

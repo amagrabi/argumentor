@@ -5,9 +5,10 @@ from google.oauth2 import service_account
 
 from commands import register_commands
 from config import get_settings
-from extensions import db
+from extensions import db, login_manager
 from middleware import ensure_user_id, log_visit
 from routes.answers import answers_bp
+from routes.auth import auth_bp
 from routes.pages import pages_bp
 from routes.questions import questions_bp
 
@@ -38,12 +39,14 @@ def create_app():
 
     # Initialize extensions
     db.init_app(app)
+    login_manager.init_app(app)
 
     # Create tables if they don't exist
     with app.app_context():
         db.create_all()
 
     # Register blueprints
+    app.register_blueprint(auth_bp)
     app.register_blueprint(pages_bp)
     app.register_blueprint(answers_bp)
     app.register_blueprint(questions_bp)

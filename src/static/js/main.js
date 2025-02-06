@@ -176,6 +176,160 @@ async function getNewQuestion(shouldScroll = true) {
   }
 }
 
+function showAuthModal() {
+  const modal = document.createElement("div");
+  modal.innerHTML = `
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+         onclick="event.target === this && this.remove()">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md relative"
+           onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">Login/Signup</h3>
+          <button onclick="this.parentElement.parentElement.parentElement.remove(); event.stopPropagation()"
+                  class="text-gray-500 hover:text-gray-700 text-2xl">
+            &times;
+          </button>
+        </div>
+        <!-- Email/Password Form -->
+        <form id="authForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input type="email" id="authEmail" required
+                   class="w-full px-3 py-2 border rounded-lg">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Password</label>
+            <input type="password" id="authPassword" required
+                   class="w-full px-3 py-2 border rounded-lg">
+          </div>
+          <div class="flex gap-4">
+            <button type="button" onclick="handleAuth('login')"
+                    class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+              Login
+            </button>
+            <button type="button" onclick="handleAuth('signup')"
+                    class="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300">
+              Signup
+            </button>
+          </div>
+        </form>
+        <div id="googleButtonContainer" class="mt-4"></div>
+        <!-- Google Login -->
+        <div class="mt-6">
+          <button onclick="handleGoogleAuth()"
+                  class="w-full flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a5.94 5.94 0 1 1 0-11.88c1.094 0 2.354.371 3.227 1.067l2.355-2.362A9.914 9.914 0 0 0 12.545 2C7.021 2 2.545 6.477 2.545 12s4.476 10 10 10c5.523 0 10-4.477 10-10a9.9 9.9 0 0 0-1.091-4.571l-8.909 3.81z"/></svg>
+            Continue with Google
+          </button>
+        </div>
+      </div>
+        </div>
+  `;
+  // Clear any existing modals first
+  document
+    .querySelectorAll('div[class*="fixed inset-0"]')
+    .forEach((modal) => modal.remove());
+
+  // Add ESC key listener
+  const handleKeyDown = (e) => {
+    if (e.key === "Escape") {
+      modal.remove();
+      document.removeEventListener("keydown", handleKeyDown);
+    }
+  };
+
+  document.addEventListener("keydown", handleKeyDown);
+  document.body.appendChild(modal);
+}
+
+async function handleAuth(action) {
+  const email = document.getElementById("authEmail").value;
+  const password = document.getElementById("authPassword").value;
+
+  try {
+    const response = await fetch(`/${action}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const contentType = response.headers.get("content-type");
+    const data = contentType?.includes("json")
+      ? await response.json()
+      : { error: await response.text() };
+
+    if (!response.ok) throw new Error(data.error || "Auth failed");
+    window.location.reload();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+async function handleLogout() {
+  try {
+    const response = await fetch("/logout", { method: "POST" });
+    if (response.ok) {
+      window.location.reload();
+    }
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+}
+
+// Initialize Google client
+function initGoogleAuth() {
+  google.accounts.id.initialize({
+    client_id: "{{ GOOGLE_CLIENT_ID }}", // Replace with your actual client ID
+    callback: handleGoogleAuthResponse,
+  });
+}
+
+// Handle Google auth button click
+function handleGoogleAuth() {
+  google.accounts.id.prompt((notification) => {
+    if (notification.isNotDisplayed() || notification.isSkipped()) {
+      // Try fallback flow if popup blocked
+      google.accounts.id.renderButton(
+        document.getElementById("googleButtonContainer"),
+        {
+          theme: "filled_blue",
+          size: "large",
+          width: "400",
+        }
+      );
+    }
+  });
+}
+
+// Handle Google auth response
+async function handleGoogleAuthResponse(response) {
+  try {
+    const res = await fetch("/google-auth", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token: response.credential }),
+    });
+
+    if (!res.ok) throw new Error("Google authentication failed");
+    window.location.reload();
+  } catch (error) {
+    console.error("Google auth error:", error);
+    alert("Failed to authenticate with Google");
+  }
+}
+
+// Load Google library and initialize
+(function loadGoogleAuth() {
+  const script = document.createElement("script");
+  script.src = "https://accounts.google.com/gsi/client";
+  script.async = true;
+  script.defer = true;
+  document.head.appendChild(script);
+  script.onload = initGoogleAuth;
+})();
+
 // Update character counters
 const setupCharCounter = (inputId, countId, fieldName) => {
   const input = document.getElementById(inputId);
