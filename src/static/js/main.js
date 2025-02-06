@@ -192,15 +192,16 @@ function showAuthModal() {
         </div>
         <!-- Email/Password Form -->
         <form id="authForm" class="space-y-4">
+          <div id="authErrorMessage" class="text-sm text-red-500 mb-2 hidden"></div>
           <div>
             <label class="block text-sm font-medium mb-1">Email</label>
             <input type="email" id="authEmail" required
-                   class="w-full px-3 py-2 border rounded-lg">
+                  class="w-full px-3 py-2 border rounded-lg">
           </div>
           <div>
             <label class="block text-sm font-medium mb-1">Password</label>
             <input type="password" id="authPassword" required
-                   class="w-full px-3 py-2 border rounded-lg">
+                  class="w-full px-3 py-2 border rounded-lg">
           </div>
           <div class="flex gap-4">
             <button type="button" onclick="handleAuth('login')"
@@ -240,13 +241,23 @@ function showAuthModal() {
 
   document.addEventListener("keydown", handleKeyDown);
   document.body.appendChild(modal);
+  // Add input listeners to clear errors
+  modal.querySelectorAll("input").forEach((input) => {
+    input.addEventListener("input", () => {
+      document.getElementById("authErrorMessage").classList.add("hidden");
+    });
+  });
 }
 
 async function handleAuth(action) {
   const email = document.getElementById("authEmail").value;
   const password = document.getElementById("authPassword").value;
+  const errorMessage = document.getElementById("authErrorMessage");
 
   try {
+    errorMessage.textContent = "";
+    errorMessage.classList.add("hidden");
+
     const response = await fetch(`/${action}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -258,10 +269,11 @@ async function handleAuth(action) {
       ? await response.json()
       : { error: await response.text() };
 
-    if (!response.ok) throw new Error(data.error || "Auth failed");
+    if (!response.ok) throw new Error(data.error || "Authentication failed");
     window.location.reload();
   } catch (error) {
-    alert(error.message);
+    errorMessage.textContent = error.message;
+    errorMessage.classList.remove("hidden");
   }
 }
 
