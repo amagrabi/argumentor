@@ -598,9 +598,17 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     evaluationResults.style.display = "block";
     evaluationResults.classList.add("fade-in");
     evaluationResults.scrollIntoView({ behavior: "smooth" });
-    document.getElementById("userLevel").textContent = data.current_level;
-    document.getElementById("miniXpBar").firstElementChild.style.width =
-      data.level_info.progress_percent + "%";
+
+    const userLevelElem = document.getElementById("userLevel");
+    if (userLevelElem) {
+      userLevelElem.textContent = data.current_level;
+    }
+
+    const miniXpBarElem = document.getElementById("miniXpBar");
+    if (miniXpBarElem && miniXpBarElem.firstElementChild) {
+      miniXpBarElem.firstElementChild.style.width =
+        data.level_info.progress_percent + "%";
+    }
   } catch (error) {
     console.error("Error submitting answer:", error);
     document.getElementById("errorMessage").textContent =
@@ -821,10 +829,10 @@ document.getElementById("nextQuestion").addEventListener("click", async () => {
   }
 });
 
-document
-  .getElementById("loginForm")
-  .addEventListener("submit", function (event) {
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+  loginForm.addEventListener("submit", function (event) {
     event.preventDefault();
-    // Call your login function (for example, handleLogin)
     handleLogin();
   });
+}
