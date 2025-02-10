@@ -30,13 +30,30 @@ document.addEventListener("DOMContentLoaded", () => {
   // Attach click listeners to toggle active/inactive on each button.
   Object.keys(buttons).forEach((key) => {
     buttons[key].addEventListener("click", () => {
-      // Toggle the active state. Active: bg-gray-800 text-white; Inactive: bg-gray-100 text-gray-800.
       if (buttons[key].classList.contains("bg-gray-800")) {
-        buttons[key].classList.remove("bg-gray-800", "text-white");
-        buttons[key].classList.add("bg-gray-100", "text-gray-800");
+        // Switch to inactive state
+        buttons[key].classList.remove(
+          "bg-gray-800",
+          "text-white",
+          "button-active"
+        );
+        buttons[key].classList.add(
+          "bg-gray-100",
+          "text-gray-800",
+          "button-inactive"
+        );
       } else {
-        buttons[key].classList.remove("bg-gray-100", "text-gray-800");
-        buttons[key].classList.add("bg-gray-800", "text-white");
+        // Switch to active state
+        buttons[key].classList.remove(
+          "bg-gray-100",
+          "text-gray-800",
+          "button-inactive"
+        );
+        buttons[key].classList.add(
+          "bg-gray-800",
+          "text-white",
+          "button-active"
+        );
       }
       updateChartMultiple(answers, buttons);
     });
@@ -96,13 +113,16 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false, // Allows the chart to use available horizontal space
+      maintainAspectRatio: false,
       scales: {
         x: {
           title: {
             display: true,
             text: "Time",
             font: { size: 14 },
+          },
+          grid: {
+            display: true,
           },
         },
         y: {
@@ -121,17 +141,14 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
             text: "Ratings",
             font: { size: 14 },
           },
+          grid: {
+            display: false,
+          },
         },
       },
       plugins: {
         legend: {
-          display: true,
-          labels: {
-            usePointStyle: true, // Use circular point markers
-            pointStyle: "circle",
-            font: { size: 12 },
-            padding: 10,
-          },
+          display: false, // Hide the built-in legend
         },
         tooltip: {
           mode: "index",
