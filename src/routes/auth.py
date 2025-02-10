@@ -10,6 +10,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from config import get_settings
 from extensions import login_manager
 from models import Answer, User, db
+from services.leveling import get_level_info
 
 auth_bp = Blueprint("auth", __name__)
 SETTINGS = get_settings()
@@ -56,7 +57,21 @@ def signup():
 
         db.session.commit()
         login_user(user)
-        return jsonify({"message": "Account created successfully"})
+
+        # Calculate level info
+        level_info = get_level_info(user.xp)
+
+        return jsonify(
+            {
+                "message": "Account created successfully",
+                "user": {
+                    "username": user.username,
+                    "uuid": user.uuid,
+                    "xp": user.xp,
+                    "level_info": level_info,
+                },
+            }
+        )
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -71,19 +86,33 @@ def login():
         if "user_id" in session:
             anonymous_user = User.query.filter_by(uuid=session["user_id"]).first()
             if anonymous_user:
-                # Bulk update answers
                 db.session.execute(
                     update(Answer)
                     .where(Answer.user_uuid == anonymous_user.uuid)
                     .values(user_uuid=user.uuid)
                 )
-                # Merge XP and delete
                 user.xp += anonymous_user.xp
                 db.session.delete(anonymous_user)
                 db.session.commit()
 
         login_user(user)
-        return jsonify({"message": "Logged in successfully"})
+        session["user_id"] = user.uuid
+        session.modified = True  # Ensure session is marked as modified
+
+        # Calculate the level info here
+        level_info = get_level_info(user.xp)
+
+        return jsonify(
+            {
+                "message": "Logged in successfully",
+                "user": {
+                    "username": user.username,
+                    "uuid": user.uuid,
+                    "xp": user.xp,
+                    "level_info": level_info,  # Include the additional level information
+                },
+            }
+        )
     return jsonify({"error": "Invalid credentials"}), 401
 
 
@@ -152,3 +181,18 @@ def google_auth():
         return jsonify({"message": "Google login successful"})
     except ValueError:
         return jsonify({"error": "Invalid Google token"}), 401
+
+
+@auth_bp.route("/update_session", methods=["POST"])
+def update_session():
+    data = request.json
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    try:
+        # If data contains a nested "user", extract it.
+        user_data = data.get("user", data)
+        session["user_id"] = user_data.get("uuid")
+        session["xp"] = user_data.get("xp", 0)
+        return jsonify(user_data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

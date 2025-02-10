@@ -279,10 +279,70 @@ async function handleAuth(action) {
       : { error: await response.text() };
 
     if (!response.ok) throw new Error(data.error || "Authentication failed");
-    window.location.reload();
+
+    // Close the modal
+    const modal = document.querySelector('div[class*="fixed inset-0"]');
+    if (modal) modal.remove();
+
+    // Update the auth UI elements and session state
+    await updateAuthUI(data, false);
   } catch (error) {
     errorMessage.textContent = error.message;
     errorMessage.classList.remove("hidden");
+  }
+}
+
+// Add new function to handle session update and UI refresh
+async function updateAuthUI(userData, redirect = false) {
+  try {
+    const response = await fetch("/update_session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData),
+    });
+    if (!response.ok) throw new Error("Failed to update session");
+
+    // Get the returned data from /update_session and extract user info if available.
+    const result = await response.json();
+    const info = result.user || result;
+
+    // Replace login button with logout button
+    const loginButton = document.querySelector("#loginButton");
+    if (loginButton) {
+      const logoutButton = document.createElement("button");
+      logoutButton.className =
+        "bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm";
+      logoutButton.onclick = handleLogout;
+      logoutButton.textContent = "Logout";
+      loginButton.replaceWith(logoutButton);
+      console.log("Login button replaced with logout button");
+    } else {
+      console.log("Login button not found, assuming already logged in.");
+    }
+
+    // Update header elements using the fetched info.
+    const userLevelElem = document.getElementById("userLevelElem");
+    if (userLevelElem) {
+      userLevelElem.textContent = info.level_info.display_name;
+      console.log("User level updated:", info.level_info.display_name);
+    } else {
+      console.warn("User level element not found.");
+    }
+
+    const miniXpBarFill = document.getElementById("miniXpBarFill");
+    if (miniXpBarFill) {
+      miniXpBarFill.style.width = info.level_info.progress_percent + "%";
+      console.log("XP bar updated:", info.level_info.progress_percent + "%");
+    } else {
+      console.warn("Mini XP bar element not found.");
+    }
+
+    // Only redirect if the optional flag is set
+    if (redirect) {
+      window.location.replace("/profile");
+    }
+  } catch (error) {
+    console.error("Failed to update session:", error);
   }
 }
 
@@ -333,7 +393,13 @@ async function handleGoogleAuthResponse(response) {
     });
 
     if (!res.ok) throw new Error("Google authentication failed");
-    window.location.reload();
+
+    // Instead of reloading, just close modal and update UI
+    const modal = document.querySelector('div[class*="fixed inset-0"]');
+    if (modal) modal.remove();
+
+    // Update the auth UI elements
+    await updateAuthUI(null, false);
   } catch (error) {
     console.error("Google auth error:", error);
     alert("Failed to authenticate with Google");

@@ -53,15 +53,16 @@
           </button>
           {% else %}
           <button
+            id="loginButton"
             onclick="showAuthModal()"
             class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full"
           >
             Login
           </button>
           {% endif %}
-          <button
+          <a
             id="profileButton"
-            onclick="window.location.href='/profile'"
+            href="/profile"
             class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center"
           >
             <img
@@ -70,7 +71,7 @@
               src="https://img.icons8.com/windows/32/gender-neutral-user.png"
               alt="Profile"
             />
-          </button>
+          </a>
           <button
             id="settingsButton"
             class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center"
