@@ -45,11 +45,6 @@ textarea:focus {
   }
 }
 
-/* Profile icon styling */
-.profile-icon {
-  filter: grayscale(100%);
-}
-
 /* Educational Cards */
 .educational-card {
   border: 1px solid #e5e7eb;

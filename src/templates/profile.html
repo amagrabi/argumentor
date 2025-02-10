@@ -37,7 +37,7 @@
       <div class="mb-8">
         <!-- Account Info Section -->
         <div class="mb-6">
-          <!-- Flex container for account info header and profile picture -->
+          <!-- Flex container for account info header -->
           <div class="flex justify-between items-start">
             <div>
               <h3 class="text-lg font-semibold mb-2">Account Info</h3>
@@ -45,13 +45,7 @@
                 Username: {{ user.username or "Anonymous" }}
               </p>
             </div>
-            {% if user.profile_pic %}
-            <img
-              src="{{ user.profile_pic }}"
-              alt="Profile Picture"
-              class="w-16 h-16 rounded-full"
-            />
-            {% endif %}
+            <!-- Profile picture display removed -->
           </div>
 
           <p class="text-lg mt-2">Total XP: <strong>{{ xp }}</strong></p>
