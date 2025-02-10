@@ -453,5 +453,17 @@
 
     <!-- Include custom JavaScript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+      function initGoogleAuth() {
+        const meta = document.querySelector(
+          'meta[name="google-signin-client_id"]'
+        );
+        const clientId = meta ? meta.getAttribute("content") : "";
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleGoogleAuthResponse,
+        });
+      }
+    </script>
   </body>
 </html>

@@ -22,6 +22,7 @@ CREDENTIALS = service_account.Credentials.from_service_account_file(
 def add_cors_headers(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     return response
 
 
@@ -58,6 +59,10 @@ def create_app():
     app.before_request(ensure_user_id)
     app.before_request(log_visit)
     app.after_request(add_cors_headers)
+
+    @app.context_processor
+    def inject_client_id():
+        return dict(GOOGLE_CLIENT_ID=app.config.get("GOOGLE_CLIENT_ID"))
 
     return app
 

@@ -299,27 +299,26 @@ async function handleLogout() {
 
 // Initialize Google client
 function initGoogleAuth() {
+  const meta = document.querySelector('meta[name="google-signin-client_id"]');
+  const clientId = meta ? meta.getAttribute("content") : "";
   google.accounts.id.initialize({
-    client_id: "{{ GOOGLE_CLIENT_ID }}", // Replace with your actual client ID
+    client_id: clientId,
     callback: handleGoogleAuthResponse,
   });
 }
 
 // Handle Google auth button click
 function handleGoogleAuth() {
-  google.accounts.id.prompt((notification) => {
-    if (notification.isNotDisplayed() || notification.isSkipped()) {
-      // Try fallback flow if popup blocked
-      google.accounts.id.renderButton(
-        document.getElementById("googleButtonContainer"),
-        {
-          theme: "filled_blue",
-          size: "large",
-          width: "400",
-        }
-      );
-    }
-  });
+  console.log("Google auth button clicked");
+  if (google && google.accounts && google.accounts.id) {
+    google.accounts.id.prompt((notification) => {
+      console.log("Google prompt response:", notification);
+    });
+  } else {
+    console.error(
+      "Google API not available. Check if the script loaded properly."
+    );
+  }
 }
 
 // Handle Google auth response
