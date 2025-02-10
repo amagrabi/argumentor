@@ -30,17 +30,26 @@
     <main class="max-w-5xl mx-auto p-4">
       <!-- Profile Content -->
       <div class="mb-8">
+        <!-- Account Info Section -->
         <div class="mb-6">
-          <h3 class="text-lg font-semibold mb-2">Account Info</h3>
-          <p>Username: {{ user.username or "Anonymous" }}</p>
-          {% if user.profile_pic %}
-          <img
-            src="{{ user.profile_pic }}"
-            alt="Profile Picture"
-            class="w-16 h-16 rounded-full mt-2"
-          />
-          {% endif %}
-          <p class="text-lg">Total XP: <strong>{{ xp }}</strong></p>
+          <!-- Flex container for account info header and profile picture -->
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="text-lg font-semibold mb-2">Account Info</h3>
+              <p class="text-sm">
+                Username: {{ user.username or "Anonymous" }}
+              </p>
+            </div>
+            {% if user.profile_pic %}
+            <img
+              src="{{ user.profile_pic }}"
+              alt="Profile Picture"
+              class="w-16 h-16 rounded-full"
+            />
+            {% endif %}
+          </div>
+
+          <p class="text-lg mt-2">Total XP: <strong>{{ xp }}</strong></p>
           <p class="text-lg">
             Current Level: <strong>{{ level_info.display_name }}</strong>
           </p>
