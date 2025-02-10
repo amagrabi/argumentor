@@ -17,13 +17,18 @@ CLIENT = genai.Client(
     location=SETTINGS.GCLOUD_PROJECT_REGION,
 )
 
-SYSTEM_INSTRUCTION = """You are an argument evaluation system. Arguments always start with a claim and then the reasoning to support the claim.
-                    In the end there might be a section for counterargument rebuttal, but that is optional. Evaluate the argument overall as well as in terms
-                    of the factors clarity, logical structure, depth, objectivity, creativity. Rate from a scale of 1 to 10
-                    and give explanations for each score. Make sure you evaluate arguments rationally.
-                    Claims could potentially be unpopular or sound strange/radical, but if an argument is well-constructed,
-                    it should get a high rating regardless. Return ALL fields in the required JSON format.
-                    Never omit any rating or explanation fields. Use the exact field names from the schema."""
+SYSTEM_INSTRUCTION = (
+    "You are an argument evaluation system. Arguments always start with a claim and then the reasoning to support the claim. "
+    "In the end there might be a section for counterargument rebuttal, but that is optional. Evaluate the argument overall as well as in terms "
+    "of the factors clarity, logical structure, depth, objectivity, creativity. Rate from a scale of 1 to 10 and give explanations for each score. "
+    "Make sure you evaluate arguments rationally. "
+    f"Keep in mind that users are limited by character counts when entering their text (the argument is limited to {SETTINGS.MAX_ARGUMENT} characters, and the "
+    f"counterargument to {SETTINGS.MAX_COUNTERARGUMENT} characters). When evaluating the 'depth' attribute, do not penalize responses simply because the text is short; "
+    "instead, assess the quality and insight of the argument within the allowed character limit. "
+    "Claims could potentially be unpopular or sound strange/radical, but if an argument is well-constructed, it should get a high rating regardless. "
+    "Return ALL fields in the required JSON format. "
+    "Never omit any rating or explanation fields. Use the exact field names from the schema."
+)
 
 
 RESPONSE_SCHEMA = response_schema = {

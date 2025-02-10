@@ -49,9 +49,9 @@ def submit_answer():
         return jsonify({"error": "Both claim and argument are required"}), 400
 
     if (
-        len(claim) > 200
-        or len(argument) > 1000
-        or (counterargument and len(counterargument) > 500)
+        len(claim) > SETTINGS.MAX_CLAIM
+        or len(argument) > SETTINGS.MAX_ARGUMENT
+        or (counterargument and len(counterargument) > SETTINGS.MAX_COUNTERARGUMENT)
     ):
         return jsonify({"error": "Character limit exceeded"}), 400
 

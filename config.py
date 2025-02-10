@@ -24,6 +24,12 @@ class Settings(BaseSettings):
 
     USE_LLM_EVALUATOR: bool = Field(default=True)
 
+    MODEL: str = Field(default="gemini-2.0-flash-001")
+
+    MAX_CLAIM: int = Field(default=200)
+    MAX_ARGUMENT: int = Field(default=1000)
+    MAX_COUNTERARGUMENT: int = Field(default=500)
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

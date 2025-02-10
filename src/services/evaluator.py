@@ -5,7 +5,10 @@ from typing import Dict
 
 from google.genai import types
 
+from config import get_settings
 from services.llm import CLIENT, RESPONSE_SCHEMA, SYSTEM_INSTRUCTION
+
+SETTINGS = get_settings()
 
 
 class BaseEvaluator(ABC):
@@ -70,7 +73,7 @@ class LLMEvaluator(BaseEvaluator):
             Counterargument Rebuttal (Optional): {counterargument}
         """
         response = CLIENT.models.generate_content(
-            model="gemini-2.0-flash-001",
+            model=SETTINGS.MODEL,
             contents=[
                 types.Content(
                     role="user",
