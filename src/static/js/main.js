@@ -599,15 +599,15 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     evaluationResults.classList.add("fade-in");
     evaluationResults.scrollIntoView({ behavior: "smooth" });
 
-    const userLevelElem = document.getElementById("userLevel");
+    // Update header elements immediately after answer submission
+    const userLevelElem = document.getElementById("userLevelElem");
     if (userLevelElem) {
       userLevelElem.textContent = data.current_level;
     }
 
-    const miniXpBarElem = document.getElementById("miniXpBar");
-    if (miniXpBarElem && miniXpBarElem.firstElementChild) {
-      miniXpBarElem.firstElementChild.style.width =
-        data.level_info.progress_percent + "%";
+    const miniXpBarFill = document.getElementById("miniXpBarFill");
+    if (miniXpBarFill) {
+      miniXpBarFill.style.width = data.level_info.progress_percent + "%";
     }
   } catch (error) {
     console.error("Error submitting answer:", error);
