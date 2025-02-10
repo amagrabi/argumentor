@@ -8,6 +8,7 @@ from extensions import db
 
 class User(db.Model, UserMixin):
     uuid = db.Column(db.String(36), primary_key=True)
+    username = db.Column(db.String(255), unique=True, nullable=True)
     xp = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
     answers = db.relationship("Answer", backref="user", lazy=True)

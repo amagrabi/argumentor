@@ -24,7 +24,7 @@ def load_user(user_uuid):
 def signup():
     try:
         data = request.json
-        email = data.get("email")
+        username = data.get("username")
         password = data.get("password")
 
         # Check for existing anonymous user
@@ -32,13 +32,13 @@ def signup():
         if "user_id" in session:
             anonymous_user = User.query.filter_by(uuid=session["user_id"]).first()
 
-        if User.query.filter_by(email=email).first():
-            return jsonify({"error": "Email already exists"}), 400
+        if User.query.filter_by(username=username).first():
+            return jsonify({"error": "Username already exists"}), 400
 
         # Create and flush new user first to generate UUID
         user = User(
             uuid=str(uuid.uuid4()),
-            email=email,
+            username=username,
             password_hash=generate_password_hash(password),
             xp=anonymous_user.xp if anonymous_user else session.get("xp", 0),
         )
@@ -64,7 +64,8 @@ def signup():
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.json
-    user = User.query.filter_by(email=data.get("email")).first()
+    username = data.get("username")
+    user = User.query.filter_by(username=username).first()
 
     if user and check_password_hash(user.password_hash, data.get("password")):
         if "user_id" in session:
@@ -104,10 +105,13 @@ def google_auth():
 
         user = User.query.filter_by(google_id=id_info["sub"]).first()
         if not user:
+            # Use the Google email as the username; you could transform it if needed.
+            google_email = id_info["email"]
             user = User(
                 uuid=str(uuid.uuid4()),
                 google_id=id_info["sub"],
-                email=id_info["email"],
+                username=google_email,  # Assign email as the username
+                email=google_email,  # Optionally store the email too
                 profile_pic=id_info.get("picture"),
                 xp=session.get("xp", 0),
             )

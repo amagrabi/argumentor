@@ -195,7 +195,7 @@ function showAuthModal() {
           <div id="authErrorMessage" class="text-sm text-red-500 mb-2 hidden"></div>
           <div>
             <label class="block text-sm font-medium mb-1">Username</label>
-            <input type="email" id="authEmail" required
+            <input type="text" id="authUsername" required
                   class="w-full px-3 py-2 border rounded-lg">
           </div>
           <div>
@@ -204,8 +204,7 @@ function showAuthModal() {
                   class="w-full px-3 py-2 border rounded-lg">
           </div>
           <div class="flex gap-4">
-            <button type="button" onclick="handleAuth('login')"
-                    class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+            <button type="submit" class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
               Login
             </button>
             <button type="button" onclick="handleAuth('signup')"
@@ -224,12 +223,13 @@ function showAuthModal() {
           </button>
         </div>
       </div>
-        </div>
+    </div>
   `;
+
   // Clear any existing modals first
   document
     .querySelectorAll('div[class*="fixed inset-0"]')
-    .forEach((modal) => modal.remove());
+    .forEach((existingModal) => existingModal.remove());
 
   // Add ESC key listener
   const handleKeyDown = (e) => {
@@ -238,10 +238,19 @@ function showAuthModal() {
       document.removeEventListener("keydown", handleKeyDown);
     }
   };
-
   document.addEventListener("keydown", handleKeyDown);
+
+  // Append modal to document
   document.body.appendChild(modal);
-  // Add input listeners to clear errors
+
+  // IMPORTANT: Attach submit event listener AFTER the modal (and its form) is added to the DOM
+  const authForm = modal.querySelector("#authForm");
+  authForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    handleAuth("login");
+  });
+
+  // Add input listeners to clear error messages
   modal.querySelectorAll("input").forEach((input) => {
     input.addEventListener("input", () => {
       document.getElementById("authErrorMessage").classList.add("hidden");
@@ -250,7 +259,7 @@ function showAuthModal() {
 }
 
 async function handleAuth(action) {
-  const email = document.getElementById("authEmail").value;
+  const username = document.getElementById("authUsername").value;
   const password = document.getElementById("authPassword").value;
   const errorMessage = document.getElementById("authErrorMessage");
 
@@ -261,7 +270,7 @@ async function handleAuth(action) {
     const response = await fetch(`/${action}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ username, password }),
     });
 
     const contentType = response.headers.get("content-type");
@@ -812,3 +821,11 @@ document.getElementById("nextQuestion").addEventListener("click", async () => {
       "Failed to load new question";
   }
 });
+
+document
+  .getElementById("loginForm")
+  .addEventListener("submit", function (event) {
+    event.preventDefault();
+    // Call your login function (for example, handleLogin)
+    handleLogin();
+  });
