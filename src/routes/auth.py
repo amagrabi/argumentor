@@ -105,16 +105,30 @@ def google_auth():
 
         user = User.query.filter_by(google_id=id_info["sub"]).first()
         if not user:
-            # Use the Google email as the username; you could transform it if needed.
+            # Handle anonymous user data transfer
+            anonymous_user = None
+            if "user_id" in session:
+                anonymous_user = User.query.filter_by(uuid=session["user_id"]).first()
+
+            # Create new user
             google_email = id_info["email"]
             user = User(
                 uuid=str(uuid.uuid4()),
                 google_id=id_info["sub"],
-                username=google_email,  # Assign email as the username
-                email=google_email,  # Optionally store the email too
+                username=google_email,
+                email=google_email,
                 profile_pic=id_info.get("picture"),
-                xp=session.get("xp", 0),
+                xp=0 if anonymous_user is None else anonymous_user.xp,
             )
+            if anonymous_user:
+                # Transfer answers and XP
+                db.session.execute(
+                    update(Answer)
+                    .where(Answer.user_uuid == anonymous_user.uuid)
+                    .values(user_uuid=user.uuid)
+                )
+                db.session.delete(anonymous_user)
+
             db.session.add(user)
             db.session.commit()
         login_user(user)
