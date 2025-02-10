@@ -30,7 +30,7 @@ DEV=true USE_LLM_EVALUATOR=false python -m src.app
 Start app in production:
 
 ```sh
-gunicorn --bind 0.0.0.0:8000 src.app:app
+gunicorn --bind localhost:8000 src.app:app
 ```
 
 ## Development

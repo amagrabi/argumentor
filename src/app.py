@@ -72,4 +72,4 @@ app = create_app()
 
 if __name__ == "__main__":
     debug = True if SETTINGS.DEV else False
-    app.run(debug=debug)
+    app.run(debug=debug, host="localhost", port=8000)
