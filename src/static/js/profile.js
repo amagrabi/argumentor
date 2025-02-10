@@ -122,7 +122,7 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
             font: { size: 14 },
           },
           grid: {
-            display: true,
+            display: false,
           },
         },
         y: {
@@ -142,13 +142,14 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
             font: { size: 14 },
           },
           grid: {
-            display: false,
+            display: true,
+            color: "rgba(0, 0, 0, 0.04)",
           },
         },
       },
       plugins: {
         legend: {
-          display: false, // Hide the built-in legend
+          display: false,
         },
         tooltip: {
           mode: "index",
