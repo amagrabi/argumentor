@@ -152,6 +152,24 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
           display: false,
         },
         tooltip: {
+          usePointStyle: true,
+          callbacks: {
+            labelColor: function (context) {
+              return {
+                backgroundColor: context.dataset.borderColor,
+                borderColor: context.dataset.borderColor,
+                borderWidth: 1,
+                borderRadius: 50,
+                pointStyle: "circle",
+              };
+            },
+            labelPointStyle: function (context) {
+              return {
+                pointStyle: "circle",
+                rotation: 0,
+              };
+            },
+          },
           mode: "index",
           intersect: false,
           titleFont: { size: 14 },
