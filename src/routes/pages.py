@@ -84,6 +84,14 @@ def profile():
         return redirect(url_for("pages.home"))
 
     level_info = get_level_info(user.xp)
+    # Convert answers to dictionaries for JSON serialization
+    answers_dict = [answer.to_dict() for answer in user.answers]
     # Sync session XP with database
     session["xp"] = user.xp
-    return render_template("profile.html", xp=user.xp, level_info=level_info, user=user)
+    return render_template(
+        "profile.html",
+        xp=user.xp,
+        level_info=level_info,
+        user=user,
+        answers_json=answers_dict,
+    )

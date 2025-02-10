@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your Profile - ArguMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   {% macro score_color(score) -%} {% set score_float = score|float|round(1,
   'common') %} {% if score_float >= 9.95 %} text-emerald-600 bg-emerald-50 {%
@@ -14,6 +15,10 @@
   text-red-600 bg-red-50 {% endif %} {%- endmacro %}
 
   <body class="bg-white min-h-screen">
+    <script id="answersData" type="application/json">
+      {{ answers_json | tojson }}
+    </script>
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
     <!-- Updated header to match other pages -->
     <header class="bg-gray-800 p-4">
       <div class="max-w-5xl mx-auto flex justify-between items-center">
@@ -66,7 +71,64 @@
         </div>
 
         <div>
-          <h2 class="text-2xl font-bold mb-4">Your Answers</h2>
+          <h2 class="text-2xl font-bold mb-4">Progress Over Time</h2>
+
+          <div class="mb-8 max-w-full mx-auto px-4">
+            <div
+              class="bg-white p-4 rounded-lg shadow w-full"
+              style="height: 300px"
+            >
+              <div class="flex items-center justify-center mb-4">
+                <div class="flex gap-2">
+                  <button
+                    id="showOverall"
+                    class="px-3 py-1 rounded-full bg-gray-800 text-white text-sm"
+                  >
+                    Overall
+                  </button>
+                  <button
+                    id="showLogic"
+                    class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
+                  >
+                    Logical Structure
+                  </button>
+                  <button
+                    id="showClarity"
+                    class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
+                  >
+                    Clarity
+                  </button>
+                  <button
+                    id="showDepth"
+                    class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
+                  >
+                    Depth
+                  </button>
+                  <button
+                    id="showObjectivity"
+                    class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
+                  >
+                    Objectivity
+                  </button>
+                  <button
+                    id="showCreativity"
+                    class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
+                  >
+                    Creativity
+                  </button>
+                </div>
+              </div>
+              <div
+                class="flex justify-center"
+                style="position: relative; height: 200px"
+              >
+                <canvas id="progressChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="text-xl font-bold mb-4">Your Answers</h2>
+
           {% if user and user.answers %}
           <ul class="space-y-4">
             {% for answer in user.answers|sort(attribute='created_at')|reverse

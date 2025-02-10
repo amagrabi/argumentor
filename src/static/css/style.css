@@ -87,6 +87,12 @@ textarea:focus {
   }
 }
 
+@media (min-width: 768px) {
+  .max-w-full {
+    max-width: 100%;
+  }
+}
+
 /* Answer history text wrapping */
 .answer-content {
   max-width: 90vw;

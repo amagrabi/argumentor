@@ -43,6 +43,19 @@ class Answer(db.Model):
     def __repr__(self):
         return f"<Answer {self.id} for user {self.user_uuid}>"
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "question_text": self.question_text,
+            "claim": self.claim,
+            "argument": self.argument,
+            "counterargument": self.counterargument,
+            "evaluation_scores": self.evaluation_scores,
+            "evaluation_feedback": self.evaluation_feedback,
+            "xp_earned": self.xp_earned,
+            "created_at": self.created_at.isoformat(),
+        }
+
 
 class Visit(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
