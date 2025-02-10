@@ -286,6 +286,19 @@ async function handleAuth(action) {
 
     // Update the auth UI elements and session state
     await updateAuthUI(data, false);
+
+    // If we are on the profile page, reload to display the new authenticated context.
+    if (window.location.pathname === "/profile") {
+      window.location.reload();
+    }
+
+    // Remove the warning box on the feedback screen if present
+    const warningBox = document.querySelector(
+      "#evaluationResults .bg-yellow-100"
+    );
+    if (warningBox) {
+      warningBox.remove();
+    }
   } catch (error) {
     errorMessage.textContent = error.message;
     errorMessage.classList.remove("hidden");
@@ -400,6 +413,13 @@ async function handleGoogleAuthResponse(response) {
 
     // Update the auth UI elements
     await updateAuthUI(null, false);
+
+    const warningBox = document.querySelector(
+      "#evaluationResults .bg-yellow-100"
+    );
+    if (warningBox) {
+      warningBox.remove();
+    }
   } catch (error) {
     console.error("Google auth error:", error);
     alert("Failed to authenticate with Google");

@@ -400,6 +400,36 @@
             Next Level: <span id="nextLevel">Level 2 (Inquisitive Mind)</span>
           </p>
         </div>
+        <!-- Warning for users not logged in -->
+        {% if not current_user.is_authenticated %}
+        <div
+          class="mt-4 mb-4 w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"
+        >
+          You are currently not logged in. To avoid losing your progress and
+          submitted answers, log in
+          <a
+            href="#"
+            onclick="showAuthModal()"
+            class="text-gray-800 underline hover:text-gray-600"
+            >here</a
+          >.
+        </div>
+        {% endif %}
+        <!-- Additional instructions/link to the profile page -->
+        <div class="mt-4 text-center">
+          <p class="text-sm">
+            Check your
+            <a
+              href="/profile"
+              class="text-gray-800 underline hover:text-gray-600"
+            >
+              User Profile
+            </a>
+            to review answered questions and track your progress.
+          </p>
+        </div>
+
+        <!-- Next Question Button -->
         <div class="mt-6 text-center">
           <button
             id="nextQuestion"
@@ -407,18 +437,6 @@
           >
             Next Question
           </button>
-        </div>
-        <!-- New message with link to the user profile -->
-        <div class="mt-4 text-center">
-          <p class="text-sm">
-            Check your
-            <a
-              href="/profile"
-              class="text-gray-800 underline hover:text-gray-600"
-              >User Profile</a
-            >
-            to review answered questions and track your progress.
-          </p>
         </div>
       </div>
 
