@@ -545,6 +545,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     document
       .getElementById("submitChallengeResponse")
       .addEventListener("click", async () => {
+        const startTime = Date.now(); // Add timestamp tracking
         const challengeResponse = document
           .getElementById("challengeResponseInput")
           .value.trim();
@@ -563,7 +564,11 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
         }
 
         const submitBtn = document.getElementById("submitChallengeResponse");
-        submitBtn.innerHTML = `<span class="loading-dots"><span class="animate-pulse">Analyzing</span></span>`;
+        submitBtn.innerHTML = `
+          <span class="loading-dots">
+            <span class="animate-pulse">Analyzing</span>
+          </span>
+        `;
         submitBtn.disabled = true;
 
         try {
@@ -575,6 +580,16 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
               answer_id: answerId,
             }),
           });
+
+          // Calculate and enforce minimum display time
+          if (response.ok) {
+            const elapsed = Date.now() - startTime;
+            if (elapsed < 3000) {
+              await new Promise((resolve) =>
+                setTimeout(resolve, 3000 - elapsed)
+              );
+            }
+          }
 
           const data = await response.json();
           if (!response.ok) {
