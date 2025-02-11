@@ -438,6 +438,50 @@
             Next Question
           </button>
         </div>
+
+        <!-- New Challenge Response Section -->
+        <div
+          id="challengeSection"
+          class="hidden mt-8 p-8 bg-gray-50 rounded-lg shadow-sm"
+        >
+          <h2 class="text-2xl font-bold mb-4">Challenge Response</h2>
+          <p id="challengeText" class="mb-4 text-gray-700"></p>
+          <div>
+            <label
+              for="challengeResponseInput"
+              class="block text-lg font-bold mb-2"
+              >Your Response to the Challenge</label
+            >
+            <textarea
+              id="challengeResponseInput"
+              class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
+              placeholder="Refine your argument in response to the challenge..."
+              maxlength="1000"
+            ></textarea>
+            <div class="mt-1 text-sm text-gray-500">
+              <span
+                >Characters remaining:
+                <span id="challengeCount">1000</span></span
+              >
+            </div>
+          </div>
+          <div class="mt-4">
+            <div
+              id="challengeErrorMessage"
+              class="text-sm text-red-500 mb-1"
+            ></div>
+            <button
+              id="submitChallengeResponse"
+              class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"
+            >
+              Submit Challenge Response
+            </button>
+          </div>
+          <!-- Container for displaying challenge evaluation feedback -->
+          <div id="challengeEvaluationResults" class="mt-8 hidden">
+            <!-- Populated after challenge response evaluation -->
+          </div>
+        </div>
       </div>
 
       <div

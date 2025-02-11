@@ -1,22 +1,14 @@
 import json
 import random
-from abc import ABC, abstractmethod
 from typing import Dict
 
 from google.genai import types
 
 from config import get_settings
+from services.base_evaluator import BaseEvaluator
 from services.llm import CLIENT, RESPONSE_SCHEMA, SYSTEM_INSTRUCTION
 
 SETTINGS = get_settings()
-
-
-class BaseEvaluator(ABC):
-    @abstractmethod
-    def evaluate(
-        self, question_text: str, claim: str, argument: str, counterargument: str
-    ) -> Dict:
-        pass
 
 
 class DummyEvaluator(BaseEvaluator):
@@ -49,11 +41,15 @@ class DummyEvaluator(BaseEvaluator):
         else:
             overall_feedback = "Your response shows potential but needs significant refinement in its reasoning."
 
+        # Generate a dummy challenge that prompts the user to refine further.
+        challenge_text = "While your argument is persuasive, consider addressing potential counterarguments and clarifying any ambiguous points."
+
         return {
             "scores": scores,
             "total_score": total_score,
             "feedback": feedback,
             "overall_feedback": overall_feedback,
+            "challenge": challenge_text,
         }
 
 

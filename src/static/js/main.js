@@ -695,6 +695,112 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     if (miniXpBarFill) {
       miniXpBarFill.style.width = data.level_info.progress_percent + "%";
     }
+
+    // After a successful answer submission, store the answer ID for later use:
+    if (data.answer_id) {
+      sessionStorage.setItem("lastAnswerId", data.answer_id);
+    }
+
+    // If the evaluation contains a challenge, display the challenge text and reveal the challenge section.
+    if (data.evaluation.challenge) {
+      const challengeSection = document.getElementById("challengeSection");
+      const challengeTextElem = document.getElementById("challengeText");
+      challengeTextElem.textContent = data.evaluation.challenge;
+      challengeSection.classList.remove("hidden");
+    }
+
+    // Update character count for the challenge response text area.
+    document
+      .getElementById("challengeResponseInput")
+      .addEventListener("input", (e) => {
+        const max = 1000;
+        const remaining = max - e.target.value.length;
+        document.getElementById("challengeCount").textContent = remaining;
+      });
+
+    // Challenge Response submission handler.
+    document
+      .getElementById("submitChallengeResponse")
+      .addEventListener("click", async () => {
+        const challengeResponse = document
+          .getElementById("challengeResponseInput")
+          .value.trim();
+        const challengeErrorMessage = document.getElementById(
+          "challengeErrorMessage"
+        );
+        if (!challengeResponse) {
+          challengeErrorMessage.textContent =
+            "Please provide a response to the challenge.";
+          return;
+        }
+        const answerId = sessionStorage.getItem("lastAnswerId");
+        if (!answerId) {
+          challengeErrorMessage.textContent = "No associated answer found.";
+          return;
+        }
+
+        const submitBtn = document.getElementById("submitChallengeResponse");
+        submitBtn.innerHTML = `<span class="loading-dots"><span class="animate-pulse">Analyzing</span></span>`;
+        submitBtn.disabled = true;
+
+        try {
+          const response = await fetch("/submit_challenge_response", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              challenge_response: challengeResponse,
+              answer_id: answerId,
+            }),
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            challengeErrorMessage.textContent =
+              data.error || "Submission failed";
+            submitBtn.innerHTML = "Submit Challenge Response";
+            submitBtn.disabled = false;
+            return;
+          }
+
+          // Display challenge evaluation feedback (similar to primary evaluation).
+          const challengeEvalDiv = document.getElementById(
+            "challengeEvaluationResults"
+          );
+          const totalScore = data.evaluation.total_score;
+          const totalScoreColor = scoreToColor(totalScore);
+
+          challengeEvalDiv.innerHTML = `
+          <p class="text-l font-bold mb-2">
+            Challenge Response Total Score: <span id="challengeTotalScoreValue" style="color: ${totalScoreColor};">${totalScore.toFixed(
+            1
+          )}/10</span>
+          </p>
+          <p class="text-md">
+            ${data.evaluation.overall_feedback}
+          </p>
+        `;
+          challengeEvalDiv.classList.remove("hidden");
+
+          // Update XP and level info.
+          document.getElementById("xpGained").innerHTML =
+            "<strong>" + data.challenge_xp_earned + "</strong>";
+          document.getElementById("currentLevel").innerHTML =
+            "<strong>" + data.current_level + "</strong>";
+          document.getElementById("xpProgressText").textContent =
+            data.level_info.xp_into_level + " / " + data.level_info.xp_needed;
+          document.getElementById("nextLevel").textContent =
+            data.level_info.next_level;
+
+          submitBtn.innerHTML = "Submit Challenge Response";
+          submitBtn.disabled = false;
+        } catch (error) {
+          console.error("Error submitting challenge response:", error);
+          challengeErrorMessage.textContent =
+            "Submission failed, server error. Please try again.";
+          submitBtn.innerHTML = "Submit Challenge Response";
+          submitBtn.disabled = false;
+        }
+      });
   } catch (error) {
     console.error("Error submitting answer:", error);
     document.getElementById("errorMessage").textContent =

@@ -126,10 +126,11 @@ def submit_answer():
             "Overall": evaluation["total_score"],
         },
         evaluation_feedback={
-            **evaluation["feedback"],  # Changed from data["evaluation"]
+            **evaluation["feedback"],
             "Overall": evaluation["overall_feedback"],
         },
         xp_earned=xp_gained,
+        challenge=evaluation.get("challenge"),
     )
     db.session.add(new_answer)
     db.session.commit()
@@ -147,6 +148,79 @@ def submit_answer():
             "total_xp": new_xp,
             "xp_gained": xp_gained,
             "current_xp": new_xp,
+            "current_level": level_info["display_name"],
+            "leveled_up": leveled_up,
+            "level_info": level_info,
+            "answer_id": new_answer.id,
+        }
+    )
+
+
+def evaluate_challenge_response(challenge_text, challenge_response):
+    evaluator = create_evaluator()
+    # We create a modified prompt by using the challenge text and the user's response.
+    # For simplicity, we pass:
+    return evaluator.evaluate(challenge_text, challenge_response, "", "")
+
+
+@answers_bp.route("/submit_challenge_response", methods=["POST"])
+def submit_challenge_response():
+    if not request.is_json:
+        return jsonify({"error": "Content-Type must be application/json"}), 400
+
+    data = request.json
+    challenge_response = data.get("challenge_response", "").strip()
+    answer_id = data.get("answer_id")
+
+    if not challenge_response:
+        return jsonify({"error": "Challenge response is required"}), 400
+    if len(challenge_response) > SETTINGS.MAX_ARGUMENT:
+        return jsonify({"error": "Character limit exceeded"}), 400
+
+    answer = Answer.query.filter_by(id=answer_id).first()
+    if not answer:
+        return jsonify({"error": "Answer not found"}), 404
+    if not answer.challenge:
+        return jsonify({"error": "No challenge available for this answer"}), 400
+
+    evaluation = evaluate_challenge_response(answer.challenge, challenge_response)
+    xp_gained = sum(evaluation["scores"].values())
+
+    user_uuid = session.get("user_id")
+    user = User.query.filter_by(uuid=user_uuid).first()
+    old_xp = user.xp if user else 0
+    new_xp = old_xp + xp_gained
+    session["xp"] = new_xp
+
+    answer.challenge_response = challenge_response
+    answer.challenge_evaluation_scores = {
+        **evaluation["scores"],
+        "Overall": evaluation["total_score"],
+    }
+    answer.challenge_evaluation_feedback = {
+        **evaluation["feedback"],
+        "Overall": evaluation["overall_feedback"],
+    }
+    answer.challenge_xp_earned = xp_gained
+
+    if user:
+        user.xp = new_xp
+    else:
+        user = User(uuid=user_uuid, xp=new_xp)
+        db.session.add(user)
+
+    db.session.commit()
+
+    old_level = get_level(old_xp)
+    new_level = get_level(new_xp)
+    leveled_up = old_level != new_level
+    level_info = get_level_info(new_xp)
+
+    return jsonify(
+        {
+            "evaluation": evaluation,
+            "challenge_xp_earned": xp_gained,
+            "total_xp": new_xp,
             "current_level": level_info["display_name"],
             "leveled_up": leveled_up,
             "level_info": level_info,

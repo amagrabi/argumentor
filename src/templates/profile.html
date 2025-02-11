@@ -201,6 +201,22 @@
                       >{{ answer.counterargument }}</span
                     >
                   </p>
+                  {% endif %} {% if answer.challenge %}
+                  <p class="text-sm break-words mt-1">
+                    <span class="font-medium text-sm text-black"
+                      >Challenge:</span
+                    >
+                    <span class="text-gray-600">{{ answer.challenge }}</span>
+                  </p>
+                  {% endif %} {% if answer.challenge_response %}
+                  <p class="text-sm break-words mt-1">
+                    <span class="font-medium text-sm text-black"
+                      >Challenge Response:</span
+                    >
+                    <span class="text-gray-600"
+                      >{{ answer.challenge_response }}</span
+                    >
+                  </p>
                   {% endif %}
 
                   <!-- Overall Rating -->

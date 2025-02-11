@@ -36,6 +36,18 @@ class Answer(db.Model):
     evaluation_scores = db.Column(db.JSON, default=dict, nullable=False)
     evaluation_feedback = db.Column(db.JSON, default=dict, nullable=False)
     xp_earned = db.Column(db.Integer, nullable=False)
+
+    # Challenge refinement feature:
+    challenge = db.Column(
+        db.Text, nullable=True
+    )  # The LLM–generated challenge text for the original argument
+    challenge_response = db.Column(
+        db.Text, nullable=True
+    )  # The user's response to the challenge
+    challenge_evaluation_scores = db.Column(db.JSON, default=dict, nullable=False)
+    challenge_evaluation_feedback = db.Column(db.JSON, default=dict, nullable=False)
+    challenge_xp_earned = db.Column(db.Integer, nullable=False, default=0)
+
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
 
     __table_args__ = (db.Index("ix_user_question", "user_uuid", "question_id"),)
@@ -53,6 +65,11 @@ class Answer(db.Model):
             "evaluation_scores": self.evaluation_scores,
             "evaluation_feedback": self.evaluation_feedback,
             "xp_earned": self.xp_earned,
+            "challenge": self.challenge,
+            "challenge_response": self.challenge_response,
+            "challenge_evaluation_scores": self.challenge_evaluation_scores,
+            "challenge_evaluation_feedback": self.challenge_evaluation_feedback,
+            "challenge_xp_earned": self.challenge_xp_earned,
             "created_at": self.created_at.isoformat(),
         }
 
