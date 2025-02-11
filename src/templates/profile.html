@@ -169,13 +169,36 @@
             <li
               class="border p-4 rounded-lg group hover:bg-gray-50 transition-colors"
             >
-              <div class="flex justify-between items-start">
+              <div class="relative">
                 <p class="font-bold text-gray-800">
                   {{ answer.question_text }}
                 </p>
-                <div class="text-sm text-gray-500 text-right">
-                  <p>+{{ answer.xp_earned }} XP</p>
+                <div
+                  class="absolute top-0 right-0 text-sm text-gray-500 text-right"
+                >
+                  <p>+{{ answer.xp_earned + answer.challenge_xp_earned }} XP</p>
                   <p>{{ answer.created_at.strftime('%Y-%m-%d') }}</p>
+                  <p>
+                    Argument:
+                    <span
+                      class="ml-1 text-sm {{ score_color((answer.evaluation_scores.values() | sum) / (answer.evaluation_scores.values() | length)) }}"
+                      >{{ "%.1f"|format((answer.evaluation_scores.values() |
+                      sum) / (answer.evaluation_scores.values() | length))
+                      }}/10</span
+                    >
+                  </p>
+                  {% if answer.challenge and answer.challenge_evaluation_scores
+                  %}
+                  <p>
+                    Challenge:
+                    <span
+                      class="ml-1 text-sm {{ score_color(answer.challenge_evaluation_scores.Overall) }}"
+                      >{{
+                      "%.1f"|format(answer.challenge_evaluation_scores.Overall)
+                      }}/10</span
+                    >
+                  </p>
+                  {% endif %}
                 </div>
               </div>
 
@@ -218,32 +241,6 @@
                     >
                   </p>
                   {% endif %}
-
-                  <!-- Overall Rating -->
-                  <div class="mt-2">
-                    <div class="flex items-center space-x-2">
-                      <span class="font-medium text-sm">Overall Rating:</span>
-                      <span
-                        class="px-2 py-1 rounded-full text-xs {{ score_color((answer.evaluation_scores.values() | sum) / (answer.evaluation_scores.values() | length)) }}"
-                      >
-                        {{ "%.1f"|format((answer.evaluation_scores.values() |
-                        sum) / (answer.evaluation_scores.values() |
-                        length)|float) }}/10
-                      </span>
-                    </div>
-
-                    <!-- Category Scores -->
-                    <div class="flex flex-wrap gap-2 mt-2">
-                      {% for category, score in answer.evaluation_scores.items()
-                      %} {% if category != "Overall" %}
-                      <div
-                        class="px-2 py-1 rounded-full text-xs {{ score_color(score) }}"
-                      >
-                        {{ category }}: {{ "%.0f"|format(score) }}/10
-                      </div>
-                      {% endif %} {% endfor %}
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -271,20 +268,86 @@
                   </svg>
                 </div>
                 <div class="hidden mt-2 space-y-2 text-sm text-gray-600">
-                  <!-- Overall Feedback -->
-                  <p>
-                    <span class="font-medium text-black">Overall:</span> {{
-                    answer.evaluation_feedback.Overall }}
+                  <!-- Main Evaluation Feedback with inline Ratings (heading then rating badge on right) -->
+                  <p class="flex flex-col">
+                    <span class="flex items-center">
+                      <span class="font-medium text-black">Overall:</span>
+                      <span
+                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color((answer.evaluation_scores.values() | sum) / (answer.evaluation_scores.values() | length)) }}"
+                      >
+                        {{ "%.1f"|format((answer.evaluation_scores.values() |
+                        sum) / (answer.evaluation_scores.values() | length))
+                        }}/10
+                      </span>
+                    </span>
+                    <span>{{ answer.evaluation_feedback.Overall }}</span>
                   </p>
-                  <!-- Individual Category Feedback -->
                   {% for category, feedback in
                   answer.evaluation_feedback.items() %} {% if category !=
                   "Overall" %}
-                  <p>
-                    <span class="font-medium text-black">{{ category }}:</span>
-                    {{ feedback }}
+                  <p class="flex flex-col">
+                    <span class="flex items-center">
+                      <span class="font-medium text-black"
+                        >{{ category }}:</span
+                      >
+                      {% if answer.evaluation_scores[category] is defined %}
+                      <span
+                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.evaluation_scores[category]) }}"
+                      >
+                        {{ "%.1f"|format(answer.evaluation_scores[category])
+                        }}/10
+                      </span>
+                      {% endif %}
+                    </span>
+                    <span>{{ feedback }}</span>
                   </p>
                   {% endif %} {% endfor %}
+
+                  <!-- Challenge Feedback Section (if available) -->
+                  {% if answer.challenge_evaluation_feedback and
+                  answer.challenge_evaluation_feedback.Overall %}
+                  <div class="mt-4 border-t border-gray-200 pt-2">
+                    <span class="text-sm font-medium text-black"
+                      >Challenge Details</span
+                    >
+                  </div>
+                  <p class="mt-2 flex flex-col">
+                    <span class="flex items-center">
+                      <span class="font-medium text-black">Overall:</span>
+                      <span
+                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.challenge_evaluation_scores.Overall) }}"
+                      >
+                        {{
+                        "%.1f"|format(answer.challenge_evaluation_scores.Overall)
+                        }}/10
+                      </span>
+                    </span>
+                    <span
+                      >{{ answer.challenge_evaluation_feedback.Overall }}</span
+                    >
+                  </p>
+                  {% for category, feedback in
+                  answer.challenge_evaluation_feedback.items() %} {% if category
+                  != "Overall" %}
+                  <p class="flex flex-col">
+                    <span class="flex items-center">
+                      <span class="font-medium text-black"
+                        >{{ category }}:</span
+                      >
+                      {% if answer.challenge_evaluation_scores[category] is
+                      defined %}
+                      <span
+                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.challenge_evaluation_scores[category]) }}"
+                      >
+                        {{
+                        "%.1f"|format(answer.challenge_evaluation_scores[category])
+                        }}/10
+                      </span>
+                      {% endif %}
+                    </span>
+                    <span>{{ feedback }}</span>
+                  </p>
+                  {% endif %} {% endfor %} {% endif %}
                 </div>
               </div>
             </li>
