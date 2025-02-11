@@ -1,3 +1,15 @@
+// Initialize mermaid
+mermaid.initialize({
+  startOnLoad: true,
+  theme: "neutral",
+  flowchart: {
+    curve: "basis",
+    padding: 15,
+    nodeSpacing: 50,
+    rankSpacing: 50,
+  },
+});
+
 // Category icons mapping with updated icons
 const categoryIcons = {
   Philosophy: "📚",
@@ -360,26 +372,65 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       return;
     }
 
+    console.log("Evaluation response:", data.evaluation);
+
     submitBtn.innerHTML = "Submit";
     submitBtn.disabled = false;
 
     // First display overall evaluation with a prominent total score bar
     const overallEvalDiv = document.getElementById("overallEvaluation");
     const totalScore = data.evaluation.total_score;
-    const totalScorePercent = totalScore * 10; // converts out of 10 to percent (e.g. 7 -> 70%)
+    const totalScorePercent = totalScore * 10;
     const totalScoreColor = scoreToColor(totalScore);
 
     overallEvalDiv.innerHTML = `
-    <p class="text-l font-bold mb-2">
-      Total Score: <span id="totalScoreValue">${totalScore.toFixed(1)}/10</span>
-    </p>
-    <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
-      <div id="totalScoreBar" class="rounded-full total-progress-bar" style="width: 10%; background-color: #e53e3e;"></div>
-    </div>
-    <p id="overallFeedback" class="text-md">
-      ${data.evaluation.overall_feedback}
-    </p>
-  `;
+      <p class="text-l font-bold mb-2">
+        Total Score: <span id="totalScoreValue">${totalScore.toFixed(
+          1
+        )}/10</span>
+      </p>
+      <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+        <div id="totalScoreBar" class="rounded-full total-progress-bar" style="width: 10%; background-color: #e53e3e;"></div>
+      </div>
+      <p id="overallFeedback" class="text-md">
+        ${data.evaluation.overall_feedback}
+      </p>
+    `;
+
+    // Add argument structure visualization if available
+    if (data.evaluation.argument_structure) {
+      const structure = data.evaluation.argument_structure;
+      overallEvalDiv.innerHTML += `
+        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+          <h3 class="text-lg font-bold mb-2">Argument Structure</h3>
+          <div id="argumentStructureViz" class="overflow-x-auto"></div>
+        </div>
+      `;
+
+      const graph = `graph TD;
+        ${structure.nodes
+          .map(
+            (node) =>
+              `${node.id}["${node.type === "premise" ? "💭" : "✨"} ${
+                node.text
+              }"]`
+          )
+          .join(";\n")}
+        ${structure.edges
+          .map((edge) => `${edge.from}-->${edge.to}`)
+          .join(";\n")}
+      `;
+
+      mermaid
+        .render("argumentGraph", graph)
+        .then((result) => {
+          document.getElementById("argumentStructureViz").innerHTML =
+            result.svg;
+        })
+        .catch((error) => {
+          console.error("Failed to render argument structure:", error);
+        });
+    }
 
     // Remove line 258 that sets the text color of the entire paragraph
     // Add this instead to color just the score value:

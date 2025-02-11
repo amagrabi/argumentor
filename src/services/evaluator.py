@@ -44,12 +44,27 @@ class DummyEvaluator(BaseEvaluator):
         # Generate a dummy challenge that prompts the user to refine further.
         challenge_text = "While your argument is persuasive, consider addressing potential counterarguments and clarifying any ambiguous points."
 
+        # Add dummy argument structure
+        argument_structure = {
+            "nodes": [
+                {
+                    "id": "p1",
+                    "type": "premise",
+                    "text": "Main premise from the argument",
+                },
+                {"id": "p2", "type": "premise", "text": "Supporting premise"},
+                {"id": "c1", "type": "conclusion", "text": claim},
+            ],
+            "edges": [{"from": "p1", "to": "c1"}, {"from": "p2", "to": "c1"}],
+        }
+
         return {
             "scores": scores,
             "total_score": total_score,
             "feedback": feedback,
             "overall_feedback": overall_feedback,
             "challenge": challenge_text,
+            "argument_structure": argument_structure,
         }
 
 
@@ -122,4 +137,5 @@ class LLMEvaluator(BaseEvaluator):
             },
             "overall_feedback": response["overall_explanation"],
             "challenge": response["challenge"],
+            "argument_structure": response["argument_structure"],
         }

@@ -34,6 +34,9 @@ SYSTEM_INSTRUCTION = (
     "In addition, return a 'challenge' text that is meant to challenge the users specific argument and inspire them to make their argument stronger and practice better "
     "reasoning. The challenge could be about, for example, pointing out potential logical inconsistencies, flaws or holes in their argument, raising strong counterarguments "
     "that the user hasn't addressed, or anything that is still unclear or vague in their argument."
+    "Additionally, analyze and break down the basic structure of the argument into its core components (premises and conclusions) and how they relate to each other. "
+    "Format this as a simple graph structure where each node represents a premise or conclusion, and edges show the logical connections. "
+    "Keep the analysis concise and focus on the main logical steps."
     "Return ALL fields in the required JSON format. "
     "Never omit any rating or explanation fields. Use the exact field names from the schema."
 )
@@ -88,6 +91,36 @@ RESPONSE_SCHEMA = {
             "nullable": False,
         },
         "challenge": {"type": "STRING", "nullable": False},
+        "argument_structure": {
+            "type": "OBJECT",
+            "properties": {
+                "nodes": {
+                    "type": "ARRAY",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "id": {"type": "STRING"},
+                            "type": {
+                                "type": "STRING",
+                                "enum": ["premise", "conclusion"],
+                            },
+                            "text": {"type": "STRING"},
+                        },
+                    },
+                },
+                "edges": {
+                    "type": "ARRAY",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "from": {"type": "STRING"},
+                            "to": {"type": "STRING"},
+                        },
+                    },
+                },
+            },
+            "required": ["nodes", "edges"],
+        },
     },
     "required": [
         "overall_explanation",
@@ -103,6 +136,7 @@ RESPONSE_SCHEMA = {
         "creativity_explanation",
         "creativity_rating",
         "challenge",
+        "argument_structure",
     ],
 }
 
@@ -176,4 +210,5 @@ class LLMEvaluator(BaseEvaluator):
             },
             "overall_feedback": response["overall_explanation"],
             "challenge": response["challenge"],
+            "argument_structure": response["argument_structure"],
         }
