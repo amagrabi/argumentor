@@ -496,6 +496,26 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     payload.question_id = currentQuestion.id;
   }
 
+  // Before processing the new response, clear any previous challenge content:
+  const challengeSection = document.getElementById("challengeSection");
+  if (challengeSection) {
+    challengeSection.classList.add("hidden");
+  }
+  const challengeResponseInput = document.getElementById(
+    "challengeResponseInput"
+  );
+  if (challengeResponseInput) {
+    challengeResponseInput.value = "";
+  }
+  const challengeEvalDiv = document.getElementById(
+    "challengeEvaluationResults"
+  );
+  if (challengeEvalDiv) {
+    challengeEvalDiv.innerHTML = "";
+    challengeEvalDiv.classList.add("hidden");
+  }
+  document.getElementById("challengeErrorMessage").textContent = "";
+
   // Disable button and show loading state
   submitBtn.innerHTML = `
     <span class="loading-dots">
@@ -757,16 +777,17 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
           if (!response.ok) {
             challengeErrorMessage.textContent =
               data.error || "Submission failed";
-            submitBtn.innerHTML = "Submit Challenge Response";
+            submitBtn.innerHTML = "Submit";
             submitBtn.disabled = false;
             return;
           }
 
-          // Display challenge evaluation feedback (similar to primary evaluation).
+          // Display detailed challenge evaluation feedback similar to primary evaluation.
           const challengeEvalDiv = document.getElementById(
             "challengeEvaluationResults"
           );
           const totalScore = data.evaluation.total_score;
+          const totalScorePercent = totalScore * 10; // Scale (e.g., 7 -> 70%)
           const totalScoreColor = scoreToColor(totalScore);
 
           challengeEvalDiv.innerHTML = `
@@ -775,9 +796,27 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
             1
           )}/10</span>
           </p>
-          <p class="text-md">
-            ${data.evaluation.overall_feedback}
-          </p>
+          <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+            <div id="challengeTotalScoreBar" class="rounded-full total-progress-bar"
+              style="width: ${totalScorePercent}%; background-color: ${totalScoreColor};">
+            </div>
+          </div>
+          <p id="challengeOverallFeedback" class="text-md">${
+            data.evaluation.overall_feedback
+          }</p>
+          <div class="flex flex-wrap gap-2 mt-2">
+            ${Object.entries(data.evaluation.scores)
+              .filter(([key]) => key.toLowerCase() !== "overall")
+              .map(
+                ([category, score]) =>
+                  `<div class="px-2 py-1 rounded-full text-xs" style="background-color: ${scoreToColor(
+                    score
+                  )};">
+                    ${category}: ${score}/10
+                  </div>`
+              )
+              .join("")}
+          </div>
         `;
           challengeEvalDiv.classList.remove("hidden");
 
@@ -791,13 +830,13 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
           document.getElementById("nextLevel").textContent =
             data.level_info.next_level;
 
-          submitBtn.innerHTML = "Submit Challenge Response";
+          submitBtn.innerHTML = "Submit";
           submitBtn.disabled = false;
         } catch (error) {
           console.error("Error submitting challenge response:", error);
           challengeErrorMessage.textContent =
             "Submission failed, server error. Please try again.";
-          submitBtn.innerHTML = "Submit Challenge Response";
+          submitBtn.innerHTML = "Submit";
           submitBtn.disabled = false;
         }
       });

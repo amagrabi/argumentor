@@ -182,6 +182,10 @@ def submit_challenge_response():
         return jsonify({"error": "Answer not found"}), 404
     if not answer.challenge:
         return jsonify({"error": "No challenge available for this answer"}), 400
+    if answer.challenge_response:
+        return jsonify(
+            {"error": "You have already submitted a response to this challenge."}
+        ), 400
 
     evaluation = evaluate_challenge_response(answer.challenge, challenge_response)
     xp_gained = sum(evaluation["scores"].values())

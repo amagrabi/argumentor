@@ -101,7 +101,6 @@ class LLMEvaluator(BaseEvaluator):
                 system_instruction=[types.Part.from_text(text=SYSTEM_INSTRUCTION)],
             ),
         )
-
         return self._parse_response(json.loads(response.text))
 
     def _parse_response(self, response) -> Dict:
@@ -122,4 +121,5 @@ class LLMEvaluator(BaseEvaluator):
                 "Creativity": response["creativity_explanation"],
             },
             "overall_feedback": response["overall_explanation"],
+            "challenge": response["challenge"],
         }
