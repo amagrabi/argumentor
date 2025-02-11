@@ -25,6 +25,7 @@ dev = [
     "pre-commit",
     "pytest",
     "ruff",
+    "ipython",
 ]
 
 [project.urls]

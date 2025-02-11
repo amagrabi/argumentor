@@ -7,6 +7,7 @@ from google.oauth2 import service_account
 
 from config import get_settings
 from services.base_evaluator import BaseEvaluator
+from utils import auto_dedent
 
 SETTINGS = get_settings()
 
@@ -22,24 +23,38 @@ CLIENT = genai.Client(
     location=SETTINGS.GCLOUD_PROJECT_REGION,
 )
 
-SYSTEM_INSTRUCTION = (
-    "You are an argument evaluation system. There is always a question given to the user, and then the user has to formulate a claim to answer the question and "
-    "and their reasoning to support their claim. If a claim is not related to the specific question, users should receive a score of 0. "
-    "In the end there might be a section for counterargument rebuttal, but that is optional. Evaluate the argument overall as well as in terms "
-    "of the factors clarity, logical structure, depth, objectivity, creativity. Rate from a scale of 1 to 10 and give explanations for each score. "
-    "Make sure you evaluate arguments rationally. "
-    f"Keep in mind that users are limited by character counts when entering their text (the argument is limited to {SETTINGS.MAX_ARGUMENT} characters, and the "
-    f"counterargument to {SETTINGS.MAX_COUNTERARGUMENT} characters). When evaluating the 'depth' attribute, do not penalize responses simply because the text is short; "
-    "instead, assess the quality and insight of the argument within the allowed character limit. "
-    "Claims could potentially be unpopular or sound strange/radical, but if an argument is well-constructed, it should get a high rating regardless. "
-    "In addition, return a 'challenge' text that is meant to challenge the users specific argument and inspire them to make their argument stronger and practice better "
-    "reasoning. The challenge could be about, for example, pointing out potential logical inconsistencies, flaws or holes in their argument, raising strong counterarguments "
-    "that the user hasn't addressed, or anything that is still unclear or vague in their argument."
-    "Additionally, analyze and break down the basic structure of the argument into its core components (premises and conclusions) and how they relate to each other. "
-    "Format this as a simple graph structure where each node represents a premise or conclusion, and edges show the logical connections. "
-    "Keep the analysis concise and focus on the main logical steps."
-    "Return ALL fields in the required JSON format. "
-    "Never omit any rating or explanation fields. Use the exact field names from the schema."
+SYSTEM_INSTRUCTION = auto_dedent(
+    f"""
+    You are an argument evaluation system. There is always a question given to
+    the user, and they must formulate a claim to answer the question and provide
+    reasoning to support that claim. If a claim is not related to the specific
+    question, users should receive a score of 0. A counterargument rebuttal section
+    is optional.
+
+    Evaluate the argument overall as well as in terms of clarity, logical structure,
+    depth, objectivity, and creativity. Rate each on a scale of 1 to 10 and provide an
+    explanation for each score. Ensure your evaluation is rational.
+
+    Keep in mind that users are limited by character counts (the argument is limited
+    to {SETTINGS.MAX_ARGUMENT} characters, and the counterargument to
+    {SETTINGS.MAX_COUNTERARGUMENT} characters). Do not penalize short responses for
+    lacking depth; instead, assess the quality and insight within the allowed character
+    limit.
+
+    Even if a claim sounds unpopular or unconventional, a well-constructed argument
+    should still score high. In addition, return a 'challenge' text that encourages
+    the user to address any logical inconsistencies, potential flaws, or unclear points
+    in their argument.
+
+    Finally, analyze and break down the argument's structure into its core components
+    (premises and conclusions) and describe the relationships between them using a simple
+    graph structure (nodes for premises or conclusions and edges for logical connections).
+    Keep the analysis concise and focus on the key logical steps.
+
+    Return ALL fields in the required JSON format. Never omit any rating or explanation
+    fields. Use the exact field names from the schema.
+""",
+    strip_newlines=False,
 )
 
 
