@@ -22,26 +22,157 @@
 
     <!-- Main Content -->
     <main class="max-w-5xl mx-auto p-4">
-      <section class="mb-8">
-        <h2 class="text-2xl font-bold mb-4">Support This Project</h2>
-        <p class="mb-4">
-          Thank you for your interest in supporting me! You can send me feedback
-          or ideas for improvements via one of my
-          <a
-            href="http://amadeusmagrabi.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            ><u>socials</u></a
-          >, or
-          <a
-            href="https://buymeacoffee.com/amadeusmagrabi"
-            target="_blank"
-            rel="noopener noreferrer"
-            ><u>buy me a coffee</u></a
+      <!-- How to Support Section -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-6">How to Support this Project</h2>
+
+        <!-- Support Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Financial Support Card -->
+          <div
+            class="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm flex flex-col h-full"
           >
-          to keep the servers alive.
-        </p>
+            <div class="bg-gray-800 text-white px-4 py-3">
+              <h3 class="font-semibold text-lg">☕ Buy Me a Coffee</h3>
+            </div>
+            <div class="p-4 flex flex-col flex-grow">
+              <p class="text-gray-600 mb-auto">
+                Help keep the servers running and support the development of new
+                features.
+              </p>
+              <div class="mt-4">
+                <a
+                  href="https://buymeacoffee.com/amadeusmagrabi"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-block bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"
+                >
+                  Support on Buy Me a Coffee
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feedback Card -->
+          <div
+            class="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm flex flex-col h-full"
+          >
+            <div class="bg-gray-800 text-white px-4 py-3">
+              <h3 class="font-semibold text-lg">💭 Share Feedback</h3>
+            </div>
+            <div class="p-4 flex flex-col flex-grow">
+              <p class="text-gray-600 mb-auto">
+                Share your experience, suggestions, or ideas to make the
+                platform better.
+              </p>
+              <div class="mt-4">
+                <a
+                  href="http://amadeusmagrabi.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-block bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"
+                >
+                  Contact Me
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Share Card -->
+          <div
+            class="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm flex flex-col h-full"
+          >
+            <div class="bg-gray-800 text-white px-4 py-3">
+              <h3 class="font-semibold text-lg">🌟 Spread the Word</h3>
+            </div>
+            <div class="p-4 flex flex-col flex-grow">
+              <p class="text-gray-600 mb-auto">
+                Help grow the platform and tell your friends, colleagues or
+                enemies about it.
+              </p>
+              <div class="mt-4">
+                <button
+                  onclick="shareArguMentor()"
+                  class="inline-block bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"
+                >
+                  Share
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
+
+      <!-- Roadmap Section -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-6">Development Roadmap</h2>
+        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+          <div class="space-y-4">
+            <p>
+              If the platform gets more support, I want to add these features:
+            </p>
+            <ul class="space-y-3">
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">⭐</span>
+                <div>
+                  <span class="font-medium">Competitive Mode</span>
+                  <p class="text-gray-600 text-sm">
+                    Challenge your friends and compete in reasoning battles.
+                  </p>
+                </div>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">⭐</span>
+                <div>
+                  <span class="font-medium">Voice Mode</span>
+                  <p class="text-gray-600 text-sm">
+                    Formulate your arguments without having to type.
+                  </p>
+                </div>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">⭐</span>
+                <div>
+                  <span class="font-medium">Multiple Languages</span>
+                  <p class="text-gray-600 text-sm">
+                    Offer support for non-English languages.
+                  </p>
+                </div>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">⭐</span>
+                <div>
+                  <span class="font-medium">More Questions</span>
+                  <p class="text-gray-600 text-sm">
+                    Expand the collection of questions with new interesting
+                    topics.
+                  </p>
+                </div>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">⭐</span>
+                <div>
+                  <span class="font-medium">Better Analytics</span>
+                  <p class="text-gray-600 text-sm">
+                    Add more options to analyze your performance and learn from
+                    it.
+                  </p>
+                </div>
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">⭐</span>
+                <div>
+                  <span class="font-medium">Improve Feedback</span>
+                  <p class="text-gray-600 text-sm">
+                    Improve the quality of the feedback.
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
       <!-- Bottom Go Back Button -->
       <div class="text-center my-4">
         <a
@@ -52,5 +183,29 @@
         </a>
       </div>
     </main>
+
+    <script>
+      function shareArguMentor() {
+        const shareText =
+          "Test and improve your reasoning skills with ArguMentor";
+        const shareUrl = "https://www.argumentor.ai";
+
+        if (navigator.share) {
+          navigator
+            .share({
+              title: "ArguMentor",
+              text: shareText,
+              url: shareUrl,
+            })
+            .catch((error) => console.log("Error sharing:", error));
+        } else {
+          // Fallback to copying to clipboard
+          navigator.clipboard
+            .writeText(`${shareText}\n${shareUrl}`)
+            .then(() => alert("Share text copied to clipboard!"))
+            .catch(() => alert("Failed to copy share text"));
+        }
+      }
+    </script>
   </body>
 </html>
