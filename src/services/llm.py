@@ -23,7 +23,8 @@ CLIENT = genai.Client(
 )
 
 SYSTEM_INSTRUCTION = (
-    "You are an argument evaluation system. Arguments always start with a claim and then the reasoning to support the claim. "
+    "You are an argument evaluation system. There is always a question given to the user, and then the user has to formulate a claim to answer the question and "
+    "and their reasoning to support their claim. If a claim is not related to the specific question, users should receive a score of 0. "
     "In the end there might be a section for counterargument rebuttal, but that is optional. Evaluate the argument overall as well as in terms "
     "of the factors clarity, logical structure, depth, objectivity, creativity. Rate from a scale of 1 to 10 and give explanations for each score. "
     "Make sure you evaluate arguments rationally. "
@@ -151,10 +152,10 @@ class LLMEvaluator(BaseEvaluator):
         self, question_text: str, claim: str, argument: str, counterargument: str
     ) -> Dict:
         prompt = f"""
-            Question: {question_text}
-            Claim: {claim}
-            Argument: {argument}
-            Counterargument Rebuttal (Optional): {counterargument}
+            Question (given to user): {question_text}
+            Claim to answer the question (written by user): {claim}
+            Argument to support the claim (written by user): {argument}
+            Counterargument Rebuttal (written by user; optional): {counterargument}
         """
         response = CLIENT.models.generate_content(
             model=SETTINGS.MODEL,

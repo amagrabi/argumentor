@@ -1,12 +1,26 @@
 // Initialize mermaid
 mermaid.initialize({
   startOnLoad: true,
-  theme: "neutral",
+  theme: "base",
   flowchart: {
     curve: "basis",
-    padding: 15,
+    padding: 30,
     nodeSpacing: 50,
-    rankSpacing: 50,
+    rankSpacing: 70,
+    htmlLabels: true,
+    defaultRenderer: "elk",
+  },
+  themeVariables: {
+    fontFamily: "system-ui, -apple-system, sans-serif",
+    fontSize: "16px",
+    primaryColor: "#4F46E5",
+    primaryTextColor: "#1F2937",
+    lineColor: "#9CA3AF",
+    edgeLabelBackground: "#FFFFFF",
+    clusterBkg: "#F3F4F6",
+    clusterBorder: "#E5E7EB",
+    nodeBorder: "#4F46E5",
+    mainBkg: "#FFFFFF",
   },
 });
 
@@ -390,34 +404,69 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
         )}/10</span>
       </p>
       <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
-        <div id="totalScoreBar" class="rounded-full total-progress-bar" style="width: 10%; background-color: #e53e3e;"></div>
+        <div id="totalScoreBar" class="rounded-full total-progress-bar" style="width: ${totalScorePercent}%; background-color: ${totalScoreColor};"></div>
       </div>
       <p id="overallFeedback" class="text-md">
         ${data.evaluation.overall_feedback}
       </p>
     `;
 
+    // Now set the score color after the element exists
+    document.getElementById("totalScoreValue").style.color = totalScoreColor;
+
     // Add argument structure visualization if available
-    if (data.evaluation.argument_structure) {
+    if (
+      data.evaluation.argument_structure &&
+      Array.isArray(data.evaluation.argument_structure.nodes) &&
+      data.evaluation.argument_structure.nodes.some(
+        (node) => node.text && node.text.trim().length > 0
+      )
+    ) {
       const structure = data.evaluation.argument_structure;
+
+      // Create a mapping for safe node IDs to avoid spaces or special characters issues.
+      const safeIds = {};
+      structure.nodes.forEach((node, index) => {
+        safeIds[node.id] = "node" + index;
+      });
+
       overallEvalDiv.innerHTML += `
-        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h3 class="text-lg font-bold mb-2">Argument Structure</h3>
-          <div id="argumentStructureViz" class="overflow-x-auto"></div>
+        <div class="mt-8 flex justify-center">
+          <div class="w-full max-w-3xl bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-lg font-bold mb-4 text-center text-gray-800">Argument Structure</h3>
+            <div id="argumentStructureViz" class="overflow-x-auto flex justify-center"></div>
+          </div>
         </div>
       `;
 
       const graph = `graph TD;
+        %% Node styling
+        classDef premise fill:#F8FAFC,stroke:#1F2937,stroke-width:2px,rx:12,ry:12;
+        classDef conclusion fill:#EEF2FF,stroke:#1F2937,stroke-width:2px,rx:12,ry:12;
+
+        %% Edge styling
+        linkStyle default stroke:#9CA3AF,stroke-width:2px;
+
         ${structure.nodes
           .map(
             (node) =>
-              `${node.id}["${node.type === "premise" ? "💭" : "✨"} ${
+              `${safeIds[node.id]}["<div class='p-2 rounded-xl'>${
                 node.text
-              }"]`
+              }</div>"]`
           )
           .join(";\n")}
         ${structure.edges
-          .map((edge) => `${edge.from}-->${edge.to}`)
+          .map((edge) => `${safeIds[edge.from]}-->${safeIds[edge.to]}`)
+          .join(";\n")}
+
+        %% Apply classes
+        ${structure.nodes
+          .map(
+            (node) =>
+              `class ${safeIds[node.id]} ${
+                node.type === "premise" ? "premise" : "conclusion"
+              }`
+          )
           .join(";\n")}
       `;
 
@@ -431,17 +480,6 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
           console.error("Failed to render argument structure:", error);
         });
     }
-
-    // Remove line 258 that sets the text color of the entire paragraph
-    // Add this instead to color just the score value:
-    document.getElementById("totalScoreValue").style.color = totalScoreColor;
-
-    // Animate the total score bar (a short delay allows a smooth transition)
-    setTimeout(() => {
-      const totalScoreBar = document.getElementById("totalScoreBar");
-      totalScoreBar.style.width = totalScorePercent + "%";
-      totalScoreBar.style.backgroundColor = totalScoreColor;
-    }, 50);
 
     // Now populate the detailed individual factor scores (the look and animation remain unchanged)
     const scoresDiv = document.getElementById("scores");
