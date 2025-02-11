@@ -7,3 +7,13 @@ QUESTION_TEXT = """Should AI be permitted to autonomously make life-or-death dec
 CLAIM = """AI should be permitted to make important life-or-death decisions."""
 ARGUMENT = """AI has demonstrated super-human intelligence on many domains already. If that is the case, then AI is capable of making better or equal decisions than humans. Therefore, AI should be permitted to make important life-or-death decisions, because there is a high chance that it outperforms humans and can save more lives in the long run."""
 COUNTERARGUMENT_REBUTTAL = ""
+
+QUESTION_TEXT = """Can free will exist if our decisions are determined by biological and physical influences?"""
+CLAIM = """Free will can exist if our decisions are determined by biological and physical influences."""
+ARGUMENT = """Free decisions are decisions that are aligned with and a consequence of our internal beliefs and goals. All our internal beliefs and goals are determined by biology/physics, because they are determined by our brain. Therefore, these influence are not "bad", but actually a requirement for free will. The important part is that these influences result from cognitive processes that are aligned with our conscious beliefs and goals, instead of subconscious influences that go against them."""
+COUNTERARGUMENT_REBUTTAL = ""
+
+QUESTION_TEXT = """Can free will exist if our decisions are determined by biological and physical influences?"""
+CLAIM = """Potatoes are good."""
+ARGUMENT = """Potatoes contain vitamins. Potatoes are organic. Therefore they are healthy. Also, potatoes taste good, and potatoes can be used in a variety of dishes. Therefore, potatoes are good."""
+COUNTERARGUMENT_REBUTTAL = ""
