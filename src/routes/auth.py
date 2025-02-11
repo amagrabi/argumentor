@@ -186,13 +186,32 @@ def google_auth():
 @auth_bp.route("/update_session", methods=["POST"])
 def update_session():
     data = request.json
-    if not data:
+    # Use a strict check for None so that an empty dict {} is allowed.
+    if data is None:
         return jsonify({"error": "No data provided"}), 400
     try:
-        # If data contains a nested "user", extract it.
-        user_data = data.get("user", data)
-        session["user_id"] = user_data.get("uuid")
-        session["xp"] = user_data.get("xp", 0)
+        # If no explicit user data was provided, try to retrieve current user's info.
+        user_data = data.get("user", None)
+        if not user_data:
+            if "user_id" in session:
+                user = User.query.filter_by(uuid=session["user_id"]).first()
+                if user:
+                    # Build a user_data dict with the needed info.
+                    user_data = {
+                        "uuid": user.uuid,
+                        "xp": user.xp,
+                        "level_info": get_level_info(user.xp),
+                    }
+                else:
+                    return jsonify({"error": "User not found"}), 400
+            else:
+                return jsonify({"error": "No user in session"}), 400
+        else:
+            # Update session with the provided data.
+            session["user_id"] = user_data.get("uuid")
+            session["xp"] = user_data.get("xp", 0)
+            if "level_info" not in user_data:
+                user_data["level_info"] = get_level_info(user_data.get("xp", 0))
         return jsonify(user_data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -176,150 +176,20 @@ async function getNewQuestion(shouldScroll = true) {
   }
 }
 
-function showAuthModal() {
-  const modal = document.createElement("div");
-  modal.innerHTML = `
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
-         onclick="event.target === this && this.remove()">
-      <div class="bg-white rounded-lg p-6 w-full max-w-md relative"
-           onclick="event.stopPropagation()">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold">Login/Signup</h3>
-          <button onclick="this.parentElement.parentElement.parentElement.remove(); event.stopPropagation()"
-                  class="text-gray-500 hover:text-gray-700 text-2xl">
-            &times;
-          </button>
-        </div>
-        <!-- Email/Password Form -->
-        <form id="authForm" class="space-y-4">
-          <div id="authErrorMessage" class="text-sm text-red-500 mb-2 hidden"></div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Username</label>
-            <input type="text" id="authUsername" required
-                  class="w-full px-3 py-2 border rounded-lg">
-          </div>
-          <div>
-            <label class="block text-sm font-medium mb-1">Password</label>
-            <input type="password" id="authPassword" required
-                  class="w-full px-3 py-2 border rounded-lg">
-          </div>
-          <div class="flex gap-4">
-            <button type="submit" class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-              Login
-            </button>
-            <button type="button" onclick="handleAuth('signup')"
-                    class="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300">
-              Signup
-            </button>
-          </div>
-        </form>
-        <div id="googleButtonContainer" class="mt-4"></div>
-        <!-- Google Login -->
-        <div class="mt-6">
-          <button onclick="handleGoogleAuth()"
-                  class="w-full flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a5.94 5.94 0 1 1 0-11.88c1.094 0 2.354.371 3.227 1.067l2.355-2.362A9.914 9.914 0 0 0 12.545 2C7.021 2 2.545 6.477 2.545 12s4.476 10 10 10c5.523 0 10-4.477 10-10a9.9 9.9 0 0 0-1.091-4.571l-8.909 3.81z"/></svg>
-            Continue with Google
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
-
-  // Clear any existing modals first
-  document
-    .querySelectorAll('div[class*="fixed inset-0"]')
-    .forEach((existingModal) => existingModal.remove());
-
-  // Add ESC key listener
-  const handleKeyDown = (e) => {
-    if (e.key === "Escape") {
-      modal.remove();
-      document.removeEventListener("keydown", handleKeyDown);
-    }
-  };
-  document.addEventListener("keydown", handleKeyDown);
-
-  // Append modal to document
-  document.body.appendChild(modal);
-
-  // IMPORTANT: Attach submit event listener AFTER the modal (and its form) is added to the DOM
-  const authForm = modal.querySelector("#authForm");
-  authForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-    handleAuth("login");
-  });
-
-  // Add input listeners to clear error messages
-  modal.querySelectorAll("input").forEach((input) => {
-    input.addEventListener("input", () => {
-      document.getElementById("authErrorMessage").classList.add("hidden");
-    });
-  });
-}
-
-async function handleAuth(action) {
-  const username = document.getElementById("authUsername").value;
-  const password = document.getElementById("authPassword").value;
-  const errorMessage = document.getElementById("authErrorMessage");
-
-  try {
-    errorMessage.textContent = "";
-    errorMessage.classList.add("hidden");
-
-    const response = await fetch(`/${action}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
-
-    const contentType = response.headers.get("content-type");
-    const data = contentType?.includes("json")
-      ? await response.json()
-      : { error: await response.text() };
-
-    if (!response.ok) throw new Error(data.error || "Authentication failed");
-
-    // Close the modal
-    const modal = document.querySelector('div[class*="fixed inset-0"]');
-    if (modal) modal.remove();
-
-    // Update the auth UI elements and session state
-    await updateAuthUI(data, false);
-
-    // If we are on the profile page, reload to display the new authenticated context.
-    if (window.location.pathname === "/profile") {
-      window.location.reload();
-    }
-
-    // Remove the warning box on the feedback screen if present
-    const warningBox = document.querySelector(
-      "#evaluationResults .bg-yellow-100"
-    );
-    if (warningBox) {
-      warningBox.remove();
-    }
-  } catch (error) {
-    errorMessage.textContent = error.message;
-    errorMessage.classList.remove("hidden");
-  }
-}
-
 // Add new function to handle session update and UI refresh
 async function updateAuthUI(userData, redirect = false) {
   try {
     const response = await fetch("/update_session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(userData),
+      body: JSON.stringify(userData || {}),
     });
     if (!response.ok) throw new Error("Failed to update session");
 
-    // Get the returned data from /update_session and extract user info if available.
     const result = await response.json();
     const info = result.user || result;
 
-    // Replace login button with logout button
+    // Update UI elements if present. For example:
     const loginButton = document.querySelector("#loginButton");
     if (loginButton) {
       const logoutButton = document.createElement("button");
@@ -333,7 +203,7 @@ async function updateAuthUI(userData, redirect = false) {
       console.log("Login button not found, assuming already logged in.");
     }
 
-    // Update header elements using the fetched info.
+    // Update other header elements as needed.
     const userLevelElem = document.getElementById("userLevelElem");
     if (userLevelElem) {
       userLevelElem.textContent = info.level_info.display_name;
@@ -350,7 +220,6 @@ async function updateAuthUI(userData, redirect = false) {
       console.warn("Mini XP bar element not found.");
     }
 
-    // Only redirect if the optional flag is set
     if (redirect) {
       window.location.replace("/profile");
     }
@@ -369,84 +238,6 @@ async function handleLogout() {
     console.error("Logout failed:", error);
   }
 }
-
-// Initialize Google client
-function initGoogleAuth() {
-  const meta = document.querySelector('meta[name="google-signin-client_id"]');
-  const clientId = meta ? meta.getAttribute("content") : "";
-  google.accounts.id.initialize({
-    client_id: clientId,
-    callback: handleGoogleAuthResponse,
-  });
-}
-
-// Handle Google auth button click
-function handleGoogleAuth() {
-  console.log("Google auth button clicked");
-  if (google && google.accounts && google.accounts.id) {
-    google.accounts.id.prompt((notification) => {
-      console.log("Google prompt response:", notification);
-    });
-  } else {
-    console.error(
-      "Google API not available. Check if the script loaded properly."
-    );
-  }
-}
-
-// Handle Google auth response
-function handleGoogleAuthResponse(response) {
-  // Check if a credential was returned
-  if (!response.credential) {
-    console.log(
-      "No token received. The user may have dismissed the prompt.",
-      response
-    );
-    return;
-  }
-
-  // Use the token to authenticate with the backend
-  fetch("/google-auth", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ token: response.credential }),
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("Google authentication failed");
-      }
-      return res.json();
-    })
-    .then((data) => {
-      // Close the authentication modal if present
-      const modal = document.querySelector('div[class*="fixed inset-0"]');
-      if (modal) modal.remove();
-
-      // If you're on the profile page, reload to render fresh data;
-      // otherwise, update the UI with available user info.
-      if (window.location.pathname === "/profile") {
-        window.location.reload();
-      } else {
-        updateAuthUI(null, false);
-      }
-    })
-    .catch((error) => {
-      console.error("Google auth error:", error);
-      alert("Failed to authenticate with Google");
-    });
-}
-
-// Load Google library and initialize
-(function loadGoogleAuth() {
-  const script = document.createElement("script");
-  script.src = "https://accounts.google.com/gsi/client";
-  script.async = true;
-  script.defer = true;
-  document.head.appendChild(script);
-  script.onload = initGoogleAuth;
-})();
 
 // Update character counters
 const setupCharCounter = (inputId, countId, fieldName) => {

@@ -7,6 +7,11 @@
     <title>Your Profile - ArguMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      rel="icon"
+      type="image/png"
+      href="{{ url_for('static', filename='img/favicon.png') }}"
+    />
   </head>
   {% macro score_color(score) -%} {% set score_float = score|float|round(1,
   'common') %} {% if score_float >= 9.95 %} text-emerald-600 bg-emerald-50 {%
@@ -20,6 +25,7 @@
       {{ answers_json | tojson }}
     </script>
     <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
     <!-- Updated header to match other pages -->
     <header class="bg-gray-800 p-4">
       <div class="max-w-5xl mx-auto flex justify-between items-center">
@@ -370,6 +376,5 @@
         </a>
       </div>
     </main>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   </body>
 </html>
