@@ -395,35 +395,47 @@ function handleGoogleAuth() {
 }
 
 // Handle Google auth response
-async function handleGoogleAuthResponse(response) {
-  try {
-    const res = await fetch("/google-auth", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ token: response.credential }),
-    });
-
-    if (!res.ok) throw new Error("Google authentication failed");
-
-    // Instead of reloading, just close modal and update UI
-    const modal = document.querySelector('div[class*="fixed inset-0"]');
-    if (modal) modal.remove();
-
-    // Update the auth UI elements
-    await updateAuthUI(null, false);
-
-    const warningBox = document.querySelector(
-      "#evaluationResults .bg-yellow-100"
+function handleGoogleAuthResponse(response) {
+  // Check if a credential was returned
+  if (!response.credential) {
+    console.log(
+      "No token received. The user may have dismissed the prompt.",
+      response
     );
-    if (warningBox) {
-      warningBox.remove();
-    }
-  } catch (error) {
-    console.error("Google auth error:", error);
-    alert("Failed to authenticate with Google");
+    return;
   }
+
+  // Use the token to authenticate with the backend
+  fetch("/google-auth", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ token: response.credential }),
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error("Google authentication failed");
+      }
+      return res.json();
+    })
+    .then((data) => {
+      // Close the authentication modal if present
+      const modal = document.querySelector('div[class*="fixed inset-0"]');
+      if (modal) modal.remove();
+
+      // If you're on the profile page, reload to render fresh data;
+      // otherwise, update the UI with available user info.
+      if (window.location.pathname === "/profile") {
+        window.location.reload();
+      } else {
+        updateAuthUI(null, false);
+      }
+    })
+    .catch((error) => {
+      console.error("Google auth error:", error);
+      alert("Failed to authenticate with Google");
+    });
 }
 
 // Load Google library and initialize
