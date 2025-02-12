@@ -149,21 +149,13 @@ function handleGoogleAuth() {
 
 // Handle Google auth response
 function handleGoogleAuthResponse(response) {
-  // Check if a credential was returned
   if (!response.credential) {
-    console.log(
-      "No token received. The user may have dismissed the prompt.",
-      response
-    );
+    console.log("No token received");
     return;
   }
-
-  // Use the token to authenticate with the backend
   fetch("/google-auth", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token: response.credential }),
   })
     .then((res) => {
@@ -173,17 +165,16 @@ function handleGoogleAuthResponse(response) {
       return res.json();
     })
     .then((data) => {
-      // Close the authentication modal if present
-      const authModal = document.querySelector("#authModal");
-      if (authModal) authModal.remove();
-
-      // If you're on the profile page, reload to render fresh data;
-      // otherwise, update the UI with available user info.
-      if (window.location.pathname === "/profile") {
-        window.location.reload();
-      } else {
-        updateAuthUI(null, false);
+      // Remove the auth modal by referencing the auth form's container
+      const authForm = document.querySelector("#authForm");
+      if (authForm) {
+        const modal = authForm.closest('div[class*="fixed inset-0"]');
+        if (modal) {
+          modal.remove();
+        }
       }
+      // Force a full page reload so the header (with the new username) is updated.
+      window.location.reload();
     })
     .catch((error) => {
       console.error("Google auth error:", error);
