@@ -9,6 +9,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
     DEV: bool = False
+    LOG_LEVEL: str = Field(default="DEBUG")
 
     SECRET_KEY: str = Field(default="fallback")  # Flask
 

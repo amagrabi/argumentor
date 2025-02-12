@@ -14,15 +14,13 @@ from routes.pages import pages_bp
 from routes.preferences import preferences_bp
 from routes.questions import questions_bp
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
-
 SETTINGS = get_settings()
 CREDENTIALS = service_account.Credentials.from_service_account_file(
     SETTINGS.GOOGLE_APPLICATION_CREDENTIALS,
     scopes=["https://www.googleapis.com/auth/cloud-platform"],
+)
+logging.basicConfig(
+    level=SETTINGS.LOG_LEVEL, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
 

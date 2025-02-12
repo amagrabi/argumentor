@@ -183,13 +183,6 @@ def submit_answer():
     )
 
 
-def evaluate_challenge_response(challenge_text, challenge_response):
-    evaluator = create_evaluator()
-    # We create a modified prompt by using the challenge text and the user's response.
-    # For simplicity, we pass:
-    return evaluator.evaluate(challenge_text, challenge_response, "", "")
-
-
 @answers_bp.route("/submit_challenge_response", methods=["POST"])
 def submit_challenge_response():
     if not request.is_json:
@@ -214,7 +207,9 @@ def submit_challenge_response():
             {"error": "You have already submitted a response to this challenge."}
         ), 400
 
-    evaluation = evaluate_challenge_response(answer.challenge, challenge_response)
+    evaluator = create_evaluator()
+    # Call the new evaluator method for challenge evaluation
+    evaluation = evaluator.evaluate_challenge(answer, challenge_response)
 
     # Determine XP for the challenge response without including the relevance score.
     scores = evaluation["scores"]
