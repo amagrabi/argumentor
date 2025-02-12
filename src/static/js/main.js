@@ -412,11 +412,11 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
     overallEvalDiv.innerHTML = `
       <p class="text-l font-bold mb-2">
-        Total Score: <span id="totalScoreValue">${totalScore.toFixed(
+        Overall Rating: <span id="totalScoreValue">${totalScore.toFixed(
           1
         )}/10</span>
       </p>
-      <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+      <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
         <div id="totalScoreBar" class="rounded-full total-progress-bar" style="width: ${totalScorePercent}%; background-color: ${totalScoreColor};"></div>
       </div>
       <p id="overallFeedback" class="text-md">
@@ -511,7 +511,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       const color = scoreToColor(finalScore);
       const feedbackText = data.evaluation.feedback[category] || "";
       scoresDiv.innerHTML += `
-        <div class="mb-4">
+        <div class="mb-2">
           <div class="flex justify-between items-center">
             <span class="font-medium">${category}</span>
             <span class="font-medium score-value" data-final="${finalScore}" data-color="${color}" style="color: #e53e3e;">1/10</span>
@@ -737,11 +737,11 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
           ];
           let challengeHtml = `
             <p class="text-l font-bold mb-2">
-              Challenge Response Total Score: <span id="challengeTotalScoreValue" style="color: ${totalScoreColor};">${totalScore.toFixed(
+              Overall Rating: <span id="challengeTotalScoreValue" style="color: ${totalScoreColor};">${totalScore.toFixed(
             1
           )}/10</span>
             </p>
-            <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
               <div id="challengeTotalScoreBar" class="rounded-full total-progress-bar" style="width: ${totalScorePercent}%; background-color: ${totalScoreColor};"></div>
             </div>
             <p id="challengeOverallFeedback" class="text-md">${
