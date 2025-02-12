@@ -10,6 +10,7 @@ const colors = {
   depth: "#84cc16",
   objectivity: "#06b6d4",
   creativity: "#8b5cf6",
+  challenge: "#a855f7",
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     depth: document.getElementById("showDepth"),
     objectivity: document.getElementById("showObjectivity"),
     creativity: document.getElementById("showCreativity"),
+    challenge: document.getElementById("showChallenge"), // New button for challenge scores
   };
 
   // Attach click listeners to toggle active/inactive on each button.
@@ -72,6 +74,7 @@ function getDatasetsForMetrics(answers, selectedMetrics) {
     depth: "Depth",
     objectivity: "Objectivity",
     creativity: "Creativity",
+    challenge: "Challenge",
   };
 
   const datasets = [];
@@ -84,6 +87,18 @@ function getDatasetsForMetrics(answers, selectedMetrics) {
         return parseFloat(
           (values.reduce((sum, v) => sum + v, 0) / values.length).toFixed(1)
         );
+      });
+    } else if (metric === "challenge") {
+      // For challenge, retrieve the overall challenge score if available.
+      data = answers.map((a) => {
+        if (
+          a.challenge_evaluation_scores &&
+          a.challenge_evaluation_scores.Overall !== undefined
+        ) {
+          return parseFloat(a.challenge_evaluation_scores.Overall.toFixed(1));
+        } else {
+          return null;
+        }
       });
     } else {
       data = answers.map((a) => a.evaluation_scores[metricLabels[metric]]);
