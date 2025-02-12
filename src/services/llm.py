@@ -1,13 +1,9 @@
-import json
 import logging
-from typing import Dict
 
 from google import genai
-from google.genai import types
 from google.oauth2 import service_account
 
 from config import get_settings
-from services.base_evaluator import BaseEvaluator
 from utils import auto_dedent
 
 SETTINGS = get_settings()
@@ -171,79 +167,3 @@ RESPONSE_SCHEMA = {
         "argument_structure",
     ],
 }
-
-
-class LLMEvaluator(BaseEvaluator):
-    def __init__(self, client, system_instruction, response_schema):
-        self.client = client
-        self.system_instruction = system_instruction
-        self.response_schema = response_schema
-
-    def evaluate(
-        self, question_text: str, claim: str, argument: str, counterargument: str
-    ) -> Dict:
-        prompt = f"""
-            Question (given to user): {question_text}
-            Claim to answer the question (written by user): {claim}
-            Argument to support the claim (written by user): {argument}
-            Counterargument Rebuttal (written by user; optional): {counterargument}
-        """
-        logger.info(f"LLM prompt: {prompt}")
-        response = CLIENT.models.generate_content(
-            model=SETTINGS.MODEL,
-            contents=[
-                types.Content(
-                    role="user",
-                    parts=[types.Part.from_text(text=prompt)],
-                ),
-            ],
-            config=types.GenerateContentConfig(
-                temperature=0,
-                top_p=0,
-                top_k=1,
-                max_output_tokens=8192,
-                response_modalities=["TEXT"],
-                safety_settings=[
-                    types.SafetySetting(
-                        category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"
-                    ),
-                    types.SafetySetting(
-                        category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="OFF"
-                    ),
-                    types.SafetySetting(
-                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="OFF"
-                    ),
-                    types.SafetySetting(
-                        category="HARM_CATEGORY_HARASSMENT", threshold="OFF"
-                    ),
-                ],
-                response_mime_type="application/json",
-                response_schema=self.response_schema,
-                system_instruction=[types.Part.from_text(text=SYSTEM_INSTRUCTION)],
-            ),
-        )
-        return self._parse_response(json.loads(response.text))
-
-    def _parse_response(self, response) -> Dict:
-        return {
-            "scores": {
-                "Relevance": response["relevance_rating"],
-                "Logical Structure": response["logical_structure_rating"],
-                "Clarity": response["clarity_rating"],
-                "Depth": response["depth_rating"],
-                "Objectivity": response["objectivity_rating"],
-                "Creativity": response["creativity_rating"],
-            },
-            "total_score": response["overall_rating"],
-            "feedback": {
-                "Relevance": response["relevance_explanation"],
-                "Logical Structure": response["logical_structure_explanation"],
-                "Clarity": response["clarity_explanation"],
-                "Depth": response["depth_explanation"],
-                "Objectivity": response["objectivity_explanation"],
-                "Creativity": response["creativity_explanation"],
-            },
-            "overall_feedback": response["overall_explanation"],
-            "challenge": response["challenge"],
-            "argument_structure": response["argument_structure"],
-        }

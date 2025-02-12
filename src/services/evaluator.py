@@ -7,7 +7,7 @@ from google.genai import types
 
 from config import get_settings
 from services.base_evaluator import BaseEvaluator
-from services.llm import CLIENT, RESPONSE_SCHEMA, SYSTEM_INSTRUCTION
+from services.llm import CLIENT, SYSTEM_INSTRUCTION
 
 SETTINGS = get_settings()
 
@@ -118,7 +118,7 @@ class LLMEvaluator(BaseEvaluator):
                     ),
                 ],
                 response_mime_type="application/json",
-                response_schema=RESPONSE_SCHEMA,
+                response_schema=self.response_schema,
                 system_instruction=[types.Part.from_text(text=SYSTEM_INSTRUCTION)],
             ),
         )
