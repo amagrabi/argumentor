@@ -96,30 +96,28 @@ async function handleAuth(action) {
 
     if (!response.ok) throw new Error(data.error || "Authentication failed");
 
-    // Close the modal
-    const modal = document.querySelector('div[class*="fixed inset-0"]');
-    if (modal) modal.remove();
+    // Close the auth modal if present
+    const authModal = document
+      .querySelector("#authForm")
+      .closest('div[class*="fixed inset-0"]');
+    if (authModal) authModal.remove();
 
-    // If we are on the profile page, reload immediately for both login and signup
+    // For the profile page, we reload immediately
     if (window.location.pathname === "/profile") {
       window.location.reload();
-      return; // Exit early to prevent race conditions
+      return;
     }
 
-    // For non-profile pages, update the UI without redirect
-    // Handle both login and signup response structures
-    const userData = data.user || data;
-    await updateAuthUI(userData, false);
+    // For non-profile pages, force a full reload so that
+    // header elements (username, XP, settings button click) get reinitialized.
+    window.location.reload();
 
-    // Remove the warning box on the feedback screen if present
-    const warningBox = document.querySelector(
-      "#evaluationResults .bg-yellow-100"
-    );
-    if (warningBox) {
-      warningBox.remove();
-    }
+    // Alternatively, if you don't want to reload, you would need to:
+    // 1. Call updateAuthUI(userData, false) to update text.
+    // 2. Manually re-bind any event listeners (such as for the settings button)
+    // which can be more complex.
   } catch (error) {
-    console.error("Auth error:", error); // Debug log
+    console.error("Auth error:", error);
     errorMessage.textContent = error.message;
     errorMessage.classList.remove("hidden");
   }
@@ -176,8 +174,8 @@ function handleGoogleAuthResponse(response) {
     })
     .then((data) => {
       // Close the authentication modal if present
-      const modal = document.querySelector('div[class*="fixed inset-0"]');
-      if (modal) modal.remove();
+      const authModal = document.querySelector("#authModal");
+      if (authModal) authModal.remove();
 
       // If you're on the profile page, reload to render fresh data;
       // otherwise, update the UI with available user info.

@@ -11,6 +11,7 @@ from middleware import ensure_user_id, log_visit
 from routes.answers import answers_bp
 from routes.auth import auth_bp
 from routes.pages import pages_bp
+from routes.preferences import preferences_bp
 from routes.questions import questions_bp
 
 logging.basicConfig(
@@ -57,6 +58,7 @@ def create_app():
     app.register_blueprint(pages_bp)
     app.register_blueprint(answers_bp)
     app.register_blueprint(questions_bp)
+    app.register_blueprint(preferences_bp)
 
     # Register CLI commands
     register_commands(app)

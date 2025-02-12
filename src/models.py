@@ -17,6 +17,7 @@ class User(db.Model, UserMixin):
     google_id = db.Column(db.String(255), unique=True, nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     profile_pic = db.Column(db.String(512), nullable=True)
+    category_preferences = db.Column(db.Text, nullable=True)
 
     def get_id(self):
         return str(self.uuid)

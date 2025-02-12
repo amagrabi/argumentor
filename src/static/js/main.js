@@ -24,6 +24,17 @@ mermaid.initialize({
   },
 });
 
+const DEFAULT_CATEGORIES = [
+  "Philosophy",
+  "Ethics",
+  "Business & Risk",
+  "Thought Experiments",
+  "Politics",
+  "Biases & Fallacies",
+  "AI & Future",
+  "Fun & Casual",
+];
+
 // Category icons mapping with updated icons
 const categoryIcons = {
   Philosophy: "📚",
@@ -215,7 +226,31 @@ async function updateAuthUI(userData, redirect = false) {
     const result = await response.json();
     const info = result.user || result;
 
-    // Update UI elements if present. For example:
+    // Update username
+    const usernameElem = document.getElementById("usernameElem");
+    if (usernameElem) {
+      usernameElem.textContent = info.username || "Anonymous";
+    }
+
+    // Update level info
+    const userLevelElem = document.getElementById("userLevelElem");
+    if (userLevelElem && info.level_info) {
+      userLevelElem.textContent = info.level_info.display_name;
+    }
+
+    // Update level number
+    const levelNumber = document.getElementById("levelNumber");
+    if (levelNumber && info.level_info) {
+      levelNumber.textContent = info.level_info.level_number;
+    }
+
+    // Update XP bar
+    const miniXpBarFill = document.getElementById("miniXpBarFill");
+    if (miniXpBarFill && info.level_info) {
+      miniXpBarFill.style.width = `${info.level_info.progress_percent}%`;
+    }
+
+    // Update login/logout button
     const loginButton = document.querySelector("#loginButton");
     if (loginButton) {
       const logoutButton = document.createElement("button");
@@ -224,33 +259,13 @@ async function updateAuthUI(userData, redirect = false) {
       logoutButton.onclick = handleLogout;
       logoutButton.textContent = "Logout";
       loginButton.replaceWith(logoutButton);
-      console.log("Login button replaced with logout button");
-    } else {
-      console.log("Login button not found, assuming already logged in.");
-    }
-
-    // Update other header elements as needed.
-    const userLevelElem = document.getElementById("userLevelElem");
-    if (userLevelElem) {
-      userLevelElem.textContent = info.level_info.display_name;
-      console.log("User level updated:", info.level_info.display_name);
-    } else {
-      console.warn("User level element not found.");
-    }
-
-    const miniXpBarFill = document.getElementById("miniXpBarFill");
-    if (miniXpBarFill) {
-      miniXpBarFill.style.width = info.level_info.progress_percent + "%";
-      console.log("XP bar updated:", info.level_info.progress_percent + "%");
-    } else {
-      console.warn("Mini XP bar element not found.");
     }
 
     if (redirect) {
-      window.location.replace("/profile");
+      window.location.href = "/profile";
     }
   } catch (error) {
-    console.error("Failed to update session:", error);
+    console.error("Failed to update UI:", error);
   }
 }
 
@@ -784,50 +799,88 @@ document
   .getElementById("rerollButton")
   .addEventListener("click", () => getNewQuestion(false));
 
-// Categories Modal behavior
-const settingsButton = document.getElementById("settingsButton");
-const modalOverlay = document.getElementById("modalOverlay");
-settingsButton.addEventListener("click", (e) => {
-  e.stopPropagation();
-  modalOverlay.classList.remove("hidden");
-  document.getElementById("categoriesError").classList.add("hidden");
-});
+// Update the DOMContentLoaded handler
+window.addEventListener("DOMContentLoaded", () => {
+  // Add event delegation for settings button
+  document.addEventListener("click", (e) => {
+    const settingsButton = e.target.closest("#settingsButton");
+    if (settingsButton) {
+      e.stopPropagation();
+      const modalOverlay = document.getElementById("modalOverlay");
+      if (modalOverlay) {
+        modalOverlay.classList.remove("hidden");
+        const categoriesError = document.getElementById("categoriesError");
+        if (categoriesError) {
+          categoriesError.classList.add("hidden");
+        }
+      }
+    }
 
-// Category item toggle for selection
-document.querySelectorAll(".category-item").forEach((item) => {
-  item.addEventListener("click", function (e) {
-    this.classList.toggle("selected");
-  });
-});
+    // Handle modal overlay click to close
+    const modalOverlay = e.target.closest("#modalOverlay");
+    if (modalOverlay && e.target === modalOverlay) {
+      if (document.querySelectorAll(".category-item.selected").length === 0) {
+        document.getElementById("categoriesError").classList.remove("hidden");
+      } else {
+        modalOverlay.classList.add("hidden");
+        updateSelectedCategories();
+      }
+    }
 
-// Prevent modal overlay from closing if no category is selected
-modalOverlay.addEventListener("click", (e) => {
-  if (e.target === modalOverlay) {
-    if (document.querySelectorAll(".category-item.selected").length === 0) {
-      document.getElementById("categoriesError").classList.remove("hidden");
-    } else {
-      modalOverlay.classList.add("hidden");
+    // Handle close button click
+    const closeButton = e.target.closest("#closeCategories");
+    if (closeButton) {
+      e.stopPropagation();
+      if (document.querySelectorAll(".category-item.selected").length === 0) {
+        document.getElementById("categoriesError").classList.remove("hidden");
+        return;
+      }
+      document.getElementById("modalOverlay").classList.add("hidden");
       updateSelectedCategories();
     }
-  }
-});
+  });
 
-// Close modal on "Done" click
-document.getElementById("closeCategories").addEventListener("click", (e) => {
-  e.stopPropagation();
-  if (document.querySelectorAll(".category-item.selected").length === 0) {
-    document.getElementById("categoriesError").classList.remove("hidden");
-    return;
-  }
-  modalOverlay.classList.add("hidden");
-  updateSelectedCategories();
+  // Add event delegation for category items
+  document.addEventListener("click", (e) => {
+    const categoryItem = e.target.closest(".category-item");
+    if (categoryItem) {
+      categoryItem.classList.toggle("selected");
+      if (categoryItem.classList.contains("selected")) {
+        categoryItem.classList.add("bg-gray-800", "text-white");
+        categoryItem.classList.remove("bg-white", "text-black");
+      } else {
+        categoryItem.classList.remove("bg-gray-800", "text-white");
+        categoryItem.classList.add("bg-white", "text-black");
+      }
+    }
+  });
+
+  // Load saved categories and handle stored question
+  loadSavedCategories().then(() => {
+    const storedQuestion = sessionStorage.getItem("currentQuestion");
+    if (storedQuestion) {
+      currentQuestion = JSON.parse(storedQuestion);
+      updateQuestionDisplay(currentQuestion);
+    } else {
+      getNewQuestion();
+    }
+  });
 });
 
 // Update selectedCategories based on selected items and possibly re-roll the question
 function updateSelectedCategories() {
-  selectedCategories = Array.from(
-    document.querySelectorAll(".category-item.selected")
-  ).map((el) => el.getAttribute("data-value"));
+  const categoryItems = document.querySelectorAll(".category-item");
+  selectedCategories = Array.from(categoryItems)
+    .filter((item) => item.classList.contains("selected"))
+    .map((item) => item.dataset.value);
+
+  // Persist the selection
+  fetch("/update_categories", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ categories: selectedCategories }),
+  }).catch((error) => console.error("Error saving categories:", error));
+
   if (
     currentQuestion &&
     !selectedCategories.includes(currentQuestion.category)
@@ -840,18 +893,25 @@ function updateSelectedCategories() {
   }
 }
 
-// Replace the DOMContentLoaded handler so that it checks for a previously stored question.
-// If found, it displays that question instead of fetching a new one.
-window.addEventListener("DOMContentLoaded", () => {
-  updateSelectedCategories();
-  const storedQuestion = sessionStorage.getItem("currentQuestion");
-  if (storedQuestion) {
-    currentQuestion = JSON.parse(storedQuestion);
-    updateQuestionDisplay(currentQuestion);
-  } else {
-    getNewQuestion();
-  }
-});
+// Add new function to update UI based on saved preferences
+function updateCategoryUI() {
+  const categoryItems = document.querySelectorAll(".category-item");
+  categoryItems.forEach((item) => {
+    if (selectedCategories.includes(item.dataset.value)) {
+      item.classList.add("selected");
+      item.classList.add("bg-gray-800");
+      item.classList.add("text-white");
+      item.classList.remove("bg-white");
+      item.classList.remove("text-black");
+    } else {
+      item.classList.remove("selected");
+      item.classList.remove("bg-gray-800");
+      item.classList.remove("text-white");
+      item.classList.add("bg-white");
+      item.classList.add("text-black");
+    }
+  });
+}
 
 // Question selection overlay handler
 document
@@ -1066,5 +1126,29 @@ function updateXpIndicator(totalXp, levelInfo) {
   const levelNumberElem = document.getElementById("levelNumber");
   if (levelNumberElem) {
     levelNumberElem.textContent = levelInfo.level_number;
+  }
+}
+
+// Function to load saved categories
+async function loadSavedCategories() {
+  try {
+    const response = await fetch("/get_categories");
+    const data = await response.json();
+    // If no categories are returned, use the defaults
+    selectedCategories =
+      data.categories && data.categories.length > 0
+        ? data.categories
+        : DEFAULT_CATEGORIES;
+
+    // Wait for next tick to ensure DOM is ready
+    setTimeout(() => {
+      updateCategoryUI();
+    }, 0);
+  } catch (error) {
+    console.error("Error loading categories:", error);
+    selectedCategories = DEFAULT_CATEGORIES;
+    setTimeout(() => {
+      updateCategoryUI();
+    }, 0);
   }
 }
