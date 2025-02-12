@@ -32,15 +32,25 @@
           <h1 class="text-2xl font-bold">ArguMentor</h1>
         </div>
         <div class="flex items-center space-x-2 text-sm">
-          <!-- Level and XP indicator (removed authentication check, so it always displays) -->
-          <div class="flex flex-col items-end mr-4" id="miniXpBar">
-            <span class="text-xs text-gray-700" id="userLevelElem"
-              >{{ level_info.display_name }}</span
+          <!-- Compact User Info arranged vertically with adjustments -->
+          <div id="userInfo" class="flex flex-col items-end self-center mr-4">
+            <span
+              id="usernameElem"
+              class="text-[10px] text-gray-700 leading-tight"
             >
-            <div class="w-24 bg-gray-200 h-2 rounded-full mt-1">
+              {{ current_user.username if current_user.is_authenticated and
+              current_user.username else 'Anonymous' }}
+            </span>
+            <span
+              id="userLevelElem"
+              class="text-[9px] text-gray-500 leading-tight mb-0.5"
+            >
+              {{ level_info.display_name }}
+            </span>
+            <div class="w-16 bg-gray-200 h-1 rounded mt-0.5">
               <div
                 id="miniXpBarFill"
-                class="bg-green-500 h-full rounded-full"
+                class="bg-green-500 h-full rounded"
                 style="width: {{ level_info.progress_percent }}%;"
               ></div>
             </div>
