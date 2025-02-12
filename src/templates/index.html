@@ -402,7 +402,7 @@
       </main>
 
       <!-- Evaluation Results -->
-      <div id="evaluationResults" class="hidden bg-white shadow-sm p-8">
+      <div id="evaluationResults" class="hidden bg-white p-8">
         <h2 class="text-2xl font-bold mb-6">Evaluation</h2>
         <div id="overallEvaluation" class="mb-6"></div>
         <div id="scores" class="grid gap-4 mb-8">
@@ -474,22 +474,20 @@
           {% endif %}
         </div>
 
-        <!-- Next Question Button -->
-        <div class="mt-6 text-center">
-          <button
-            id="nextQuestion"
-            class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"
-          >
-            Next Question
-          </button>
-        </div>
-
         <!-- New Challenge Response Section -->
         <div
           id="challengeSection"
-          class="hidden mt-8 p-8 bg-gray-50 rounded-lg shadow-sm"
+          class="hidden mt-8 p-8 bg-white border-2 border-gray-200 rounded-lg shadow-sm sticky top-4"
+          style="box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1)"
         >
-          <h2 class="text-2xl font-bold mb-4">Challenge</h2>
+          <div class="flex items-center gap-2 mb-4">
+            <div
+              class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"
+            >
+              ⚔️
+            </div>
+            <h2 class="text-2xl font-bold">Argument Challenge</h2>
+          </div>
           <p id="challengeText" class="mb-4 text-gray-700"></p>
           <div>
             <label
@@ -526,6 +524,16 @@
           <div id="challengeEvaluationResults" class="mt-8 hidden">
             <!-- Populated after challenge response evaluation -->
           </div>
+        </div>
+
+        <!-- Next Question Button -->
+        <div class="mt-6 text-center">
+          <button
+            id="nextQuestion"
+            class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"
+          >
+            Try Another Question
+          </button>
         </div>
       </div>
 

@@ -644,8 +644,10 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     if (data.evaluation.challenge) {
       const challengeSection = document.getElementById("challengeSection");
       const challengeTextElem = document.getElementById("challengeText");
-      challengeTextElem.textContent = data.evaluation.challenge;
-      challengeSection.classList.remove("hidden");
+      if (challengeTextElem && challengeSection) {
+        challengeTextElem.textContent = data.evaluation.challenge;
+        challengeSection.classList.remove("hidden");
+      }
     }
 
     // Update character count for the challenge response text area.
@@ -786,6 +788,12 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
           submitBtn.disabled = false;
         }
       });
+
+    const nextBtn = document.getElementById("nextQuestion");
+    if (nextBtn) {
+      nextBtn.innerHTML = `Try Another Question`;
+      nextBtn.classList.add("hover:bg-gray-700");
+    }
   } catch (error) {
     console.error("Error submitting answer:", error);
     document.getElementById("errorMessage").textContent =
