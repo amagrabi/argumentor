@@ -48,22 +48,24 @@
               {{ level_info.display_name }}
             </span>
             <!-- Extended XP progress bar with current level circle on the left only -->
-            <div class="relative w-24 mt-0.5 h-1">
-              <!-- Bar background -->
-              <div class="w-full bg-gray-200 h-1 rounded"></div>
-              <!-- XP fill -->
+            <div class="flex items-center">
+              <!-- Level indicator placed outside the progress bar -->
               <div
-                id="miniXpBarFill"
-                class="absolute top-0 left-0 bg-green-500 h-1 rounded"
-                style="width: {{ level_info.progress_percent }}%;"
-              ></div>
-              <!-- Current level circle on the left -->
-              <div class="absolute top-1/2 left-0 transform -translate-y-1/2">
+                id="levelNumber"
+                class="w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
+              >
+                {{ level_info.level_number }}
+              </div>
+              <!-- XP progress bar -->
+              <div class="relative w-24 h-1">
                 <div
-                  class="w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
-                >
-                  {{ level_info.level_number }}
-                </div>
+                  class="w-full bg-gray-200 h-1 rounded-r-full rounded-l-none"
+                ></div>
+                <div
+                  id="miniXpBarFill"
+                  class="absolute top-0 left-0 bg-green-500 h-1 rounded-r-full rounded-l-none"
+                  style="width: {{ level_info.progress_percent }}%;"
+                ></div>
               </div>
             </div>
           </div>

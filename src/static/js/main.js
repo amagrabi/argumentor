@@ -614,6 +614,12 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       miniXpBarFill.style.width = data.level_info.progress_percent + "%";
     }
 
+    // Update the small circle indicator of the level
+    const levelNumberElem = document.getElementById("levelNumber");
+    if (levelNumberElem && data.level_info) {
+      levelNumberElem.textContent = data.level_info.level_number;
+    }
+
     // After a successful answer submission, store the answer ID for later use:
     if (data.answer_id) {
       sessionStorage.setItem("lastAnswerId", data.answer_id);
@@ -694,6 +700,9 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
             submitBtn.disabled = false;
             return;
           }
+
+          // Update the XP/Level indicator bar using the returned json
+          updateXpIndicator(data.total_xp, data.level_info);
 
           // Display detailed challenge evaluation feedback similar to primary evaluation.
           const challengeEvalDiv = document.getElementById(
@@ -1034,4 +1043,30 @@ function renderEvaluationResults(evaluation) {
   html += `</div>`;
 
   document.getElementById("evaluationResults").innerHTML = html;
+}
+
+function updateXpIndicator(totalXp, levelInfo) {
+  // Update the displayed XP (if there's an element that shows e.g. "total XP")
+  const xpProgressTextElem = document.getElementById("xpProgressText");
+  if (xpProgressTextElem) {
+    xpProgressTextElem.textContent = `${totalXp} XP`;
+  }
+
+  // Update the mini XP progress bar
+  const miniXpBarFill = document.getElementById("miniXpBarFill");
+  if (miniXpBarFill) {
+    miniXpBarFill.style.width = levelInfo.progress_percent + "%";
+  }
+
+  // Update the level display element
+  const userLevelElem = document.getElementById("userLevelElem");
+  if (userLevelElem) {
+    userLevelElem.textContent = levelInfo.display_name;
+  }
+
+  // Update the level number indicator
+  const levelNumberElem = document.getElementById("levelNumber");
+  if (levelNumberElem) {
+    levelNumberElem.textContent = levelInfo.level_number;
+  }
 }
