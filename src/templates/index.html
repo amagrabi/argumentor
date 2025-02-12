@@ -33,42 +33,44 @@
         </div>
         <div class="flex items-center space-x-2 text-sm">
           <!-- Compact User Info arranged vertically with adjustments -->
-          <div id="userInfo" class="flex flex-col items-end self-center mr-4">
-            <span
-              id="usernameElem"
-              class="text-[10px] text-gray-700 leading-tight"
-            >
-              {{ current_user.username if current_user.is_authenticated and
-              current_user.username else 'Anonymous' }}
-            </span>
-            <span
-              id="userLevelElem"
-              class="text-[9px] text-gray-500 leading-tight mb-0.5"
-            >
-              {{ level_info.display_name }}
-            </span>
-            <!-- Extended XP progress bar with current level circle on the left only -->
-            <div class="flex items-center">
-              <!-- Level indicator placed outside the progress bar -->
-              <div
-                id="levelNumber"
-                class="w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
+          <a href="/profile" class="no-underline">
+            <div id="userInfo" class="flex flex-col items-end self-center mr-4">
+              <span
+                id="usernameElem"
+                class="text-[10px] text-gray-700 leading-tight"
               >
-                {{ level_info.level_number }}
-              </div>
-              <!-- XP progress bar -->
-              <div class="relative w-24 h-1">
+                {{ current_user.username if current_user.is_authenticated and
+                current_user.username else 'Anonymous' }}
+              </span>
+              <span
+                id="userLevelElem"
+                class="text-[9px] text-gray-500 leading-tight mb-0.5"
+              >
+                {{ level_info.display_name }}
+              </span>
+              <!-- Extended XP progress bar with current level circle on the left only -->
+              <div class="flex items-center">
+                <!-- Level indicator placed outside the progress bar -->
                 <div
-                  class="w-full bg-gray-200 h-1 rounded-r-full rounded-l-none"
-                ></div>
-                <div
-                  id="miniXpBarFill"
-                  class="absolute top-0 left-0 bg-green-500 h-1 rounded-r-full rounded-l-none"
-                  style="width: {{ level_info.progress_percent }}%;"
-                ></div>
+                  id="levelNumber"
+                  class="w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
+                >
+                  {{ level_info.level_number }}
+                </div>
+                <!-- XP progress bar -->
+                <div class="relative w-24 h-1">
+                  <div
+                    class="w-full bg-gray-200 h-1 rounded-r-full rounded-l-none"
+                  ></div>
+                  <div
+                    id="miniXpBarFill"
+                    class="absolute top-0 left-0 bg-green-500 h-1 rounded-r-full rounded-l-none"
+                    style="width: {{ level_info.progress_percent }}%;"
+                  ></div>
+                </div>
               </div>
             </div>
-          </div>
+          </a>
           {% if current_user.is_authenticated %}
           <button
             onclick="handleLogout()"
