@@ -636,10 +636,8 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     // Update character count for the challenge response text area.
     document
       .getElementById("challengeResponseInput")
-      .addEventListener("input", (e) => {
-        const max = 1000;
-        const remaining = max - e.target.value.length;
-        document.getElementById("challengeCount").textContent = remaining;
+      .addEventListener("input", () => {
+        document.getElementById("challengeErrorMessage").textContent = "";
       });
 
     // Challenge Response submission handler.
