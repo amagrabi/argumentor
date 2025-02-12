@@ -100,13 +100,16 @@ async function handleAuth(action) {
     const modal = document.querySelector('div[class*="fixed inset-0"]');
     if (modal) modal.remove();
 
-    // Update the auth UI elements and session state
-    await updateAuthUI(data, false);
-
-    // If we are on the profile page, reload to display the new authenticated context.
+    // If we are on the profile page, reload immediately for both login and signup
     if (window.location.pathname === "/profile") {
       window.location.reload();
+      return; // Exit early to prevent race conditions
     }
+
+    // For non-profile pages, update the UI without redirect
+    // Handle both login and signup response structures
+    const userData = data.user || data;
+    await updateAuthUI(userData, false);
 
     // Remove the warning box on the feedback screen if present
     const warningBox = document.querySelector(
@@ -116,6 +119,7 @@ async function handleAuth(action) {
       warningBox.remove();
     }
   } catch (error) {
+    console.error("Auth error:", error); // Debug log
     errorMessage.textContent = error.message;
     errorMessage.classList.remove("hidden");
   }

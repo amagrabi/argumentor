@@ -44,10 +44,10 @@ def signup():
             xp=anonymous_user.xp if anonymous_user else session.get("xp", 0),
         )
         db.session.add(user)
-        db.session.flush()  # Generate UUID without committing transaction
+        db.session.flush()
 
         if anonymous_user:
-            # Directly update answers' user_uuid
+            # Merge all answers from the anonymous user into the google account.
             db.session.execute(
                 update(Answer)
                 .where(Answer.user_uuid == anonymous_user.uuid)
@@ -57,6 +57,10 @@ def signup():
 
         db.session.commit()
         login_user(user)
+
+        # Ensure session is updated before responding
+        session["user_id"] = user.uuid
+        session.modified = True
 
         # Calculate level info
         level_info = get_level_info(user.xp)
