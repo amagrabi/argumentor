@@ -95,16 +95,14 @@ def submit_answer():
         user_uuid=user_uuid, question_id=data.get("question_id")
     ).all()
 
-    SIMILARITY_THRESHOLD = 0.8  # 80% similarity
-
     for existing in existing_answers:
         # Compare both claim and argument
         claim_similarity = SequenceMatcher(None, claim, existing.claim).ratio()
         argument_similarity = SequenceMatcher(None, argument, existing.argument).ratio()
 
         if (
-            claim_similarity > SIMILARITY_THRESHOLD
-            and argument_similarity > SIMILARITY_THRESHOLD
+            claim_similarity > SETTINGS.SIMILARITY_THRESHOLD
+            and argument_similarity > SETTINGS.SIMILARITY_THRESHOLD
         ):
             return jsonify(
                 {

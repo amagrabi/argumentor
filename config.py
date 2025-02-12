@@ -22,15 +22,20 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str = Field(default="fallback")
     GOOGLE_CLIENT_SECRET: str = Field(default="fallback")
 
+    # If false, cheaper dummy responses will be returned
     USE_LLM_EVALUATOR: bool = Field(default=True)
 
     MODEL: str = Field(default="gemini-2.0-flash-001")
 
+    # Maximum characters allowed for each field
     MAX_CLAIM: int = Field(default=200)
     MAX_ARGUMENT: int = Field(default=1000)
     MAX_COUNTERARGUMENT: int = Field(default=500)
 
+    # Below this threshold, no XP is awarded
     RELEVANCE_THRESHOLD_FOR_XP: int = Field(default=3)
+    # Above this threshold, answers are considered too similar
+    SIMILARITY_THRESHOLD: float = Field(default=0.8)
 
     model_config = SettingsConfigDict(
         env_file=".env",
