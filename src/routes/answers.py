@@ -1,3 +1,4 @@
+from datetime import datetime, time
 from difflib import SequenceMatcher
 
 from flask import Blueprint, jsonify, request, session
@@ -12,6 +13,25 @@ answers_bp = Blueprint("answers", __name__)
 
 
 SETTINGS = get_settings()
+
+
+# Helper to count today's evaluation attempts.
+def get_daily_evaluation_count(user_uuid):
+    """
+    Returns the total number of evaluation attempts made by the user today.
+    Each initial answer submission counts as 1.
+    If the answer has a non-null challenge_response, that counts as an additional evaluation attempt.
+    """
+    today_start = datetime.combine(datetime.utcnow().date(), time.min)
+    answers = Answer.query.filter(
+        Answer.user_uuid == user_uuid, Answer.created_at >= today_start
+    ).all()
+    count = 0
+    for ans in answers:
+        count += 1
+        if ans.challenge_response:
+            count += 1
+    return count
 
 
 def create_evaluator():
@@ -36,7 +56,7 @@ def evaluate_answer(question_text, claim, argument, counterargument):
 
 @answers_bp.route("/submit_answer", methods=["POST"])
 @limiter.limit(
-    SETTINGS.EVAL_RATE_LIMITS,
+    SETTINGS.SUBMISSION_RATE_LIMITS,
     error_message="Too many submissions. Please wait before trying again.",
 )
 def submit_answer():
@@ -76,6 +96,22 @@ def submit_answer():
                 if question_text:
                     break
 
+    user_uuid = session.get("user_id")
+    if not user_uuid:
+        return jsonify({"error": "User not identified."}), 400
+
+    # Check today's evaluation count (initial submission counts as one)
+    daily_count = get_daily_evaluation_count(user_uuid)
+    if daily_count >= SETTINGS.EVAL_DAILY_LIMIT:
+        return (
+            jsonify(
+                {
+                    "error": f"Daily evaluation limit reached ({SETTINGS.EVAL_DAILY_LIMIT})."
+                }
+            ),
+            429,
+        )
+
     evaluator = create_evaluator()
     evaluation = evaluator.evaluate(question_text, claim, argument, counterargument)
 
@@ -89,7 +125,6 @@ def submit_answer():
         else 0
     )
 
-    user_uuid = session.get("user_id")
     user = User.query.filter_by(uuid=user_uuid).first()
     old_xp = user.xp if user else 0
     new_xp = old_xp + xp_earned
@@ -116,25 +151,22 @@ def submit_answer():
                     """
                 }
             ), 400
-    user = User.query.filter_by(uuid=user_uuid).first()
     if not user:
         user = User(uuid=user_uuid, xp=new_xp)
         db.session.add(user)
     else:
         user.xp = new_xp
 
-    # Get question_id from the request and look up the question text.
+    # Get question_text from the request by looking up question_id if necessary.
     question_id = data.get("question_id")
     question_text = ""
     if question_id:
-        # First check if it's the fixed question
         if (
             question_id
             == "does-free-will-exist-if-all-decisions-are-ultimately-influenced-by-biologicalphysical-factors"
         ):
             question_text = "Does free will exist if all decisions are ultimately influenced by biological/physical factors?"
         else:
-            # search through loaded QUESTIONS
             for questions in get_questions().values():
                 for q in questions:
                     if q["id"] == question_id:
@@ -189,7 +221,7 @@ def submit_answer():
 
 @answers_bp.route("/submit_challenge_response", methods=["POST"])
 @limiter.limit(
-    SETTINGS.EVAL_RATE_LIMITS,
+    SETTINGS.SUBMISSION_RATE_LIMITS,
     error_message="Too many submissions. Please wait before trying again.",
 )
 def submit_challenge_response():
@@ -215,11 +247,25 @@ def submit_challenge_response():
             {"error": "You have already submitted a response to this challenge."}
         ), 400
 
+    user_uuid = session.get("user_id")
+    if not user_uuid:
+        return jsonify({"error": "User not identified."}), 400
+
+    # Check the daily evaluation count (challenge responses count as a separate evaluation attempt)
+    daily_count = get_daily_evaluation_count(user_uuid)
+    if daily_count >= SETTINGS.EVAL_DAILY_LIMIT:
+        return (
+            jsonify(
+                {
+                    "error": f"Daily evaluation limit reached ({SETTINGS.EVAL_DAILY_LIMIT})."
+                }
+            ),
+            429,
+        )
+
     evaluator = create_evaluator()
-    # Call the new evaluator method for challenge evaluation
     evaluation = evaluator.evaluate_challenge(answer, challenge_response)
 
-    # Determine XP for the challenge response without including the relevance score.
     scores = evaluation["scores"]
     other_keys = ["Logical Structure", "Clarity", "Depth", "Objectivity", "Creativity"]
     avg_other = sum(scores[key] for key in other_keys) / len(other_keys)
@@ -241,7 +287,6 @@ def submit_challenge_response():
     }
     answer.challenge_xp_earned = xp_gained
 
-    user_uuid = session.get("user_id")
     user = User.query.filter_by(uuid=user_uuid).first()
     old_xp = user.xp if user else 0
     new_xp = old_xp + xp_gained
