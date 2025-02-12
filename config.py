@@ -38,6 +38,8 @@ class Settings(BaseSettings):
     # Above this threshold, answers are considered too similar
     SIMILARITY_THRESHOLD: float = Field(default=0.8)
 
+    EVAL_RATE_LIMITS: str = Field(default="10 per minute, 100 per day")
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

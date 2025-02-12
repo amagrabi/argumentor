@@ -1,12 +1,13 @@
 import logging
 import os
 
-from flask import Flask
+from flask import Flask, jsonify
+from flask_limiter.errors import RateLimitExceeded
 from google.oauth2 import service_account
 
 from commands import register_commands
 from config import get_settings
-from extensions import db, login_manager
+from extensions import db, limiter, login_manager
 from middleware import ensure_user_id, log_visit
 from routes.answers import answers_bp
 from routes.auth import auth_bp
@@ -46,6 +47,13 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
     login_manager.init_app(app)
+    limiter.init_app(app)
+
+    # Register a custom error handler for rate limit errors
+    @app.errorhandler(RateLimitExceeded)
+    def ratelimit_handler(e):
+        # e.description comes from the error_message parameter in the rate limit decorator
+        return jsonify(error=e.description), e.code
 
     # Create tables if they don't exist
     with app.app_context():

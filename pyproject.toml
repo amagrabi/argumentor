@@ -11,6 +11,7 @@ keywords = ["reasoning", "decision-making"]
 dependencies = [
     "flask",
     "flask-sqlalchemy",
+    "flask-limiter",
     "flask-login",
     "google-auth",
     "google-genai",

@@ -3,7 +3,7 @@ from difflib import SequenceMatcher
 from flask import Blueprint, jsonify, request, session
 
 from config import get_settings
-from extensions import db
+from extensions import db, limiter
 from models import Answer, User
 from services.leveling import get_level, get_level_info
 from services.question_service import get_questions
@@ -35,6 +35,10 @@ def evaluate_answer(question_text, claim, argument, counterargument):
 
 
 @answers_bp.route("/submit_answer", methods=["POST"])
+@limiter.limit(
+    SETTINGS.EVAL_RATE_LIMITS,
+    error_message="Too many submissions. Please wait before trying again.",
+)
 def submit_answer():
     if not request.is_json:
         return jsonify({"error": "Content-Type must be application/json"}), 400
@@ -184,6 +188,10 @@ def submit_answer():
 
 
 @answers_bp.route("/submit_challenge_response", methods=["POST"])
+@limiter.limit(
+    SETTINGS.EVAL_RATE_LIMITS,
+    error_message="Too many submissions. Please wait before trying again.",
+)
 def submit_challenge_response():
     if not request.is_json:
         return jsonify({"error": "Content-Type must be application/json"}), 400
