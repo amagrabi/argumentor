@@ -197,7 +197,7 @@
               class="border p-4 rounded-lg group hover:bg-gray-50 transition-colors"
             >
               <div class="relative">
-                <p class="font-bold text-gray-800">
+                <p class="font-bold text-gray-800 pr-40">
                   {{ answer.question_text }}
                 </p>
                 <div
@@ -209,10 +209,10 @@
                     Argument:
                     <span
                       class="ml-1 text-sm {{ score_color((answer.evaluation_scores.values() | sum) / (answer.evaluation_scores.values() | length)) }}"
-                      >{{ "%.1f"|format((answer.evaluation_scores.values() |
-                      sum) / (answer.evaluation_scores.values() | length))
-                      }}/10</span
                     >
+                      {{ "%.1f"|format((answer.evaluation_scores.values() | sum)
+                      / (answer.evaluation_scores.values() | length)) }}/10
+                    </span>
                   </p>
                   {% if answer.challenge and answer.challenge_evaluation_scores
                   %}
@@ -220,10 +220,11 @@
                     Challenge:
                     <span
                       class="ml-1 text-sm {{ score_color(answer.challenge_evaluation_scores.Overall) }}"
-                      >{{
-                      "%.1f"|format(answer.challenge_evaluation_scores.Overall)
-                      }}/10</span
                     >
+                      {{
+                      "%.1f"|format(answer.challenge_evaluation_scores.Overall)
+                      }}/10
+                    </span>
                   </p>
                   {% endif %}
                 </div>
@@ -232,7 +233,7 @@
               <div class="mt-2 space-y-2">
                 <div class="mt-2 space-y-2">
                   <!-- Claim and Argument Sections -->
-                  <p class="text-sm break-words">
+                  <p class="text-sm break-words pr-40">
                     <span class="font-medium text-sm text-black">Claim:</span>
                     <span class="text-gray-600">{{ answer.claim }}</span>
                   </p>
@@ -296,15 +297,16 @@
                 </div>
                 <div class="hidden mt-2 space-y-2 text-sm text-gray-600">
                   <!-- Main Evaluation Feedback Section -->
+                  {% set overall_score = (answer.evaluation_scores.values() |
+                  sum) / (answer.evaluation_scores.values() | length) %}
                   <p class="flex flex-col">
                     <span class="flex items-center">
                       <span class="font-medium text-black">Overall:</span>
                       <span
-                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color((answer.evaluation_scores.values() | sum) / (answer.evaluation_scores.values() | length)) }}"
+                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(overall_score) }}"
                       >
-                        {{ "%.1f"|format((answer.evaluation_scores.values() |
-                        sum) / (answer.evaluation_scores.values() | length))
-                        }}/10
+                        {{ overall_score|round(1, 'common') if overall_score !=
+                        overall_score|int else overall_score|int }}/10
                       </span>
                     </span>
                     <span>{{ answer.evaluation_feedback.Overall }}</span>
@@ -322,8 +324,7 @@
                       <span
                         class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.evaluation_scores[category]) }}"
                       >
-                        {{ "%.1f"|format(answer.evaluation_scores[category])
-                        }}/10
+                        {{ answer.evaluation_scores[category] }}/10
                       </span>
                       {% endif %}
                     </span>
@@ -345,9 +346,7 @@
                       <span
                         class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.challenge_evaluation_scores.Overall) }}"
                       >
-                        {{
-                        "%.1f"|format(answer.challenge_evaluation_scores.Overall)
-                        }}/10
+                        {{ answer.challenge_evaluation_scores.Overall }}/10
                       </span>
                     </span>
                     <span
@@ -367,9 +366,7 @@
                       <span
                         class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.challenge_evaluation_scores[category]) }}"
                       >
-                        {{
-                        "%.1f"|format(answer.challenge_evaluation_scores[category])
-                        }}/10
+                        {{ answer.challenge_evaluation_scores[category] }}/10
                       </span>
                       {% endif %}
                     </span>
