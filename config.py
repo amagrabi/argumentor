@@ -30,6 +30,8 @@ class Settings(BaseSettings):
     MAX_ARGUMENT: int = Field(default=1000)
     MAX_COUNTERARGUMENT: int = Field(default=500)
 
+    RELEVANCE_THRESHOLD_FOR_XP: int = Field(default=3)
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

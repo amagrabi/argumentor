@@ -55,13 +55,40 @@ def submit_answer():
     ):
         return jsonify({"error": "Character limit exceeded"}), 400
 
-    evaluation = evaluate_answer(question_text, claim, argument, counterargument)
-    xp_gained = sum(evaluation["scores"].values())
+    # If question_text wasn't provided, try to look it up using question_id.
+    question_id = data.get("question_id")
+    if not question_text and question_id:
+        if (
+            question_id
+            == "does-free-will-exist-if-all-decisions-are-ultimately-influenced-by-biologicalphysical-factors"
+        ):
+            question_text = "Does free will exist if all decisions are ultimately influenced by biological/physical factors?"
+        else:
+            for questions in get_questions().values():
+                for q in questions:
+                    if q["id"] == question_id:
+                        question_text = q["description"]
+                        break
+                if question_text:
+                    break
+
+    evaluator = create_evaluator()
+    evaluation = evaluator.evaluate(question_text, claim, argument, counterargument)
+
+    # Determine XP and overall rating (excluding the Relevance score)
+    scores = evaluation["scores"]
+    other_keys = ["Logical Structure", "Clarity", "Depth", "Objectivity", "Creativity"]
+    avg_other = sum(scores[key] for key in other_keys) / len(other_keys)
+    xp_earned = (
+        int(avg_other * 10)
+        if scores["Relevance"] >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
+        else 0
+    )
 
     user_uuid = session.get("user_id")
     user = User.query.filter_by(uuid=user_uuid).first()
     old_xp = user.xp if user else 0
-    new_xp = old_xp + xp_gained
+    new_xp = old_xp + xp_earned
     session["xp"] = new_xp
 
     existing_answers = Answer.query.filter_by(
@@ -123,14 +150,16 @@ def submit_answer():
         counterargument=counterargument if counterargument else None,
         evaluation_scores={
             **evaluation["scores"],
-            "Overall": evaluation["total_score"],
+            "Overall": avg_other,
         },
         evaluation_feedback={
             **evaluation["feedback"],
             "Overall": evaluation["overall_feedback"],
         },
-        xp_earned=xp_gained,
+        xp_earned=xp_earned,
         challenge=evaluation.get("challenge"),
+        challenge_evaluation_scores={},
+        challenge_evaluation_feedback={},
     )
     db.session.add(new_answer)
     db.session.commit()
@@ -144,9 +173,9 @@ def submit_answer():
     return jsonify(
         {
             "evaluation": evaluation,
-            "xp_earned": xp_gained,
+            "xp_earned": xp_earned,
             "total_xp": new_xp,
-            "xp_gained": xp_gained,
+            "xp_gained": xp_earned,
             "current_xp": new_xp,
             "current_level": level_info["display_name"],
             "leveled_up": leveled_up,
@@ -188,24 +217,34 @@ def submit_challenge_response():
         ), 400
 
     evaluation = evaluate_challenge_response(answer.challenge, challenge_response)
-    xp_gained = sum(evaluation["scores"].values())
 
-    user_uuid = session.get("user_id")
-    user = User.query.filter_by(uuid=user_uuid).first()
-    old_xp = user.xp if user else 0
-    new_xp = old_xp + xp_gained
-    session["xp"] = new_xp
+    # Determine XP for the challenge response without including the relevance score.
+    scores = evaluation["scores"]
+    other_keys = ["Logical Structure", "Clarity", "Depth", "Objectivity", "Creativity"]
+    avg_other = sum(scores[key] for key in other_keys) / len(other_keys)
+    overall_challenge_rating = avg_other
+    xp_gained = (
+        int(avg_other * 10)
+        if scores["Relevance"] >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
+        else 0
+    )
 
     answer.challenge_response = challenge_response
     answer.challenge_evaluation_scores = {
         **evaluation["scores"],
-        "Overall": evaluation["total_score"],
+        "Overall": overall_challenge_rating,
     }
     answer.challenge_evaluation_feedback = {
         **evaluation["feedback"],
         "Overall": evaluation["overall_feedback"],
     }
     answer.challenge_xp_earned = xp_gained
+
+    user_uuid = session.get("user_id")
+    user = User.query.filter_by(uuid=user_uuid).first()
+    old_xp = user.xp if user else 0
+    new_xp = old_xp + xp_gained
+    session["xp"] = new_xp
 
     if user:
         user.xp = new_xp

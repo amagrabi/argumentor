@@ -2,6 +2,20 @@
 # Each dimension is rated on a scale from 1 (lowest quality) to 10 (highest quality).
 
 scoring_dimensions:
+  Relevance:
+    description: "Assessment of how pertinent the argument is to the question asked."
+    levels:
+      1: "No relevance to the question; completely off-topic."
+      2: "Minimal relevance with little connection to the question."
+      3: "Some relevance but largely fails to address key aspects."
+      4: "Limited relevance; partially addresses the main issue."
+      5: "Moderately relevant; addresses the question in parts."
+      6: "Generally relevant; mostly on-topic but could be more focused."
+      7: "Very relevant; clearly addresses the central question."
+      8: "Highly relevant; directly addresses the question with clear connection."
+      9: "Extremely relevant; tightly aligns with the question and explores nuanced aspects."
+      10: "Exceptionally relevant; masterfully addresses the question with precise focus."
+
   Logical Structure:
     description: "Assessment of the argument's logical consistency, clarity in premises, and validity of connections."
     levels:

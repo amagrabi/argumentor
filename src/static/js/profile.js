@@ -4,6 +4,7 @@ let progressChart = null;
 // Define a color mapping for each metric.
 const colors = {
   overall: "#1f2937",
+  relevance: "#f472b6",
   logic: "#ef4444",
   clarity: "#f59e0b",
   depth: "#84cc16",
@@ -20,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const buttons = {
     overall: document.getElementById("showOverall"),
+    relevance: document.getElementById("showRelevance"),
     logic: document.getElementById("showLogic"),
     clarity: document.getElementById("showClarity"),
     depth: document.getElementById("showDepth"),
@@ -64,6 +66,7 @@ function getDatasetsForMetrics(answers, selectedMetrics) {
   // Display labels corresponding to each metric key.
   const metricLabels = {
     overall: "Overall",
+    relevance: "Relevance",
     logic: "Logical Structure",
     clarity: "Clarity",
     depth: "Depth",

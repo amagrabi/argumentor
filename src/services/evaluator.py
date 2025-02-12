@@ -1,4 +1,5 @@
 import json
+import logging
 import random
 from typing import Dict
 
@@ -10,12 +11,15 @@ from services.llm import CLIENT, RESPONSE_SCHEMA, SYSTEM_INSTRUCTION
 
 SETTINGS = get_settings()
 
+logger = logging.getLogger(__name__)
+
 
 class DummyEvaluator(BaseEvaluator):
     def evaluate(
         self, question_text: str, claim: str, argument: str, counterargument: str
     ) -> Dict:
         scores = {
+            "Relevance": random.randint(1, 10),
             "Logical Structure": random.randint(1, 10),
             "Clarity": random.randint(1, 10),
             "Depth": random.randint(1, 10),
@@ -25,6 +29,7 @@ class DummyEvaluator(BaseEvaluator):
 
         total_score = sum(scores.values()) / len(scores)
         feedback = {
+            "Relevance": "While your argument is somewhat connected to the question, ensure that all points directly address the topic.",
             "Logical Structure": "Your argument structure shows good coherence. Consider strengthening the connection between premises and conclusion.",
             "Clarity": "Your points are clearly expressed. Try to be even more concise in future responses.",
             "Depth": "Good analysis of key factors. Consider exploring additional philosophical implications.",
@@ -78,11 +83,12 @@ class LLMEvaluator(BaseEvaluator):
         self, question_text: str, claim: str, argument: str, counterargument: str
     ) -> Dict:
         prompt = f"""
-            Question: {question_text}
-            Claim: {claim}
-            Argument: {argument}
-            Counterargument Rebuttal (Optional): {counterargument}
+            Question (given to user): {question_text}
+            Claim to answer the question (written by user): {claim}
+            Argument to support the claim (written by user): {argument}
+            Counterargument Rebuttal (written by user; optional): {counterargument}
         """
+        logger.info(f"LLM prompt: {prompt}")
         response = CLIENT.models.generate_content(
             model=SETTINGS.MODEL,
             contents=[
@@ -121,6 +127,7 @@ class LLMEvaluator(BaseEvaluator):
     def _parse_response(self, response) -> Dict:
         return {
             "scores": {
+                "Relevance": response["relevance_rating"],
                 "Logical Structure": response["logical_structure_rating"],
                 "Clarity": response["clarity_rating"],
                 "Depth": response["depth_rating"],
@@ -129,6 +136,7 @@ class LLMEvaluator(BaseEvaluator):
             },
             "total_score": response["overall_rating"],
             "feedback": {
+                "Relevance": response["relevance_explanation"],
                 "Logical Structure": response["logical_structure_explanation"],
                 "Clarity": response["clarity_explanation"],
                 "Depth": response["depth_explanation"],

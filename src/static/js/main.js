@@ -386,8 +386,6 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       return;
     }
 
-    console.log("Evaluation response:", data.evaluation);
-
     submitBtn.innerHTML = "Submit";
     submitBtn.disabled = false;
 
@@ -484,10 +482,18 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     // Now populate the detailed individual factor scores (the look and animation remain unchanged)
     const scoresDiv = document.getElementById("scores");
     scoresDiv.innerHTML = "";
-    Object.entries(data.evaluation.scores).forEach(([category, score]) => {
-      const finalScore = score;
-      const finalWidthPercent = score * 10;
-      const color = scoreToColor(score);
+    const orderedCategories = [
+      "Relevance",
+      "Logical Structure",
+      "Clarity",
+      "Depth",
+      "Objectivity",
+      "Creativity",
+    ];
+    orderedCategories.forEach((category) => {
+      const finalScore = data.evaluation.scores[category] || 0;
+      const finalWidthPercent = finalScore * 10;
+      const color = scoreToColor(finalScore);
       const feedbackText = data.evaluation.feedback[category] || "";
       scoresDiv.innerHTML += `
         <div class="mb-4">
@@ -697,34 +703,45 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
           const totalScorePercent = totalScore * 10; // Scale (e.g., 7 -> 70%)
           const totalScoreColor = scoreToColor(totalScore);
 
-          challengeEvalDiv.innerHTML = `
-          <p class="text-l font-bold mb-2">
-            Challenge Response Total Score: <span id="challengeTotalScoreValue" style="color: ${totalScoreColor};">${totalScore.toFixed(
+          const orderedCategories = [
+            "Relevance",
+            "Logical Structure",
+            "Clarity",
+            "Depth",
+            "Objectivity",
+            "Creativity",
+          ];
+          let challengeHtml = `
+            <p class="text-l font-bold mb-2">
+              Challenge Response Total Score: <span id="challengeTotalScoreValue" style="color: ${totalScoreColor};">${totalScore.toFixed(
             1
           )}/10</span>
-          </p>
-          <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
-            <div id="challengeTotalScoreBar" class="rounded-full total-progress-bar"
-              style="width: ${totalScorePercent}%; background-color: ${totalScoreColor};">
+            </p>
+            <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+              <div id="challengeTotalScoreBar" class="rounded-full total-progress-bar" style="width: ${totalScorePercent}%; background-color: ${totalScoreColor};"></div>
             </div>
-          </div>
-          <p id="challengeOverallFeedback" class="text-md">${
-            data.evaluation.overall_feedback
-          }</p>
-          <div class="flex flex-wrap gap-2 mt-2">
-            ${Object.entries(data.evaluation.scores)
-              .filter(([key]) => key.toLowerCase() !== "overall")
-              .map(
-                ([category, score]) =>
-                  `<div class="px-2 py-1 rounded-full text-xs" style="background-color: ${scoreToColor(
-                    score
-                  )};">
-                    ${category}: ${score}/10
-                  </div>`
-              )
-              .join("")}
-          </div>
-        `;
+            <p id="challengeOverallFeedback" class="text-md">${
+              data.evaluation.overall_feedback
+            }</p>
+            <div class="flex flex-wrap gap-2 mt-2">`;
+
+          orderedCategories.forEach((category) => {
+            if (
+              data.evaluation.scores &&
+              typeof data.evaluation.scores[category] !== "undefined"
+            ) {
+              const score = data.evaluation.scores[category];
+              challengeHtml += `<div class="px-2 py-1 rounded-full text-xs" style="background-color: ${scoreToColor(
+                score
+              )};">
+                                  ${category}: ${score}/10
+                                </div>`;
+            }
+          });
+
+          challengeHtml += `</div>`;
+          challengeEvalDiv.innerHTML = challengeHtml;
+
           challengeEvalDiv.classList.remove("hidden");
 
           // Update XP and level info.
@@ -973,4 +990,48 @@ if (loginForm) {
     event.preventDefault();
     handleLogin();
   });
+}
+
+function renderEvaluationResults(evaluation) {
+  let html = "";
+
+  // Render argument structure if available.
+  if (evaluation.argument_structure) {
+    html += `<div class="argument-structure">
+               <h3>Argument Structure</h3>
+               ${renderArgumentStructure(evaluation.argument_structure)}
+             </div>`;
+  }
+
+  // Build the evaluation scores using our custom order.
+  const orderedCategories = [
+    "Relevance",
+    "Logical Structure",
+    "Clarity",
+    "Depth",
+    "Objectivity",
+    "Creativity",
+  ];
+  html += `<div class="evaluation-scores">`;
+  orderedCategories.forEach((category) => {
+    if (
+      evaluation.scores &&
+      typeof evaluation.scores[category] !== "undefined"
+    ) {
+      const score = evaluation.scores[category];
+      const color = scoreToColor(score);
+      html += `<div class="score-bar">
+                 <span class="score-label">${category}</span>
+                 <div class="progress-bar">
+                   <div class="progress-fill" data-score="${
+                     score * 10
+                   }" data-color="${color}" style="width: 0%; background-color: ${color};"></div>
+                 </div>
+                 <span class="score-value" data-final="${score}" data-color="${color}">${score}/10</span>
+               </div>`;
+    }
+  });
+  html += `</div>`;
+
+  document.getElementById("evaluationResults").innerHTML = html;
 }
