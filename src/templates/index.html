@@ -50,22 +50,17 @@
               </span>
               <!-- Extended XP progress bar with current level circle on the left only -->
               <div class="flex items-center">
-                <!-- Level indicator placed outside the progress bar -->
                 <div
                   id="levelNumber"
                   class="w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
                 >
                   {{ level_info.level_number }}
                 </div>
-                <!-- XP progress bar -->
-                <div class="relative w-24 h-1">
-                  <div
-                    class="w-full bg-gray-200 h-1 rounded-r-full rounded-l-none"
-                  ></div>
+                <div class="xp-bar-container mini-xp-bar ml-0">
                   <div
                     id="miniXpBarFill"
-                    class="absolute top-0 left-0 bg-green-500 h-1 rounded-r-full rounded-l-none"
-                    style="width: {{ level_info.progress_percent }}%;"
+                    class="xp-progress-bar bg-green-500"
+                    style="width: {{ level_info.progress_percent }}%"
                   ></div>
                 </div>
               </div>
@@ -432,21 +427,16 @@
               ><strong>Level 1 (Novice Thinker)</strong></span
             >
           </p>
-          <div
-            id="xpBarContainer"
-            class="w-full bg-gray-200 relative rounded-full h-4 mx-auto max-w-md mt-2"
-          >
-            <!-- Old XP portion (base progress) in neutral gray -->
+          <div class="xp-bar-container mx-auto max-w-md mt-2">
             <div
               id="xpOldBar"
-              class="absolute left-0 h-full bg-gray-500 rounded-l-full"
+              class="xp-progress-bar bg-gray-500"
               style="width: 0%"
             ></div>
-            <!-- New XP portion overlay in green -->
             <div
               id="xpNewBar"
-              class="absolute h-full bg-green-500 rounded-r-full"
-              style="width: 0%; left: 0%"
+              class="xp-progress-bar bg-green-500"
+              style="width: 0%"
             ></div>
           </div>
           <p class="text-sm mt-1">
