@@ -31,10 +31,13 @@
           />
           <h1 class="text-2xl font-bold">ArguMentor</h1>
         </div>
-        <div class="flex items-center space-x-2 text-sm">
-          <!-- Compact User Info arranged vertically with adjustments -->
+        <div class="flex items-center space-x-0">
+          <!-- Username and level info -->
           <a href="/profile" class="no-underline">
-            <div id="userInfo" class="flex flex-col items-end self-center mr-4">
+            <div
+              id="userInfo"
+              class="flex flex-col items-end self-center mr-4 -space-y-0"
+            >
               <span
                 id="usernameElem"
                 class="text-[10px] text-gray-700 leading-tight"
@@ -44,19 +47,19 @@
               </span>
               <span
                 id="userLevelElem"
-                class="text-[9px] text-gray-500 leading-tight mb-0.5"
+                class="text-[9px] text-gray-500 leading-tight"
               >
                 {{ level_info.display_name }}
               </span>
-              <!-- Extended XP progress bar with current level circle on the left only -->
+              <!-- XP progress bar with level circle -->
               <div class="flex items-center">
                 <div
                   id="levelNumber"
-                  class="w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold"
+                  class="w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold z-10"
                 >
                   {{ level_info.level_number }}
                 </div>
-                <div class="xp-bar-container mini-xp-bar ml-0">
+                <div class="xp-bar-container mini-xp-bar -ml-2">
                   <div
                     id="miniXpBarFill"
                     class="xp-progress-bar bg-green-500"
@@ -66,60 +69,62 @@
               </div>
             </div>
           </a>
-          {% if current_user.is_authenticated %}
-          <button
-            onclick="handleLogout()"
-            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm"
-          >
-            Logout
-          </button>
-          {% else %}
-          <button
-            id="loginButton"
-            onclick="showAuthModal()"
-            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full"
-          >
-            Login
-          </button>
-          {% endif %}
-          <a
-            id="profileButton"
-            href="/profile"
-            class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center"
-          >
-            <img
-              width="22"
-              height="22"
-              src="https://img.icons8.com/windows/32/gender-neutral-user.png"
-              alt="Profile"
-            />
-          </a>
-          <button
-            id="settingsButton"
-            class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center"
-          >
-            <!-- Settings SVG -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          <div class="flex items-center space-x-2">
+            {% if current_user.is_authenticated %}
+            <button
+              onclick="handleLogout()"
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              Logout
+            </button>
+            {% else %}
+            <button
+              id="loginButton"
+              onclick="showAuthModal()"
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm"
+            >
+              Login
+            </button>
+            {% endif %}
+            <a
+              id="profileButton"
+              href="/profile"
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center"
+            >
+              <img
+                width="22"
+                height="22"
+                src="https://img.icons8.com/windows/32/gender-neutral-user.png"
+                alt="Profile"
               />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-          </button>
+            </a>
+            <button
+              id="settingsButton"
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center"
+            >
+              <!-- Settings SVG -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-[22px] h-[22px]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </header>
 
