@@ -70,21 +70,46 @@ class DummyEvaluator(BaseEvaluator):
         }
 
     def evaluate_challenge(self, answer, challenge_response: str) -> Dict:
-        # For the dummy evaluator, we build a challenge prompt for logging
-        prompt = f"""
-            Challenge Evaluation (Dummy):
-            Original question: {answer.question_text}
-            Original claim: {answer.claim}
-            Original argument: {answer.argument}
-            Original counterargument (Optional): {answer.counterargument}
-            Challenge from system: {answer.challenge}
+        # A clean, separate evaluation for challenge responses:
+        # Here we use a slightly lower scoring range (1 to 8) so that
+        # challenge responses do not inadvertently get inflated scores.
+        scores = {
+            "Relevance": random.randint(1, 8),
+            "Logical Structure": random.randint(1, 8),
+            "Clarity": random.randint(1, 8),
+            "Depth": random.randint(1, 8),
+            "Objectivity": random.randint(1, 8),
+            "Creativity": random.randint(1, 8),
+        }
+        total_score = sum(scores.values()) / len(scores)
+        feedback = {
+            "Relevance": "Your challenge response partially addresses the issue, but could be more directly relevant.",
+            "Logical Structure": "The structure of your response is acceptable; clarifying connections could help.",
+            "Clarity": "Some parts of your response are unclear; consider more precise language.",
+            "Depth": "Your answer touches on key points but lacks deeper analysis.",
+            "Objectivity": "Ensure your response remains objective in evaluating the argument.",
+            "Creativity": "Your approach is interesting, but could use further innovation.",
+        }
+        if total_score >= 7:
+            overall_feedback = (
+                "Excellent challenge response with strong critical insights."
+            )
+        elif total_score >= 5:
+            overall_feedback = (
+                "Good challenge response, though there's room for further refinement."
+            )
+        else:
+            overall_feedback = "The challenge response needs significant improvement to address the issues effectively."
 
-            User challenge response: {challenge_response}
-        """
-        logger.debug(f"Dummy evaluator challenge prompt: {prompt}")
-        # Re-use the evaluate method: pass the prompt as the question text, the response as the claim,
-        # and leave the other fields empty.
-        return self.evaluate(prompt, challenge_response, "", "")
+        # No need to recompute an argument structure for challenge responses.
+        return {
+            "scores": scores,
+            "total_score": total_score,
+            "feedback": feedback,
+            "overall_feedback": overall_feedback,
+            "challenge": answer.challenge,
+            "argument_structure": {},
+        }
 
 
 class LLMEvaluator(BaseEvaluator):

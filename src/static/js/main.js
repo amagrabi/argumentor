@@ -663,7 +663,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     document
       .getElementById("submitChallengeResponse")
       .addEventListener("click", async () => {
-        const startTime = Date.now(); // Add timestamp tracking
+        const startTime = Date.now();
         const challengeResponse = document
           .getElementById("challengeResponseInput")
           .value.trim();
@@ -699,7 +699,6 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
             }),
           });
 
-          // Calculate and enforce minimum display time
           if (response.ok) {
             const elapsed = Date.now() - startTime;
             if (elapsed < 3000) {
@@ -718,25 +717,17 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
             return;
           }
 
-          // Update the XP/Level indicator bar using the returned json
-          updateXpIndicator(data.total_xp, data.level_info);
+          // Update only the global (header) XP/level indicator
+          updateXpIndicator(data.current_xp, data.level_info);
 
-          // Display detailed challenge evaluation feedback similar to primary evaluation.
+          // Update challenge evaluation feedback.
           const challengeEvalDiv = document.getElementById(
             "challengeEvaluationResults"
           );
           const totalScore = data.evaluation.total_score;
-          const totalScorePercent = totalScore * 10; // Scale (e.g., 7 -> 70%)
+          const totalScorePercent = totalScore * 10;
           const totalScoreColor = scoreToColor(totalScore);
 
-          const orderedCategories = [
-            "Relevance",
-            "Logical Structure",
-            "Clarity",
-            "Depth",
-            "Objectivity",
-            "Creativity",
-          ];
           let challengeHtml = `
             <p class="text-l font-bold mb-2">
               Overall Rating: <span id="challengeTotalScoreValue" style="color: ${totalScoreColor};">${totalScore.toFixed(
@@ -750,12 +741,16 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
               data.evaluation.overall_feedback
             }</p>
             <div class="flex flex-wrap gap-2 mt-2">`;
-
+          const orderedCategories = [
+            "Relevance",
+            "Logical Structure",
+            "Clarity",
+            "Depth",
+            "Objectivity",
+            "Creativity",
+          ];
           orderedCategories.forEach((category) => {
-            if (
-              data.evaluation.scores &&
-              typeof data.evaluation.scores[category] !== "undefined"
-            ) {
+            if (typeof data.evaluation.scores[category] !== "undefined") {
               const score = data.evaluation.scores[category];
               challengeHtml += `<div class="px-2 py-1 rounded-full text-xs" style="background-color: ${scoreToColor(
                 score
@@ -764,21 +759,9 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
                                 </div>`;
             }
           });
-
           challengeHtml += `</div>`;
           challengeEvalDiv.innerHTML = challengeHtml;
-
           challengeEvalDiv.classList.remove("hidden");
-
-          // Update XP and level info.
-          document.getElementById("xpGained").innerHTML =
-            "<strong>" + data.challenge_xp_earned + "</strong>";
-          document.getElementById("currentLevel").innerHTML =
-            "<strong>" + data.current_level + "</strong>";
-          document.getElementById("xpProgressText").textContent =
-            data.level_info.xp_into_level + " / " + data.level_info.xp_needed;
-          document.getElementById("nextLevel").textContent =
-            data.level_info.next_level;
 
           submitBtn.innerHTML = "Submit";
           submitBtn.disabled = false;
@@ -880,6 +863,115 @@ window.addEventListener("DOMContentLoaded", () => {
       updateQuestionDisplay(currentQuestion);
     } else {
       getNewQuestion();
+    }
+  });
+
+  const challengeBtn = document.getElementById("submitChallengeResponse");
+
+  // Bind the challenge submission event listener only once.
+  challengeBtn.addEventListener("click", async () => {
+    const startTime = Date.now();
+    const challengeResponse = document
+      .getElementById("challengeResponseInput")
+      .value.trim();
+    const challengeErrorMessage = document.getElementById(
+      "challengeErrorMessage"
+    );
+
+    if (!challengeResponse) {
+      challengeErrorMessage.textContent =
+        "Please provide a response to the challenge.";
+      return;
+    }
+    const answerId = sessionStorage.getItem("lastAnswerId");
+    if (!answerId) {
+      challengeErrorMessage.textContent = "No associated answer found.";
+      return;
+    }
+
+    challengeBtn.innerHTML = `<span class="loading-dots"><span class="animate-pulse">Analyzing</span></span>`;
+    challengeBtn.disabled = true;
+
+    try {
+      const response = await fetch("/submit_challenge_response", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          challenge_response: challengeResponse,
+          answer_id: answerId,
+        }),
+      });
+
+      if (response.ok) {
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 3000) {
+          await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
+        }
+      }
+
+      const data = await response.json();
+      if (!response.ok) {
+        challengeErrorMessage.textContent = data.error || "Submission failed";
+        challengeBtn.innerHTML = "Submit";
+        challengeBtn.disabled = false;
+        return;
+      }
+
+      // Update only the global (header) XP/level indicator
+      updateXpIndicator(data.current_xp, data.level_info);
+
+      // Update challenge evaluation feedback.
+      const challengeEvalDiv = document.getElementById(
+        "challengeEvaluationResults"
+      );
+      const totalScore = data.evaluation.total_score;
+      const totalScorePercent = totalScore * 10;
+      const totalScoreColor = scoreToColor(totalScore);
+
+      let challengeHtml = `
+        <p class="text-l font-bold mb-2">
+          Overall Rating: <span id="challengeTotalScoreValue" style="color: ${totalScoreColor};">${totalScore.toFixed(
+        1
+      )}/10</span>
+        </p>
+        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+          <div id="challengeTotalScoreBar" class="rounded-full total-progress-bar" style="width: ${totalScorePercent}%; background-color: ${totalScoreColor};"></div>
+        </div>
+        <p id="challengeOverallFeedback" class="text-md">${
+          data.evaluation.overall_feedback
+        }</p>
+        <div class="flex flex-wrap gap-2 mt-2">
+      `;
+      const orderedCategories = [
+        "Relevance",
+        "Logical Structure",
+        "Clarity",
+        "Depth",
+        "Objectivity",
+        "Creativity",
+      ];
+      orderedCategories.forEach((category) => {
+        if (typeof data.evaluation.scores[category] !== "undefined") {
+          const score = data.evaluation.scores[category];
+          challengeHtml += `<div class="px-2 py-1 rounded-full text-xs" style="background-color: ${scoreToColor(
+            score
+          )};">
+                              ${category}: ${score}/10
+                            </div>`;
+        }
+      });
+      challengeHtml += `</div>`;
+      challengeEvalDiv.innerHTML = challengeHtml;
+      challengeEvalDiv.classList.remove("hidden");
+
+      challengeBtn.innerHTML = "Submit";
+      challengeBtn.disabled = false;
+    } catch (error) {
+      console.error("Error submitting challenge response:", error);
+      challengeErrorMessage.textContent =
+        "Submission failed, server error. Please try again.";
+      challengeBtn.innerHTML = "Submit";
+      challengeBtn.disabled = false;
     }
   });
 });
@@ -1121,12 +1213,6 @@ function renderEvaluationResults(evaluation) {
 }
 
 function updateXpIndicator(totalXp, levelInfo) {
-  // Update the displayed XP (if there's an element that shows e.g. "total XP")
-  const xpProgressTextElem = document.getElementById("xpProgressText");
-  if (xpProgressTextElem) {
-    xpProgressTextElem.textContent = `${totalXp} XP`;
-  }
-
   // Update the mini XP progress bar
   const miniXpBarFill = document.getElementById("miniXpBarFill");
   if (miniXpBarFill) {

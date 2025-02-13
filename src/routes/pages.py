@@ -12,6 +12,33 @@ from services.leveling import get_level_info
 
 pages_bp = Blueprint("pages", __name__)
 
+SETTINGS = get_settings()
+
+
+def calculate_valid_xp(answer):
+    """Template filter to calculate actual XP earned considering relevance threshold"""
+    total_xp = 0
+    if (
+        answer.evaluation_scores.get("Relevance", 0)
+        >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
+    ):
+        total_xp += answer.xp_earned
+
+    if (
+        answer.challenge_response
+        and answer.challenge_evaluation_scores.get("Relevance", 0)
+        >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
+    ):
+        total_xp += answer.challenge_xp_earned
+
+    return total_xp
+
+
+# Register the template filter
+@pages_bp.app_template_filter("calculate_valid_xp")
+def calculate_valid_xp_filter(answer):
+    return calculate_valid_xp(answer)
+
 
 @pages_bp.route("/")
 def home():

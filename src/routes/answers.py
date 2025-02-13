@@ -1,3 +1,4 @@
+import logging
 from datetime import UTC, datetime, time
 from difflib import SequenceMatcher
 
@@ -8,6 +9,8 @@ from extensions import db, limiter
 from models import Answer, User
 from services.leveling import get_level, get_level_info
 from services.question_service import get_questions
+
+logger = logging.getLogger(__name__)
 
 answers_bp = Blueprint("answers", __name__)
 
@@ -115,7 +118,7 @@ def submit_answer():
     evaluator = create_evaluator()
     evaluation = evaluator.evaluate(question_text, claim, argument, counterargument)
 
-    # Determine XP and overall rating (including the Relevance score)
+    # Determine XP and overall rating for the main answer
     scores = evaluation["scores"]
     all_keys = [
         "Relevance",
@@ -127,21 +130,18 @@ def submit_answer():
     ]
     avg_all = sum(scores[key] for key in all_keys) / len(all_keys)
     xp_earned = (
-        round(avg_all * 10)
-        if scores["Relevance"] >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
-        else 0
+        round(avg_all * 10) if avg_all >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP else 0
     )
+    logger.debug(f"Raw main average: {avg_all}, XP earned: {xp_earned}")
 
     xp_message = ""
-    if scores["Relevance"] < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP:
+    if avg_all < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP:
         xp_message = (
             "Your response did not meet the minimum relevance required to earn XP."
         )
 
     user = User.query.filter_by(uuid=user_uuid).first()
     old_xp = user.xp if user else 0
-    new_xp = old_xp + xp_earned
-    session["xp"] = new_xp
 
     existing_answers = Answer.query.filter_by(
         user_uuid=user_uuid, question_id=data.get("question_id")
@@ -165,10 +165,10 @@ def submit_answer():
                 }
             ), 400
     if not user:
-        user = User(uuid=user_uuid, xp=new_xp)
+        user = User(uuid=user_uuid, xp=old_xp)
         db.session.add(user)
     else:
-        user.xp = new_xp
+        user.xp = old_xp
 
     # Get question_text from the request by looking up question_id if necessary.
     question_id = data.get("question_id")
@@ -211,17 +211,23 @@ def submit_answer():
     db.session.add(new_answer)
     db.session.commit()
 
-    old_level = get_level(old_xp)
-    new_level = get_level(new_xp)
-    leveled_up = old_level != new_level
+    # Recalculate the user's total XP from all of their answers.
+    user = User.query.filter_by(uuid=user_uuid).first()
+    total_xp = recalc_user_xp(user)
+    user.xp = total_xp
+    session["xp"] = total_xp
+    db.session.commit()
 
-    level_info = get_level_info(new_xp)
+    old_level = get_level(old_xp)
+    new_level = get_level(total_xp)
+    leveled_up = old_level != new_level
+    level_info = get_level_info(total_xp)
 
     return jsonify(
         {
             "evaluation": evaluation,
             "xp_gained": xp_earned,
-            "current_xp": new_xp,
+            "current_xp": total_xp,
             "leveled_up": leveled_up,
             "current_level": level_info["display_name"],
             "level_info": level_info,
@@ -263,17 +269,11 @@ def submit_challenge_response():
     if not user_uuid:
         return jsonify({"error": "User not identified."}), 400
 
-    # Check the daily evaluation count (challenge responses count as a separate evaluation attempt)
     daily_count = get_daily_evaluation_count(user_uuid)
     if daily_count >= SETTINGS.EVAL_DAILY_LIMIT:
-        return (
-            jsonify(
-                {
-                    "error": f"Daily evaluation limit reached ({SETTINGS.EVAL_DAILY_LIMIT})."
-                }
-            ),
-            429,
-        )
+        return jsonify(
+            {"error": f"Daily evaluation limit reached ({SETTINGS.EVAL_DAILY_LIMIT})."}
+        ), 429
 
     evaluator = create_evaluator()
     evaluation = evaluator.evaluate_challenge(answer, challenge_response)
@@ -288,49 +288,62 @@ def submit_challenge_response():
         "Creativity",
     ]
     avg_all = sum(scores[key] for key in all_keys) / len(all_keys)
-    overall_challenge_rating = avg_all
+    # Only award XP if the overall average meets the threshold.
     xp_gained = (
-        round(avg_all * 10)
-        if scores["Relevance"] >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
-        else 0
+        round(avg_all * 10) if avg_all >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP else 0
     )
+    logger.info(f"Challenge average: {avg_all}, XP gained: {xp_gained}")
 
+    # Update the answer with the new challenge response and XP.
     answer.challenge_response = challenge_response
-    answer.challenge_evaluation_scores = {
-        **evaluation["scores"],
-        "Overall": overall_challenge_rating,
-    }
+    answer.challenge_evaluation_scores = {**evaluation["scores"], "Overall": avg_all}
     answer.challenge_evaluation_feedback = {
         **evaluation["feedback"],
         "Overall": evaluation["overall_feedback"],
     }
     answer.challenge_xp_earned = xp_gained
 
-    user = User.query.filter_by(uuid=user_uuid).first()
-    old_xp = user.xp if user else 0
-    new_xp = old_xp + xp_gained
-    session["xp"] = new_xp
-
-    if user:
-        user.xp = new_xp
-    else:
-        user = User(uuid=user_uuid, xp=new_xp)
-        db.session.add(user)
-
     db.session.commit()
 
-    old_level = get_level(old_xp)
-    new_level = get_level(new_xp)
-    leveled_up = old_level != new_level
-    level_info = get_level_info(new_xp)
+    user = User.query.filter_by(uuid=user_uuid).first()
+    new_total = recalc_user_xp(user)
+    user.xp = new_total
+    session["xp"] = new_total
+    db.session.commit()
+
+    leveled_up = get_level(recalc_user_xp(user) - xp_gained) != get_level(new_total)
+    level_info = get_level_info(new_total)
 
     return jsonify(
         {
             "evaluation": evaluation,
             "challenge_xp_earned": xp_gained,
-            "current_xp": new_xp,
+            "current_xp": new_total,
             "current_level": level_info["display_name"],
             "leveled_up": leveled_up,
             "level_info": level_info,
         }
     )
+
+
+def recalc_user_xp(user):
+    answers = Answer.query.filter_by(user_uuid=user.uuid).all()
+    total_xp = 0
+
+    for answer in answers:
+        # Check main answer relevance
+        if (
+            answer.evaluation_scores.get("Relevance", 0)
+            >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
+        ):
+            total_xp += answer.xp_earned
+
+        # Check challenge response relevance if it exists
+        if (
+            answer.challenge_response
+            and answer.challenge_evaluation_scores.get("Relevance", 0)
+            >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
+        ):
+            total_xp += answer.challenge_xp_earned
+
+    return total_xp
