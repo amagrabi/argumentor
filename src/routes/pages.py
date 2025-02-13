@@ -146,3 +146,13 @@ def submit_feedback():
     db.session.commit()
 
     return jsonify({"success": True})
+
+
+@pages_bp.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
+
+
+@pages_bp.route("/contact")
+def contact():
+    return render_template("contact.html")
