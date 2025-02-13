@@ -51,6 +51,7 @@ const CHAR_LIMITS = {
   CLAIM: 200,
   ARGUMENT: 1000,
   COUNTERARGUMENT: 500,
+  CHALLENGE: 1000,
 };
 
 // Global variable that stores your selected category values.
@@ -313,6 +314,7 @@ setupCharCounter(
   "counterargumentCount",
   "counterargument"
 );
+setupCharCounter("challengeResponseInput", "challengeCount", "challenge");
 
 // Updated submission handler
 document.getElementById("submitAnswer").addEventListener("click", async () => {
