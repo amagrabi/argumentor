@@ -15,7 +15,7 @@ from flask import (
 from flask_login import current_user
 
 from config import get_settings
-from extensions import db
+from extensions import db, limiter
 from models import Feedback, User
 from services.leveling import get_level_info
 
@@ -127,6 +127,10 @@ def profile():
 
 
 @pages_bp.route("/submit_feedback", methods=["POST"])
+@limiter.limit(
+    SETTINGS.SUBMISSION_RATE_LIMITS,
+    error_message="Too many submissions. Please wait before trying again.",
+)
 def submit_feedback():
     if not request.is_json:
         return jsonify({"error": "Content-Type must be application/json"}), 400
