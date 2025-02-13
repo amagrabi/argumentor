@@ -115,15 +115,28 @@ def submit_answer():
     evaluator = create_evaluator()
     evaluation = evaluator.evaluate(question_text, claim, argument, counterargument)
 
-    # Determine XP and overall rating (excluding the Relevance score)
+    # Determine XP and overall rating (including the Relevance score)
     scores = evaluation["scores"]
-    other_keys = ["Logical Structure", "Clarity", "Depth", "Objectivity", "Creativity"]
-    avg_other = sum(scores[key] for key in other_keys) / len(other_keys)
+    all_keys = [
+        "Relevance",
+        "Logical Structure",
+        "Clarity",
+        "Depth",
+        "Objectivity",
+        "Creativity",
+    ]
+    avg_all = sum(scores[key] for key in all_keys) / len(all_keys)
     xp_earned = (
-        int(avg_other * 10)
+        round(avg_all * 10)
         if scores["Relevance"] >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
         else 0
     )
+
+    xp_message = ""
+    if scores["Relevance"] < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP:
+        xp_message = (
+            "Your response did not meet the minimum relevance required to earn XP."
+        )
 
     user = User.query.filter_by(uuid=user_uuid).first()
     old_xp = user.xp if user else 0
@@ -184,7 +197,7 @@ def submit_answer():
         counterargument=counterargument if counterargument else None,
         evaluation_scores={
             **evaluation["scores"],
-            "Overall": avg_other,
+            "Overall": avg_all,
         },
         evaluation_feedback={
             **evaluation["feedback"],
@@ -207,14 +220,13 @@ def submit_answer():
     return jsonify(
         {
             "evaluation": evaluation,
-            "xp_earned": xp_earned,
-            "total_xp": new_xp,
             "xp_gained": xp_earned,
             "current_xp": new_xp,
-            "current_level": level_info["display_name"],
             "leveled_up": leveled_up,
+            "current_level": level_info["display_name"],
             "level_info": level_info,
             "answer_id": new_answer.id,
+            "xp_message": xp_message,
         }
     )
 
@@ -267,11 +279,18 @@ def submit_challenge_response():
     evaluation = evaluator.evaluate_challenge(answer, challenge_response)
 
     scores = evaluation["scores"]
-    other_keys = ["Logical Structure", "Clarity", "Depth", "Objectivity", "Creativity"]
-    avg_other = sum(scores[key] for key in other_keys) / len(other_keys)
-    overall_challenge_rating = avg_other
+    all_keys = [
+        "Relevance",
+        "Logical Structure",
+        "Clarity",
+        "Depth",
+        "Objectivity",
+        "Creativity",
+    ]
+    avg_all = sum(scores[key] for key in all_keys) / len(all_keys)
+    overall_challenge_rating = avg_all
     xp_gained = (
-        int(avg_other * 10)
+        round(avg_all * 10)
         if scores["Relevance"] >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
         else 0
     )
@@ -309,7 +328,7 @@ def submit_challenge_response():
         {
             "evaluation": evaluation,
             "challenge_xp_earned": xp_gained,
-            "total_xp": new_xp,
+            "current_xp": new_xp,
             "current_level": level_info["display_name"],
             "leveled_up": leveled_up,
             "level_info": level_info,

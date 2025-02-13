@@ -794,6 +794,13 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       nextBtn.innerHTML = `Try Another Question`;
       nextBtn.classList.add("hover:bg-gray-700");
     }
+
+    // Update the XP explanation message if provided
+    if (data.xp_message) {
+      document.getElementById("xpMessage").textContent = data.xp_message;
+    } else {
+      document.getElementById("xpMessage").textContent = "";
+    }
   } catch (error) {
     console.error("Error submitting answer:", error);
     document.getElementById("errorMessage").textContent =

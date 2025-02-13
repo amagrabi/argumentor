@@ -412,6 +412,8 @@
         </div>
         <!-- XP and Level Info Section -->
         <div id="xpInfo" class="mt-4 text-center">
+          <!-- New message element for explaining no XP if relevance is too low -->
+          <p id="xpMessage" class="text-sm text-red-600"></p>
           <p id="levelUpMessage" class="text-green-600 font-bold"></p>
           <p>
             Experience Points Gained:
@@ -455,8 +457,8 @@
               href="/profile"
               class="text-gray-800 underline hover:text-gray-600"
             >
-              User Profile
-            </a>
+              User Profile</a
+            >
             to review answered questions and track your progress.
           </p>
           <!-- Warning for users not logged in -->
