@@ -13,6 +13,7 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str = Field(default="fallback")  # Flask
 
+    # for production: postgresql://username:password@host:port/database
     SQLALCHEMY_DATABASE_URI: str = Field(default="sqlite:///argumentor.db")
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = Field(default=False)
 
