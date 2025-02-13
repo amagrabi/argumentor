@@ -765,6 +765,11 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
           submitBtn.innerHTML = "Submit";
           submitBtn.disabled = false;
+
+          // After the evaluation is displayed, scroll to it
+          setTimeout(() => {
+            scrollToChallengeEvaluation();
+          }, 100); // Small delay to ensure the content is rendered
         } catch (error) {
           console.error("Error submitting challenge response:", error);
           challengeErrorMessage.textContent =
@@ -966,6 +971,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
       challengeBtn.innerHTML = "Submit";
       challengeBtn.disabled = false;
+
+      // After the evaluation is displayed, scroll to it
+      setTimeout(() => {
+        scrollToChallengeEvaluation();
+      }, 100); // Small delay to ensure the content is rendered
     } catch (error) {
       console.error("Error submitting challenge response:", error);
       challengeErrorMessage.textContent =
@@ -1253,5 +1263,19 @@ async function loadSavedCategories() {
     setTimeout(() => {
       updateCategoryUI();
     }, 0);
+  }
+}
+
+// Add new function for scrolling to challenge evaluation
+function scrollToChallengeEvaluation() {
+  const challengeEvalDiv = document.getElementById(
+    "challengeEvaluationResults"
+  );
+  if (challengeEvalDiv) {
+    challengeEvalDiv.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest",
+    });
   }
 }
