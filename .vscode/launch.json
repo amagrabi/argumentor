@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Start app",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "src.app",
+            "env": {
+                "DEV": "true",
+                "USE_LLM_EVALUATOR": "false"
+            },
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Python: pytest",
             "type": "debugpy",
             "request": "launch",
