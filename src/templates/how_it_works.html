@@ -23,10 +23,10 @@
     <main class="max-w-5xl mx-auto p-4">
       <!-- Platform Overview Section -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Platform Overview</h2>
+        <h2 class="text-2xl font-bold mb-4">Overview</h2>
         <p class="mb-4">
-          ArguMentor is designed to help you sharpen your reasoning and
-          decision-making skills. Here's what you can expect:
+          The platform is designed to help you sharpen your reasoning and
+          decision-making skills.
         </p>
         <ul class="list-disc list-inside mb-4">
           <li>
@@ -38,12 +38,13 @@
             support them with coherent reasoning.
           </li>
           <li>
-            <strong>Receive Feedback:</strong> Obtain in-depth, AI-driven
-            evaluations based on key dimensions.
+            <strong>Receive Feedback:</strong> Get AI-driven evaluations with
+            ratings, explanations, and an analysis of your argument structure.
           </li>
           <li>
-            <strong>Earn XP and Level Up:</strong> Track your progress as you
-            earn XP and advance through levels.
+            <strong>Analyze and Improve:</strong> Analyze weaknesses and track
+            your progress as you earn experience points (XP) and advance through
+            levels.
           </li>
         </ul>
         <p>
@@ -52,24 +53,63 @@
         </p>
       </section>
 
+      <!-- User Profile and Progress Tracking Section -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Profile Page</h2>
+        <p class="mb-4">
+          In your
+          <a
+            href="/profile"
+            class="text-gray-800 underline hover:text-gray-600"
+          >
+            user profile</a
+          >, you can find an overview of your progress. It shows your level, XP,
+          a graph of your progression over time as well as a detailed list of
+          all your submitted answers.
+        </p>
+        <p class="mb-4">
+          Detailed evaluation feedback for each of your submissions is
+          available, giving you insights into your strengths as well as areas
+          where you might improve. Use this information to identify recurring
+          weaknesses and adjust your approach to crafting stronger arguments.
+        </p>
+      </section>
+
+      <!-- Challenge Section -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Challenge Feature</h2>
+        <p class="mb-4">
+          In addition to submitting your primary argument, you have the option
+          to engage with a challenge. This challenge is designed to help you
+          identify any logical inconsistencies, unclear points, or areas where
+          your argument may be improved.
+        </p>
+        <p class="mb-4">
+          Responding to the challenge will prompt a secondary evaluation and may
+          earn additional XP. The challenge feature is optional, you can also
+          move on to another question.
+        </p>
+      </section>
+
       <!-- How XP is Calculated Section -->
       <section class="mb-12">
         <h2 class="text-2xl font-bold mb-4">How XP is Calculated</h2>
-        <p>
-          Your performance is rewarded with Experience Points (XP), which help
-          you level up and track your progress. XP is only awarded when your
-          claim and supporting argument meet a minimum relevance threshold.
+        <p class="mb-4">
+          Your performance is rewarded with XP, which help you level up and
+          track your progress. XP is only awarded when your claim and supporting
+          argument meet a minimum relevance threshold ({{ relevance_threshold
+          }}/10).
         </p>
-        <p>
+
+        <p class="mb-4">
           Once your response passes this relevance check, the XP is calculated
-          based on five key dimensions: Logical Structure, Clarity, Depth,
-          Objectivity, and Creativity. The average score from these criteria
-          (each rated on a scale from 1 to 10) is multiplied by 10 to determine
-          the total XP earned. The relevance score itself is not used in the XP
-          calculation.
+          based on six key dimensions: Relevance, Logical Structure, Clarity,
+          Depth, Objectivity, and Creativity. The average score from these
+          criteria (each rated on a scale from 1 to 10) is multiplied by 10 to
+          determine the total XP earned.
         </p>
-        <p>
-          For example, if your performance in those five dimensions averages out
+        <p class="mb-4">
+          For example, if your performance in those six dimensions averages out
           to 6 out of 10, you would receive 60 XP for that response.
         </p>
       </section>

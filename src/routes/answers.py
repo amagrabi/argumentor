@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import UTC, datetime, time
 from difflib import SequenceMatcher
 
 from flask import Blueprint, jsonify, request, session
@@ -22,7 +22,7 @@ def get_daily_evaluation_count(user_uuid):
     Each initial answer submission counts as 1.
     If the answer has a non-null challenge_response, that counts as an additional evaluation attempt.
     """
-    today_start = datetime.combine(datetime.utcnow().date(), time.min)
+    today_start = datetime.combine(datetime.now(UTC).date(), time.min)
     answers = Answer.query.filter(
         Answer.user_uuid == user_uuid, Answer.created_at >= today_start
     ).all()
