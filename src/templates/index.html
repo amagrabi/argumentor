@@ -4,7 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-signin-client_id" content="{{ GOOGLE_CLIENT_ID }}" />
-    <title>ArguMentor - Sharpen Your Reasoning</title>
+    <title>ArguMentor - Sharpen Your Reasoning Skills</title>
+    <meta
+      name="description"
+      content="ArguMentor is a platform that helps you build & refine your reasoning skills. Construct compelling arguments and receive AI-driven feedback to improve your decision-making."
+    />
+    <link rel="canonical" href="https://www.argumentor.ai" />
+    <meta
+      property="og:title"
+      content="ArguMentor - Sharpen Your Reasoning Skills"
+    />
+    <meta
+      property="og:description"
+      content="Test and improve your reasoning skills. Construct arguments to challenging questions and receive in-depth, AI-driven feedback."
+    />
+    <meta property="og:url" content="https://www.argumentor.ai" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="ArguMentor - Sharpen Your Reasoning Skills"
+    />
+    <meta
+      name="twitter:description"
+      content="Join a community focused on building better arguments and decision-making skills through AI-driven feedback."
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Link to custom CSS -->
     <link
@@ -17,6 +41,15 @@
       href="{{ url_for('static', filename='img/favicon.png') }}"
     />
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "ArguMentor",
+        "url": "https://www.argumentor.ai",
+        "description": "A platform to improve your reasoning and decision-making through AI-driven feedback and thoughtful challenges."
+      }
+    </script>
   </head>
   <body class="bg-white min-h-screen">
     <div class="max-w-5xl mx-auto px-4 py-6">
