@@ -261,7 +261,14 @@
             </div>
             <div class="card-content p-2.5">
               <p class="text-xs text-gray-600 mb-1.5 leading-tight">
-                Help keep this project going by sharing your feedback or
+                Help keep this project going by sharing your
+                <a
+                  href="#"
+                  onclick="showFeedbackModal(); return false;"
+                  class="hover:text-gray-800 underline"
+                  >feedback</a
+                >
+                or
                 <a
                   href="https://buymeacoffee.com/amadeusmagrabi"
                   target="_blank"
@@ -578,6 +585,158 @@
           callback: handleGoogleAuthResponse,
         });
       }
+    </script>
+
+    <!-- Feedback Modal -->
+    <div
+      id="feedbackModal"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center"
+    >
+      <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+        <h3 class="text-xl font-bold mb-4">Share Your Feedback</h3>
+        <form id="feedbackForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Category</label
+            >
+            <select
+              id="feedbackCategory"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2"
+            >
+              <option value="feature">Feature Request</option>
+              <option value="bug">Bug Report</option>
+              <option value="general">General Feedback</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Message</label
+            >
+            <textarea
+              id="feedbackMessage"
+              rows="4"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2"
+              placeholder="Share your thoughts..."
+            ></textarea>
+          </div>
+          <div class="flex justify-end gap-2">
+            <button
+              type="button"
+              onclick="hideFeedbackModal()"
+              class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700"
+            >
+              Submit Feedback
+            </button>
+          </div>
+        </form>
+        <div id="feedbackSuccess" class="mt-3 text-green-600 text-sm hidden">
+          <p class="mb-4">Thanks for the feedback!</p>
+          <div class="flex justify-end">
+            <button
+              onclick="hideFeedbackModal()"
+              class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showFeedbackModal() {
+        document.getElementById("feedbackModal").classList.remove("hidden");
+      }
+
+      function hideFeedbackModal() {
+        document.getElementById("feedbackModal").classList.add("hidden");
+        // Reset form visibility and success message after modal is closed
+        setTimeout(() => {
+          document.getElementById("feedbackForm").classList.remove("hidden");
+          document.getElementById("feedbackSuccess").classList.add("hidden");
+        }, 100);
+      }
+
+      // Close modal when clicking outside
+      document
+        .getElementById("feedbackModal")
+        .addEventListener("click", (e) => {
+          if (e.target === e.currentTarget) {
+            hideFeedbackModal();
+          }
+        });
+
+      document
+        .getElementById("feedbackForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const message = document
+            .getElementById("feedbackMessage")
+            .value.trim();
+          const category = document.getElementById("feedbackCategory").value;
+
+          if (!message) {
+            document.getElementById("feedbackSuccess").innerHTML = `
+          <p class="text-red-600">Please enter your feedback message</p>
+        `;
+            document
+              .getElementById("feedbackSuccess")
+              .classList.remove("hidden");
+            return;
+          }
+
+          try {
+            const response = await fetch("/submit_feedback", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ message, category }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              document.getElementById("feedbackForm").classList.add("hidden");
+              document.getElementById("feedbackSuccess").innerHTML = `
+            <p class="mb-4">Thanks for the feedback!</p>
+            <div class="flex justify-end">
+              <button onclick="hideFeedbackModal()" class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700">
+                Close
+              </button>
+            </div>
+          `;
+              document
+                .getElementById("feedbackSuccess")
+                .classList.remove("hidden");
+              document.getElementById("feedbackMessage").value = "";
+            } else {
+              document.getElementById("feedbackSuccess").innerHTML = `
+            <p class="text-red-600">${
+              data.error || "Failed to submit feedback"
+            }</p>
+          `;
+              document
+                .getElementById("feedbackSuccess")
+                .classList.remove("hidden");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            document.getElementById("feedbackSuccess").innerHTML = `
+          <p class="text-red-600">Failed to submit feedback</p>
+        `;
+            document
+              .getElementById("feedbackSuccess")
+              .classList.remove("hidden");
+          }
+        });
     </script>
   </body>
 </html>

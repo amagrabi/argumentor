@@ -2,12 +2,21 @@ import os
 import uuid
 
 import yaml
-from flask import Blueprint, current_app, redirect, render_template, session, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user
 
 from config import get_settings
 from extensions import db
-from models import User
+from models import Feedback, User
 from services.leveling import get_level_info
 
 pages_bp = Blueprint("pages", __name__)
@@ -115,3 +124,25 @@ def profile():
         user=user,
         answers_json=answers_dict,
     )
+
+
+@pages_bp.route("/submit_feedback", methods=["POST"])
+def submit_feedback():
+    if not request.is_json:
+        return jsonify({"error": "Content-Type must be application/json"}), 400
+
+    data = request.json
+    message = data.get("message", "").strip()
+    category = data.get("category", "").strip()
+
+    if not message or not category:
+        return jsonify({"error": "Message and category are required"}), 400
+
+    feedback = Feedback(
+        user_uuid=session.get("user_id"), message=message, category=category
+    )
+
+    db.session.add(feedback)
+    db.session.commit()
+
+    return jsonify({"success": True})

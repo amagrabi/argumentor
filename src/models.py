@@ -84,3 +84,16 @@ class Visit(db.Model):
 
     def __repr__(self):
         return f"<Visit {self.id}: {self.ip_address} at {self.created_at}>"
+
+
+class Feedback(db.Model):
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_uuid = db.Column(db.String(36), db.ForeignKey("user.uuid"), nullable=True)
+    message = db.Column(db.Text, nullable=False)
+    category = db.Column(
+        db.String(50), nullable=False
+    )  # e.g., 'bug', 'feature', 'general'
+    created_at = db.Column(db.DateTime, default=datetime.now(UTC))
+
+    def __repr__(self):
+        return f"<Feedback {self.id}>"
