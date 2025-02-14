@@ -4,13 +4,13 @@ let progressChart = null;
 // Define a color mapping for each metric.
 const colors = {
   overall: "#1f2937",
-  relevance: "#f472b6",
+  relevance: "#2563eb",
   logic: "#ef4444",
   clarity: "#f59e0b",
   depth: "#84cc16",
   objectivity: "#06b6d4",
   creativity: "#8b5cf6",
-  challenge: "#a855f7",
+  challenge: "#a0522d",
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -28,36 +28,43 @@ document.addEventListener("DOMContentLoaded", () => {
     depth: document.getElementById("showDepth"),
     objectivity: document.getElementById("showObjectivity"),
     creativity: document.getElementById("showCreativity"),
-    challenge: document.getElementById("showChallenge"), // New button for challenge scores
+    challenge: document.getElementById("showChallenge"),
   };
 
+  // Set initial active/inactive states:
+  // Make "overall" active by default (using its metric color)
+  buttons.overall.classList.add("button-active");
+  buttons.overall.style.backgroundColor = colors.overall;
+  // All other buttons are inactive from the start.
+  Object.keys(buttons).forEach((metric) => {
+    if (metric !== "overall") {
+      buttons[metric].classList.add("button-inactive");
+    }
+  });
+
   // Attach click listeners to toggle active/inactive on each button.
-  Object.keys(buttons).forEach((key) => {
-    buttons[key].addEventListener("click", () => {
-      if (buttons[key].classList.contains("bg-gray-800")) {
-        // Switch to inactive state
-        buttons[key].classList.remove(
-          "bg-gray-800",
-          "text-white",
-          "button-active"
-        );
-        buttons[key].classList.add(
-          "bg-gray-100",
-          "text-gray-800",
-          "button-inactive"
-        );
+  Object.keys(buttons).forEach((metric) => {
+    buttons[metric].addEventListener("click", () => {
+      if (buttons[metric].classList.contains("button-active")) {
+        // Switch to inactive state:
+        buttons[metric].classList.remove("button-active");
+        buttons[metric].classList.add("button-inactive");
+        // Clear the inline background color.
+        buttons[metric].style.backgroundColor = "";
+        // Remove any Tailwind active classes (this fixes the "Overall" button)
+        buttons[metric].classList.remove("bg-gray-800", "text-white");
+        // Add Tailwind inactive classes.
+        buttons[metric].classList.add("bg-gray-100", "text-gray-800");
       } else {
-        // Switch to active state
-        buttons[key].classList.remove(
-          "bg-gray-100",
-          "text-gray-800",
-          "button-inactive"
-        );
-        buttons[key].classList.add(
-          "bg-gray-800",
-          "text-white",
-          "button-active"
-        );
+        // Switch to active state:
+        buttons[metric].classList.remove("button-inactive");
+        // Remove inactive styling classes.
+        buttons[metric].classList.remove("bg-gray-100", "text-gray-800");
+        buttons[metric].classList.add("button-active");
+        // Set the background to the metric's specific color.
+        buttons[metric].style.backgroundColor = colors[metric];
+        // Ensure active text color is white for visibility.
+        buttons[metric].classList.add("text-white");
       }
       updateChartMultiple(answers, buttons);
     });
@@ -208,16 +215,11 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
 }
 
 function updateChartMultiple(answers, buttons) {
-  // Determine which metrics are active based on their button classes.
+  // Determine which metrics are active based on the "button-active" class
   const activeMetrics = Object.keys(buttons).filter((key) =>
-    buttons[key].classList.contains("bg-gray-800")
+    buttons[key].classList.contains("button-active")
   );
-  // Fallback: if none selected, default to "overall".
-  if (activeMetrics.length === 0) {
-    activeMetrics.push("overall");
-    buttons.overall.classList.remove("bg-gray-100", "text-gray-800");
-    buttons.overall.classList.add("bg-gray-800", "text-white");
-  }
+
   progressChart.data.datasets = getDatasetsForMetrics(answers, activeMetrics);
   progressChart.data.labels = answers.map((a) =>
     new Date(a.created_at).toLocaleDateString()

@@ -78,7 +78,15 @@ textarea:focus {
 /* Responsive grid adjustments */
 @media (max-width: 768px) {
   .educational-card {
-    min-height: 110px;
+    min-height: auto;
+  }
+
+  .educational-card .card-header {
+    padding: 0.25rem 0.5rem;
+  }
+
+  .educational-card .card-content {
+    padding: 0.5rem;
   }
 }
 

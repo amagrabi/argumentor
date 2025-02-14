@@ -54,17 +54,19 @@
   <body class="bg-white min-h-screen">
     <div class="max-w-5xl mx-auto px-4 py-6">
       <!-- Header -->
-      <header class="flex justify-between items-center mb-4">
-        <div class="flex items-center space-x-3">
+      <header
+        class="flex flex-col md:flex-row justify-between items-center mb-4"
+      >
+        <div class="flex items-center space-x-3 w-full md:w-auto">
           <img
             width="40"
             height="40"
             src="https://img.icons8.com/external-outline-berkahicon/64/external-Brain-health-app-outline-berkahicon.png"
             alt="ArguMentor"
           />
-          <h1 class="text-2xl font-bold">ArguMentor</h1>
+          <h1 class="text-xl md:text-2xl font-bold">ArguMentor</h1>
         </div>
-        <div class="flex items-center space-x-0">
+        <div class="flex items-center space-x-2 mt-2 md:mt-0">
           <!-- Username and level info -->
           <a href="/profile" class="no-underline">
             <div
@@ -125,8 +127,7 @@
               class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center"
             >
               <img
-                width="22"
-                height="22"
+                class="w-[22px] h-[22px] object-contain"
                 src="https://img.icons8.com/windows/32/gender-neutral-user.png"
                 alt="Profile"
               />
@@ -244,83 +245,102 @@
       </div>
 
       <!-- Slogan -->
-      <div class="mb-4 space-y-6">
-        <p class="text-black text-center text-lg font-medium">
+      <div class="mb-4 space-y-2 md:space-y-6">
+        <p class="text-black text-center text-sm md:text-lg font-medium">
           Test your reasoning skills. Construct arguments to challenging
           questions. Improve with AI-driven feedback.
         </p>
 
-        <!-- Educational Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-14 px-14">
+        <!-- Updated Educational Cards Grid for mobile -->
+        <div class="grid grid-cols-3 gap-1 md:gap-6 px-2 md:px-14">
           <!-- Platform Guide Card -->
           <div class="educational-card bg-white rounded-xl overflow-hidden">
-            <div class="card-header bg-gray-800 text-white px-3 py-2">
-              <h3 class="font-semibold text-sm">How it Works</h3>
+            <div
+              class="card-header bg-gray-800 text-white pl-2 pr-1 py-0.5 md:px-3 md:py-2"
+            >
+              <h3 class="font-semibold text-[0.6rem] md:text-xs">
+                How It Works
+              </h3>
             </div>
-            <div class="card-content p-2.5">
-              <p class="text-xs text-gray-600 mb-1.5 leading-tight">
+            <div
+              class="card-content p-1 md:p-2 justify-start md:justify-between"
+            >
+              <p
+                class="text-[0.5rem] md:text-[0.7rem] text-gray-600 leading-tight"
+              >
                 Answer questions, get feedback, and track your progress.
               </p>
               <a
-                class="text-gray-800 text-xs font-medium hover:text-gray-600 transition-colors"
+                class="text-[0.5rem] md:text-[0.7rem] text-gray-800 font-medium hover:text-gray-600 transition-colors"
                 href="/how_it_works"
-                >Learn more →</a
               >
+                Learn more →
+              </a>
             </div>
           </div>
-
           <!-- Reasoning Tips Card -->
           <div class="educational-card bg-white rounded-xl overflow-hidden">
-            <div class="card-header bg-gray-800 text-white px-3 py-2">
-              <h3 class="font-semibold text-sm">How to Improve</h3>
+            <div
+              class="card-header bg-gray-800 text-white pl-2 pr-1 py-0.5 md:px-3 md:py-2"
+            >
+              <h3 class="font-semibold text-[0.6rem] md:text-xs">
+                How to Improve
+              </h3>
             </div>
-            <div class="card-content p-2.5">
-              <p class="text-xs text-gray-600 mb-1.5 leading-tight">
-                Focus on clear premises, draw logical conclusions, and
-                anticipate counterarguments.
+            <div
+              class="card-content p-1 md:p-2 justify-start md:justify-between"
+            >
+              <p
+                class="text-[0.5rem] md:text-[0.7rem] text-gray-600 leading-tight"
+              >
+                Focus on clear premises, logical conclusions, and
+                counterarguments.
               </p>
               <a
-                class="text-gray-800 text-xs font-medium hover:text-gray-600 transition-colors"
+                class="text-[0.5rem] md:text-[0.7rem] text-gray-800 font-medium hover:text-gray-600 transition-colors"
                 href="/reasoning_guide"
-                >Learn More →</a
               >
+                Learn More →
+              </a>
             </div>
           </div>
-
           <!-- How to Support Card -->
           <div class="educational-card bg-white rounded-xl overflow-hidden">
-            <div class="card-header bg-gray-800 text-white px-3 py-2">
-              <h3 class="font-semibold text-sm">How to Support</h3>
+            <div
+              class="card-header bg-gray-800 text-white pl-2 pr-1 py-0.5 md:px-3 md:py-2"
+            >
+              <h3 class="font-semibold text-[0.6rem] md:text-xs">
+                How to Support
+              </h3>
             </div>
-            <div class="card-content p-2.5">
-              <p class="text-xs text-gray-600 mb-1.5 leading-tight">
-                Help keep this project going by sharing your
-                <a
-                  href="#"
-                  onclick="showFeedbackModal(); return false;"
-                  class="hover:text-gray-800 underline"
-                  >feedback</a
-                >
-                or
+            <div
+              class="card-content p-1 md:p-2 justify-start md:justify-between"
+            >
+              <p
+                class="text-[0.5rem] md:text-[0.7rem] text-gray-600 leading-tight"
+              >
+                Help keep this project going by sharing feedback or
                 <a
                   href="https://buymeacoffee.com/amadeusmagrabi"
                   target="_blank"
                   rel="noopener noreferrer"
-                  ><u>buying me a coffee</u></a
+                  class="underline"
+                  >buying me a coffee</a
                 >.
               </p>
               <a
-                class="text-gray-800 text-xs font-medium hover:text-gray-600 transition-colors"
+                class="text-[0.5rem] md:text-[0.7rem] text-gray-800 font-medium hover:text-gray-600 transition-colors"
                 href="/support"
-                >Learn More →</a
               >
+                Learn More →
+              </a>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Main Content -->
-      <main class="bg-white rounded-3xl p-8 mb-8">
+      <main class="bg-white rounded-3xl p-4 md:p-8 mb-8">
         <!-- Question Section -->
         <!-- Category badge above the question -->
         <div class="mb-2">
@@ -329,10 +349,14 @@
             class="bg-gray-700 text-white px-4 py-2 rounded-full text-sm category-badge"
           ></span>
         </div>
-        <div class="flex items-start">
-          <h2 id="questionDescription" class="text-3xl font-bold flex-1"></h2>
-          <div class="flex flex-col ml-6 items-end">
-            <!-- Reroll Button -->
+        <div class="flex flex-col md:flex-row items-start">
+          <h2
+            id="questionDescription"
+            class="text-2xl md:text-3xl font-bold flex-1"
+          ></h2>
+          <div
+            class="flex flex-col items-start md:ml-6 md:items-end mt-4 md:mt-0"
+          >
             <button
               id="rerollButton"
               class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1"
@@ -352,7 +376,6 @@
               </svg>
               <span>Random Question</span>
             </button>
-            <!-- Select Question Button placed below the Reroll button -->
             <button
               id="selectQuestionButton"
               class="mt-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1"
@@ -499,7 +522,7 @@
           <!-- Warning for users not logged in -->
           {% if not current_user.is_authenticated %}
           <div
-            class="mt-4 mb-4 w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"
+            class="mt-4 mb-4 w-full md:w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"
           >
             You are currently not logged in. To avoid losing your progress and
             submitted answers, log in
