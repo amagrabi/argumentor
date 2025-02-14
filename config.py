@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: str = Field(default="fallback")
 
     # If false, cheaper dummy responses will be returned
-    USE_LLM_EVALUATOR: bool = Field(default=True)
+    USE_LLM_EVALUATOR: bool = Field(default=False)
 
     MODEL: str = Field(default="gemini-2.0-flash-001")
 

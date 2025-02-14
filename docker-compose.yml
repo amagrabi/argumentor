@@ -10,17 +10,25 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   app:
     build: .
-    depends_on:
-      - db
-    environment:
-      DEV: "true"
-      USE_LLM_EVALUATOR: "false"
-      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://postgres:password@db:5432/argumentor"
+    env_file:
+      - .env
+    # environment:
+    #   DEV: "true"
+    #   USE_LLM_EVALUATOR: "false"
+    #   SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://postgres:password@db:5432/argumentor"
     ports:
       - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   pgdata:
