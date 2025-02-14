@@ -13,8 +13,9 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str = Field(default="fallback")  # Flask
 
-    # for production: postgresql://username:password@host:port/database
-    SQLALCHEMY_DATABASE_URI: str = Field(default="sqlite:///argumentor.db")
+    SQLALCHEMY_DATABASE_URI: str = Field(
+        default="postgresql+psycopg2://postgres:password@localhost:5432/argumentor"
+    )
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = Field(default=False)
 
     GCLOUD_PROJECT_NAME: str = Field(default="fallback")

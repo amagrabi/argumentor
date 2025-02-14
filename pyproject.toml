@@ -17,8 +17,10 @@ dependencies = [
     "google-genai",
     "google-cloud-aiplatform",
     "gunicorn",
+    "psycopg2-binary",
     "pydantic-settings",
     "python-dotenv",
+    "pyyaml"
 ]
 
 [project.optional-dependencies]

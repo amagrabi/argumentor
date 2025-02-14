@@ -40,9 +40,10 @@ def create_app():
 
     app = Flask(__name__, instance_path=instance_path)
     app.config.from_mapping(get_settings())
-    app.config["SQLALCHEMY_DATABASE_URI"] = (
-        f"sqlite:///{os.path.join(instance_path, 'argumentor.db')}"
-    )
+    # For sqlite
+    # app.config["SQLALCHEMY_DATABASE_URI"] = (
+    #     f"sqlite:///{os.path.join(instance_path, 'argumentor.db')}"
+    # )
 
     # Initialize extensions
     db.init_app(app)

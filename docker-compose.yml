@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: argumentor
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DEV: "true"
+      USE_LLM_EVALUATOR: "false"
+      SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://postgres:password@db:5432/argumentor"
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:

@@ -1,0 +1,28 @@
+# Python bytecode and cache
+__pycache__
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv
+venv
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Log files
+*.log
+
+# Docker files (optional: prevent copying the Dockerfile if needed)
+.dockerignore
+Dockerfile

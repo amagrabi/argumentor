@@ -222,8 +222,8 @@
                       class="ml-1 text-sm {{ score_color(answer.challenge_evaluation_scores.Overall) }}"
                     >
                       {{
-                      "%.1f"|format(answer.challenge_evaluation_scores.Overall)
-                      }}/10
+                      "%.1f"|format(answer.challenge_evaluation_scores.Overall |
+                      float) }}/10
                     </span>
                   </p>
                   {% endif %}
