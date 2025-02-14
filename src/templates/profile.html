@@ -346,7 +346,9 @@
                       <span
                         class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.challenge_evaluation_scores.Overall) }}"
                       >
-                        {{ answer.challenge_evaluation_scores.Overall }}/10
+                        {{
+                        "%.1f"|format(answer.challenge_evaluation_scores.Overall|float)
+                        }}/10
                       </span>
                     </span>
                     <span
