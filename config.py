@@ -52,4 +52,10 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def get_settings():
-    return Settings()
+    settings = Settings()
+    # Heroku provides DATABASE_URL starting with "postgres://". Replace it if needed.
+    if settings.SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
+        settings.SQLALCHEMY_DATABASE_URI = settings.SQLALCHEMY_DATABASE_URI.replace(
+            "postgres://", "postgresql://", 1
+        )
+    return settings
