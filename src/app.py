@@ -98,10 +98,17 @@ def create_app():
             "'self'",
             "https://cdn.tailwindcss.com",
             "https://cdn.jsdelivr.net",
-            "'unsafe-inline'",  # Allow inline scripts for event handlers
+            "https://accounts.google.com",
+            "'unsafe-inline'",
         ],
-        "style-src": ["'self'", "https://cdn.tailwindcss.com", "'unsafe-inline'"],
+        "style-src": [
+            "'self'",
+            "https://cdn.tailwindcss.com",
+            "https://accounts.google.com",
+            "'unsafe-inline'",
+        ],
         "img-src": ["'self'", "data:", "https://img.icons8.com"],
+        "frame-src": ["https://accounts.google.com"],
     }
     Talisman(app, content_security_policy=csp)
 
