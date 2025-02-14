@@ -1,10 +1,11 @@
 import { hexToRgb, rgbToHex, interpolateColor } from "./utils.js";
+import { DEFAULT_CATEGORIES, CATEGORY_ICONS } from "./constants.js";
 import {
-  DEFAULT_CATEGORIES,
-  CATEGORY_ICONS,
-  CHAR_LIMITS,
-  COLORS,
-} from "./constants.js";
+  typeWriter,
+  updateQuestionDisplay,
+  scoreToColor,
+  setupCharCounter,
+} from "./helpers.js";
 
 // Initialize mermaid
 mermaid.initialize({
@@ -36,67 +37,6 @@ mermaid.initialize({
 let selectedCategories = [];
 // Global variable to store the currently displayed question.
 let currentQuestion = null;
-
-// Function to determine color based on score using linear interpolation
-function scoreToColor(score) {
-  const minScore = 1,
-    maxScore = 10;
-  const clampedScore = Math.min(maxScore, Math.max(minScore, score));
-  const factor = (clampedScore - minScore) / (maxScore - minScore);
-
-  if (factor < 0.3) {
-    return interpolate(COLORS[0], COLORS[1], factor / 0.3);
-  } else if (factor < 0.5) {
-    return interpolate(COLORS[1], COLORS[2], (factor - 0.3) / 0.2);
-  } else if (factor < 0.7) {
-    return interpolate(COLORS[2], COLORS[3], (factor - 0.5) / 0.2);
-  } else if (factor < 0.9) {
-    return interpolate(COLORS[3], COLORS[4], (factor - 0.7) / 0.2);
-  } else {
-    return interpolate(COLORS[4], COLORS[5], (factor - 0.9) / 0.1);
-  }
-
-  function interpolate(start, end, ratio) {
-    const result = {
-      r: Math.round(start.r + (end.r - start.r) * ratio),
-      g: Math.round(start.g + (end.g - start.g) * ratio),
-      b: Math.round(start.b + (end.b - start.b) * ratio),
-    };
-    return rgbToHex(result.r, result.g, result.b);
-  }
-}
-
-// Helper function for typewriter effect
-function typeWriter(element, text, speed) {
-  if (element._typewriterTimer) {
-    clearInterval(element._typewriterTimer);
-  }
-  element.textContent = "";
-  let i = 0;
-  element._typewriterTimer = setInterval(() => {
-    element.textContent += text.charAt(i);
-    i++;
-    if (i >= text.length) {
-      clearInterval(element._typewriterTimer);
-      element._typewriterTimer = null;
-    }
-  }, speed);
-}
-
-// Helper function to update the question display using a given question object.
-function updateQuestionDisplay(question) {
-  const questionElem = document.getElementById("questionDescription");
-  if (questionElem) {
-    questionElem.textContent = question.description;
-  }
-  const categoryBadge = document.getElementById("categoryBadge");
-  if (categoryBadge) {
-    const categoryText = CATEGORY_ICONS[question.category]
-      ? `${CATEGORY_ICONS[question.category]} ${question.category}`
-      : question.category;
-    categoryBadge.textContent = categoryText;
-  }
-}
 
 // Modified getNewQuestion function:
 // 1. It appends the selectedCategories as a query parameter to the request URL.
@@ -219,31 +159,6 @@ async function handleLogout() {
     console.error("Logout failed:", error);
   }
 }
-
-// Update character counters
-const setupCharCounter = (inputId, countId, fieldName) => {
-  const input = document.getElementById(inputId);
-  const count = document.getElementById(countId);
-  if (input && count) {
-    const maxLength = CHAR_LIMITS[fieldName.toUpperCase()];
-    input.setAttribute("maxlength", maxLength);
-    count.textContent = maxLength;
-
-    input.addEventListener("input", () => {
-      const remaining = maxLength - input.value.length;
-      count.textContent = remaining;
-      // Clear error message on any input
-      document.getElementById("errorMessage").textContent = "";
-      // Additional check to clear message when requirements are met
-      if (
-        input.value.length > 0 &&
-        document.getElementById("errorMessage").textContent
-      ) {
-        document.getElementById("errorMessage").textContent = "";
-      }
-    });
-  }
-};
 
 // Initialize all counters
 setupCharCounter("claimInput", "claimCount", "claim");
