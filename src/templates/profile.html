@@ -24,7 +24,10 @@
     <script id="answersData" type="application/json">
       {{ answers_json | tojson }}
     </script>
-    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/profile.js') }}"
+    ></script>
     <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
     <!-- Updated header to match other pages -->
     <header class="bg-gray-800 p-4">

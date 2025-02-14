@@ -1,3 +1,11 @@
+import { hexToRgb, rgbToHex, interpolateColor } from "./utils.js";
+import {
+  DEFAULT_CATEGORIES,
+  CATEGORY_ICONS,
+  CHAR_LIMITS,
+  COLORS,
+} from "./constants.js";
+
 // Initialize mermaid
 mermaid.initialize({
   startOnLoad: true,
@@ -24,69 +32,10 @@ mermaid.initialize({
   },
 });
 
-const DEFAULT_CATEGORIES = [
-  "Philosophy",
-  "Ethics",
-  "Business & Risk",
-  "Thought Experiments",
-  "Politics",
-  "Biases & Fallacies",
-  "AI & Future",
-  "Fun & Casual",
-];
-
-// Category icons mapping with updated icons
-const categoryIcons = {
-  Philosophy: "📚",
-  Ethics: "⚖️",
-  "Business & Risk": "💼",
-  "Thought Experiments": "💡",
-  Politics: "🏛️",
-  "Biases & Fallacies": "🔍",
-  "AI & Future": "🤖",
-  "Fun & Casual": "🎉",
-};
-
-const CHAR_LIMITS = {
-  CLAIM: 200,
-  ARGUMENT: 1000,
-  COUNTERARGUMENT: 500,
-  CHALLENGE: 1000,
-};
-
 // Global variable that stores your selected category values.
 let selectedCategories = [];
 // Global variable to store the currently displayed question.
 let currentQuestion = null;
-
-// Utility functions for color interpolation
-function hexToRgb(hex) {
-  hex = hex.replace("#", "");
-  let bigint = parseInt(hex, 16);
-  let r = (bigint >> 16) & 255;
-  let g = (bigint >> 8) & 255;
-  let b = bigint & 255;
-  return { r, g, b };
-}
-
-function rgbToHex(r, g, b) {
-  return (
-    "#" +
-    [r, g, b]
-      .map((x) => {
-        const hex = x.toString(16);
-        return hex.length === 1 ? "0" + hex : hex;
-      })
-      .join("")
-  );
-}
-
-function interpolateColor(color1, color2, factor) {
-  const r = Math.round(color1.r + factor * (color2.r - color1.r));
-  const g = Math.round(color1.g + factor * (color2.g - color1.g));
-  const b = Math.round(color1.b + factor * (color2.b - color1.b));
-  return { r, g, b };
-}
 
 // Function to determine color based on score using linear interpolation
 function scoreToColor(score) {
@@ -95,26 +44,16 @@ function scoreToColor(score) {
   const clampedScore = Math.min(maxScore, Math.max(minScore, score));
   const factor = (clampedScore - minScore) / (maxScore - minScore);
 
-  // Five-color gradient: red -> orange -> yellow -> lime -> emerald
-  const colors = [
-    hexToRgb("#ef4444"), // red-500 (1-3)
-    hexToRgb("#f59e0b"), // amber-500 (4-5)
-    hexToRgb("#eab308"), // yellow-500 (6)
-    hexToRgb("#84cc16"), // lime-500 (7)
-    hexToRgb("#16a34a"), // green-600 (8-9)
-    hexToRgb("#059669"), // emerald-600 (10)
-  ];
-
   if (factor < 0.3) {
-    return interpolate(colors[0], colors[1], factor / 0.3);
+    return interpolate(COLORS[0], COLORS[1], factor / 0.3);
   } else if (factor < 0.5) {
-    return interpolate(colors[1], colors[2], (factor - 0.3) / 0.2);
+    return interpolate(COLORS[1], COLORS[2], (factor - 0.3) / 0.2);
   } else if (factor < 0.7) {
-    return interpolate(colors[2], colors[3], (factor - 0.5) / 0.2);
+    return interpolate(COLORS[2], COLORS[3], (factor - 0.5) / 0.2);
   } else if (factor < 0.9) {
-    return interpolate(colors[3], colors[4], (factor - 0.7) / 0.2);
+    return interpolate(COLORS[3], COLORS[4], (factor - 0.7) / 0.2);
   } else {
-    return interpolate(colors[4], colors[5], (factor - 0.9) / 0.1);
+    return interpolate(COLORS[4], COLORS[5], (factor - 0.9) / 0.1);
   }
 
   function interpolate(start, end, ratio) {
@@ -152,8 +91,8 @@ function updateQuestionDisplay(question) {
   }
   const categoryBadge = document.getElementById("categoryBadge");
   if (categoryBadge) {
-    const categoryText = categoryIcons[question.category]
-      ? `${categoryIcons[question.category]} ${question.category}`
+    const categoryText = CATEGORY_ICONS[question.category]
+      ? `${CATEGORY_ICONS[question.category]} ${question.category}`
       : question.category;
     categoryBadge.textContent = categoryText;
   }
@@ -191,8 +130,8 @@ async function getNewQuestion(shouldScroll = true) {
     // Update only the category badge, and not the question text again
     const categoryBadge = document.getElementById("categoryBadge");
     if (categoryBadge) {
-      const categoryText = categoryIcons[question.category]
-        ? `${categoryIcons[question.category]} ${question.category}`
+      const categoryText = CATEGORY_ICONS[question.category]
+        ? `${CATEGORY_ICONS[question.category]} ${question.category}`
         : question.category;
       categoryBadge.textContent = categoryText;
     }
