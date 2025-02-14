@@ -658,139 +658,6 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       .addEventListener("input", () => {
         document.getElementById("challengeErrorMessage").textContent = "";
       });
-
-    // Challenge Response submission handler.
-    document
-      .getElementById("submitChallengeResponse")
-      .addEventListener("click", async () => {
-        const startTime = Date.now();
-        const challengeResponse = document
-          .getElementById("challengeResponseInput")
-          .value.trim();
-        const challengeErrorMessage = document.getElementById(
-          "challengeErrorMessage"
-        );
-        if (!challengeResponse) {
-          challengeErrorMessage.textContent =
-            "Please provide a response to the challenge.";
-          return;
-        }
-        const answerId = sessionStorage.getItem("lastAnswerId");
-        if (!answerId) {
-          challengeErrorMessage.textContent = "No associated answer found.";
-          return;
-        }
-
-        const submitBtn = document.getElementById("submitChallengeResponse");
-        submitBtn.innerHTML = `
-          <span class="loading-dots">
-            <span class="animate-pulse">Analyzing</span>
-          </span>
-        `;
-        submitBtn.disabled = true;
-
-        try {
-          const response = await fetch("/submit_challenge_response", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              challenge_response: challengeResponse,
-              answer_id: answerId,
-            }),
-          });
-
-          if (response.ok) {
-            const elapsed = Date.now() - startTime;
-            if (elapsed < 3000) {
-              await new Promise((resolve) =>
-                setTimeout(resolve, 3000 - elapsed)
-              );
-            }
-          }
-
-          const data = await response.json();
-          if (!response.ok) {
-            challengeErrorMessage.textContent =
-              data.error || "Submission failed";
-            submitBtn.innerHTML = "Submit";
-            submitBtn.disabled = false;
-            return;
-          }
-
-          // Update only the global (header) XP/level indicator
-          updateXpIndicator(data.current_xp, data.level_info);
-
-          // Update challenge evaluation feedback.
-          const challengeEvalDiv = document.getElementById(
-            "challengeEvaluationResults"
-          );
-          const totalScore = data.evaluation.total_score;
-          const totalScorePercent = totalScore * 10;
-          const totalScoreColor = scoreToColor(totalScore);
-
-          let challengeHtml = `
-            <p class="text-l font-bold mb-2">
-              Overall Rating: <span id="challengeTotalScoreValue" style="color: ${totalScoreColor};">${totalScore.toFixed(
-            1
-          )}/10</span>
-            </p>
-            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-              <div id="challengeTotalScoreBar" class="rounded-full total-progress-bar" style="width: ${totalScorePercent}%; background-color: ${totalScoreColor};"></div>
-            </div>
-            <p id="challengeOverallFeedback" class="text-md">${
-              data.evaluation.overall_feedback
-            }</p>
-            <div class="flex flex-wrap gap-2 mt-2">`;
-          const orderedCategories = [
-            "Relevance",
-            "Logical Structure",
-            "Clarity",
-            "Depth",
-            "Objectivity",
-            "Creativity",
-          ];
-          orderedCategories.forEach((category) => {
-            if (typeof data.evaluation.scores[category] !== "undefined") {
-              const score = data.evaluation.scores[category];
-              challengeHtml += `<div class="px-2 py-1 rounded-full text-xs" style="background-color: ${scoreToColor(
-                score
-              )};">
-                                  ${category}: ${score}/10
-                                </div>`;
-            }
-          });
-          challengeHtml += `</div>`;
-          challengeEvalDiv.innerHTML = challengeHtml;
-          challengeEvalDiv.classList.remove("hidden");
-
-          submitBtn.innerHTML = "Submit";
-          submitBtn.disabled = false;
-
-          // After the evaluation is displayed, scroll to it
-          setTimeout(() => {
-            scrollToChallengeEvaluation();
-          }, 100); // Small delay to ensure the content is rendered
-        } catch (error) {
-          console.error("Error submitting challenge response:", error);
-          challengeErrorMessage.textContent =
-            "Submission failed, server error. Please try again.";
-          submitBtn.innerHTML = "Submit";
-          submitBtn.disabled = false;
-        }
-      });
-
-    const nextBtn = document.getElementById("nextQuestion");
-    if (nextBtn) {
-      nextBtn.innerHTML = `Try Another Question`;
-      nextBtn.classList.add("hover:bg-gray-700");
-    }
-
-    // Update the XP explanation message if provided
-    if (data.xp_message) {
-      document.getElementById("xpMessage").textContent = data.xp_message;
-    } else {
-      document.getElementById("xpMessage").textContent = "";
-    }
   } catch (error) {
     console.error("Error submitting answer:", error);
     document.getElementById("errorMessage").textContent =
@@ -945,8 +812,7 @@ window.addEventListener("DOMContentLoaded", () => {
         <p id="challengeOverallFeedback" class="text-md">${
           data.evaluation.overall_feedback
         }</p>
-        <div class="flex flex-wrap gap-2 mt-2">
-      `;
+        <div class="flex flex-wrap gap-2 mt-2">`;
       const orderedCategories = [
         "Relevance",
         "Logical Structure",
@@ -961,8 +827,8 @@ window.addEventListener("DOMContentLoaded", () => {
           challengeHtml += `<div class="px-2 py-1 rounded-full text-xs" style="background-color: ${scoreToColor(
             score
           )};">
-                              ${category}: ${score}/10
-                            </div>`;
+                                ${category}: ${score}/10
+                              </div>`;
         }
       });
       challengeHtml += `</div>`;
