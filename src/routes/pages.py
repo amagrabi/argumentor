@@ -157,6 +157,11 @@ def privacy():
     return render_template("privacy.html")
 
 
+@pages_bp.route("/terms")
+def terms():
+    return render_template("terms.html")
+
+
 @pages_bp.route("/contact")
 def contact():
     return render_template("contact.html")
