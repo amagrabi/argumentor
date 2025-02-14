@@ -8,6 +8,17 @@ ArguMentor is a platform to train reasoning and decision-making skills. Users ca
 
 ## Installation
 
+### Option 1: Docker
+
+```sh
+docker compose --build
+docker compose up
+```
+
+Access the application at `http://localhost:8000`.
+
+### Option 2: Python
+
 Create and activate a virtual environment, for example via [uv](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```sh
@@ -21,7 +32,20 @@ Install dependencies in editable mode:
 uv pip install -e .
 ```
 
-Start app for development:
+Install PostGreSQL:
+
+```sh
+brew install postgresql
+```
+
+Create a database:
+
+```sh
+brew services start postgresql
+psql -U postgres -c "CREATE DATABASE argumentor;"
+```
+
+Start app:
 
 ```sh
 DEV=true USE_LLM_EVALUATOR=false python -m src.app
