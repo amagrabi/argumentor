@@ -7,7 +7,9 @@ from extensions import db
 
 
 class User(db.Model, UserMixin):
-    uuid = db.Column(db.String(36), primary_key=True)
+    __tablename__ = "users"
+
+    uuid = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     username = db.Column(db.String(255), unique=True, nullable=True)
     xp = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
@@ -31,13 +33,13 @@ class User(db.Model, UserMixin):
         return str(self.uuid)
 
     def __repr__(self):
-        return f"<User {self.uuid}>"
+        return f"<User {self.uuid} {self.username}>"
 
 
 class Answer(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_uuid = db.Column(
-        db.String(36), db.ForeignKey("user.uuid", ondelete="CASCADE"), nullable=False
+        db.String(36), db.ForeignKey("users.uuid", ondelete="CASCADE"), nullable=False
     )
     question_id = db.Column(db.String(50), nullable=True)
     question_text = db.Column(db.Text, nullable=True)
@@ -88,7 +90,7 @@ class Answer(db.Model):
 class Visit(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_uuid = db.Column(
-        db.String(36), db.ForeignKey("user.uuid", ondelete="CASCADE"), nullable=True
+        db.String(36), db.ForeignKey("users.uuid", ondelete="CASCADE"), nullable=True
     )
     ip_address = db.Column(db.String(45), nullable=True)
     user_agent = db.Column(db.String(200), nullable=True)
@@ -101,7 +103,7 @@ class Visit(db.Model):
 class Feedback(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_uuid = db.Column(
-        db.String(36), db.ForeignKey("user.uuid", ondelete="CASCADE"), nullable=True
+        db.String(36), db.ForeignKey("users.uuid", ondelete="CASCADE"), nullable=True
     )
     message = db.Column(db.Text, nullable=False)
     category = db.Column(
