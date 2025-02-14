@@ -63,10 +63,15 @@ def evaluate_answer(question_text, claim, argument, counterargument):
     error_message="Too many submissions. Please wait before trying again.",
 )
 def submit_answer():
+    data = request.get_json() or {}
+    user_uuid = session.get("user_id")
+    logger.debug(
+        f"Received answer submission from user: {user_uuid}, data keys: {list(data.keys())}"
+    )
+
     if not request.is_json:
         return jsonify({"error": "Content-Type must be application/json"}), 400
 
-    data = request.json
     question_text = data.get("question_text", "").strip()
     claim = data.get("claim", "").strip()
     argument = data.get("argument", "").strip()
@@ -99,7 +104,6 @@ def submit_answer():
                 if question_text:
                     break
 
-    user_uuid = session.get("user_id")
     if not user_uuid:
         return jsonify({"error": "User not identified."}), 400
 
@@ -222,6 +226,10 @@ def submit_answer():
     new_level = get_level(total_xp)
     leveled_up = old_level != new_level
     level_info = get_level_info(total_xp)
+
+    logger.info(
+        f"Answer processed for user: {user_uuid} for question: {data.get('question_id')}"
+    )
 
     return jsonify(
         {

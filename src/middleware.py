@@ -1,3 +1,4 @@
+import logging
 import uuid
 from datetime import UTC, datetime
 
@@ -5,6 +6,8 @@ from flask import request, session
 
 from extensions import db
 from models import User, Visit
+
+logger = logging.getLogger(__name__)
 
 
 def ensure_user_id():
@@ -15,6 +18,9 @@ def ensure_user_id():
         new_user = User(uuid=new_id)
         db.session.add(new_user)
         db.session.commit()
+        logger.debug(f"Anonymous user created with id: {new_id}")
+    else:
+        logger.debug(f"Existing user found with id: {session.get('user_id')}")
 
 
 def log_visit():
@@ -29,3 +35,6 @@ def log_visit():
             )
             db.session.add(new_visit)
             db.session.commit()
+            logger.info(
+                f"Logged visit for user: {session.get('user_id')} on {today_str}"
+            )

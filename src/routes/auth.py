@@ -1,3 +1,4 @@
+import logging
 import uuid
 
 from flask import Blueprint, jsonify, request, session
@@ -12,8 +13,10 @@ from extensions import login_manager
 from models import Answer, User, db
 from services.leveling import get_level_info
 
-auth_bp = Blueprint("auth", __name__)
+logger = logging.getLogger(__name__)
 SETTINGS = get_settings()
+
+auth_bp = Blueprint("auth", __name__)
 
 
 @login_manager.user_loader
@@ -34,6 +37,7 @@ def signup():
             anonymous_user = User.query.filter_by(uuid=session["user_id"]).first()
 
         if User.query.filter_by(username=username).first():
+            logger.warning(f"Signup attempt with existing username: {username}")
             return jsonify({"error": "Username already exists"}), 400
 
         # Create and flush new user first to generate UUID
@@ -64,6 +68,7 @@ def signup():
 
         # Calculate level info
         level_info = get_level_info(user.xp)
+        logger.info(f"New user signed up: {username}, id: {user.uuid}")
 
         return jsonify(
             {
@@ -77,6 +82,7 @@ def signup():
             }
         )
     except Exception as e:
+        logger.error(f"Error during signup: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 
@@ -105,6 +111,7 @@ def login():
 
         # Calculate the level info here
         level_info = get_level_info(user.xp)
+        logger.info(f"User logged in: {username}, id: {user.uuid}")
 
         return jsonify(
             {
@@ -117,12 +124,14 @@ def login():
                 },
             }
         )
+    logger.warning(f"Failed login attempt for username: {username}")
     return jsonify({"error": "Invalid credentials"}), 401
 
 
 @auth_bp.route("/logout", methods=["POST"], endpoint="logout_route")
 @login_required
 def logout():
+    logger.info(f"User logged out: {session.get('user_id')}")
     logout_user()
     session.clear()
     return jsonify({"message": "Logged out successfully"})
