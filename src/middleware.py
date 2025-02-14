@@ -25,7 +25,7 @@ def log_visit():
             new_visit = Visit(
                 ip_address=request.remote_addr,
                 user_agent=request.headers.get("User-Agent"),
-                user_uuid=session.get("user_id"),
+                user_uuid=session.get("user_id") if session.get("user_id") else None,
             )
             db.session.add(new_visit)
             db.session.commit()

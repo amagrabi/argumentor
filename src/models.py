@@ -11,13 +11,21 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(255), unique=True, nullable=True)
     xp = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
-    answers = db.relationship("Answer", backref="user", lazy=True)
+    answers = db.relationship(
+        "Answer", backref="user", lazy=True, cascade="all, delete-orphan"
+    )
     email = db.Column(db.String(255), unique=True, nullable=True)
     password_hash = db.Column(db.String(255), nullable=True)
     google_id = db.Column(db.String(255), unique=True, nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     profile_pic = db.Column(db.String(512), nullable=True)
     category_preferences = db.Column(db.Text, nullable=True)
+    visits = db.relationship(
+        "Visit", backref="user", lazy=True, cascade="all, delete-orphan"
+    )
+    feedback = db.relationship(
+        "Feedback", backref="user", lazy=True, cascade="all, delete-orphan"
+    )
 
     def get_id(self):
         return str(self.uuid)
@@ -28,7 +36,9 @@ class User(db.Model, UserMixin):
 
 class Answer(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_uuid = db.Column(db.String(36), db.ForeignKey("user.uuid"), nullable=False)
+    user_uuid = db.Column(
+        db.String(36), db.ForeignKey("user.uuid", ondelete="CASCADE"), nullable=False
+    )
     question_id = db.Column(db.String(50), nullable=True)
     question_text = db.Column(db.Text, nullable=True)
     claim = db.Column(db.Text, nullable=False)
@@ -77,9 +87,11 @@ class Answer(db.Model):
 
 class Visit(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_uuid = db.Column(db.String(36), db.ForeignKey("user.uuid"), nullable=True)
-    ip_address = db.Column(db.String(45))  # Supports IPv6 addresses
-    user_agent = db.Column(db.String(256))
+    user_uuid = db.Column(
+        db.String(36), db.ForeignKey("user.uuid", ondelete="CASCADE"), nullable=True
+    )
+    ip_address = db.Column(db.String(45), nullable=True)
+    user_agent = db.Column(db.String(200), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
 
     def __repr__(self):
@@ -88,7 +100,9 @@ class Visit(db.Model):
 
 class Feedback(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_uuid = db.Column(db.String(36), db.ForeignKey("user.uuid"), nullable=True)
+    user_uuid = db.Column(
+        db.String(36), db.ForeignKey("user.uuid", ondelete="CASCADE"), nullable=True
+    )
     message = db.Column(db.Text, nullable=False)
     category = db.Column(
         db.String(50), nullable=False
