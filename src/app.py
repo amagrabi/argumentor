@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 
@@ -6,7 +5,6 @@ from flask import Flask, jsonify
 from flask_limiter.errors import RateLimitExceeded
 from flask_migrate import Migrate
 from flask_talisman import Talisman
-from google.oauth2 import service_account
 
 from commands import register_commands
 from config import get_settings
@@ -20,18 +18,6 @@ from routes.questions import questions_bp
 
 SETTINGS = get_settings()
 
-# Heroku
-if os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"):
-    credentials_info = json.loads(os.environ["GOOGLE_APPLICATION_CREDENTIALS_JSON"])
-    CREDENTIALS = service_account.Credentials.from_service_account_info(
-        credentials_info, scopes=["https://www.googleapis.com/auth/cloud-platform"]
-    )
-# Local development
-else:
-    CREDENTIALS = service_account.Credentials.from_service_account_file(
-        SETTINGS.GOOGLE_APPLICATION_CREDENTIALS,
-        scopes=["https://www.googleapis.com/auth/cloud-platform"],
-    )
 logging.basicConfig(
     level=SETTINGS.LOG_LEVEL, format="%(asctime)s - %(levelname)s - %(message)s"
 )

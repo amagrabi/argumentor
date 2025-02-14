@@ -1,19 +1,11 @@
-import logging
-
 from google import genai
-from google.oauth2 import service_account
 
 from config import get_settings
+from extensions import google_credentials as CREDENTIALS
 from utils import auto_dedent
 
 SETTINGS = get_settings()
 
-logger = logging.getLogger(__name__)
-
-CREDENTIALS = service_account.Credentials.from_service_account_file(
-    SETTINGS.GOOGLE_APPLICATION_CREDENTIALS,
-    scopes=["https://www.googleapis.com/auth/cloud-platform"],
-)
 
 CLIENT = genai.Client(
     vertexai=True,
