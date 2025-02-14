@@ -95,6 +95,7 @@ def create_app():
         ],
         "img-src": ["'self'", "data:", "https://img.icons8.com"],
         "frame-src": ["https://accounts.google.com"],
+        "connect-src": ["'self'", "https://accounts.google.com"],
     }
     Talisman(app, content_security_policy=csp)
 

@@ -149,6 +149,17 @@ async function updateAuthUI(userData, redirect = false) {
   }
 }
 
+// Make handleLogout available globally
+window.handleLogout = handleLogout;
+
+// Add event listener for logout button
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutButton = document.querySelector("#logoutButton");
+  if (logoutButton) {
+    logoutButton.addEventListener("click", handleLogout);
+  }
+});
+
 async function handleLogout() {
   try {
     const response = await fetch("/logout", { method: "POST" });
