@@ -4,6 +4,7 @@ import os
 
 from flask import Flask, jsonify
 from flask_limiter.errors import RateLimitExceeded
+from flask_migrate import Migrate
 from flask_talisman import Talisman
 from google.oauth2 import service_account
 
@@ -58,6 +59,7 @@ def create_app():
 
     # Initialize extensions
     db.init_app(app)
+    Migrate(app, db)
     login_manager.init_app(app)
     limiter.init_app(app)
 
@@ -66,10 +68,6 @@ def create_app():
     def ratelimit_handler(e):
         # e.description comes from the error_message parameter in the rate limit decorator
         return jsonify(error=e.description), e.code
-
-    # Create tables if they don't exist
-    with app.app_context():
-        db.create_all()
 
     # Register blueprints
     app.register_blueprint(auth_bp)
