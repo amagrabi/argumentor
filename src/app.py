@@ -4,6 +4,7 @@ import os
 
 from flask import Flask, jsonify
 from flask_limiter.errors import RateLimitExceeded
+from flask_talisman import Talisman
 from google.oauth2 import service_account
 
 from commands import register_commands
@@ -88,6 +89,23 @@ def create_app():
     @app.context_processor
     def inject_client_id():
         return dict(GOOGLE_CLIENT_ID=app.config.get("GOOGLE_CLIENT_ID"))
+
+    # Ensure the URL scheme is set to HTTPS for URL generation
+    app.config["PREFERRED_URL_SCHEME"] = "https"
+
+    # Define custom content security policy (CSP)
+    csp = {
+        "default-src": ["'self'"],
+        "script-src": [
+            "'self'",
+            "https://cdn.tailwindcss.com",
+            "https://cdn.jsdelivr.net",
+            "'unsafe-inline'",  # Allow inline scripts for event handlers
+        ],
+        "style-src": ["'self'", "https://cdn.tailwindcss.com", "'unsafe-inline'"],
+        "img-src": ["'self'", "data:", "https://img.icons8.com"],
+    }
+    Talisman(app, content_security_policy=csp)
 
     return app
 
