@@ -139,7 +139,7 @@ def submit_answer():
     logger.debug(f"Raw main average: {avg_all}, XP earned: {xp_earned}")
 
     xp_message = ""
-    if avg_all < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP:
+    if scores["Relevance"] < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP:
         xp_message = (
             "Your response did not meet the minimum relevance required to earn XP."
         )
@@ -330,6 +330,9 @@ def submit_challenge_response():
             "current_level": level_info["display_name"],
             "leveled_up": leveled_up,
             "level_info": level_info,
+            "xp_message": "Your challenge response did not meet the minimum relevance required to earn XP."
+            if scores["Relevance"] < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
+            else "",
         }
     )
 

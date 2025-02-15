@@ -527,6 +527,9 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       .addEventListener("input", () => {
         document.getElementById("challengeErrorMessage").textContent = "";
       });
+
+    // Display XP message
+    document.getElementById("xpMessage").textContent = data.xp_message || "";
   } catch (error) {
     console.error("Error submitting answer:", error);
     document.getElementById("errorMessage").textContent =
@@ -704,6 +707,12 @@ window.addEventListener("DOMContentLoaded", () => {
       challengeHtml += `</div>`;
       challengeEvalDiv.innerHTML = challengeHtml;
       challengeEvalDiv.classList.remove("hidden");
+
+      // Display XP message for challenge *within* the challenge evaluation section
+      const challengeXpMessage = document.createElement("p");
+      challengeXpMessage.classList.add("text-sm", "text-red-600", "mt-4");
+      challengeXpMessage.textContent = data.xp_message || "";
+      challengeEvalDiv.appendChild(challengeXpMessage);
 
       challengeBtn.innerHTML = "Submit";
       challengeBtn.disabled = false;
