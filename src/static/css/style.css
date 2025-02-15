@@ -158,6 +158,24 @@ textarea:focus {
   position: absolute;
   height: 100%;
   transition: width 0.4s ease-out, left 0.4s ease-out;
+  margin: 0;
+  padding: 0;
+}
+
+/* Specific styling for the old XP bar */
+#xpOldBar {
+  z-index: 1;
+  border-radius: 9999px 0 0 9999px;
+}
+
+/* Specific styling for the new XP bar */
+#xpNewBar {
+  z-index: 2;
+  border-radius: 0 9999px 9999px 0;
+}
+
+/* When the new bar starts from the beginning */
+#xpNewBar:first-child {
   border-radius: 9999px;
 }
 

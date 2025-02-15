@@ -1010,3 +1010,14 @@ function scrollToChallengeEvaluation() {
     });
   }
 }
+
+function updateXpProgress(oldProgressPercent, newIncrementPercent) {
+  const xpOldBar = document.getElementById("xpOldBar");
+  const xpNewBar = document.getElementById("xpNewBar");
+
+  // Set the width of the old xp part (grey)
+  xpOldBar.style.width = `${oldProgressPercent}%`;
+  // Position the new xp part (green) immediately after the old part
+  xpNewBar.style.left = `${oldProgressPercent}%`;
+  xpNewBar.style.width = `${newIncrementPercent}%`;
+}
