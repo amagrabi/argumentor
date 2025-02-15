@@ -152,7 +152,9 @@ def submit_answer():
     ).all()
 
     for existing in existing_answers:
-        # Compare both claim and argument
+        existing_counter = (existing.counterargument or "").strip()
+        new_counter = counterargument  # Already trimmed when parsing input
+
         claim_similarity = SequenceMatcher(None, claim, existing.claim).ratio()
         argument_similarity = SequenceMatcher(None, argument, existing.argument).ratio()
 
@@ -160,14 +162,32 @@ def submit_answer():
             claim_similarity > SETTINGS.SIMILARITY_THRESHOLD
             and argument_similarity > SETTINGS.SIMILARITY_THRESHOLD
         ):
-            return jsonify(
-                {
-                    "error": """
-                        You already submitted a very similar answer to this question.
-                        Change your argument to receive a new evaluation.
-                    """
-                }
-            ), 400
+            # Only consider the counterargument if both submissions have one.
+            if bool(new_counter) == bool(existing_counter):
+                if new_counter:
+                    counter_similarity = SequenceMatcher(
+                        None, new_counter, existing_counter
+                    ).ratio()
+                    if counter_similarity > SETTINGS.SIMILARITY_THRESHOLD:
+                        return jsonify(
+                            {
+                                "error": (
+                                    "You already submitted a very similar answer to this question. "
+                                    "Change your argument to receive a new evaluation."
+                                )
+                            }
+                        ), 400
+                else:
+                    # Neither submission has a counterargument.
+                    return jsonify(
+                        {
+                            "error": (
+                                "You already submitted a very similar answer to this question. "
+                                "Change your argument to receive a new evaluation."
+                            )
+                        }
+                    ), 400
+            # If one has a counterargument and the other doesn't, we treat them as different.
     if not user:
         user = User(uuid=user_uuid, xp=old_xp)
         db.session.add(user)
