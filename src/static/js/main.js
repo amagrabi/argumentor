@@ -1,5 +1,9 @@
 import { hexToRgb, rgbToHex, interpolateColor } from "./utils.js";
-import { DEFAULT_CATEGORIES, CATEGORY_ICONS } from "./constants.js";
+import {
+  DEFAULT_CATEGORIES,
+  CATEGORY_ICONS,
+  ERROR_MESSAGES,
+} from "./constants.js";
 import {
   typeWriter,
   updateQuestionDisplay,
@@ -254,7 +258,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
     if (!response.ok) {
       document.getElementById("errorMessage").textContent =
-        data.error || "Submission failed"; // Use 'data' instead of 'errorData'
+        data.error || ERROR_MESSAGES.UNEXPECTED_ERROR;
       submitBtn.innerHTML = "Submit";
       submitBtn.disabled = false;
       return;
@@ -526,7 +530,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
   } catch (error) {
     console.error("Error submitting answer:", error);
     document.getElementById("errorMessage").textContent =
-      "Submission failed, server error. It's not you it's me, sorry. Send me feedback if the issues persists.";
+      ERROR_MESSAGES.UNEXPECTED_ERROR;
     submitBtn.textContent = "Submit";
     submitBtn.disabled = false;
   }
@@ -648,7 +652,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
       if (!response.ok) {
-        challengeErrorMessage.textContent = data.error || "Submission failed";
+        challengeErrorMessage.textContent =
+          data.error || ERROR_MESSAGES.UNEXPECTED_ERROR;
         challengeBtn.innerHTML = "Submit";
         challengeBtn.disabled = false;
         return;
@@ -709,8 +714,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }, 100); // Small delay to ensure the content is rendered
     } catch (error) {
       console.error("Error submitting challenge response:", error);
-      challengeErrorMessage.textContent =
-        "Submission failed, server error. Please try again.";
+      challengeErrorMessage.textContent = ERROR_MESSAGES.UNEXPECTED_ERROR;
       challengeBtn.innerHTML = "Submit";
       challengeBtn.disabled = false;
     }

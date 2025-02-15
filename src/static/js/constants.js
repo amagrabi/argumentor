@@ -59,3 +59,11 @@ export const COLORS = [
   hexToRgb("#16a34a"), // green-600 (8-9)
   hexToRgb("#059669"), // emerald-600 (10)
 ];
+
+// Add this with the other constants
+export const ERROR_MESSAGES = {
+  UNEXPECTED_ERROR:
+    "An unexpected error occurred while processing your submission. Please try again and send feedback if the issue persists.",
+  REQUIRED_FIELDS:
+    "Please fill in both required fields (Claim and Argument) before submitting.",
+};
