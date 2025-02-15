@@ -30,12 +30,13 @@ def update_categories():
 def get_categories():
     DEFAULT_CATEGORIES = [
         "Philosophy",
-        "Ethics",
-        "Business & Risk",
-        "Thought Experiments",
-        "Politics",
-        "Biases & Fallacies",
         "AI & Future",
+        "Personal Growth & Relationships",
+        "Politics",
+        "Ethics",
+        "Thought Experiments",
+        "Business & Risk",
+        "Biases & Fallacies",
         "Fun & Casual",
     ]
 
