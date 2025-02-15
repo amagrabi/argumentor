@@ -85,6 +85,7 @@ def create_app():
             "https://cdn.tailwindcss.com",
             "https://cdn.jsdelivr.net",
             "https://accounts.google.com",
+            "https://www.googletagmanager.com",
             "'unsafe-inline'",
         ],
         "style-src": [
