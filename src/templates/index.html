@@ -509,17 +509,21 @@
         </div>
         <!-- Additional instructions/link to the profile page -->
         <div class="mt-4 text-center">
-          <p class="text-sm">
+          <p class="text-sm text-center">
             Check your
             <a
               href="/profile"
-              class="text-gray-800 underline hover:text-gray-600"
+              class="inline-flex items-baseline text-gray-800 underline hover:text-gray-600"
             >
-              User Profile</a
-            >
+              <img
+                src="https://img.icons8.com/windows/32/gender-neutral-user.png"
+                alt="Profile"
+                class="w-4 h-4 mr-1 relative top-0.5"
+              />
+              User Profile
+            </a>
             to review answered questions and track your progress.
           </p>
-          <!-- Warning for users not logged in -->
           {% if not current_user.is_authenticated %}
           <div
             class="mt-4 mb-4 max-w-full md:w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"
