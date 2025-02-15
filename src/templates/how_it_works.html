@@ -40,48 +40,80 @@
 
     <!-- Main Content -->
     <main class="max-w-5xl mx-auto p-4">
-      <!-- Platform Overview Section -->
-      <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Overview</h2>
-        <p class="mb-4">
+      <!-- Quick Start Guide -->
+      <section class="mb-8">
+        <h2 class="text-2xl font-bold mb-6">Overview</h2>
+        <p class="mb-8">
           The platform is designed to help you sharpen your reasoning and
-          decision-making skills.
+          decision-making skills:
         </p>
-        <ul class="list-disc list-inside mb-4">
-          <li>
-            <strong>Challenge Yourself:</strong> Tackle thought-provoking
-            questions across diverse fields.
-          </li>
-          <li>
-            <strong>Construct Your Argument:</strong> Formulate clear claims and
-            support them with coherent reasoning.
-          </li>
-          <li>
-            <strong>Receive Feedback:</strong> Get AI-driven evaluations with
-            ratings, explanations, and an analysis of your argument structure.
-          </li>
-          <li>
-            <strong>Analyze and Improve:</strong> Analyze weaknesses and track
-            your progress as you earn experience points (XP) and advance through
-            levels.
-          </li>
-        </ul>
-        <p>
-          Every step is designed to provide insights into your reasoning style,
-          helping you evolve and master the art of argumentation.
-        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div
+            class="bg-white p-3 md:p-4 rounded-xl border border-gray-200 flex items-start gap-3"
+          >
+            <div class="text-lg md:text-xl mb-2 text-gray-800">1️⃣</div>
+            <div>
+              <h3 class="font-bold mb-2">Choose Question</h3>
+              <p class="text-sm text-gray-600">
+                Tackle thought-provoking questions from various categories.
+              </p>
+            </div>
+          </div>
+          <div
+            class="bg-white p-3 md:p-4 rounded-xl border border-gray-200 flex items-start gap-3"
+          >
+            <div class="text-xl mb-2 text-gray-800">2️⃣</div>
+            <div>
+              <h3 class="font-bold mb-2">Craft Argument</h3>
+              <p class="text-sm text-gray-600">
+                Clearly state your position and support it with logical
+                reasoning.
+              </p>
+            </div>
+          </div>
+          <div
+            class="bg-white p-3 md:p-4 rounded-xl border border-gray-200 flex items-start gap-3"
+          >
+            <div class="text-xl mb-2 text-gray-800">3️⃣</div>
+            <div>
+              <h3 class="font-bold mb-2">Get Feedback</h3>
+              <p class="text-sm text-gray-600">
+                Receive an AI-driven analysis of your argument's strengths and
+                weaknesses.
+              </p>
+            </div>
+          </div>
+          <div
+            class="bg-white p-3 md:p-4 rounded-xl border border-gray-200 flex items-start gap-3"
+          >
+            <div class="text-xl mb-2 text-gray-800">4️⃣</div>
+            <div>
+              <h3 class="font-bold mb-2">Analyze & Improve</h3>
+              <p class="text-sm text-gray-600">
+                Analyze your performance, track your progress and level up.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- User Profile and Progress Tracking Section -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Profile Page</h2>
+        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+          <img
+            class="w-[22px] h-[22px] object-contain"
+            src="https://img.icons8.com/windows/32/gender-neutral-user.png"
+            alt="Profile"
+          />
+          Profile Page
+        </h2>
         <p class="mb-4">
           In your
           <a
             href="/profile"
             class="text-gray-800 underline hover:text-gray-600"
           >
-            user profile</a
+            Profile</a
           >, you can find an overview of your progress. It shows your level, XP,
           a graph of your progression over time as well as a detailed list of
           all your submitted answers.
@@ -96,7 +128,9 @@
 
       <!-- Challenge Section -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Challenge Feature</h2>
+        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+          ⚔️ Challenge Feature
+        </h2>
         <p class="mb-4">
           In addition to submitting your primary argument, you have the option
           to engage with a challenge. This challenge is designed to help you
@@ -110,52 +144,34 @@
         </p>
       </section>
 
-      <!-- How XP is Calculated Section -->
-      <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">How XP is Calculated</h2>
-        <p class="mb-4">
-          Your performance is rewarded with XP, which help you level up and
-          track your progress. XP is only awarded when your claim and supporting
-          argument meet a minimum relevance threshold ({{ relevance_threshold
-          }}/10).
-        </p>
+      <!-- Evaluation Criteria & XP Section -->
+      <section id="evaluation_criteria" class="mb-12">
+        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+          💡 Evaluation Criteria
+        </h2>
 
-        <p class="mb-4">
-          Once your response passes this relevance check, the XP is calculated
-          based on six key dimensions: Relevance, Logical Structure, Clarity,
-          Depth, Objectivity, and Creativity. The average score from these
-          criteria (each rated on a scale from 1 to 10) is multiplied by 10 to
-          determine the total XP earned.
-        </p>
-        <p class="mb-4">
-          For example, if your performance in those six dimensions averages out
-          to 6 out of 10, you would receive 60 XP for that response.
-        </p>
-      </section>
-
-      <!-- Evaluation Criteria Table Section -->
-      <section id="evaluation_criteria_table" class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Evaluation Criteria Overview</h2>
         <p class="mb-4 text-gray-700">
-          The table below summarizes our evaluation criteria. The columns
-          represent the key dimensions, and the rows list scores from 1 (lowest)
-          to 10 (highest). Each cell details what is expected at that score
-          level.
+          Your arguments are evaluated on these key dimensions. Scores range
+          from 1 (needs improvement) to 10 (excellent):
         </p>
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto shadow-sm rounded-xl">
           <table class="min-w-full border-collapse">
             <thead>
               <tr>
-                <th class="border px-4 py-2 bg-gray-200">Score</th>
+                <th class="sticky top-0 border px-4 py-2 bg-gray-200 z-10">
+                  Score
+                </th>
                 {% for criterion in criteria.scoring_dimensions.keys() %}
-                <th class="border px-4 py-2 bg-gray-200">{{ criterion }}</th>
+                <th class="sticky top-0 border px-4 py-2 bg-gray-200 z-10">
+                  {{ criterion }}
+                </th>
                 {% endfor %}
               </tr>
             </thead>
             <tbody>
               {% for score in range(1, 11) %}
-              <tr>
-                <td class="border px-4 py-2 font-bold text-center">
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="border px-4 py-2 font-bold text-center bg-gray-100">
                   {{ score }}
                 </td>
                 {% for criterion, details in criteria.scoring_dimensions.items()
