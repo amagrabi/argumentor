@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import ClassVar, Dict
 
 from dotenv import load_dotenv
 from pydantic import Field
@@ -40,8 +41,14 @@ class Settings(BaseSettings):
     # Above this threshold, answers are considered too similar
     SIMILARITY_THRESHOLD: float = Field(default=0.8)
 
-    EVAL_DAILY_LIMIT: int = Field(default=2)
     SUBMISSION_RATE_LIMITS: str = Field(default="10 per minute, 100 per day")
+
+    TIER_EVAL_LIMITS: ClassVar[Dict[str, int]] = {
+        "anonymous": 5,
+        "free": 20,
+        "plus": 100,
+        "pro": 1000,
+    }
 
     model_config = SettingsConfigDict(
         env_file=".env",

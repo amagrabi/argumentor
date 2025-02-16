@@ -77,19 +77,48 @@
         <!-- Account Info Section -->
         <div class="mb-6">
           <!-- Flex container for account info header -->
-          <div class="flex justify-between items-start">
+          <div class="flex justify-between items-start mb-1">
             <div>
               <h3 class="text-lg font-semibold mb-2">Account Info</h3>
-              <p class="text-sm">
-                Username: {{ user.username or "Anonymous" }}
+              <p class="text-base mb-2">
+                <span class="text-gray-500 font-medium">Username:</span>
+                {{ user.username or "Anonymous" }}
               </p>
             </div>
-            <!-- Profile picture display removed -->
           </div>
 
-          <p class="text-lg mt-2">Total XP: <strong>{{ xp }}</strong></p>
-          <p class="text-lg">
-            Current Level: <strong>{{ level_info.display_name }}</strong>
+          <div class="text-base mb-3">
+            <span class="text-gray-500 font-medium">Account Type:</span>
+            {% if user.tier == "free" %}
+            <span class="ml-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full"
+              >Free</span
+            >
+            {% elif user.tier == "anonymous" %}
+            <span class="ml-1 px-2 py-1 bg-gray-100 text-gray-800 rounded-full"
+              >Anonymous</span
+            >
+            {% else %}
+            <span
+              class="ml-1 px-2 py-1 bg-purple-100 text-purple-800 rounded-full"
+              >{{ user.tier|title }}</span
+            >
+            {% endif %}
+          </div>
+          <div class="text-base mb-3">
+            <span class="text-gray-500 font-medium">Daily Evaluations:</span>
+            <span class="ml-1 px-2 py-1 bg-gray-100 text-gray-800 rounded-full">
+              {{ daily_eval_count }} / {{ eval_limit }}
+            </span>
+          </div>
+          <p class="text-base mb-2">
+            <span class="text-gray-500 font-medium">Total XP:</span>
+            <strong>{{ xp }}</strong>
+          </p>
+          <p class="text-base mb-3">
+            <span class="text-gray-500 font-medium">Current Level:</span>
+            <span class="text-lg"
+              ><strong>{{ level_info.display_name }}</strong></span
+            >
           </p>
           <div class="w-full bg-gray-200 h-4 rounded-full mt-2">
             <div
@@ -97,9 +126,9 @@
               style="width: {{ level_info.progress_percent }}%"
             ></div>
           </div>
-          <p class="text-sm mt-1">
-            Progress: {{ level_info.xp_into_level }} / {{ level_info.xp_needed
-            }} XP
+          <p class="text-sm mt-2">
+            <span class="text-gray-500 font-medium">Progress:</span>
+            {{ level_info.xp_into_level }} / {{ level_info.xp_needed }} XP
           </p>
         </div>
 

@@ -46,6 +46,7 @@ def signup():
             username=username,
             password_hash=generate_password_hash(password),
             xp=anonymous_user.xp if anonymous_user else session.get("xp", 0),
+            tier="free",  # Set tier to free for new signups
         )
         db.session.add(user)
         db.session.flush()
@@ -103,8 +104,12 @@ def login():
                 )
                 user.xp += anonymous_user.xp
                 db.session.delete(anonymous_user)
-                db.session.commit()
 
+        # Set tier to free if it was anonymous
+        if user.tier == "anonymous":
+            user.tier = "free"
+
+        db.session.commit()
         login_user(user)
         session["user_id"] = user.uuid
         session.modified = True  # Ensure session is marked as modified
@@ -166,6 +171,7 @@ def google_auth():
                 email=google_email,
                 profile_pic=id_info.get("picture"),
                 xp=anonymous_user.xp if anonymous_user else 0,
+                tier="free",  # Set tier to free for Google signups
             )
             db.session.add(user)
         else:

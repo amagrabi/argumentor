@@ -13,6 +13,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(255), unique=True, nullable=True)
     xp = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
+    tier = db.Column(db.String(20), nullable=False, default="anonymous")
     answers = db.relationship(
         "Answer", backref="user", lazy=True, cascade="all, delete-orphan"
     )

@@ -1,5 +1,4 @@
 import logging
-from datetime import UTC, datetime, time
 from difflib import SequenceMatcher
 
 from flask import Blueprint, jsonify, request, session
@@ -9,6 +8,7 @@ from extensions import db, limiter
 from models import Answer, User
 from services.leveling import get_level, get_level_info
 from services.question_service import get_questions
+from utils import get_daily_evaluation_count, get_eval_limit
 
 logger = logging.getLogger(__name__)
 
@@ -16,25 +16,6 @@ answers_bp = Blueprint("answers", __name__)
 
 
 SETTINGS = get_settings()
-
-
-# Helper to count today's evaluation attempts.
-def get_daily_evaluation_count(user_uuid):
-    """
-    Returns the total number of evaluation attempts made by the user today.
-    Each initial answer submission counts as 1.
-    If the answer has a non-null challenge_response, that counts as an additional evaluation attempt.
-    """
-    today_start = datetime.combine(datetime.now(UTC).date(), time.min)
-    answers = Answer.query.filter(
-        Answer.user_uuid == user_uuid, Answer.created_at >= today_start
-    ).all()
-    count = 0
-    for ans in answers:
-        count += 1
-        if ans.challenge_response:
-            count += 1
-    return count
 
 
 def create_evaluator():
@@ -109,12 +90,15 @@ def submit_answer():
 
     # Check today's evaluation count (initial submission counts as one)
     daily_count = get_daily_evaluation_count(user_uuid)
-    if daily_count >= SETTINGS.EVAL_DAILY_LIMIT:
+    user = User.query.filter_by(uuid=user_uuid).first()
+    eval_limit = get_eval_limit(user.tier)
+
+    if daily_count >= eval_limit:
         return (
             jsonify(
                 {
                     "error": (
-                        f"Daily evaluation limit reached ({SETTINGS.EVAL_DAILY_LIMIT}). "
+                        f"Daily evaluation limit reached ({eval_limit}). "
                         'If you need a higher limit, send me <a href="#" class="underline" onclick="showFeedbackModal(); return false;">feedback</a>.'
                     )
                 }
@@ -147,7 +131,6 @@ def submit_answer():
             "Your response did not meet the minimum relevance required to earn XP."
         )
 
-    user = User.query.filter_by(uuid=user_uuid).first()
     old_xp = user.xp if user else 0
 
     existing_answers = Answer.query.filter_by(
@@ -300,13 +283,17 @@ def submit_challenge_response():
     if not user_uuid:
         return jsonify({"error": "User not identified."}), 400
 
+    # Check today's evaluation count (initial submission counts as one)
     daily_count = get_daily_evaluation_count(user_uuid)
-    if daily_count >= SETTINGS.EVAL_DAILY_LIMIT:
+    user = User.query.filter_by(uuid=user_uuid).first()
+    eval_limit = get_eval_limit(user.tier)
+
+    if daily_count >= eval_limit:
         return (
             jsonify(
                 {
                     "error": (
-                        f"Daily evaluation limit reached ({SETTINGS.EVAL_DAILY_LIMIT}). "
+                        f"Daily evaluation limit reached ({eval_limit}). "
                         'If you need a higher limit, send me <a href="#" class="underline" onclick="showFeedbackModal(); return false;">feedback</a>.'
                     )
                 }
