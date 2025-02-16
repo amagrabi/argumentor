@@ -57,17 +57,17 @@ def home():
         user = current_user
         session["user_id"] = current_user.uuid  # Sync session with logged-in user
     else:
-        # Existing anonymous user handling
-        if "user_id" not in session:
-            session["user_id"] = str(uuid.uuid4())
+        # The middleware (ensure_user_id) will have already created an anonymous user if needed
         user = User.query.filter_by(uuid=session["user_id"]).first()
         if not user:
-            user = User(uuid=session["user_id"], xp=0)
+            # If user not found, create a new anonymous user
+            new_id = str(uuid.uuid4())
+            session["user_id"] = new_id
+            default_username = f"anonymous_{new_id[:8]}"
+            user = User(uuid=new_id, username=default_username)
             db.session.add(user)
             db.session.commit()
 
-    xp = user.xp
-    level_info = get_level_info(xp)
     xp = user.xp
     level_info = get_level_info(xp)
 
