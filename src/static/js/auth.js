@@ -58,7 +58,16 @@ function showLoginModal() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ login: identity, password }),
       });
-      const data = await response.json();
+
+      // First check if response is json
+      const contentType = response.headers.get("content-type");
+      let data;
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        data = { error: await response.text() };
+      }
+
       if (!response.ok) throw new Error(data.error || "Login failed");
       modal.remove();
       window.location.reload();
@@ -199,33 +208,98 @@ function handleGoogleAuthResponse(response) {
     console.log("No token received");
     return;
   }
+
+  // First try authenticating without username
   fetch("/google-auth", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token: response.credential }),
   })
     .then((res) => {
+      if (res.status === 400) {
+        // If server requires username, show username prompt modal
+        return res.json().then((data) => {
+          if (data.error === "Username is required for Google signups.") {
+            showGoogleUsernameModal(response.credential);
+            throw new Error("username_required");
+          }
+          throw new Error(data.error || "Google authentication failed");
+        });
+      }
       if (!res.ok) {
         throw new Error("Google authentication failed");
       }
       return res.json();
     })
     .then((data) => {
-      // Remove the auth modal by referencing the auth form's container
       const authForm = document.querySelector("#authForm");
       if (authForm) {
         const modal = authForm.closest('div[class*="fixed inset-0"]');
-        if (modal) {
-          modal.remove();
-        }
+        if (modal) modal.remove();
       }
-      // Force a full page reload so the header (with the new username) is updated.
       window.location.reload();
     })
     .catch((error) => {
-      console.error("Google auth error:", error);
-      alert("Failed to authenticate with Google");
+      if (error.message !== "username_required") {
+        console.error("Google auth error:", error);
+        alert("Failed to authenticate with Google");
+      }
     });
+}
+
+function showGoogleUsernameModal(credential) {
+  const modal = document.createElement("div");
+  modal.innerHTML = `
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+         onclick="event.target === this && this.remove()">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md relative"
+           onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">Choose Username</h3>
+          <button onclick="this.parentElement.parentElement.parentElement.remove()"
+                  class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+        </div>
+        <form id="googleUsernameForm" class="space-y-4">
+          <div id="googleUsernameError" class="text-sm text-red-500 mb-2 hidden"></div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Username</label>
+            <input type="text" id="googleUsername" required class="w-full px-3 py-2 border rounded-lg">
+          </div>
+          <button type="submit" class="w-full bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+            Continue
+          </button>
+        </form>
+      </div>
+    </div>
+  `;
+
+  const form = modal.querySelector("#googleUsernameForm");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const username = document.getElementById("googleUsername").value;
+    const errorDiv = document.getElementById("googleUsernameError");
+
+    fetch("/google-auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: credential, username }),
+    })
+      .then((res) => {
+        if (!res.ok)
+          return res.json().then((data) => Promise.reject(data.error));
+        return res.json();
+      })
+      .then(() => {
+        modal.remove();
+        window.location.reload();
+      })
+      .catch((error) => {
+        errorDiv.textContent = error;
+        errorDiv.classList.remove("hidden");
+      });
+  });
+
+  document.body.appendChild(modal);
 }
 
 // Load Google library and initialize
