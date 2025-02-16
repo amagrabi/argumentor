@@ -51,7 +51,7 @@ Start app:
 DEV=true USE_LLM_EVALUATOR=false python -m src.app
 ```
 
-Start app in production:
+Start app with gunicorn (production setup):
 
 ```sh
 gunicorn --bind localhost:8000 src.app:app
@@ -79,8 +79,38 @@ Run tests:
 pytest tests/
 ```
 
+Deploy to Heroku:
+
+```sh
+git push heroku main
+```
+
 Recreate db for local development:
 
 ```sh
 flask recreate_db
 ```
+
+### Database Migrations
+
+This project uses Flask-Migrate (and Alembic) to manage database schema changes. Follow these guidelines to keep your migration history clean and your environments in sync.
+
+1. Update models.py
+
+2. Generate a New Migration Script:
+
+```bash
+flask db migrate -m "Describe your changes here"
+```
+
+This will generate a migration script in the `migrations/versions/` directory. Always review it to ensure it reflects your intended changes.
+
+3. Apply the migration:
+
+```bash
+flask db upgrade
+```
+
+4. Push changes and deploy to Heroku
+
+The `Procfile` is configured to run migrations on each deploy, which ensures that Heroku automatically applies any pending migration scripts during the release phase.
