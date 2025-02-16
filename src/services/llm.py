@@ -32,8 +32,9 @@ SYSTEM_INSTRUCTION = auto_dedent(
     Rate each on a scale of 1 to 10 and provide an explanation for each score.
     Ensure your evaluation is rational and objective.
 
-    In addition, return a 'challenge' text that encourages the user to address any
-    logical inconsistencies, potential flaws, or unclear points in their argument.
+    In addition, return a 'challenge' text that encourages the user to improve their
+    submitted argument by pointing out potential logical inconsistencies, flaws, unclear
+    points, or unaddressed counterarguments.
 
     Keep in mind that user responses are limited by character counts. The argument
     is limited to {SETTINGS.MAX_ARGUMENT} characters and the optional counterargument to
