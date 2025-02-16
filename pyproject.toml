@@ -13,6 +13,7 @@ dependencies = [
     "flask-sqlalchemy",
     "flask-limiter",
     "flask-login",
+    "flask-mail",
     "flask-migrate",
     "flask-talisman",
     "google-auth",

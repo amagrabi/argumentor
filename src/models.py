@@ -22,6 +22,8 @@ class User(db.Model, UserMixin):
     google_id = db.Column(db.String(255), unique=True, nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     profile_pic = db.Column(db.String(512), nullable=True)
+    reset_token = db.Column(db.String(100), unique=True, nullable=True)
+    reset_token_expiry = db.Column(db.DateTime, nullable=True)
     category_preferences = db.Column(db.Text, nullable=True)
     visits = db.relationship(
         "Visit", backref="user", lazy=True, cascade="all, delete-orphan"

@@ -26,6 +26,13 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str = Field(default="fallback")
     GOOGLE_CLIENT_SECRET: str = Field(default="fallback")
 
+    MAIL_SERVER: str = Field(default="smtp.gmail.com")
+    MAIL_PORT: int = Field(default=587)
+    MAIL_USE_TLS: bool = Field(default=True)
+    MAIL_USERNAME: str = Field(default="your-email@gmail.com")
+    MAIL_PASSWORD: str = Field(default="your-app-password")
+    MAIL_DEFAULT_SENDER: str = Field(default="your-email@gmail.com")
+
     # If false, cheaper dummy responses will be returned
     USE_LLM_EVALUATOR: bool = Field(default=True)
 

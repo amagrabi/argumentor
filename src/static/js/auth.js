@@ -20,6 +20,11 @@ function showLoginModal() {
             <label class="block text-sm font-medium mb-1">Password</label>
             <input type="password" id="loginPassword" required class="w-full px-3 py-2 border rounded-lg">
           </div>
+          <div class="text-right">
+            <a href="#" onclick="showPasswordResetRequestModal()" class="text-sm text-blue-600 hover:text-blue-800">
+              Forgot Password?
+            </a>
+          </div>
           <div class="flex gap-4">
             <button type="submit" class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
               Login
@@ -311,3 +316,59 @@ function showGoogleUsernameModal(credential) {
   document.head.appendChild(script);
   script.onload = initGoogleAuth;
 })();
+
+function showPasswordResetRequestModal() {
+  const modal = document.createElement("div");
+  modal.innerHTML = `
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+         onclick="event.target === this && this.remove()">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md relative"
+           onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">Reset Password</h3>
+          <button onclick="this.parentElement.parentElement.parentElement.remove()"
+                  class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+        </div>
+        <form id="resetRequestForm" class="space-y-4">
+          <div id="resetRequestMessage" class="text-sm mb-2 hidden"></div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input type="email" id="resetEmail" required class="w-full px-3 py-2 border rounded-lg">
+          </div>
+          <button type="submit" class="w-full bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+            Request Reset Link
+          </button>
+        </form>
+      </div>
+    </div>
+  `;
+
+  const form = modal.querySelector("#resetRequestForm");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("resetEmail").value;
+    const messageDiv = document.getElementById("resetRequestMessage");
+
+    try {
+      const response = await fetch("/request-reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+      messageDiv.textContent = data.message;
+      messageDiv.classList.remove("hidden", "text-red-500");
+      messageDiv.classList.add("text-green-500");
+
+      // Clear form
+      document.getElementById("resetEmail").value = "";
+    } catch (error) {
+      messageDiv.textContent = "Failed to send reset request";
+      messageDiv.classList.remove("hidden", "text-green-500");
+      messageDiv.classList.add("text-red-500");
+    }
+  });
+
+  document.body.appendChild(modal);
+}

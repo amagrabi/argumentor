@@ -5,7 +5,9 @@ alembic==1.14.1
 annotated-types==0.7.0
     # via pydantic
 blinker==1.9.0
-    # via flask
+    # via
+    #   flask
+    #   flask-mail
 cachetools==5.5.1
     # via google-auth
 certifi==2025.1.31
@@ -23,11 +25,14 @@ flask==3.1.0
     #   argumentor (pyproject.toml)
     #   flask-limiter
     #   flask-login
+    #   flask-mail
     #   flask-migrate
     #   flask-sqlalchemy
 flask-limiter==3.10.1
     # via argumentor (pyproject.toml)
 flask-login==0.6.3
+    # via argumentor (pyproject.toml)
+flask-mail==0.10.0
     # via argumentor (pyproject.toml)
 flask-migrate==4.1.0
     # via argumentor (pyproject.toml)
