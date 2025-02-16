@@ -257,7 +257,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     const data = await response.json(); // Single parse here
 
     if (!response.ok) {
-      document.getElementById("errorMessage").textContent =
+      document.getElementById("errorMessage").innerHTML =
         data.error || ERROR_MESSAGES.UNEXPECTED_ERROR;
       submitBtn.innerHTML = "Submit";
       submitBtn.disabled = false;
@@ -655,7 +655,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
       if (!response.ok) {
-        challengeErrorMessage.textContent =
+        challengeErrorMessage.innerHTML =
           data.error || ERROR_MESSAGES.UNEXPECTED_ERROR;
         challengeBtn.innerHTML = "Submit";
         challengeBtn.disabled = false;
@@ -723,7 +723,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }, 100); // Small delay to ensure the content is rendered
     } catch (error) {
       console.error("Error submitting challenge response:", error);
-      challengeErrorMessage.textContent = ERROR_MESSAGES.UNEXPECTED_ERROR;
+      challengeErrorMessage.innerHTML = ERROR_MESSAGES.UNEXPECTED_ERROR;
       challengeBtn.innerHTML = "Submit";
       challengeBtn.disabled = false;
     }

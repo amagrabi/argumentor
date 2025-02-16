@@ -113,7 +113,10 @@ def submit_answer():
         return (
             jsonify(
                 {
-                    "error": f"Daily evaluation limit reached ({SETTINGS.EVAL_DAILY_LIMIT})."
+                    "error": (
+                        f"Daily evaluation limit reached ({SETTINGS.EVAL_DAILY_LIMIT}). "
+                        'If you need a higher limit, send me <a href="#" class="underline" onclick="showFeedbackModal(); return false;">feedback</a>.'
+                    )
                 }
             ),
             429,
@@ -299,9 +302,17 @@ def submit_challenge_response():
 
     daily_count = get_daily_evaluation_count(user_uuid)
     if daily_count >= SETTINGS.EVAL_DAILY_LIMIT:
-        return jsonify(
-            {"error": f"Daily evaluation limit reached ({SETTINGS.EVAL_DAILY_LIMIT})."}
-        ), 429
+        return (
+            jsonify(
+                {
+                    "error": (
+                        f"Daily evaluation limit reached ({SETTINGS.EVAL_DAILY_LIMIT}). "
+                        'If you need a higher limit, send me <a href="#" class="underline" onclick="showFeedbackModal(); return false;">feedback</a>.'
+                    )
+                }
+            ),
+            429,
+        )
 
     evaluator = create_evaluator()
     evaluation = evaluator.evaluate_challenge(answer, challenge_response)
