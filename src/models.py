@@ -10,7 +10,7 @@ class User(db.Model, UserMixin):
     __tablename__ = "users"
 
     uuid = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    username = db.Column(db.String(255), unique=True, nullable=True)
+    username = db.Column(db.String(255), unique=True, nullable=False)
     xp = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
     tier = db.Column(db.String(20), nullable=False, default="anonymous")

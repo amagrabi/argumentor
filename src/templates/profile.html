@@ -82,7 +82,12 @@
               <h3 class="text-lg font-semibold mb-2">Account Info</h3>
               <p class="text-base mb-2">
                 <span class="text-gray-500 font-medium">Username:</span>
-                {{ user.username or "Anonymous" }}
+                {{ current_user.username if current_user.is_authenticated else
+                "Anonymous" }}
+              </p>
+              <p class="text-base mb-2">
+                <span class="text-gray-500 font-medium">Email:</span>
+                {{ user.email or "unknown" }}
               </p>
             </div>
           </div>

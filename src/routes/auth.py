@@ -1,11 +1,12 @@
 import logging
+import re
 import uuid
 
 from flask import Blueprint, jsonify, request, session
 from flask_login import login_required, login_user, logout_user
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
-from sqlalchemy import update
+from sqlalchemy import or_, update
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from config import get_settings
@@ -28,31 +29,46 @@ def load_user(user_uuid):
 def signup():
     try:
         data = request.json
-        username = data.get("username")
+        email = data.get("email")
         password = data.get("password")
+        username = data.get("username")
 
-        # Check for existing anonymous user
+        if not email or not password or not username:
+            return jsonify(
+                {"error": "Email, password, and username are required."}
+            ), 400
+
+        # Validate email format.
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            return jsonify({"error": "Invalid email format."}), 400
+
+        # Check if the username already exists.
+        if User.query.filter_by(username=username).first():
+            return jsonify({"error": "Username already exists."}), 400
+
+        # Check for an existing account with this email.
+        if User.query.filter_by(email=email).first():
+            logger.warning(f"Signup attempt with existing email: {email}")
+            return jsonify({"error": "Email already exists"}), 400
+
+        # Merge anonymous user data if present.
         anonymous_user = None
         if "user_id" in session:
             anonymous_user = User.query.filter_by(uuid=session["user_id"]).first()
 
-        if User.query.filter_by(username=username).first():
-            logger.warning(f"Signup attempt with existing username: {username}")
-            return jsonify({"error": "Username already exists"}), 400
-
-        # Create and flush new user first to generate UUID
+        # Create the new user with the provided username.
         user = User(
             uuid=str(uuid.uuid4()),
             username=username,
+            email=email,
             password_hash=generate_password_hash(password),
             xp=anonymous_user.xp if anonymous_user else session.get("xp", 0),
-            tier="free",  # Set tier to free for new signups
+            tier="free",
         )
         db.session.add(user)
         db.session.flush()
 
         if anonymous_user:
-            # Merge all answers from the anonymous user into the google account.
             db.session.execute(
                 update(Answer)
                 .where(Answer.user_uuid == anonymous_user.uuid)
@@ -62,19 +78,17 @@ def signup():
 
         db.session.commit()
         login_user(user)
-
-        # Ensure session is updated before responding
         session["user_id"] = user.uuid
         session.modified = True
 
-        # Calculate level info
         level_info = get_level_info(user.xp)
-        logger.info(f"New user signed up: {username}, id: {user.uuid}")
+        logger.info(f"New user signed up: {email}, id: {user.uuid}")
 
         return jsonify(
             {
                 "message": "Account created successfully",
                 "user": {
+                    "email": user.email,
                     "username": user.username,
                     "uuid": user.uuid,
                     "xp": user.xp,
@@ -90,10 +104,17 @@ def signup():
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.json
-    username = data.get("username")
-    user = User.query.filter_by(username=username).first()
+    login_identity = data.get("login")
+    password = data.get("password")
+    if not login_identity or not password:
+        return jsonify({"error": "Both login and password are required."}), 400
 
-    if user and check_password_hash(user.password_hash, data.get("password")):
+    # Query user by matching either email or username.
+    user = User.query.filter(
+        or_(User.email == login_identity, User.username == login_identity)
+    ).first()
+
+    if user and check_password_hash(user.password_hash, password):
         if "user_id" in session:
             anonymous_user = User.query.filter_by(uuid=session["user_id"]).first()
             if anonymous_user:
@@ -104,32 +125,29 @@ def login():
                 )
                 user.xp += anonymous_user.xp
                 db.session.delete(anonymous_user)
-
-        # Set tier to free if it was anonymous
         if user.tier == "anonymous":
             user.tier = "free"
-
         db.session.commit()
         login_user(user)
         session["user_id"] = user.uuid
-        session.modified = True  # Ensure session is marked as modified
+        session.modified = True
 
-        # Calculate the level info here
         level_info = get_level_info(user.xp)
-        logger.info(f"User logged in: {username}, id: {user.uuid}")
+        logger.info(f"User logged in: {login_identity}, id: {user.uuid}")
 
         return jsonify(
             {
                 "message": "Logged in successfully",
                 "user": {
+                    "email": user.email,
                     "username": user.username,
                     "uuid": user.uuid,
                     "xp": user.xp,
-                    "level_info": level_info,  # Include the additional level information
+                    "level_info": level_info,
                 },
             }
         )
-    logger.warning(f"Failed login attempt for username: {username}")
+    logger.warning(f"Failed login attempt for login: {login_identity}")
     return jsonify({"error": "Invalid credentials"}), 401
 
 
@@ -145,33 +163,41 @@ def logout():
 @auth_bp.route("/google-auth", methods=["POST"])
 def google_auth():
     token = request.json.get("token")
+    username = request.json.get("username")
     try:
         id_info = id_token.verify_oauth2_token(
             token, google_requests.Request(), SETTINGS.GOOGLE_CLIENT_ID
         )
 
-        # Look for an existing google user based on the Google ID.
+        # Look for an existing google user by Google ID.
         user = User.query.filter_by(google_id=id_info["sub"]).first()
 
-        # Check if there's a user in the session (anonymous user)
+        # Check for an existing anonymous user in session.
         anonymous_user = None
         if "user_id" in session:
             session_user = User.query.filter_by(uuid=session["user_id"]).first()
-            # If the session user exists and is different from the found google user,
-            # treat that as the anonymous account to merge.
             if session_user and (not user or session_user.uuid != user.uuid):
                 anonymous_user = session_user
 
         if not user:
+            # Reject signup if username is not provided.
+            if not username:
+                return jsonify(
+                    {"error": "Username is required for Google signups."}
+                ), 400
+            # Ensure the username isn't already in use.
+            if User.query.filter_by(username=username).first():
+                return jsonify({"error": "Username already exists."}), 400
+
             google_email = id_info["email"]
             user = User(
                 uuid=str(uuid.uuid4()),
                 google_id=id_info["sub"],
-                username=google_email,
+                username=username,
                 email=google_email,
                 profile_pic=id_info.get("picture"),
                 xp=anonymous_user.xp if anonymous_user else 0,
-                tier="free",  # Set tier to free for Google signups
+                tier="free",
             )
             db.session.add(user)
         else:
@@ -180,7 +206,6 @@ def google_auth():
                 user.xp += anonymous_user.xp
 
         if anonymous_user:
-            # Merge all answers from the anonymous user into the google account.
             db.session.execute(
                 update(Answer)
                 .where(Answer.user_uuid == anonymous_user.uuid)
@@ -188,14 +213,12 @@ def google_auth():
             )
             db.session.delete(anonymous_user)
 
-        # Always update profile picture if a new one is provided.
         new_pic = id_info.get("picture")
         if new_pic and user.profile_pic != new_pic:
             user.profile_pic = new_pic
 
         db.session.commit()
         login_user(user)
-        # Ensure the session is updated to use the google account's UUID.
         session["user_id"] = user.uuid
         return jsonify({"message": "Google login successful"})
     except ValueError:
@@ -233,4 +256,5 @@ def update_session():
                 user_data["level_info"] = get_level_info(user_data.get("xp", 0))
         return jsonify(user_data)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        logger.error(f"Error updating session: {str(e)}")
+        return jsonify({"error": "Failed to update session"}), 500
