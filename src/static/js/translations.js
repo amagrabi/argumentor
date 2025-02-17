@@ -1,7 +1,7 @@
 import { updateQuestionDisplay } from "./helpers.js";
 
 let currentLanguage = localStorage.getItem("language") || "en";
-let translations = {};
+export let translations = {};
 
 async function loadTranslations() {
   try {

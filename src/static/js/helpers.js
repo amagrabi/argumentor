@@ -1,5 +1,6 @@
 import { rgbToHex } from "./utils.js";
 import { CATEGORY_ICONS, CHAR_LIMITS, COLORS } from "./constants.js";
+import { translations } from "./translations.js";
 
 // Helper function for typewriter effect
 export function typeWriter(element, text, speed) {
@@ -26,9 +27,12 @@ export function updateQuestionDisplay(question) {
   }
   const categoryBadge = document.getElementById("categoryBadge");
   if (categoryBadge) {
+    // Get the translated category name
+    const translatedCategory =
+      translations.categories[question.category] || question.category;
     const categoryText = CATEGORY_ICONS[question.category]
-      ? `${CATEGORY_ICONS[question.category]} ${question.category}`
-      : question.category;
+      ? `${CATEGORY_ICONS[question.category]} ${translatedCategory}`
+      : translatedCategory;
     categoryBadge.textContent = categoryText;
   }
 }

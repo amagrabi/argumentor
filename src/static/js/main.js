@@ -76,9 +76,11 @@ async function getNewQuestion(shouldScroll = true) {
     // Update only the category badge, and not the question text again
     const categoryBadge = document.getElementById("categoryBadge");
     if (categoryBadge) {
+      const translatedCategory =
+        translations.categories[question.category] || question.category;
       const categoryText = CATEGORY_ICONS[question.category]
-        ? `${CATEGORY_ICONS[question.category]} ${question.category}`
-        : question.category;
+        ? `${CATEGORY_ICONS[question.category]} ${translatedCategory}`
+        : translatedCategory;
       categoryBadge.textContent = categoryText;
     }
 
@@ -858,41 +860,23 @@ document
               item.textContent = question.description;
               item.dataset.id = question.id;
               item.addEventListener("click", () => {
-                // Immediately hide the question selection overlay
+                // Store the selected question
+                currentQuestion = question;
+                sessionStorage.setItem(
+                  "currentQuestion",
+                  JSON.stringify(question)
+                );
+
+                // Update the display
+                updateQuestionDisplay(question);
+
+                // Try to hide the overlay if it exists
                 const overlay = document.getElementById(
                   "questionSelectionOverlay"
                 );
-                overlay.classList.add("hidden");
-
-                // Now fetch and update with the selected question
-                fetch("/select_question", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ question_id: question.id }),
-                })
-                  .then((response) => response.json())
-                  .then((selected) => {
-                    currentQuestion = selected;
-                    sessionStorage.setItem(
-                      "currentQuestion",
-                      JSON.stringify(currentQuestion)
-                    );
-                    updateQuestionDisplay(selected);
-                    typeWriter(
-                      document.getElementById("questionDescription"),
-                      selected.description,
-                      15
-                    );
-                    // Clear the input fields
-                    document.getElementById("claimInput").value = "";
-                    document.getElementById("argumentInput").value = "";
-                    document.getElementById("counterargumentInput").value = "";
-                    document.getElementById("charCount").textContent = "200";
-                    document.getElementById("errorMessage").textContent = "";
-                  })
-                  .catch((error) =>
-                    console.error("Error selecting question:", error)
-                  );
+                if (overlay) {
+                  overlay.classList.add("hidden");
+                }
               });
               questionList.appendChild(item);
             });
