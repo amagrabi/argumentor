@@ -75,6 +75,18 @@ function updateLanguageIndicator() {
 }
 
 async function changeLanguage(lang) {
+  // Close the dropdown menu
+  const dropdown = document.getElementById("languageDropdown");
+  if (dropdown) {
+    dropdown.classList.add("hidden");
+  }
+
+  // Update language selector aria-expanded state
+  const languageSelector = document.getElementById("languageSelector");
+  if (languageSelector) {
+    languageSelector.setAttribute("aria-expanded", "false");
+  }
+
   currentLanguage = lang;
   localStorage.setItem("language", lang);
 
