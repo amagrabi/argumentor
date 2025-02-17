@@ -347,5 +347,14 @@
         }
       }
     }
+  },
+  "cards": {
+    "platformGuideDescription": "Answer questions, get feedback, and track your progress.",
+    "platformGuideLearnMore": "Learn More →",
+    "reasoningTipsDescription": "Focus on clear premises, logical conclusions, and refuting counterarguments.",
+    "reasoningTipsLearnMore": "Learn More →",
+    "howToSupportDescription": "Help keep this project going by sharing <a href='javascript:void(0)' onclick='showFeedbackModal()' class='underline'>feedback</a> or <a href='https://buymeacoffee.com/amadeusmagrabi' target='_blank' rel='noopener noreferrer' class='underline'>buying me a coffee</a>.",
+    "howToSupportLearnMore": "Learn More →",
+    "buyCoffeeLink": "buying me a coffee"
   }
 }

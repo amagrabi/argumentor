@@ -27,7 +27,7 @@
     "Politics": "Politik",
     "Ethics": "Ethik",
     "Thought Experiments": "Gedankenexperimente",
-    "Business & Risk": "Business & Risiko",
+    "Business & Risk": "Wirtschaft & Risiko",
     "Biases & Fallacies": "Denkfehler & Fehlschlüsse",
     "Fun & Casual": "Locker & Unterhaltsam"
   },
@@ -228,11 +228,11 @@
     },
     "section2": {
       "title": "Formuliere dein Argument",
-      "description": "Entwickle eine logische Argumentation um die Frage zu beantworten."
+      "description": "Entwickle eine logische Argumentation, um die Frage zu beantworten."
     },
     "section3": {
       "title": "Bekomme KI-gestütztes Feedback",
-      "description": "Bekomme eine detaillierte Bewertung und Analyse deiner Argumentation."
+      "description": "Erhalte eine detaillierte Bewertung und Analyse deiner Argumentation."
     },
     "section4": {
       "title": "Analyse & Verbesserung",
@@ -242,17 +242,17 @@
     "overview": "Die Plattform wurde entwickelt, um deine Argumentations- und Entscheidungsfähigkeiten zu verbessern:",
     "profileSection": {
       "title": "Profilseite",
-      "description": "Dein Profil zeigt eine Übersicht deines Fortschritts. Besuche deine <a href='/profile' class='text-gray-800 underline hover:text-gray-600'>Profilseite</a>, um dein Level, deinen Fortschritt im Zeitverlauf und eine Liste aller deiner eingereichten Antworten zu sehen.",
-      "detailedFeedback": "Detailliertes Bewertungsfeedback ist für jede deiner Einreichungen verfügbar und gibt dir Einblicke in deine Stärken sowie Bereiche mit Verbesserungspotenzial. Nutze diese Informationen, um wiederkehrende Schwächen zu identifizieren und deinen Ansatz zur Entwicklung stärkerer Argumente anzupassen."
+      "description": "Dein Profil zeigt eine Übersicht deines Fortschritts. Besuche deine <a href='/profile' class='text-gray-800 underline hover:text-gray-600'>Profilseite</a>, um dein Level, deinen Fortschritt im Zeitverlauf und eine Liste all deiner eingereichten Antworten zu sehen.",
+      "detailedFeedback": "Detailliertes Bewertungsfeedback ist für jede deiner Antworten verfügbar und gibt dir Einblicke in deine Stärken sowie Bereiche mit Verbesserungspotenzial."
     },
     "challengeSection": {
       "title": "Challenge",
-      "description": "Zusätzlich zu deinem Hauptargument hast du die Möglichkeit, dich einer Challenge zu stellen. Diese Challenge soll dir helfen, dein Argument zu verbessern und logische Unstimmigkeiten, unklare Punkte oder nicht behandelte Gegenargumente zu identifizieren.",
-      "additionalInfo": "Das Beantworten der Challenge führt zu einer zusätzlichen Bewertung und kann weitere XP einbringen. Die Challenge ist optional, du kannst auch zu einer anderen Frage übergehen."
+      "description": "Zusätzlich zu deinem Hauptargument hast du die Möglichkeit, dich einer Challenge zu stellen. Sie hilft dir, logische Unstimmigkeiten, unklare Punkte oder unberücksichtigte Gegenargumente zu identifizieren.",
+      "additionalInfo": "Das Beantworten der Challenge führt zu einer zusätzlichen Bewertung und kann weitere XP einbringen. Die Challenge ist optional – du kannst auch zu einer anderen Frage übergehen."
     },
     "evaluationCriteria": {
       "title": "Bewertungskriterien",
-      "description": "Deine Argumente werden anhand folgender Schlüsseldimensionen bewertet. Die Bewertungen reichen von 1 (miserabal) bis 10 (ausgezeichnet):"
+      "description": "Deine Argumente werden anhand folgender Schlüsseldimensionen bewertet. Die Bewertungen reichen von 1 (mangelhaft) bis 10 (ausgezeichnet):"
     }
   },
   "evaluationCriteria": {
@@ -348,5 +348,14 @@
         }
       }
     }
+  },
+  "cards": {
+    "platformGuideDescription": "Beantworte Fragen, erhalte Feedback und verfolge deinen Fortschritt.",
+    "platformGuideLearnMore": "Mehr erfahren →",
+    "reasoningTipsDescription": "Konzentriere dich auf klare Prämissen und logische Schlussfolgerungen.",
+    "reasoningTipsLearnMore": "Mehr erfahren →",
+    "howToSupportDescription": "Unterstütze das Projekt durch <a href='javascript:void(0)' onclick='showFeedbackModal()' class='underline'>feedback</a> oder über <a href='https://buymeacoffee.com/amadeusmagrabi' target='_blank' rel='noopener noreferrer' class='underline'>Buy Me A Coffee</a>.",
+    "howToSupportLearnMore": "Mehr erfahren →",
+    "buyCoffeeLink": "Buy Me A Coffee"
   }
 }
