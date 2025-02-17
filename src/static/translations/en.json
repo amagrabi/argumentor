@@ -101,5 +101,108 @@
     "unexpectedError": "An unexpected error occurred while processing your submission. Please try again and send feedback if the issue persists.",
     "similarAnswer": "You already submitted a very similar answer to this question. Change your argument to receive a new evaluation.",
     "tooManySubmissions": "Too many submissions. Please wait before trying again."
+  },
+  "questions": {
+    "Philosophy": {
+      "freewill": "Does free will exist if all decisions are ultimately influenced by biological/physical factors?",
+      "altruism": "Is an action still altruistic if you gain personal satisfaction from it?",
+      "moral-vs-logic": "Is it more ethical to follow moral intuition or logical reasoning when they conflict?",
+      "consciousness": "Is consciousness a uniquely human trait, or could other animals also possess it?",
+      "simulation": "Are we living in a simulation?",
+      "truth": "Is the concept of 'truth' primarily shaped by individual perspectives and cultural contexts, or are there objective truths that exist independently of human interpretation?",
+      "human-nature": "Is 'human nature' a fixed set of characteristics, or is human behavior primarily a product of learning and societal influences?",
+      "objective-morality": "Does objective morality exist, or is morality purely a social construct?",
+      "self-meaning": "Must humans create their own meaning to avoid existential despair?"
+    },
+    "AI & Future": {
+      "ai-future": "Is a future with AI surpassing human intelligence an existential threat or the next stage of human evolution?",
+      "ai-decisions": "Should AI be permitted to autonomously make life-or-death decisions (e.g., in automated warfare) if it reduces human casualties?",
+      "ai-creative": "Can an AI be creative?",
+      "ai-replication": "If an AI can convincingly replicate a deceased loved one's personality, is it ethical to interact with that AI as if it were the real person?",
+      "ai-research": "Should AI research be conducted transparently and openly, or should it be tightly regulated to avoid potential risks?",
+      "ai-rights": "If AI becomes sentient, should it be granted legal personhood and rights similar to humans?",
+      "genetic": "Should human genetic modification be allowed to eliminate hereditary diseases?",
+      "ai-emotions": "Could an AI ever genuinely experience emotions?",
+      "crypto-impact": "Is cryptocurrency's environmental impact justified by its financial innovation potential?"
+    },
+    "Personal Growth & Relationships": {
+      "follow-passion": "Should you follow your passion, even if it means less financial security?",
+      "generalist-specialist": "Is it better to be a generalist with broad skills or a specialist with deep expertise?",
+      "honesty": "In personal relationships, is prioritizing honesty always ethically superior to protecting a partner's feelings, even if it involves withholding difficult truths?",
+      "address-issues": "In personal relationships, is it better to address small issues immediately or let minor things slide?",
+      "experiences": "What is more important, experiences or material possessions?",
+      "liked-respected": "Is it more important to be liked or respected?"
+    },
+    "Politics": {
+      "mandatory-vote": "Should voting be mandatory in democracies?",
+      "gender-quota": "Is imposing a quota requiring 50% women in company leadership an effective way to promote gender equality?",
+      "data-privacy": "Should governments have the authority to access personal data to improve national security or is data privacy more important?",
+      "referendum": "In a democracy, should major policy decisions be determined by popular vote in referendums, or is it better to rely on elected representatives?",
+      "media-regulation": "Should social media platforms regulate content to prevent misinformation, or should they maintain absolute freedom of expression?",
+      "climate-pay": "Should developed nations pay proportionally more for climate change mitigation given their historical emissions?",
+      "capitalism": "Is capitalism the optimal system for maximizing long-term human wellbeing, or do alternative models offer better prospects?",
+      "voting-age": "Should the legal voting age be set to 16?",
+      "media-spread": "Should social media platforms be regulated to prevent the spread of misinformation?",
+      "basic-income": "Should governments implement universal basic income?",
+      "economic-growth": "Should governments prioritize economic growth even if it leads to increased social inequality?",
+      "education-funding": "In higher education, should funding be primarily directed towards STEM fields due to their economic impact, or should humanities and arts receive equal or greater support for their cultural and societal value?",
+      "nuclear": "Should governments invest in nuclear power as a future energy source, or do the risks outweigh its potential benefits?",
+      "immigration": "Should nations restrict immigration to preserve social cohesion, or embrace cultural diversity as a strength?",
+      "central-government": "Is a strong central government more effective than decentralized governance in tackling major crises?"
+    },
+    "Ethics": {
+      "meat-ethics": "Is consuming meat ethically defensible?",
+      "abortion-autonomy": "Should access to abortion be restricted to protect potential fetal rights, or is bodily autonomy more important?",
+      "animal-research": "Is it morally permissible to use animals for scientific research if it could lead to significant medical breakthroughs for humans?",
+      "trolley": "Would you pull a lever to divert a runaway trolley to kill one person instead of five?",
+      "break-law": "Is it ever justifiable to break the law for the greater good?",
+      "whistleblowers": "Should whistleblowers who expose corporate or government misconduct be fully protected, even if they violate confidentiality agreements?",
+      "personality-sentencing": "Should personality traits be considered in criminal sentencing?",
+      "user-data": "Should companies be allowed to collect user data extensively if it leads to a more personalized service?"
+    },
+    "Thought Experiments": {
+      "controlled-emotions": "Imagine a world where emotions could be precisely controlled with technology. Would this be a utopia or dystopia?",
+      "teleportation-vs-time": "Which breakthrough would have a more profound impact on society: teleportation or time travel?",
+      "perfect-happiness": "If a machine could give you perfect happiness but it's just an illusion, would you plug in?",
+      "sacrifice": "Would you sacrifice 1% of the population randomly to prevent human extinction?",
+      "million-dollar": "You're given a button that grants you $1 million, but it causes an unknown person to die. Do you press it?",
+      "theseus": "Consider a car that has had every single part replaced over time. Is it still the 'same' car?",
+      "magic-wish": "You find a magic lamp that grants a wish but will erase one of your fondest memories as a cost. Would you make a wish?",
+      "digital-immortality": "If you could upload your consciousness into a digital form, is it a form of immortality or a loss of your true self?",
+      "global-issue": "If you had to choose one global issue to solve (e.g., world hunger, climate change, or nuclear disarmament), which would it be and why?"
+    },
+    "Business & Risk": {
+      "rapid-scaling": "Should companies prioritize rapid scaling over profitability in competitive markets?",
+      "layoffs": "Should corporations embrace structured layoffs for long-term growth, or is this practice a sign of systemic mismanagement?",
+      "market-dominance": "When considering mergers and acquisitions, is prioritizing rapid market dominance a sound strategy, even if it means potentially overlooking cultural clashes and integration difficulties?",
+      "supply-chain": "Should companies be held responsible for the environmental impact of their entire supply chain?",
+      "financial-survival": "In times of economic uncertainty, should businesses prioritize immediate financial survival by cutting R&D, or maintain investment in innovation for future growth?",
+      "automation": "Is it ethical for companies to automate jobs if it increases efficiency but leads to significant unemployment?",
+      "dividends": "Is it ethical to lay off employees to maintain shareholder dividends during a crisis?",
+      "patent-protection": "Should companies prioritize patent protection over open collaboration in fast-moving tech fields?",
+      "lock-in": "Are business practices that create 'customer lock-in' ethically justifiable if they ensure business stability, or do they unfairly restrict consumer freedom?",
+      "shareholder-welfare": "Should companies prioritize shareholder dividends over employee welfare?"
+    },
+    "Biases & Fallacies": {
+      "cancer-drug": "A new cancer drug shows a 90% survival rate in trials, but some experts doubt its effectiveness. Should it be approved?",
+      "coffee-study": "A study finds that people who drink coffee live longer. Should the World Health Organization therefore publish a recommendation to drink coffee?",
+      "authority": "Does an appeal to authority necessarily guarantee the truth of a claim?",
+      "anecdote": "Is it a logical fallacy to draw a general conclusion from a single anecdote?",
+      "slippery-slope": "Is 'slippery slope' argument always a fallacy, or can it sometimes be a valid way to foresee potential negative consequences of an action?",
+      "bandwagon": "In decision-making, is relying on the bandwagon effect a justifiable strategy when evidence is scarce, or is it a flawed approach that should be avoided at all costs?",
+      "majority-view": "When conflicting studies arise, should we trust the majority view or give weight to outlier findings?",
+      "evidence-weight": "How much weight should anecdotal evidence, like personal success stories, carry when making important decisions, compared to statistical data and systematic research?",
+      "argument-source": "In debates, is it ever legitimate to consider the source or personal interests of the person making an argument, or should the focus always be exclusively on the logical merits of the argument itself?"
+    },
+    "Fun & Casual": {
+      "big-fish-small-pond": "Is it better to be a big fish in a small pond, or a small fish in a big pond?",
+      "bear-vs-gorilla": "Who would win in a fight, a grizzly bear or a silverback gorilla?",
+      "cats-dogs": "Are cats or dogs better pets?",
+      "hotdog-sandwich": "Is a hotdog a sandwich?",
+      "duck-vs-horses": "Is it easier to fight one horse-sized duck or 100 duck-sized horses?",
+      "movie-watching": "Is it better to watch a movie alone or in a group?",
+      "invisibility-flight": "Would you rather have the power of invisibility or the power of flight for a day?",
+      "chef-vs-cleaner": "Would you rather have a personal chef or a personal cleaner?"
+    }
   }
 }

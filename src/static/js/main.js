@@ -99,6 +99,9 @@ async function getNewQuestion(shouldScroll = true) {
   }
 }
 
+// Expose it globally
+window.getNewQuestion = getNewQuestion;
+
 // Add new function to handle session update and UI refresh
 async function updateAuthUI(userData, redirect = false) {
   try {
@@ -844,7 +847,8 @@ document
           categoryOrder.forEach((category) => {
             const heading = document.createElement("h4");
             heading.className = "mt-4 mb-2 font-bold text-lg";
-            heading.textContent = category;
+            // Translate the category name using the translations object.
+            heading.textContent = translations.categories[category] || category;
             questionList.appendChild(heading);
 
             groups[category].forEach((question) => {
@@ -869,6 +873,10 @@ document
                   .then((response) => response.json())
                   .then((selected) => {
                     currentQuestion = selected;
+                    sessionStorage.setItem(
+                      "currentQuestion",
+                      JSON.stringify(currentQuestion)
+                    );
                     updateQuestionDisplay(selected);
                     typeWriter(
                       document.getElementById("questionDescription"),

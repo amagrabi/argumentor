@@ -15,6 +15,8 @@ questions_bp = Blueprint("questions", __name__)
 def handle_get_question():
     if not session.get("seen_question_ids"):
         fixed_question = get_fixed_question()
+        if fixed_question is None:
+            return json_error("No fixed question available", 404)
         session.setdefault("seen_question_ids", []).append(fixed_question["id"])
         return jsonify(fixed_question)
 

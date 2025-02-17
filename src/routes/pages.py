@@ -18,6 +18,7 @@ from config import get_settings
 from extensions import db, limiter
 from models import Feedback, User
 from services.leveling import get_level_info
+from services.question_service import load_questions
 from utils import get_daily_evaluation_count, get_eval_limit
 
 pages_bp = Blueprint("pages", __name__)
@@ -155,6 +156,23 @@ def submit_feedback():
     db.session.commit()
 
     return jsonify({"success": True})
+
+
+@pages_bp.route("/set_language", methods=["POST"])
+def set_language():
+    if not request.is_json:
+        return jsonify({"error": "Content-Type must be application/json"}), 400
+
+    data = request.get_json()
+    language = data.get("language")
+
+    if language in ["en", "de"]:
+        session["language"] = language
+        # Force reload questions in new language
+        load_questions()
+        return jsonify({"status": "success"})
+
+    return jsonify({"status": "error", "message": "Invalid language"}), 400
 
 
 @pages_bp.route("/privacy")

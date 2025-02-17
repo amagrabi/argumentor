@@ -1,14 +1,33 @@
+import { updateQuestionDisplay } from "./helpers.js";
+
 let currentLanguage = localStorage.getItem("language") || "en";
 let translations = {};
 
 async function loadTranslations() {
   try {
+    console.log("Loading translations for language:", currentLanguage);
     const response = await fetch(
       `/static/translations/${currentLanguage}.json`
     );
     translations = await response.json();
+    console.log("Translations loaded:", translations);
     applyTranslations();
     updateLanguageIndicator();
+
+    // Make translations globally available
+    window.translations = translations;
+
+    // Update current question if it exists
+    let currentQuestion = JSON.parse(sessionStorage.getItem("currentQuestion"));
+    if (currentQuestion) {
+      const translatedQuestion = getNestedTranslation(
+        `questions.${currentQuestion.category}.${currentQuestion.id}`
+      );
+      if (translatedQuestion) {
+        currentQuestion.description = translatedQuestion;
+        updateQuestionDisplay(currentQuestion);
+      }
+    }
   } catch (error) {
     console.error("Error loading translations:", error);
   }
@@ -44,17 +63,42 @@ function getNestedTranslation(key) {
 }
 
 function updateLanguageIndicator() {
+  console.log("Updating language indicator to:", currentLanguage);
   document.getElementById("checkEn").style.opacity =
     currentLanguage === "en" ? "1" : "0";
   document.getElementById("checkDe").style.opacity =
     currentLanguage === "de" ? "1" : "0";
 }
 
-function setLanguage(lang) {
+async function changeLanguage(lang) {
   currentLanguage = lang;
-  localStorage.setItem("language", currentLanguage);
-  loadTranslations();
-  toggleDropdown();
+  localStorage.setItem("language", lang);
+
+  // Update server-side session language
+  await fetch("/set_language", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ language: lang }),
+  });
+
+  await loadTranslations();
+
+  // Instead of fetching a new question, update the existing one:
+  let currentQuestion = JSON.parse(sessionStorage.getItem("currentQuestion"));
+
+  if (currentQuestion) {
+    // Find the translated description.
+    const translatedQuestion = getNestedTranslation(
+      `questions.${currentQuestion.category}.${currentQuestion.id}`
+    );
+
+    if (translatedQuestion) {
+      currentQuestion.description = translatedQuestion;
+      updateQuestionDisplay(currentQuestion);
+    }
+  }
 }
 
 function toggleDropdown() {
@@ -87,8 +131,31 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   languageButtons.forEach((button) => {
-    button.addEventListener("click", () => setLanguage(button.dataset.lang));
+    button.addEventListener("click", () => changeLanguage(button.dataset.lang));
   });
 
   loadTranslations();
 });
+
+// Define the function for switching translations
+function setLanguage(lang) {
+  // This is just one example.
+  // You might load a JSON file dynamically
+  // or update UI elements based on the provided translation data.
+  if (lang === "de") {
+    // Load or apply German translations
+    console.log("Switching to German");
+    // For example, you might change the document language
+    document.documentElement.lang = "de";
+  } else {
+    // Default to English translations
+    console.log("Switching to English");
+    document.documentElement.lang = "en";
+  }
+  // Additional code to update the UI accordingly
+}
+
+// Make sure it's globally accessible
+window.setLanguage = setLanguage;
+
+export { changeLanguage };

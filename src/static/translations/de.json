@@ -52,9 +52,9 @@
   "challenge": {
     "title": "Challenge",
     "responseLabel": "Deine Antwort auf die Challenge",
-    "charactersRemaining": "Verbleibende Zeichen:",
     "submit": "Absenden",
     "analyzing": "Analysiere...",
+    "charactersRemaining": "Verbleibende Zeichen:",
     "tryAnother": "Andere Frage versuchen",
     "errorMessage": "Fehler beim Absenden der Antwort"
   },
@@ -111,5 +111,108 @@
     "en": "Englisch",
     "de": "Deutsch"
   },
-  "currentLang": "de"
+  "currentLang": "de",
+  "questions": {
+    "Philosophy": {
+      "freewill": "Kann freier Wille existieren, wenn alle Entscheidungen letztlich durch biologische und physikalische Einflüsse bestimmt werden?",
+      "altruism": "Ist eine Handlung noch altruistisch, wenn man persönliche Befriedigung daraus zieht?",
+      "moral-vs-logic": "Ist es ethischer, der moralischen Intuition oder der logischen Argumentation zu folgen, wenn sie im Widerspruch zueinander stehen?",
+      "consciousness": "Ist Bewusstsein eine ausschließlich menschliche Eigenschaft, oder könnten auch andere Tiere es besitzen?",
+      "simulation": "Leben wir in einer Simulation?",
+      "truth": "Wird das Konzept der 'Wahrheit' primär von individuellen Perspektiven und kulturellen Kontexten geprägt, oder gibt es objektive Wahrheiten, die unabhängig von menschlicher Interpretation existieren?",
+      "human-nature": "Ist die 'menschliche Natur' ein fester Satz von Eigenschaften, oder ist menschliches Verhalten hauptsächlich ein Produkt von Lernen und gesellschaftlichen Einflüssen?",
+      "objective-morality": "Existiert objektive Moral, oder ist Moral rein sozial konstruiert?",
+      "self-meaning": "Müssen Menschen ihren eigenen Sinn erschaffen, um existenzielle Verzweiflung zu vermeiden?"
+    },
+    "AI & Future": {
+      "ai-future": "Ist eine Zukunft, in der KI die menschliche Intelligenz übertrifft, eine existenzielle Bedrohung oder der nächste Schritt der menschlichen Evolution?",
+      "ai-decisions": "Sollte KI autonom Leben-oder-Tod-Entscheidungen treffen dürfen (z. B. in der automatisierten Kriegsführung), wenn dadurch Menschenleben gerettet werden?",
+      "ai-creative": "Kann eine KI kreativ sein?",
+      "ai-replication": "Wenn eine KI die Persönlichkeit eines verstorbenen geliebten Menschen überzeugend nachbilden kann, ist es ethisch vertretbar, mit dieser KI so zu interagieren, als wäre sie die echte Person?",
+      "ai-research": "Sollte KI-Forschung transparent und offen durchgeführt werden, oder sollte sie streng reguliert werden, um potenzielle Risiken zu vermeiden?",
+      "ai-rights": "Sollten KIs, falls sie Bewusstsein erlangen, rechtlich als Personen anerkannt werden und ähnliche Rechte wie Menschen erhalten?",
+      "genetic": "Sollte menschliche genetische Modifikation erlaubt sein, um Erbkrankheiten zu eliminieren?",
+      "ai-emotions": "Könnte eine KI jemals echte Emotionen empfinden?",
+      "crypto-impact": "Ist die Umweltbelastung durch Kryptowährungen durch ihr finanzielles Innovationspotenzial gerechtfertigt?"
+    },
+    "Personal Growth & Relationships": {
+      "follow-passion": "Sollte man seiner Leidenschaft folgen, auch wenn dies weniger finanzielle Sicherheit bedeutet?",
+      "generalist-specialist": "Ist es besser, ein Generalist mit breiten Fähigkeiten zu sein oder ein Spezialist mit tiefgehendem Fachwissen?",
+      "honesty": "Ist es in persönlichen Beziehungen immer ethisch überlegen, auf Ehrlichkeit zu setzen, selbst wenn das bedeutet, die Gefühle des Partners zu verletzen?",
+      "address-issues": "Ist es in Beziehungen besser, kleine Probleme sofort anzusprechen oder sie vorübergehend ruhen zu lassen?",
+      "experiences": "Was ist wichtiger: Erfahrungen oder materielle Besitztümer?",
+      "liked-respected": "Ist es wichtiger, gemocht oder respektiert zu werden?"
+    },
+    "Politics": {
+      "mandatory-vote": "Sollte die Stimmabgabe in Demokratien verpflichtend sein?",
+      "gender-quota": "Ist die Einführung einer Quote, die 50% Frauen in der Unternehmensführung vorschreibt, ein effektiver Weg, um Geschlechtergerechtigkeit zu fördern?",
+      "data-privacy": "Sollten Regierungen die Befugnis haben, auf persönliche Daten zuzugreifen, um die nationale Sicherheit zu verbessern, oder ist Datenschutz wichtiger?",
+      "referendum": "Sollten in einer Demokratie wichtige politische Entscheidungen per Volksabstimmung getroffen werden, oder ist es besser, sich auf gewählte Vertreter zu verlassen?",
+      "media-regulation": "Sollten soziale Medien Inhalte regulieren, um Fehlinformationen zu verhindern, oder sollten sie absolute Meinungsfreiheit bewahren?",
+      "climate-pay": "Sollten entwickelte Nationen angesichts ihrer historischen Emissionen proportional mehr für den Klimaschutz bezahlen?",
+      "capitalism": "Ist der Kapitalismus das optimale System, um das langfristige Wohlbefinden der Menschheit zu maximieren, oder bieten alternative Modelle bessere Perspektiven?",
+      "voting-age": "Sollte das legale Wahlalter auf 16 Jahre festgelegt werden?",
+      "media-spread": "Sollten soziale Medien reguliert werden, um die Verbreitung von Fehlinformationen zu verhindern?",
+      "basic-income": "Sollten Regierungen ein bedingungsloses Grundeinkommen einführen?",
+      "economic-growth": "Sollten Regierungen das Wirtschaftswachstum priorisieren, auch wenn dies zu größerer sozialer Ungleichheit führt?",
+      "education-funding": "Sollte die Förderung in der Hochschulbildung primär auf MINT-Fächer ausgerichtet werden, oder sollten auch Geistes- und Kunstwissenschaften gleichwertig bzw. bevorzugt gefördert werden?",
+      "nuclear": "Sollten Regierungen in Kernenergie als zukünftige Energiequelle investieren, oder überwiegen die Risiken die potenziellen Vorteile?",
+      "immigration": "Sollten Nationen die Einwanderung beschränken, um den gesellschaftlichen Zusammenhalt zu wahren, oder sollte kulturelle Vielfalt als Stärke gelten?",
+      "central-government": "Ist eine starke Zentralregierung effektiver als dezentrale Regierungsführung bei der Bewältigung großer Krisen?"
+    },
+    "Ethics": {
+      "meat-ethics": "Ist der Fleischkonsum ethisch vertretbar?",
+      "abortion-autonomy": "Sollte der Zugang zu Abtreibungen eingeschränkt werden, um potenzielle Rechte des Fötus zu schützen, oder steht die körperliche Autonomie im Vordergrund?",
+      "animal-research": "Ist es moralisch vertretbar, Tiere für wissenschaftliche Forschung zu nutzen, wenn dies zu bedeutenden medizinischen Durchbrüchen für den Menschen führen kann?",
+      "trolley": "Würdest du einen Hebel betätigen, um einen außer Kontrolle geratenen Zug umzuleiten, sodass eine Person statt fünf getötet wird?",
+      "break-law": "Ist es jemals gerechtfertigt, das Gesetz zu brechen, wenn es dem größeren Wohl dient?",
+      "whistleblowers": "Sollten Whistleblower, die Fehlverhalten in Unternehmen oder Regierungen aufdecken, voll geschützt werden, auch wenn sie Geheimhaltungsvereinbarungen verletzen?",
+      "personality-sentencing": "Sollten Persönlichkeitsmerkmale bei der Strafzumessung berücksichtigt werden?",
+      "user-data": "Sollten Unternehmen die umfangreiche Sammlung von Nutzerdaten erlauben, wenn dies zu einem individualisierteren Service führt?"
+    },
+    "Thought Experiments": {
+      "controlled-emotions": "Stell dir eine Welt vor, in der Emotionen mithilfe von Technologie präzise kontrolliert werden können. Wäre das eine Utopie oder eine Dystopie?",
+      "teleportation-vs-time": "Welcher wissenschaftliche Durchbruch hätte einen tieferen Einfluss auf die Gesellschaft: Teleportation oder Zeitreise?",
+      "perfect-happiness": "Wenn eine Maschine dir perfektes Glück schenken könnte, es sich jedoch nur um eine Illusion handelt, würdest du sie nutzen?",
+      "sacrifice": "Würdest du 1% der Bevölkerung opfern, um das Aussterben der Menschheit zu verhindern?",
+      "million-dollar": "Du hast einen Knopf, der dir 1 Million Dollar gibt, jedoch stirbt dadurch eine unbekannte Person. Drückst du ihn?",
+      "theseus": "Wenn bei einem Auto im Laufe der Zeit jedes Teil ausgetauscht wird, bleibt es dasselbe Auto?",
+      "magic-wish": "Du findest eine magische Lampe, die einen Wunsch erfüllt, aber dafür wird eine deiner schönsten Erinnerungen gelöscht. Würdest du dir etwas wünschen?",
+      "digital-immortality": "Wenn du dein Bewusstsein in eine digitale Form hochladen könntest, wäre das Unsterblichkeit oder ein Verlust deines wahren Selbst?",
+      "global-issue": "Wenn du ein globales Problem lösen müsstest (z. B. Welthunger, Klimawandel oder nukleare Abrüstung), welches wäre es und warum?"
+    },
+    "Business & Risk": {
+      "rapid-scaling": "Sollten Unternehmen in wettbewerbsintensiven Märkten schnelles Wachstum gegenüber der Rentabilität vorziehen?",
+      "layoffs": "Sollten Unternehmen strukturierte Entlassungen akzeptieren, um langfristiges Wachstum zu fördern, oder ist dies ein Zeichen für systematisches Missmanagement?",
+      "market-dominance": "Ist es bei Fusionen und Übernahmen sinnvoll, rasche Marktdominanz anzustreben, auch wenn kulturelle Konflikte und Integrationsprobleme übersehen werden könnten?",
+      "supply-chain": "Sollten Unternehmen für die Umweltauswirkungen ihrer gesamten Lieferkette verantwortlich gemacht werden?",
+      "financial-survival": "Sollten Unternehmen in wirtschaftlich unsicheren Zeiten eher das direkte finanzielle Überleben sichern – zum Beispiel durch Kürzungen bei F&E – oder in Innovation für künftiges Wachstum investieren?",
+      "automation": "Ist es ethisch vertretbar, Arbeitsplätze zu automatisieren, wenn dies zu höherer Effizienz führt, aber signifikante Arbeitslosigkeit verursacht?",
+      "dividends": "Ist es unter Krisenbedingungen ethisch vertretbar, Mitarbeiter zu entlassen, um die Dividenden der Aktionäre aufrechtzuerhalten?",
+      "patent-protection": "Sollten Unternehmen den Patentschutz vor offener Zusammenarbeit priorisieren, insbesondere in schnell entwickelnden Technologiefeldern?",
+      "lock-in": "Sind Geschäftspraktiken, die zu starker Kundenbindung führen, ethisch gerechtfertigt, wenn sie der Unternehmensstabilität dienen, oder schränken sie die Freiheit der Verbraucher ein?",
+      "shareholder-welfare": "Sollten Unternehmen die Dividenden der Aktionäre über das Wohlergehen der Mitarbeiter stellen?"
+    },
+    "Biases & Fallacies": {
+      "cancer-drug": "Ein neues Krebstherapeutikum zeigt in Studien eine Überlebensrate von 90%, aber einige Experten bezweifeln seine Wirksamkeit. Sollte es zugelassen werden?",
+      "coffee-study": "Eine Studie zeigt, dass Kaffeetrinker länger leben. Sollte die WHO daher eine Empfehlung zum Kaffeekonsum aussprechen?",
+      "authority": "Garantiert ein Verweis auf eine Autorität zwangsläufig die Richtigkeit einer Aussage?",
+      "anecdote": "Ist es ein logischer Fehlschluss, aus einer einzigen Anekdote eine allgemeine Schlussfolgerung zu ziehen?",
+      "slippery-slope": "Ist das Schneeballargument immer ein Fehlschluss, oder kann es manchmal eine valide Methode sein, um potenzielle negative Folgen abzuschätzen?",
+      "bandwagon": "Ist es in Entscheidungssituationen gerechtfertigt, sich dem Herdentrieb anzuschließen, wenn nur wenige Belege vorliegen, oder ist dies ein fehlerhafter Ansatz?",
+      "majority-view": "Sollten wir bei widersprüchlichen Studien der Mehrheitsmeinung Glauben schenken, oder abweichenden Ergebnissen mehr Gewicht beigemessen werden?",
+      "evidence-weight": "Welches Gewicht sollte anekdotischer Evidenz im Vergleich zu statistischen Daten und systematischer Forschung eingeräumt werden?",
+      "argument-source": "Ist es in Debatten legitim, die Quelle oder persönlichen Interessen des Sprechers zu berücksichtigen, oder sollte der Fokus ausschließlich auf der Logik des Arguments liegen?"
+    },
+    "Fun & Casual": {
+      "big-fish-small-pond": "Ist es besser, ein großer Fisch in einem kleinen Teich zu sein oder ein kleiner Fisch in einem großen Teich?",
+      "bear-vs-gorilla": "Wer würde in einem Kampf gewinnen – ein Grizzlybär oder ein Silberrücken-Gorilla?",
+      "cats-dogs": "Sind Katzen oder Hunde die besseren Haustiere?",
+      "hotdog-sandwich": "Ist ein Hotdog ein Sandwich?",
+      "duck-vs-horses": "Ist es einfacher, gegen eine pferdegroße Ente oder gegen 100 entegröße Pferde anzutreten?",
+      "movie-watching": "Ist es besser, einen Film allein oder in der Gruppe zu sehen?",
+      "invisibility-flight": "Würdest du lieber für einen Tag die Fähigkeit zur Unsichtbarkeit oder zum Fliegen besitzen?",
+      "chef-vs-cleaner": "Würdest du lieber einen persönlichen Koch oder eine Reinigungskraft haben?"
+    }
+  }
 }

@@ -1,36 +1,53 @@
-import re
+import json
 from pathlib import Path
 from random import choice
 
-import yaml
 from flask import current_app, session
 
-_questions = None  # Cache for loaded questions
+_questions_cache = None
 
 
 def load_questions():
-    global _questions
-    if _questions is None:
-        questions_path = Path(current_app.root_path) / "data" / "questions.yaml"
-        with open(questions_path, "r") as f:
-            raw_data = yaml.safe_load(f)
+    global _questions_cache
+    language = session.get("language", "en")
 
-            def slugify(s: str) -> str:
-                slug = re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
-                return slug[:50]  # Limit to 50 characters
+    # Always reload questions when language changes
+    translations_path = (
+        Path(current_app.root_path) / "static" / "translations" / f"{language}.json"
+    )
 
-            _questions = {
-                category: [
-                    {
-                        "id": slugify(text),
-                        "description": text,
-                        "category": category,
-                    }
-                    for text in questions  # Remove enumerate since we don't need index
-                ]
-                for category, questions in raw_data.items()
-            }
-    return _questions
+    with open(translations_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+        questions_data = data.get("questions", {})
+
+        DEFAULT_CATEGORIES = [
+            "Philosophy",
+            "AI & Future",
+            "Personal Growth & Relationships",
+            "Politics",
+            "Ethics",
+            "Thought Experiments",
+            "Business & Risk",
+            "Biases & Fallacies",
+            "Fun & Casual",
+        ]
+
+        # Transform the data into the format expected by the application
+        _questions_cache = {
+            category: [
+                {
+                    "id": question_id,
+                    "description": question_text,
+                    "category": category,
+                }
+                for question_id, question_text in questions_data.get(
+                    category, {}
+                ).items()
+            ]
+            for category in DEFAULT_CATEGORIES
+        }
+
+    return _questions_cache
 
 
 def get_questions():
