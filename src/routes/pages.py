@@ -1,3 +1,4 @@
+import json
 import os
 import uuid
 
@@ -77,16 +78,32 @@ def home():
 
 @pages_bp.route("/how_it_works")
 def how_it_works():
-    criteria_path = os.path.join(
-        current_app.root_path, "data", "evaluation_criteria.yaml"
+    # First check for the query parameter; if not present, use the session language (default to "en")
+    lang = request.args.get("lang") or session.get("language", "en")
+    trans_file = os.path.join(
+        current_app.root_path, "static", "translations", f"{lang}.json"
     )
-    with open(criteria_path, "r") as f:
-        criteria = yaml.safe_load(f)
-    settings = get_settings()
+    with open(trans_file, "r", encoding="utf-8") as f:
+        translations = json.load(f)
+
+    # Get the evaluation criteria from the translation file
+    criteria = translations.get("evaluationCriteria", {})
+
+    # Create a mapping for dimension translations
+    dimension_mapping = {
+        "Relevance": translations["evaluation"]["scores"]["relevance"],
+        "Logical Structure": translations["evaluation"]["scores"]["logic"],
+        "Clarity": translations["evaluation"]["scores"]["clarity"],
+        "Depth": translations["evaluation"]["scores"]["depth"],
+        "Objectivity": translations["evaluation"]["scores"]["objectivity"],
+        "Creativity": translations["evaluation"]["scores"]["creativity"],
+    }
+
     return render_template(
         "how_it_works.html",
         criteria=criteria,
-        relevance_threshold=settings.RELEVANCE_THRESHOLD_FOR_XP,
+        dimension_mapping=dimension_mapping,
+        translations=translations,
     )
 
 

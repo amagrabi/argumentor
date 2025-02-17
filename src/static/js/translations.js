@@ -47,7 +47,11 @@ function applyTranslations() {
     const key = element.getAttribute("data-i18n");
     const translation = getNestedTranslation(key);
     if (translation) {
-      element.textContent = translation;
+      if (translation.includes("<a")) {
+        element.innerHTML = translation;
+      } else {
+        element.textContent = translation;
+      }
     }
   });
 

@@ -66,7 +66,7 @@
     "username": "Benutzername",
     "email": "E-Mail",
     "accountType": "Kontotyp",
-    "overall": "Gesamt",
+    "overall": "",
     "relevance": "Relevanz",
     "logic": "Logische Struktur",
     "clarity": "Klarheit",
@@ -220,23 +220,133 @@
     }
   },
   "howItWorksPage": {
-    "title": "Wie es funktioniert",
+    "title": "So funktioniert es",
     "goBack": "Zurück",
     "section1": {
-      "title": "Verstehe deine Herausforderung",
-      "description": "Erhalte herausfordernde Fragen, um deine Argumentationsfähigkeiten zu testen und zu verbessern."
+      "title": "Wähle eine Frage aus",
+      "description": "Suche dir eine interessante Frage aus einer Vielzahl von Kategorien aus."
     },
     "section2": {
       "title": "Formuliere dein Argument",
-      "description": "Entwickle Argumente und erhalte Feedback zu deiner Leistung."
+      "description": "Entwickle eine logische Argumentation um die Frage zu beantworten."
     },
     "section3": {
-      "title": "Analysiere & Verbessere",
-      "description": "Analysiere deine Leistung, verfolge deinen Fortschritt und steigere dein Level."
+      "title": "Bekomme KI-gestütztes Feedback",
+      "description": "Bekomme eine detaillierte Bewertung und Analyse deiner Argumentation."
     },
     "section4": {
+      "title": "Analyse & Verbesserung",
+      "description": "Analysiere deine Leistung, verfolge deinen Fortschritt und steigere dein Level."
+    },
+    "overviewTitle": "Überblick",
+    "overview": "Die Plattform wurde entwickelt, um deine Argumentations- und Entscheidungsfähigkeiten zu verbessern:",
+    "profileSection": {
       "title": "Profilseite",
-      "description": "Sieh dir deinen Fortschritt und alle eingereichten Antworten an."
+      "description": "Dein Profil zeigt eine Übersicht deines Fortschritts. Besuche deine <a href='/profile' class='text-gray-800 underline hover:text-gray-600'>Profilseite</a>, um dein Level, deinen Fortschritt im Zeitverlauf und eine Liste aller deiner eingereichten Antworten zu sehen.",
+      "detailedFeedback": "Detailliertes Bewertungsfeedback ist für jede deiner Einreichungen verfügbar und gibt dir Einblicke in deine Stärken sowie Bereiche mit Verbesserungspotenzial. Nutze diese Informationen, um wiederkehrende Schwächen zu identifizieren und deinen Ansatz zur Entwicklung stärkerer Argumente anzupassen."
+    },
+    "challengeSection": {
+      "title": "Challenge",
+      "description": "Zusätzlich zu deinem Hauptargument hast du die Möglichkeit, dich einer Challenge zu stellen. Diese Challenge soll dir helfen, dein Argument zu verbessern und logische Unstimmigkeiten, unklare Punkte oder nicht behandelte Gegenargumente zu identifizieren.",
+      "additionalInfo": "Das Beantworten der Challenge führt zu einer zusätzlichen Bewertung und kann weitere XP einbringen. Die Challenge ist optional, du kannst auch zu einer anderen Frage übergehen."
+    },
+    "evaluationCriteria": {
+      "title": "Bewertungskriterien",
+      "description": "Deine Argumente werden anhand folgender Schlüsseldimensionen bewertet. Die Bewertungen reichen von 1 (miserabal) bis 10 (ausgezeichnet):"
+    }
+  },
+  "evaluationCriteria": {
+    "scoring_dimensions": {
+      "Relevance": {
+        "description": "Bewertung, wie relevant das Argument zur gestellten Frage ist.",
+        "levels": {
+          "1": "Keine Relevanz zur Frage; völlig fehlgeleitet.",
+          "2": "Geringe Relevanz mit minimalem Bezug zur Frage.",
+          "3": "Teilweise relevant, greift aber wesentliche Aspekte kaum auf.",
+          "4": "Begrenzte Relevanz; teilweise wird das Hauptthema angesprochen.",
+          "5": "Mäßig relevant; das Argument adressiert die Frage in Teilen.",
+          "6": "Ziemlich relevant; größtenteils themenbezogen, könnte jedoch fokussierter sein.",
+          "7": "Sehr relevant; greift die zentrale Frage klar auf.",
+          "8": "Hoch relevant; beantwortet die Frage direkt mit klarem Bezug.",
+          "9": "Äußerst relevant; eng an der Frage ausgerichtet und differenziert.",
+          "10": "Außerordentlich relevant; meistert die Fragestellung mit präziser Fokussierung."
+        }
+      },
+      "Logical Structure": {
+        "description": "Bewertung der logischen Konsistenz, Klarheit der Prämissen und schlüssigen Verbindungen im Argument.",
+        "levels": {
+          "1": "Mehrere logische Fehler; die Struktur wirkt chaotisch und inkohärent.",
+          "2": "Mehrere gravierende Lücken in der Logik; viele unzureichende oder fehlende Verbindungen.",
+          "3": "Teilweise logische Verbindungen, jedoch mit signifikanten Fehlern oder Auslassungen.",
+          "4": "Grundlegende logische Struktur vorhanden, wenn auch mit schwachen Verbindungen oder kleinen Fehlern.",
+          "5": "Ausreichender logischer Fluss; die meisten Verbindungen sind klar, könnten jedoch weiter gestärkt werden.",
+          "6": "Gute logische Progression mit nur kleinen Unstimmigkeiten.",
+          "7": "Gut strukturiertes Argument mit kohärenter und schlüssiger Begründung.",
+          "8": "Sehr starker logischer Rahmen; das Argument ist anspruchsvoll mit robusten Verbindungen.",
+          "9": "Logische Konstruktion auf Expertenniveau; nur minimale Fehler vorhanden.",
+          "10": "Fehlerlose Logik und Struktur mit vollständiger Klarheit."
+        }
+      },
+      "Clarity": {
+        "description": "Bewertung, wie klar und verständlich die Ideen ausgedrückt, organisiert und kommuniziert werden.",
+        "levels": {
+          "1": "Unverständliche Sprache; die Ideen sind schwer oder gar nicht nachvollziehbar.",
+          "2": "Stark unorganisiert und unklar, was das Verständnis erheblich erschwert.",
+          "3": "Häufige Unklarheiten; die Botschaft geht in der unstrukturierten Darstellung teilweise verloren.",
+          "4": "Einige klare Ausdrücke sind vorhanden, Gesamtstruktur und Formulierung wirken jedoch holprig.",
+          "5": "Im Großen und Ganzen verständlich, könnte jedoch prägnanter formuliert werden.",
+          "6": "Klare und deutliche Ausdrucksweise, gelegentlich etwas ausschweifend.",
+          "7": "Präzise formulierte Ideen mit effektiver Struktur und angemessener Prägnanz.",
+          "8": "Außergewöhnlich klar und strukturiert; kleinere Verbesserungen möglich.",
+          "9": "Meisterhafte Klarheit, die die Überzeugungskraft stark erhöht.",
+          "10": "Perfekte Klarheit und optimale Informationsdichte."
+        }
+      },
+      "Depth": {
+        "description": "Grad der Einsicht und umfassenden Erkundung der Komplexität und Implikationen des Themas.",
+        "levels": {
+          "1": "Sehr oberflächlich ohne Erforschung tieferer Zusammenhänge.",
+          "2": "Erfasst wesentliche Aspekte kaum; sehr eingeschränkte Tiefenanalyse.",
+          "3": "Grundlegende oberflächliche Analyse mit minimalen Einsichten in komplexe Zusammenhänge.",
+          "4": "Erste Ansätze einer tieferen Exploration, zentrale Aspekte bleiben unterbeleuchtet.",
+          "5": "Angemessene Behandlung der Hauptaspekte mit moderater Einsicht.",
+          "6": "Gute Analyse, die mehrere Blickwinkel berücksichtigt, jedoch mit Raum für vertiefte Betrachtung.",
+          "7": "Erkenntnisreiche und durchdachte Analyse, die auch weniger offensichtliche Aspekte anspricht.",
+          "8": "Erweiterte Tiefe mit kreativen und neuen Perspektiven, die das Verständnis fördern.",
+          "9": "Tiefgehende Untersuchung; komplexe Aspekte werden umfassend analysiert.",
+          "10": "Umfassende und definitive Analyse; alle Dimensionen werden in ihrer Tiefe erschlossen."
+        }
+      },
+      "Objectivity": {
+        "description": "Bewertung der Ausgewogenheit und Unparteilichkeit bei der Berücksichtigung divergierender Perspektiven.",
+        "levels": {
+          "1": "Stark voreingenommen, ohne Anerkennung anderer Perspektiven.",
+          "2": "Eindeutig einseitig; beruht auf irreführenden oder vereinfachten Argumenten.",
+          "3": "Deutlich voreingenommen, wenn auch mit minimaler Anerkennung anderer Ansichten.",
+          "4": "Bemüht sich um Ausgewogenheit, jedoch nicht konsequent in der Darstellung aller Perspektiven.",
+          "5": "Bietet eine faire Darstellung alternativer Perspektiven mit ausgewogener Berücksichtigung.",
+          "6": "Sorgt für eine angemessene Einbeziehung von Gegenargumenten, wenn auch mit kleinen Ungleichgewichten.",
+          "7": "Zeigt differenzierte Analyse unter Berücksichtigung mehrerer Blickwinkel.",
+          "8": "Außergewöhnlich ausgewogen und umfassend in der Bewertung aller relevanten Alternativen.",
+          "9": "Verbindet konkurrierende Perspektiven meisterhaft mit durchdachter Integration.",
+          "10": "Vorbildliche Objektivität; präsentiert eine vollständig ausgewogene Analyse."
+        }
+      },
+      "Creativity": {
+        "description": "Bewertung der Originalität, innovativen Ansätze und Einzigartigkeit der Einsichten.",
+        "levels": {
+          "1": "Völlig abgekupfert, ohne erkennbare Originalität.",
+          "2": "Minimale Kreativität; nur geringe Abweichungen von konventionellen Ansätzen.",
+          "3": "Einige neue Formulierungen oder Ideen, jedoch insgesamt wenig originell.",
+          "4": "Vereinzelte kreative Ansätze, die jedoch inkonsistent auftreten.",
+          "5": "Mäßig kreativ; bringt in Teilen des Arguments frische Ideen ein.",
+          "6": "Unverwechselbare Perspektive mit deutlicher Originalität in der Analyse.",
+          "7": "Hochgradig kreativ; bietet neue und überzeugende Ansätze.",
+          "8": "Innovativer Ansatz, der traditionelle Denkweisen herausfordert.",
+          "9": "Revolutionäre Kreativität; transformiert die Perspektive signifikant.",
+          "10": "Unvergleichliche und bahnbrechende Kreativität, die neue Paradigmen setzt."
+        }
+      }
     }
   }
 }

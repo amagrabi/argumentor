@@ -52,10 +52,15 @@
 
     <!-- Main Content -->
     <main class="max-w-5xl mx-auto p-4">
-      <!-- Quick Start Guide -->
+      <!-- Updated Overview Section Using Translation Keys -->
       <section class="mb-8">
-        <h2 class="text-2xl font-bold mb-6">Overview</h2>
-        <p class="mb-8">
+        <h2
+          class="text-2xl font-bold mb-6"
+          data-i18n="howItWorksPage.overviewTitle"
+        >
+          Overview
+        </h2>
+        <p class="mb-8" data-i18n="howItWorksPage.overview">
           The platform is designed to help you sharpen your reasoning and
           decision-making skills:
         </p>
@@ -148,64 +153,51 @@
             src="https://img.icons8.com/windows/32/gender-neutral-user.png"
             alt="Profile"
           />
-          Profile Page
+          <span data-i18n="howItWorksPage.profileSection.title"></span>
         </h2>
-        <p class="mb-4">
-          In your
-          <a
-            href="/profile"
-            class="text-gray-800 underline hover:text-gray-600"
-          >
-            Profile</a
-          >, you can find an overview of your progress. It shows your level,
-          your progression over time, and a list of all your submitted answers.
-        </p>
-        <p class="mb-4">
-          Detailed evaluation feedback for each of your submissions is
-          available, giving you insights into your strengths as well as areas
-          where you might improve. Use this information to identify recurring
-          weaknesses and adjust your approach to crafting stronger arguments.
-        </p>
+        <p
+          class="mb-4"
+          data-i18n="howItWorksPage.profileSection.description"
+        ></p>
+        <p
+          class="mb-4"
+          data-i18n="howItWorksPage.profileSection.detailedFeedback"
+        ></p>
       </section>
 
       <!-- Challenge Section -->
       <section class="mb-12">
         <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
-          ⚔️ Challenge Feature
+          ⚔️ <span data-i18n="howItWorksPage.challengeSection.title"></span>
         </h2>
-        <p class="mb-4">
-          In addition to submitting your primary argument, you have the option
-          to engage with a challenge. This challenge is designed to help you
-          improve your argument and identify any logical inconsistencies,
-          unclear points, or unaddressed counterarguments.
-        </p>
-        <p class="mb-4">
-          Responding to the challenge will prompt a secondary evaluation and may
-          earn additional XP. The challenge feature is optional, you can also
-          move on to another question.
-        </p>
+        <p
+          class="mb-4"
+          data-i18n="howItWorksPage.challengeSection.description"
+        ></p>
+        <p
+          class="mb-4"
+          data-i18n="howItWorksPage.challengeSection.additionalInfo"
+        ></p>
       </section>
 
-      <!-- Evaluation Criteria & XP Section -->
+      <!-- Evaluation Criteria Section -->
       <section id="evaluation_criteria" class="mb-12">
-        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
-          💡 Evaluation Criteria
+        <h2 class="text-2xl font-bold mb-4">
+          <span data-i18n="howItWorksPage.evaluationCriteria.title"></span>
         </h2>
+        <p
+          class="mb-4 text-gray-700"
+          data-i18n="howItWorksPage.evaluationCriteria.description"
+        ></p>
 
-        <p class="mb-4 text-gray-700">
-          Your arguments are evaluated on these key dimensions. Scores range
-          from 1 (needs improvement) to 10 (excellent):
-        </p>
         <div class="overflow-x-auto shadow-sm rounded-xl">
           <table class="min-w-full border-collapse">
             <thead>
               <tr>
-                <th class="sticky top-0 border px-4 py-2 bg-gray-200 z-10">
-                  Score
-                </th>
+                <th class="sticky top-0 border px-4 py-2 bg-gray-200 z-10"></th>
                 {% for criterion in criteria.scoring_dimensions.keys() %}
                 <th class="sticky top-0 border px-4 py-2 bg-gray-200 z-10">
-                  {{ criterion }}
+                  {{ dimension_mapping[criterion] }}
                 </th>
                 {% endfor %}
               </tr>
@@ -219,7 +211,7 @@
                 {% for criterion, details in criteria.scoring_dimensions.items()
                 %}
                 <td class="border px-4 py-2 text-sm">
-                  {{ details.levels[score] }}
+                  {{ details.levels[score|string] }}
                 </td>
                 {% endfor %}
               </tr>
@@ -234,8 +226,9 @@
         <a
           href="/"
           class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors"
-          >Go Back</a
         >
+          Zurück
+        </a>
       </div>
     </main>
 
@@ -257,7 +250,7 @@
             .split(".")
             .reduce((obj, k) => obj && obj[k], translations);
           if (translation) {
-            element.textContent = translation;
+            element.innerHTML = translation;
           }
         });
 
