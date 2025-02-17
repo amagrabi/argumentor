@@ -70,6 +70,17 @@
     "evaluation": {
       "title": "Evaluation",
       "overall": "Overall Rating",
+      "checkProfile": "Check your",
+      "profilePage": "Profile Page",
+      "reviewProgress": "to review answered questions and track your progress.",
+      "notLoggedIn": "You are currently not logged in. To avoid losing your progress and submitted answers, log in",
+      "here": "here",
+      "loginSuffix": ".",
+      "levelUp": "Level Up!",
+      "progress": "Progress:",
+      "nextLevel": "Next Level:",
+      "experiencePoints": "Experience Points Gained:",
+      "currentLevel": "Current Level:",
       "feedback": "Feedback",
       "scores": {
         "relevance": "Relevance",

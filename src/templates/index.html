@@ -573,9 +573,7 @@
         ></div>
         <div id="scores" class="grid gap-4 mb-8">
           <div class="score-item">
-            <span data-i18n="mainPage.evaluation.scores.relevance"
-              >Relevance</span
-            >
+            <span data-i18n="mainPage.evaluation.scores.relevance"></span>
           </div>
           <div class="score-item">
             <span data-i18n="mainPage.evaluation.scores.logic"
@@ -603,13 +601,21 @@
         <div id="xpInfo" class="mt-4 text-center">
           <!-- New message element for explaining no XP if relevance is too low -->
           <p id="xpMessage" class="text-sm text-red-600"></p>
-          <p id="levelUpMessage" class="text-green-600 font-bold"></p>
+          <p
+            id="levelUpMessage"
+            class="text-green-600 font-bold"
+            data-i18n="mainPage.evaluation.levelUp"
+          ></p>
           <p>
-            Experience Points Gained:
+            <span data-i18n="mainPage.evaluation.experiencePoints"
+              >Experience Points Gained:</span
+            >
             <span id="xpGained"><strong>0</strong></span>
           </p>
           <p>
-            Current Level:
+            <span data-i18n="mainPage.evaluation.currentLevel"
+              >Current Level:</span
+            >
             <span id="currentLevel"
               ><strong>Level 1 (Novice Thinker)</strong></span
             >
@@ -627,16 +633,18 @@
             ></div>
           </div>
           <p class="text-sm mt-1">
-            Progress: <span id="xpProgressText">0 / 0</span> XP
+            <span data-i18n="mainPage.evaluation.progress">Progress:</span>
+            <span id="xpProgressText">0 / 0</span> XP
           </p>
           <p class="text-sm mt-1">
-            Next Level: <span id="nextLevel">Level 2 (Inquisitive Mind)</span>
+            <span data-i18n="mainPage.evaluation.nextLevel">Next Level:</span>
+            <span id="nextLevel">Level 2 (Inquisitive Mind)</span>
           </p>
         </div>
         <!-- Additional instructions/link to the profile page -->
         <div class="mt-4 text-center">
           <p class="text-sm text-center">
-            Check your
+            <span data-i18n="mainPage.evaluation.checkProfile">Check your</span>
             <a
               href="/profile"
               class="inline-flex items-baseline text-gray-800 underline hover:text-gray-600"
@@ -646,22 +654,25 @@
                 alt="Profile"
                 class="w-4 h-4 mr-1 relative top-0.5"
               />
-              Profile Page
+              <span data-i18n="mainPage.evaluation.profilePage"
+                >Profile Page</span
+              >
             </a>
-            to review answered questions and track your progress.
+            <span data-i18n="mainPage.evaluation.reviewProgress"
+              >to review answered questions and track your progress.</span
+            >
           </p>
           {% if not current_user.is_authenticated %}
           <div
             class="mt-4 mb-4 max-w-full md:w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"
           >
-            You are currently not logged in. To avoid losing your progress and
-            submitted answers, log in
+            <span data-i18n="mainPage.evaluation.notLoggedIn"></span>
             <a
               href="#"
               onclick="showAuthModal()"
               class="text-gray-800 underline hover:text-gray-600"
-              >here</a
-            >.
+              ><span data-i18n="mainPage.evaluation.here"></span></a
+            ><span data-i18n="mainPage.evaluation.loginSuffix"></span>
           </div>
           {% endif %}
         </div>
@@ -679,7 +690,7 @@
               ⚔️
             </div>
             <h2 class="text-2xl font-bold" data-i18n="challenge.title">
-              Argument Challenge
+              Challenge
             </h2>
           </div>
           <p id="challengeText" class="mb-4 text-gray-700"></p>

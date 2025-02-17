@@ -47,8 +47,8 @@
     "loading": "Fragen werden geladen..."
   },
   "challenge": {
-    "title": "Argument-Herausforderung",
-    "responseLabel": "Deine Antwort auf die Herausforderung",
+    "title": "Challenge",
+    "responseLabel": "Deine Antwort auf die Challenge",
     "submit": "Absenden",
     "tryAnother": "Andere Frage versuchen",
     "charactersRemaining": "Verbleibende Zeichen:",
@@ -79,15 +79,19 @@
     "notLoggedIn": "Du bist derzeit nicht angemeldet. Um deinen Fortschritt und deine eingereichten Antworten nicht zu verlieren, melde dich hier an"
   },
   "evaluation": {
+    "title": "Bewertung",
+    "overall": "Gesamtbewertung",
     "experiencePoints": "Erhaltene Erfahrungspunkte:",
     "currentLevel": "Aktuelles Level:",
     "progress": "Fortschritt:",
     "nextLevel": "Nächstes Level:",
-    "overallRating": "Gesamtbewertung:",
     "checkProfile": "Besuche deine",
     "profilePage": "Profilseite",
-    "reviewProgress": "um deine beantworteten Fragen zu überprüfen und deinen Fortschritt zu verfolgen",
+    "reviewProgress": "um deine beantworteten Fragen zu überprüfen und deinen Fortschritt zu verfolgen.",
     "levelUp": "Level aufgestiegen!",
+    "notLoggedIn": "Du bist derzeit nicht angemeldet. Um deinen Fortschritt und deine eingereichten Antworten nicht zu verlieren, melde dich",
+    "here": "hier",
+    "loginSuffix": " an.",
     "scores": {
       "overall": "Gesamt",
       "relevance": "Relevanz",
@@ -117,8 +121,19 @@
     "evaluation": {
       "title": "Bewertung",
       "overall": "Gesamtbewertung",
-      "feedback": "Feedback",
+      "checkProfile": "Besuche dein",
+      "profilePage": "Profil",
+      "reviewProgress": "um deine beantworteten Fragen zu überprüfen und deinen Fortschritt zu verfolgen.",
+      "notLoggedIn": "Du bist derzeit nicht angemeldet. Um deinen Fortschritt und deine eingereichten Antworten nicht zu verlieren, melde dich",
+      "here": "hier",
+      "loginSuffix": " an.",
+      "levelUp": "Level aufgestiegen!",
+      "progress": "Fortschritt:",
+      "nextLevel": "Nächstes Level:",
+      "experiencePoints": "Erhaltene Erfahrungspunkte:",
+      "currentLevel": "Aktuelles Level:",
       "scores": {
+        "overall": "Gesamt",
         "relevance": "Relevanz",
         "logic": "Logische Struktur",
         "clarity": "Klarheit",
