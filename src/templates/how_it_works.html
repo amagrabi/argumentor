@@ -15,9 +15,14 @@
 
       gtag("config", "G-51N4QB84CL");
     </script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>How It Works - ArguMentor</title>
+    <title data-i18n="howItWorksPage.title">How It Works - ArguMentor</title>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/translations.js') }}"
+    ></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="icon"
@@ -29,12 +34,19 @@
     <!-- Header with Go Back Button -->
     <header class="bg-gray-800 p-4">
       <div class="max-w-5xl mx-auto flex justify-between items-center">
-        <h1 class="text-white text-3xl font-bold">How It Works</h1>
+        <h1
+          class="text-white text-3xl font-bold"
+          data-i18n="howItWorksPage.title"
+        >
+          How It Works
+        </h1>
         <a
           href="/"
           class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
-          >Go Back</a
+          data-i18n="howItWorksPage.goBack"
         >
+          Go Back
+        </a>
       </div>
     </header>
 
@@ -53,9 +65,18 @@
           >
             <div class="text-lg md:text-xl mb-2 text-gray-800">1️⃣</div>
             <div>
-              <h3 class="font-bold mb-2">Choose Question</h3>
-              <p class="text-sm text-gray-600">
-                Tackle thought-provoking questions from various categories.
+              <h3
+                class="font-bold mb-2"
+                data-i18n="howItWorksPage.section1.title"
+              >
+                Understand Your Challenge
+              </h3>
+              <p
+                class="text-sm text-gray-600"
+                data-i18n="howItWorksPage.section1.description"
+              >
+                Receive challenging questions to test and improve your reasoning
+                skills.
               </p>
             </div>
           </div>
@@ -64,10 +85,17 @@
           >
             <div class="text-xl mb-2 text-gray-800">2️⃣</div>
             <div>
-              <h3 class="font-bold mb-2">Craft Argument</h3>
-              <p class="text-sm text-gray-600">
-                Clearly state your position and support it with logical
-                reasoning.
+              <h3
+                class="font-bold mb-2"
+                data-i18n="howItWorksPage.section2.title"
+              >
+                Construct Your Argument
+              </h3>
+              <p
+                class="text-sm text-gray-600"
+                data-i18n="howItWorksPage.section2.description"
+              >
+                Develop arguments and gain feedback on your performance.
               </p>
             </div>
           </div>
@@ -76,10 +104,17 @@
           >
             <div class="text-xl mb-2 text-gray-800">3️⃣</div>
             <div>
-              <h3 class="font-bold mb-2">Get Feedback</h3>
-              <p class="text-sm text-gray-600">
-                Receive an AI-driven analysis of your argument's strengths and
-                weaknesses.
+              <h3
+                class="font-bold mb-2"
+                data-i18n="howItWorksPage.section3.title"
+              >
+                Analyze & Improve
+              </h3>
+              <p
+                class="text-sm text-gray-600"
+                data-i18n="howItWorksPage.section3.description"
+              >
+                Analyze your performance, track your progress and level up.
               </p>
             </div>
           </div>
@@ -88,9 +123,17 @@
           >
             <div class="text-xl mb-2 text-gray-800">4️⃣</div>
             <div>
-              <h3 class="font-bold mb-2">Analyze & Improve</h3>
-              <p class="text-sm text-gray-600">
-                Analyze your performance, track your progress and level up.
+              <h3
+                class="font-bold mb-2"
+                data-i18n="howItWorksPage.section4.title"
+              >
+                Profile Page
+              </h3>
+              <p
+                class="text-sm text-gray-600"
+                data-i18n="howItWorksPage.section4.description"
+              >
+                View your progress and all submitted answers.
               </p>
             </div>
           </div>
@@ -195,5 +238,32 @@
         >
       </div>
     </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Get stored language preference
+        const currentLanguage = localStorage.getItem("language") || "en";
+
+        // Load translations
+        const response = await fetch(
+          `/static/translations/${currentLanguage}.json`
+        );
+        const translations = await response.json();
+
+        // Apply translations
+        document.querySelectorAll("[data-i18n]").forEach((element) => {
+          const key = element.getAttribute("data-i18n");
+          const translation = key
+            .split(".")
+            .reduce((obj, k) => obj && obj[k], translations);
+          if (translation) {
+            element.textContent = translation;
+          }
+        });
+
+        // Update document language
+        document.documentElement.lang = currentLanguage;
+      });
+    </script>
   </body>
 </html>

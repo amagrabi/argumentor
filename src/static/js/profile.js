@@ -44,7 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Attach click listeners to toggle active/inactive on each button.
   Object.keys(buttons).forEach((metric) => {
-    buttons[metric].addEventListener("click", () => {
+    buttons[metric].addEventListener("click", (e) => {
+      // Prevent event from bubbling up to avoid translation updates
+      e.stopPropagation();
+
       if (buttons[metric].classList.contains("button-active")) {
         // Switch to inactive state:
         buttons[metric].classList.remove("button-active");
@@ -125,93 +128,95 @@ function getDatasetsForMetrics(answers, selectedMetrics) {
 }
 
 function initializeChart(answers, defaultMetrics = ["overall"]) {
-  const ctx = document.getElementById("progressChart").getContext("2d");
-  const labels = answers.map((a) =>
-    new Date(a.created_at).toLocaleDateString()
-  );
+  const ctx = document.getElementById("progressChart")?.getContext("2d");
+  if (ctx) {
+    const labels = answers.map((a) =>
+      new Date(a.created_at).toLocaleDateString()
+    );
 
-  progressChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: getDatasetsForMetrics(answers, defaultMetrics),
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: "Time",
-            font: { size: 14 },
+    progressChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: getDatasetsForMetrics(answers, defaultMetrics),
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: "Time",
+              font: { size: 14 },
+            },
+            grid: {
+              display: false,
+            },
           },
-          grid: {
+          y: {
+            beginAtZero: true,
+            min: 0,
+            max: 10.5,
+            ticks: {
+              stepSize: 1,
+              callback: function (value) {
+                return value === 10.5 ? 10 : value;
+              },
+              font: { size: 12 },
+            },
+            title: {
+              display: true,
+              text: "Ratings",
+              font: { size: 14 },
+            },
+            grid: {
+              display: true,
+              color: "rgba(0, 0, 0, 0.04)",
+            },
+          },
+        },
+        plugins: {
+          legend: {
             display: false,
           },
-        },
-        y: {
-          beginAtZero: true,
-          min: 0,
-          max: 10.5,
-          ticks: {
-            stepSize: 1,
-            callback: function (value) {
-              return value === 10.5 ? 10 : value;
+          tooltip: {
+            usePointStyle: true,
+            callbacks: {
+              labelColor: function (context) {
+                return {
+                  backgroundColor: context.dataset.borderColor,
+                  borderColor: context.dataset.borderColor,
+                  borderWidth: 1,
+                  borderRadius: 50,
+                  pointStyle: "circle",
+                };
+              },
+              labelPointStyle: function (context) {
+                return {
+                  pointStyle: "circle",
+                  rotation: 0,
+                };
+              },
             },
-            font: { size: 12 },
-          },
-          title: {
-            display: true,
-            text: "Ratings",
-            font: { size: 14 },
-          },
-          grid: {
-            display: true,
-            color: "rgba(0, 0, 0, 0.04)",
+            mode: "index",
+            intersect: false,
+            titleFont: { size: 14 },
+            bodyFont: { size: 12 },
           },
         },
-      },
-      plugins: {
-        legend: {
-          display: false,
-        },
-        tooltip: {
-          usePointStyle: true,
-          callbacks: {
-            labelColor: function (context) {
-              return {
-                backgroundColor: context.dataset.borderColor,
-                borderColor: context.dataset.borderColor,
-                borderWidth: 1,
-                borderRadius: 50,
-                pointStyle: "circle",
-              };
-            },
-            labelPointStyle: function (context) {
-              return {
-                pointStyle: "circle",
-                rotation: 0,
-              };
-            },
-          },
-          mode: "index",
+        interaction: {
+          mode: "nearest",
           intersect: false,
-          titleFont: { size: 14 },
-          bodyFont: { size: 12 },
+        },
+        elements: {
+          line: {
+            borderJoinStyle: "round",
+          },
         },
       },
-      interaction: {
-        mode: "nearest",
-        intersect: false,
-      },
-      elements: {
-        line: {
-          borderJoinStyle: "round",
-        },
-      },
-    },
-  });
+    });
+  }
 }
 
 function updateChartMultiple(answers, buttons) {

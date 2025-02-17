@@ -204,5 +204,44 @@
       "invisibility-flight": "Would you rather have the power of invisibility or the power of flight for a day?",
       "chef-vs-cleaner": "Would you rather have a personal chef or a personal cleaner?"
     }
+  },
+  "profile": {
+    "title": "Your Profile",
+    "goBack": "Go Back",
+    "progress": "Progress",
+    "accountInfo": "Account Info",
+    "username": "Username",
+    "email": "Email",
+    "accountType": "Account Type",
+    "overall": "Overall",
+    "relevance": "Relevance",
+    "logic": "Logic",
+    "clarity": "Clarity",
+    "depth": "Depth",
+    "objectivity": "Objectivity",
+    "creativity": "Creativity",
+    "challenge": "Challenge",
+    "yourAnswers": "Your Answers",
+    "progressOverTime": "Progress Over Time"
+  },
+  "howItWorksPage": {
+    "title": "How It Works",
+    "goBack": "Go Back",
+    "section1": {
+      "title": "Understand Your Challenge",
+      "description": "Receive challenging questions to test and improve your reasoning skills."
+    },
+    "section2": {
+      "title": "Construct Your Argument",
+      "description": "Develop arguments and gain feedback on your performance."
+    },
+    "section3": {
+      "title": "Analyze & Improve",
+      "description": "Analyze your performance, track your progress and level up."
+    },
+    "section4": {
+      "title": "Profile Page",
+      "description": "View your progress and all submitted answers."
+    }
   }
 }

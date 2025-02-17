@@ -439,7 +439,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
         .querySelectorAll(".score-value")
         .forEach((scoreElement, index) => {
           const finalScore = parseFloat(scoreElement.dataset.final);
-          const targetColor = scoreElement.dataset.color;
+          const targetColor = scoreElement.dataset.color || "#16a34a";
           const startColor = hexToRgb("#e53e3e");
           const endColor = hexToRgb(targetColor);
           let current = 1;

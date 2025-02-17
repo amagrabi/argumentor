@@ -37,8 +37,10 @@ async function loadTranslations() {
 function applyTranslations() {
   // Update meta tags
   document.title = translations.meta.title;
-  document.querySelector('meta[name="description"]').content =
-    translations.meta.description;
+  const descriptionMeta = document.querySelector('meta[name="description"]');
+  if (descriptionMeta) {
+    descriptionMeta.content = translations.meta.description;
+  }
 
   // Update text content for elements with data-i18n attribute
   document.querySelectorAll("[data-i18n]").forEach((element) => {
@@ -65,10 +67,11 @@ function getNestedTranslation(key) {
 
 function updateLanguageIndicator() {
   console.log("Updating language indicator to:", currentLanguage);
-  document.getElementById("checkEn").style.opacity =
-    currentLanguage === "en" ? "1" : "0";
-  document.getElementById("checkDe").style.opacity =
-    currentLanguage === "de" ? "1" : "0";
+  const checkEn = document.getElementById("checkEn");
+  const checkDe = document.getElementById("checkDe");
+
+  if (checkEn) checkEn.style.opacity = currentLanguage === "en" ? "1" : "0";
+  if (checkDe) checkDe.style.opacity = currentLanguage === "de" ? "1" : "0";
 }
 
 async function changeLanguage(lang) {
@@ -84,22 +87,8 @@ async function changeLanguage(lang) {
     body: JSON.stringify({ language: lang }),
   });
 
-  await loadTranslations();
-
-  // Instead of fetching a new question, update the existing one:
-  let currentQuestion = JSON.parse(sessionStorage.getItem("currentQuestion"));
-
-  if (currentQuestion) {
-    // Find the translated description.
-    const translatedQuestion = getNestedTranslation(
-      `questions.${currentQuestion.category}.${currentQuestion.id}`
-    );
-
-    if (translatedQuestion) {
-      currentQuestion.description = translatedQuestion;
-      updateQuestionDisplay(currentQuestion);
-    }
-  }
+  // Force page reload to ensure all translations are applied
+  window.location.reload();
 }
 
 function toggleDropdown() {
@@ -135,7 +124,11 @@ document.addEventListener("DOMContentLoaded", () => {
     button.addEventListener("click", () => changeLanguage(button.dataset.lang));
   });
 
-  loadTranslations();
+  if (document.readyState !== "loading") {
+    loadTranslations();
+  } else {
+    document.addEventListener("DOMContentLoaded", loadTranslations);
+  }
 });
 
 // Define the function for switching translations

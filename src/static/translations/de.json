@@ -62,16 +62,20 @@
     "title": "Dein Profil",
     "goBack": "Zurück",
     "progress": "Fortschritt",
-    "metrics": {
-      "overall": "Gesamt",
-      "relevance": "Relevanz",
-      "logic": "Logische Struktur",
-      "clarity": "Klarheit",
-      "depth": "Tiefe",
-      "objectivity": "Objektivität",
-      "creativity": "Kreativität",
-      "challenge": "Herausforderung"
-    }
+    "accountInfo": "Kontoinformationen",
+    "username": "Benutzername",
+    "email": "E-Mail",
+    "accountType": "Kontotyp",
+    "overall": "Gesamt",
+    "relevance": "Relevanz",
+    "logic": "Logische Struktur",
+    "clarity": "Klarheit",
+    "depth": "Tiefe",
+    "objectivity": "Objektivität",
+    "creativity": "Kreativität",
+    "challenge": "Herausforderung",
+    "yourAnswers": "Deine Antworten",
+    "progressOverTime": "Fortschritt"
   },
   "evaluation": {
     "title": "Bewertung",
@@ -213,6 +217,26 @@
       "movie-watching": "Ist es besser, einen Film allein oder in der Gruppe zu sehen?",
       "invisibility-flight": "Würdest du lieber für einen Tag die Fähigkeit zur Unsichtbarkeit oder zum Fliegen besitzen?",
       "chef-vs-cleaner": "Würdest du lieber einen persönlichen Koch oder eine Reinigungskraft haben?"
+    }
+  },
+  "howItWorksPage": {
+    "title": "Wie es funktioniert",
+    "goBack": "Zurück",
+    "section1": {
+      "title": "Verstehe deine Herausforderung",
+      "description": "Erhalte herausfordernde Fragen, um deine Argumentationsfähigkeiten zu testen und zu verbessern."
+    },
+    "section2": {
+      "title": "Formuliere dein Argument",
+      "description": "Entwickle Argumente und erhalte Feedback zu deiner Leistung."
+    },
+    "section3": {
+      "title": "Analysiere & Verbessere",
+      "description": "Analysiere deine Leistung, verfolge deinen Fortschritt und steigere dein Level."
+    },
+    "section4": {
+      "title": "Profilseite",
+      "description": "Sieh dir deinen Fortschritt und alle eingereichten Antworten an."
     }
   }
 }

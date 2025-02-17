@@ -29,7 +29,7 @@ export function updateQuestionDisplay(question) {
   if (categoryBadge) {
     // Get the translated category name
     const translatedCategory =
-      translations.categories[question.category] || question.category;
+      translations.categories?.[question.category] || question.category;
     const categoryText = CATEGORY_ICONS[question.category]
       ? `${CATEGORY_ICONS[question.category]} ${translatedCategory}`
       : translatedCategory;
