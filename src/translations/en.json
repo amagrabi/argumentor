@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "ArguMentor - Sharpen Your Reasoning Skills",
+    "description": "Test your reasoning skills. Construct arguments to challenging questions. Improve with AI-driven feedback."
+  },
+  "header": {
+    "login": "Login",
+    "logout": "Logout",
+    "profile": "Profile"
+  },
+  "settings": {
+    "title": "Settings",
+    "filterCategories": "Filter Categories",
+    "filterDescription": "Uncheck categories below to avoid getting questions for them. By default, all are enabled.",
+    "done": "Done"
+  },
+  "categories": {
+    "Philosophy": "Philosophy",
+    "AI & Future": "AI & Future",
+    "Personal Growth & Relationships": "Personal Growth & Relationships",
+    "Politics": "Politics",
+    "Ethics": "Ethics",
+    "Thought Experiments": "Thought Experiments",
+    "Business & Risk": "Business & Risk",
+    "Biases & Fallacies": "Biases & Fallacies",
+    "Fun & Casual": "Fun & Casual"
+  },
+  "main": {
+    "slogan": "Test your reasoning skills. Construct arguments to challenging questions. Improve with AI-driven feedback.",
+    "howItWorks": "How It Works",
+    "howToImprove": "How to Improve",
+    "howToSupport": "How to Support"
+  },
+  "footer": {
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact"
+  },
+  "currentLang": "EN",
+  "languages": {
+    "en": "English",
+    "de": "German"
+  },
+  "questionSelection": {
+    "title": "Select a Question",
+    "close": "✕",
+    "loading": "Loading questions..."
+  },
+  "challenge": {
+    "submit": "Submit",
+    "tryAnother": "Try Another Question",
+    "charactersRemaining": "Characters remaining:",
+    "errorMessage": "Failed to submit response"
+  }
+}

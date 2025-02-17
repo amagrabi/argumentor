@@ -1,7 +1,7 @@
 import logging
 import os
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_limiter.errors import RateLimitExceeded
 from flask_migrate import Migrate
 from flask_talisman import Talisman
@@ -102,6 +102,10 @@ def create_app():
         "connect-src": ["'self'", "https://accounts.google.com"],
     }
     Talisman(app, content_security_policy=csp)
+
+    @app.route("/static/translations/<path:filename>")
+    def serve_translations(filename):
+        return send_from_directory("translations", filename)
 
     return app
 

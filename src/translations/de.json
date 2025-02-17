@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "ArguMentor - Schärfe deine Argumentationsfähigkeiten",
+    "description": "Teste deine Argumentationsfähigkeiten. Konstruiere Argumente für herausfordernde Fragen. Verbessere dich mit KI-gesteuertem Feedback."
+  },
+  "header": {
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "profile": "Profil"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "filterCategories": "Kategorien filtern",
+    "filterDescription": "Deaktiviere Kategorien, für die du keine Fragen erhalten möchtest. Standardmäßig sind alle aktiviert.",
+    "done": "Fertig"
+  },
+  "categories": {
+    "Philosophy": "Philosophie",
+    "AI & Future": "KI & Zukunft",
+    "Personal Growth & Relationships": "Persönliche Entwicklung & Beziehungen",
+    "Politics": "Politik",
+    "Ethics": "Ethik",
+    "Thought Experiments": "Gedankenexperimente",
+    "Business & Risk": "Business & Risiko",
+    "Biases & Fallacies": "Denkfehler & Fehlschlüsse",
+    "Fun & Casual": "Spaß & Casual"
+  },
+  "main": {
+    "slogan": "Teste deine Argumentationsfähigkeiten. Konstruiere Argumente für herausfordernde Fragen. Verbessere dich mit KI-gesteuertem Feedback.",
+    "howItWorks": "Wie es funktioniert",
+    "howToImprove": "Wie man sich verbessert",
+    "howToSupport": "Wie man unterstützt"
+  },
+  "footer": {
+    "privacyPolicy": "Datenschutzerklärung",
+    "termsOfService": "Nutzungsbedingungen",
+    "contact": "Kontakt"
+  },
+  "currentLang": "DE",
+  "languages": {
+    "en": "Englisch",
+    "de": "Deutsch"
+  },
+  "questionSelection": {
+    "title": "Wähle eine Frage",
+    "close": "✕",
+    "loading": "Fragen werden geladen..."
+  },
+  "challenge": {
+    "submit": "Absenden",
+    "tryAnother": "Andere Frage versuchen",
+    "charactersRemaining": "Verbleibende Zeichen:",
+    "errorMessage": "Fehler beim Absenden der Antwort"
+  }
+}
