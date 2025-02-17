@@ -39,7 +39,7 @@
       "claimDescription": "State your position clearly and concisely...",
       "reasoning": "Your Reasoning",
       "reasoningDescription": "Explain the logic and evidence supporting your claim...",
-      "counterargument": "Counterargument (Optional)",
+      "counterargument": "Counterargument Rebuttal (optional)",
       "counterargumentDescription": "Address potential objections to strengthen your argument..."
     }
   },

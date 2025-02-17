@@ -45,7 +45,7 @@
       "claimDescription": "Formuliere deine Position klar und präzise...",
       "reasoning": "Deine Begründung",
       "reasoningDescription": "Erkläre die Logik und Beweise für deine These...",
-      "counterargument": "Gegenargument (Optional)",
+      "counterargument": "Gegenargumente entkräften (optional)",
       "counterargumentDescription": "Gehe auf mögliche Einwände ein, um dein Argument zu stärken..."
     }
   },
