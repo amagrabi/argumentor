@@ -263,6 +263,20 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     const data = await response.json(); // Single parse here
 
     if (!response.ok) {
+      if (response.status === 409) {
+        document.getElementById("errorMessage").textContent =
+          translations.errors.similarAnswer;
+        submitBtn.innerHTML = "Submit";
+        submitBtn.disabled = false;
+        return;
+      }
+      if (data.error === "tooManySubmissions") {
+        document.getElementById("errorMessage").textContent =
+          translations.errors.tooManySubmissions;
+        submitBtn.innerHTML = "Submit";
+        submitBtn.disabled = false;
+        return;
+      }
       document.getElementById("errorMessage").innerHTML =
         data.error || ERROR_MESSAGES.UNEXPECTED_ERROR;
       submitBtn.innerHTML = "Submit";
@@ -538,7 +552,9 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       });
 
     // Display XP message
-    document.getElementById("xpMessage").textContent = data.xp_message || "";
+    document.getElementById("xpMessage").textContent = data.relevance_too_low
+      ? translations.evaluation.relevanceWarning
+      : "";
   } catch (error) {
     console.error("Error submitting answer:", error);
     document.getElementById("errorMessage").textContent =
@@ -727,7 +743,9 @@ window.addEventListener("DOMContentLoaded", () => {
       // Display XP message for challenge within the challenge evaluation section
       const challengeXpMessage = document.createElement("p");
       challengeXpMessage.classList.add("text-sm", "text-red-600", "mt-4");
-      challengeXpMessage.textContent = data.xp_message || "";
+      challengeXpMessage.textContent = data.relevance_too_low
+        ? translations.evaluation.relevanceWarning
+        : "";
       challengeEvalDiv.appendChild(challengeXpMessage);
 
       challengeBtn.innerHTML = "Submit";

@@ -79,7 +79,8 @@
       "depth": "Depth",
       "objectivity": "Objectivity",
       "creativity": "Creativity"
-    }
+    },
+    "relevanceWarning": "Your response did not meet the minimum relevance required to earn XP."
   },
   "auth": {
     "loginTitle": "Login",
@@ -97,6 +98,8 @@
   "currentLang": "EN",
   "errors": {
     "requiredFields": "Please fill in both required fields (Claim and Argument) before submitting.",
-    "unexpectedError": "An unexpected error occurred while processing your submission. Please try again and send feedback if the issue persists."
+    "unexpectedError": "An unexpected error occurred while processing your submission. Please try again and send feedback if the issue persists.",
+    "similarAnswer": "You already submitted a very similar answer to this question. Change your argument to receive a new evaluation.",
+    "tooManySubmissions": "Too many submissions. Please wait before trying again."
   }
 }

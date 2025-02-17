@@ -41,7 +41,7 @@ def evaluate_answer(question_text, claim, argument, counterargument):
 @answers_bp.route("/submit_answer", methods=["POST"])
 @limiter.limit(
     SETTINGS.SUBMISSION_RATE_LIMITS,
-    error_message="Too many submissions. Please wait before trying again.",
+    error_message="tooManySubmissions",
 )
 def submit_answer():
     data = request.get_json() or {}
@@ -125,11 +125,8 @@ def submit_answer():
     )
     logger.debug(f"Raw main average: {avg_all}, XP earned: {xp_earned}")
 
-    xp_message = ""
-    if scores["Relevance"] < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP:
-        xp_message = (
-            "Your response did not meet the minimum relevance required to earn XP."
-        )
+    # Add relevance_too_low flag to response
+    relevance_too_low = scores["Relevance"] < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
 
     old_xp = user.xp if user else 0
 
@@ -155,24 +152,10 @@ def submit_answer():
                         None, new_counter, existing_counter
                     ).ratio()
                     if counter_similarity > SETTINGS.SIMILARITY_THRESHOLD:
-                        return jsonify(
-                            {
-                                "error": (
-                                    "You already submitted a very similar answer to this question. "
-                                    "Change your argument to receive a new evaluation."
-                                )
-                            }
-                        ), 400
+                        return jsonify({"error": "similarAnswer"}), 409
                 else:
                     # Neither submission has a counterargument.
-                    return jsonify(
-                        {
-                            "error": (
-                                "You already submitted a very similar answer to this question. "
-                                "Change your argument to receive a new evaluation."
-                            )
-                        }
-                    ), 400
+                    return jsonify({"error": "similarAnswer"}), 409
             # If one has a counterargument and the other doesn't, we treat them as different.
     if not user:
         user = User(uuid=user_uuid, xp=old_xp)
@@ -246,7 +229,7 @@ def submit_answer():
             "current_level": level_info["display_name"],
             "level_info": level_info,
             "answer_id": new_answer.id,
-            "xp_message": xp_message,
+            "relevance_too_low": relevance_too_low,
         }
     )
 
@@ -348,9 +331,8 @@ def submit_challenge_response():
             "current_level": level_info["display_name"],
             "leveled_up": leveled_up,
             "level_info": level_info,
-            "xp_message": "Your challenge response did not meet the minimum relevance required to earn XP."
-            if scores["Relevance"] < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
-            else "",
+            "relevance_too_low": scores["Relevance"]
+            < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP,
         }
     )
 

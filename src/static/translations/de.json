@@ -4,8 +4,10 @@
     "description": "Teste deine Argumentationsfähigkeiten. Konstruiere Argumente für herausfordernde Fragen. Verbessere dich mit KI-gesteuertem Feedback."
   },
   "errors": {
-    "requiredFields": "Bitte fülle beide erforderlichen Felder (These und Begründung) aus, bevor du absendest.",
-    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut und sende Feedback, wenn das Problem weiterhin besteht."
+    "requiredFields": "Bitte fülle beide erforderlichen Felder (These und Argument) aus, bevor du absendest.",
+    "unexpectedError": "Ein unerwarteter Fehler ist bei der Verarbeitung deiner Eingabe aufgetreten. Bitte versuche es erneut und sende Feedback, falls das Problem weiterhin besteht.",
+    "similarAnswer": "Du hast bereits eine sehr ähnliche Antwort auf diese Frage eingereicht. Ändere dein Argument, um eine neue Bewertung zu erhalten.",
+    "tooManySubmissions": "Zu viele Einreichungen. Bitte warte, bevor du es erneut versuchst."
   },
   "header": {
     "login": "Anmelden",
@@ -93,7 +95,8 @@
       "depth": "Tiefe",
       "objectivity": "Objektivität",
       "creativity": "Kreativität"
-    }
+    },
+    "relevanceWarning": "Deine Antwort hat nicht die erforderliche Mindest-Relevanz erreicht, um XP zu erhalten."
   },
   "auth": {
     "loginTitle": "Anmelden",
@@ -108,5 +111,5 @@
     "en": "Englisch",
     "de": "Deutsch"
   },
-  "currentLang": "DE"
+  "currentLang": "de"
 }

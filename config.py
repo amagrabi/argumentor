@@ -54,7 +54,6 @@ class Settings(BaseSettings):
         "anonymous": 10,
         "free": 20,
         "plus": 100,
-        "pro": 1000,
     }
 
     model_config = SettingsConfigDict(
