@@ -437,7 +437,7 @@
             <button
               id="rerollButton"
               class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1"
-              data-i18n="mainPage.buttons.randomQuestion"
+              data-i18n="main.buttons.randomQuestion"
             >
               <svg
                 class="w-4 h-4"
@@ -457,7 +457,7 @@
             <button
               id="selectQuestionButton"
               class="mt-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1"
-              data-i18n="mainPage.buttons.selectQuestion"
+              data-i18n="main.buttons.selectQuestion"
             >
               <svg
                 class="w-4 h-4"
@@ -482,14 +482,14 @@
           <div class="space-y-4">
             <div>
               <label
-                data-i18n="mainPage.inputLabels.claim"
+                data-i18n="main.inputLabels.claim"
                 class="block text-lg font-bold mb-2"
                 >Your Claim</label
               >
               <textarea
                 id="claimInput"
                 class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
-                data-i18n-placeholder="mainPage.inputLabels.claimDescription"
+                data-i18n-placeholder="main.inputLabels.claimDescription"
                 maxlength="200"
               ></textarea>
               <div class="mt-1 text-sm text-gray-500">
@@ -502,7 +502,7 @@
 
             <div>
               <label
-                data-i18n="mainPage.inputLabels.reasoning"
+                data-i18n="main.inputLabels.reasoning"
                 class="block text-lg font-bold mb-2"
                 >Your Reasoning</label
               >
@@ -510,7 +510,7 @@
               <textarea
                 id="argumentInput"
                 class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
-                data-i18n-placeholder="mainPage.inputLabels.reasoningDescription"
+                data-i18n-placeholder="main.inputLabels.reasoningDescription"
                 maxlength="1000"
               ></textarea>
               <div class="mt-1 text-sm text-gray-500">
@@ -523,14 +523,14 @@
 
             <div>
               <label
-                data-i18n="mainPage.inputLabels.counterargument"
+                data-i18n="main.inputLabels.counterargument"
                 class="block text-lg font-bold mb-2"
                 >Counterargument (Optional)</label
               >
               <textarea
                 id="counterargumentInput"
                 class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
-                data-i18n-placeholder="mainPage.inputLabels.counterargumentDescription"
+                data-i18n-placeholder="main.inputLabels.counterargumentDescription"
                 maxlength="1000"
               ></textarea>
               <div class="mt-1 text-sm text-gray-500">
@@ -560,41 +560,32 @@
 
       <!-- Evaluation Results -->
       <div id="evaluationResults" class="hidden bg-white p-8">
-        <h2
-          class="text-2xl font-bold mb-6"
-          data-i18n="mainPage.evaluation.title"
-        >
+        <h2 class="text-2xl font-bold mb-6" data-i18n="evaluation.title">
           Evaluation
         </h2>
         <div
           id="overallEvaluation"
           class="mb-6"
-          data-i18n="mainPage.evaluation.overall"
+          data-i18n="evaluation.overall"
         ></div>
         <div id="scores" class="grid gap-4 mb-8">
           <div class="score-item">
-            <span data-i18n="mainPage.evaluation.scores.relevance"></span>
+            <span data-i18n="evaluation.scores.relevance">Relevance</span>
           </div>
           <div class="score-item">
-            <span data-i18n="mainPage.evaluation.scores.logic"
-              >Logical Structure</span
-            >
+            <span data-i18n="evaluation.scores.logic">Logical Structure</span>
           </div>
           <div class="score-item">
-            <span data-i18n="mainPage.evaluation.scores.clarity">Clarity</span>
+            <span data-i18n="evaluation.scores.clarity">Clarity</span>
           </div>
           <div class="score-item">
-            <span data-i18n="mainPage.evaluation.scores.depth">Depth</span>
+            <span data-i18n="evaluation.scores.depth">Depth</span>
           </div>
           <div class="score-item">
-            <span data-i18n="mainPage.evaluation.scores.objectivity"
-              >Objectivity</span
-            >
+            <span data-i18n="evaluation.scores.objectivity">Objectivity</span>
           </div>
           <div class="score-item">
-            <span data-i18n="mainPage.evaluation.scores.creativity"
-              >Creativity</span
-            >
+            <span data-i18n="evaluation.scores.creativity">Creativity</span>
           </div>
         </div>
         <!-- XP and Level Info Section -->
@@ -604,18 +595,16 @@
           <p
             id="levelUpMessage"
             class="text-green-600 font-bold"
-            data-i18n="mainPage.evaluation.levelUp"
+            data-i18n="evaluation.levelUp"
           ></p>
           <p>
-            <span data-i18n="mainPage.evaluation.experiencePoints"
+            <span data-i18n="evaluation.experiencePoints"
               >Experience Points Gained:</span
             >
             <span id="xpGained"><strong>0</strong></span>
           </p>
           <p>
-            <span data-i18n="mainPage.evaluation.currentLevel"
-              >Current Level:</span
-            >
+            <span data-i18n="evaluation.currentLevel">Current Level:</span>
             <span id="currentLevel"
               ><strong>Level 1 (Novice Thinker)</strong></span
             >
@@ -633,18 +622,18 @@
             ></div>
           </div>
           <p class="text-sm mt-1">
-            <span data-i18n="mainPage.evaluation.progress">Progress:</span>
+            <span data-i18n="evaluation.progress">Progress:</span>
             <span id="xpProgressText">0 / 0</span> XP
           </p>
           <p class="text-sm mt-1">
-            <span data-i18n="mainPage.evaluation.nextLevel">Next Level:</span>
+            <span data-i18n="evaluation.nextLevel">Next Level:</span>
             <span id="nextLevel">Level 2 (Inquisitive Mind)</span>
           </p>
         </div>
         <!-- Additional instructions/link to the profile page -->
         <div class="mt-4 text-center">
           <p class="text-sm text-center">
-            <span data-i18n="mainPage.evaluation.checkProfile">Check your</span>
+            <span data-i18n="evaluation.checkProfile">Check your</span>
             <a
               href="/profile"
               class="inline-flex items-baseline text-gray-800 underline hover:text-gray-600"
@@ -654,11 +643,9 @@
                 alt="Profile"
                 class="w-4 h-4 mr-1 relative top-0.5"
               />
-              <span data-i18n="mainPage.evaluation.profilePage"
-                >Profile Page</span
-              >
+              <span data-i18n="evaluation.profilePage">Profile Page</span>
             </a>
-            <span data-i18n="mainPage.evaluation.reviewProgress"
+            <span data-i18n="evaluation.reviewProgress"
               >to review answered questions and track your progress.</span
             >
           </p>
@@ -666,13 +653,13 @@
           <div
             class="mt-4 mb-4 max-w-full md:w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"
           >
-            <span data-i18n="mainPage.evaluation.notLoggedIn"></span>
+            <span data-i18n="evaluation.notLoggedIn"></span>
             <a
               href="#"
               onclick="showAuthModal()"
               class="text-gray-800 underline hover:text-gray-600"
-              ><span data-i18n="mainPage.evaluation.here"></span></a
-            ><span data-i18n="mainPage.evaluation.loginSuffix"></span>
+              ><span data-i18n="evaluation.here"></span></a
+            ><span data-i18n="evaluation.loginSuffix"></span>
           </div>
           {% endif %}
         </div>

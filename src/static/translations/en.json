@@ -29,17 +29,19 @@
     "slogan": "Test your reasoning skills. Construct arguments to challenging questions. Improve with AI-driven feedback.",
     "howItWorks": "How It Works",
     "howToImprove": "How to Improve",
-    "howToSupport": "How to Support"
-  },
-  "footer": {
-    "privacyPolicy": "Privacy Policy",
-    "termsOfService": "Terms of Service",
-    "contact": "Contact"
-  },
-  "currentLang": "EN",
-  "languages": {
-    "en": "English",
-    "de": "German"
+    "howToSupport": "How to Support",
+    "buttons": {
+      "randomQuestion": "Random Question",
+      "selectQuestion": "Select Question"
+    },
+    "inputLabels": {
+      "claim": "Your Claim",
+      "claimDescription": "State your position clearly and concisely...",
+      "reasoning": "Your Reasoning",
+      "reasoningDescription": "Explain the logic and evidence supporting your claim...",
+      "counterargument": "Counterargument (Optional)",
+      "counterargumentDescription": "Address potential objections to strengthen your argument..."
+    }
   },
   "questionSelection": {
     "title": "Select a Question",
@@ -47,49 +49,50 @@
     "loading": "Loading questions..."
   },
   "challenge": {
+    "title": "Challenge",
+    "responseLabel": "Your Response to the Challenge",
     "submit": "Submit",
-    "tryAnother": "Try Another Question",
+    "analyzing": "Analyzing...",
     "charactersRemaining": "Characters remaining:",
-    "errorMessage": "Failed to submit response"
+    "tryAnother": "Try Another Question",
+    "errorMessage": "Error submitting response"
   },
-  "mainPage": {
-    "inputLabels": {
-      "claim": "Your Claim",
-      "claimDescription": "State your position clearly...",
-      "reasoning": "Your Reasoning",
-      "reasoningDescription": "Formulate arguments to support your claim...",
-      "counterargument": "Counterargument (Optional)",
-      "counterargumentDescription": "Consider opposing views and refute them..."
-    },
-    "buttons": {
-      "submit": "Submit",
-      "analyzing": "Analyzing...",
-      "randomQuestion": "Random Question",
-      "selectQuestion": "Select Question"
-    },
-    "evaluation": {
-      "title": "Evaluation",
-      "overall": "Overall Rating",
-      "checkProfile": "Check your",
-      "profilePage": "Profile Page",
-      "reviewProgress": "to review answered questions and track your progress.",
-      "notLoggedIn": "You are currently not logged in. To avoid losing your progress and submitted answers, log in",
-      "here": "here",
-      "loginSuffix": ".",
-      "levelUp": "Level Up!",
-      "progress": "Progress:",
-      "nextLevel": "Next Level:",
-      "experiencePoints": "Experience Points Gained:",
-      "currentLevel": "Current Level:",
-      "feedback": "Feedback",
-      "scores": {
-        "relevance": "Relevance",
-        "logic": "Logical Structure",
-        "clarity": "Clarity",
-        "depth": "Depth",
-        "objectivity": "Objectivity",
-        "creativity": "Creativity"
-      }
+  "evaluation": {
+    "title": "Evaluation",
+    "overall": "Overall Rating",
+    "checkProfile": "Check your",
+    "profilePage": "Profile Page",
+    "reviewProgress": "to review answered questions and track your progress.",
+    "notLoggedIn": "You are currently not logged in. To avoid losing your progress and submitted answers, log in",
+    "here": "here",
+    "loginSuffix": ".",
+    "levelUp": "Level Up!",
+    "progress": "Progress:",
+    "nextLevel": "Next Level:",
+    "experiencePoints": "Experience Points Gained:",
+    "currentLevel": "Current Level:",
+    "feedback": "Feedback",
+    "scores": {
+      "relevance": "Relevance",
+      "logic": "Logical Structure",
+      "clarity": "Clarity",
+      "depth": "Depth",
+      "objectivity": "Objectivity",
+      "creativity": "Creativity"
     }
-  }
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "signupTitle": "Sign Up",
+    "usernameOrEmail": "Username or Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "continueWithGoogle": "Continue with Google",
+    "notLoggedIn": "You are currently not logged in. To avoid losing your progress and submitted answers, log in"
+  },
+  "languages": {
+    "en": "English",
+    "de": "German"
+  },
+  "currentLang": "EN"
 }

@@ -29,29 +29,27 @@
     "slogan": "Teste deine Argumentationsfähigkeiten. Beantworte schwierige Fragen. Verbessere dich mit KI-gesteuertem Feedback.",
     "howItWorks": "Wie es funktioniert",
     "howToImprove": "Wie man sich verbessert",
-    "howToSupport": "Wie man unterstützt"
-  },
-  "footer": {
-    "privacyPolicy": "Datenschutzerklärung",
-    "termsOfService": "Nutzungsbedingungen",
-    "contact": "Kontakt"
-  },
-  "currentLang": "DE",
-  "languages": {
-    "en": "Englisch",
-    "de": "Deutsch"
-  },
-  "questionSelection": {
-    "title": "Wähle eine Frage",
-    "close": "✕",
-    "loading": "Fragen werden geladen..."
+    "howToSupport": "Wie man unterstützt",
+    "buttons": {
+      "randomQuestion": "Zufällige Frage",
+      "selectQuestion": "Frage auswählen"
+    },
+    "inputLabels": {
+      "claim": "Deine These",
+      "claimDescription": "Formuliere deine Position klar und präzise...",
+      "reasoning": "Deine Begründung",
+      "reasoningDescription": "Erkläre die Logik und Beweise für deine These...",
+      "counterargument": "Gegenargument (Optional)",
+      "counterargumentDescription": "Gehe auf mögliche Einwände ein, um dein Argument zu stärken..."
+    }
   },
   "challenge": {
     "title": "Challenge",
     "responseLabel": "Deine Antwort auf die Challenge",
-    "submit": "Absenden",
-    "tryAnother": "Andere Frage versuchen",
     "charactersRemaining": "Verbleibende Zeichen:",
+    "submit": "Absenden",
+    "analyzing": "Analysiere...",
+    "tryAnother": "Andere Frage versuchen",
     "errorMessage": "Fehler beim Absenden der Antwort"
   },
   "profile": {
@@ -69,29 +67,20 @@
       "challenge": "Herausforderung"
     }
   },
-  "auth": {
-    "loginTitle": "Anmelden",
-    "signupTitle": "Registrieren",
-    "usernameOrEmail": "Benutzername oder E-Mail",
-    "password": "Passwort",
-    "forgotPassword": "Passwort vergessen?",
-    "continueWithGoogle": "Mit Google fortfahren",
-    "notLoggedIn": "Du bist derzeit nicht angemeldet. Um deinen Fortschritt und deine eingereichten Antworten nicht zu verlieren, melde dich hier an"
-  },
   "evaluation": {
     "title": "Bewertung",
     "overall": "Gesamtbewertung",
-    "experiencePoints": "Erhaltene Erfahrungspunkte:",
-    "currentLevel": "Aktuelles Level:",
-    "progress": "Fortschritt:",
-    "nextLevel": "Nächstes Level:",
     "checkProfile": "Besuche deine",
     "profilePage": "Profilseite",
     "reviewProgress": "um deine beantworteten Fragen zu überprüfen und deinen Fortschritt zu verfolgen.",
-    "levelUp": "Level aufgestiegen!",
     "notLoggedIn": "Du bist derzeit nicht angemeldet. Um deinen Fortschritt und deine eingereichten Antworten nicht zu verlieren, melde dich",
     "here": "hier",
     "loginSuffix": " an.",
+    "levelUp": "Level aufgestiegen!",
+    "progress": "Fortschritt:",
+    "nextLevel": "Nächstes Level:",
+    "experiencePoints": "Erhaltene Erfahrungspunkte:",
+    "currentLevel": "Aktuelles Level:",
     "scores": {
       "overall": "Gesamt",
       "relevance": "Relevanz",
@@ -102,50 +91,18 @@
       "creativity": "Kreativität"
     }
   },
-  "mainPage": {
-    "intro": "Teste deine Argumentationsfähigkeiten. Beantworte schwierige Fragen. Verbessere dich mit KI-gesteuertem Feedback.",
-    "buttons": {
-      "randomQuestion": "Zufällige Frage",
-      "selectQuestion": "Frage auswählen",
-      "analyzing": "Analysiere...",
-      "submit": "Absenden"
-    },
-    "inputLabels": {
-      "claim": "Deine These",
-      "claimDescription": "Formuliere deine Position in einem klaren Satz...",
-      "reasoning": "Deine Begründung",
-      "reasoningDescription": "Formuliere Argumente zu deiner These...",
-      "counterargument": "Gegenargument (Optional)",
-      "counterargumentDescription": "Gehe auf mögliche Einwände ein und wiederlege sie..."
-    },
-    "evaluation": {
-      "title": "Bewertung",
-      "overall": "Gesamtbewertung",
-      "checkProfile": "Besuche dein",
-      "profilePage": "Profil",
-      "reviewProgress": "um deine beantworteten Fragen zu überprüfen und deinen Fortschritt zu verfolgen.",
-      "notLoggedIn": "Du bist derzeit nicht angemeldet. Um deinen Fortschritt und deine eingereichten Antworten nicht zu verlieren, melde dich",
-      "here": "hier",
-      "loginSuffix": " an.",
-      "levelUp": "Level aufgestiegen!",
-      "progress": "Fortschritt:",
-      "nextLevel": "Nächstes Level:",
-      "experiencePoints": "Erhaltene Erfahrungspunkte:",
-      "currentLevel": "Aktuelles Level:",
-      "scores": {
-        "overall": "Gesamt",
-        "relevance": "Relevanz",
-        "logic": "Logische Struktur",
-        "clarity": "Klarheit",
-        "depth": "Tiefe",
-        "objectivity": "Objektivität",
-        "creativity": "Kreativität"
-      }
-    }
+  "auth": {
+    "loginTitle": "Anmelden",
+    "signupTitle": "Registrieren",
+    "usernameOrEmail": "Benutzername oder E-Mail",
+    "password": "Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "continueWithGoogle": "Mit Google fortfahren",
+    "notLoggedIn": "Du bist derzeit nicht angemeldet. Um deinen Fortschritt und deine eingereichten Antworten nicht zu verlieren, melde dich hier an"
   },
-  "errors": {
-    "requiredFields": "Bitte fülle beide erforderlichen Felder (These und Begründung) aus.",
-    "invalidResponse": "Ungültige Antwort vom Server",
-    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten"
-  }
+  "languages": {
+    "en": "Englisch",
+    "de": "Deutsch"
+  },
+  "currentLang": "DE"
 }

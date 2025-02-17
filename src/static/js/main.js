@@ -236,7 +236,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
   // Disable button and show loading state
   submitBtn.innerHTML = `
     <span class="loading-dots">
-      <span class="animate-pulse">${translations.mainPage.buttons.analyzing}</span>
+      <span class="animate-pulse">${translations.challenge.analyzing}</span>
     </span>
   `;
   submitBtn.disabled = true;
@@ -286,7 +286,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     overallEvalDiv.innerHTML = `
       <p class="text-l font-bold mb-2">
         ${
-          translations.mainPage.evaluation.overall
+          translations.evaluation.overall
         }: <span id="totalScoreValue">${totalScore.toFixed(1)}/10</span>
       </p>
       <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
@@ -380,8 +380,8 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       // Use the mapping defined in constants.js
       const translationKey = EVALUATION_TRANSLATION_MAPPING[category];
       const translatedCategory =
-        (translations.mainPage.evaluation.scores &&
-          translations.mainPage.evaluation.scores[translationKey]) ||
+        (translations.evaluation.scores &&
+          translations.evaluation.scores[translationKey]) ||
         category;
 
       return `
@@ -640,7 +640,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     challengeBtn.innerHTML = `
       <span class="loading-dots">
-        <span class="animate-pulse">${translations.mainPage.buttons.analyzing}</span>
+        <span class="animate-pulse">${translations.challenge.analyzing}</span>
       </span>
     `;
     challengeBtn.disabled = true;
@@ -684,7 +684,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       let challengeHtml = `
         <p class="text-l font-bold mb-2">
-          ${translations.mainPage.evaluation.overall}:
+          ${translations.evaluation.overall}:
           <span id="challengeTotalScoreValue" style="color: ${totalScoreColor};">${totalScore.toFixed(
         1
       )}/10</span>
@@ -705,8 +705,8 @@ window.addEventListener("DOMContentLoaded", () => {
           const translationKey = EVALUATION_TRANSLATION_MAPPING[category];
           // Lookup the translated category label; fallback to the original if missing
           const translatedCategory =
-            (translations.mainPage.evaluation.scores &&
-              translations.mainPage.evaluation.scores[translationKey]) ||
+            (translations.evaluation.scores &&
+              translations.evaluation.scores[translationKey]) ||
             category;
           challengeHtml += `<div class="px-2 py-1 rounded-full text-xs" style="background-color: ${scoreToColor(
             score
