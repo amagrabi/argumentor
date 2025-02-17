@@ -197,9 +197,13 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     .getElementById("counterargumentInput")
     .value.trim();
 
+  const errorMessage = document.getElementById("errorMessage");
   if (!claim || !argument) {
-    document.getElementById("errorMessage").textContent =
-      translations.errors.requiredFields;
+    const defaultError =
+      "Please fill in both required fields (Claim and Argument) before submitting.";
+    errorMessage.textContent =
+      translations?.errors?.requiredFields || defaultError;
+    errorMessage.classList.remove("hidden");
     return;
   }
 

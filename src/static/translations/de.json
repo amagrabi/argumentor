@@ -3,6 +3,10 @@
     "title": "ArguMentor - Schärfe deine Argumentationsfähigkeiten",
     "description": "Teste deine Argumentationsfähigkeiten. Konstruiere Argumente für herausfordernde Fragen. Verbessere dich mit KI-gesteuertem Feedback."
   },
+  "errors": {
+    "requiredFields": "Bitte fülle beide erforderlichen Felder (These und Begründung) aus, bevor du absendest.",
+    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut und sende Feedback, wenn das Problem weiterhin besteht."
+  },
   "header": {
     "login": "Anmelden",
     "logout": "Abmelden",

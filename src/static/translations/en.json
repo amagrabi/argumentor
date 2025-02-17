@@ -94,5 +94,9 @@
     "en": "English",
     "de": "German"
   },
-  "currentLang": "EN"
+  "currentLang": "EN",
+  "errors": {
+    "requiredFields": "Please fill in both required fields (Claim and Argument) before submitting.",
+    "unexpectedError": "An unexpected error occurred while processing your submission. Please try again and send feedback if the issue persists."
+  }
 }
