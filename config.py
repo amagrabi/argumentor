@@ -44,7 +44,7 @@ class Settings(BaseSettings):
     MAX_COUNTERARGUMENT: int = Field(default=500)
 
     # Below this threshold, no XP is awarded
-    RELEVANCE_THRESHOLD_FOR_XP: int = Field(default=3)
+    RELEVANCE_THRESHOLD_FOR_XP: int = Field(default=5)
     # Above this threshold, answers are considered too similar
     SIMILARITY_THRESHOLD: float = Field(default=0.8)
 

@@ -480,6 +480,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     document.getElementById("nextLevel").textContent =
       data.level_info.next_level;
 
+    // Update XP bar based on evaluation results
     const xpOldBar = document.getElementById("xpOldBar");
     const xpNewBar = document.getElementById("xpNewBar");
 
