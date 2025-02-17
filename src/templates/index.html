@@ -83,6 +83,42 @@
           <h1 class="text-xl md:text-2xl font-bold">ArguMentor</h1>
         </div>
         <div class="flex items-center space-x-2 mt-2 md:mt-0">
+          <a href="/profile" class="no-underline">
+            <div
+              id="userInfo"
+              class="flex flex-col items-end self-center mr-4 -space-y-0"
+            >
+              <span
+                id="usernameElem"
+                class="text-[10px] text-gray-700 leading-tight"
+              >
+                {{ current_user.username if current_user.is_authenticated and
+                current_user.username else 'Anonymous' }}
+              </span>
+              <span
+                id="userLevelElem"
+                class="text-[9px] text-gray-500 leading-tight"
+              >
+                {{ level_info.display_name }}
+              </span>
+              <!-- XP progress bar with level circle -->
+              <div class="flex items-center">
+                <div
+                  id="levelNumber"
+                  class="w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold z-10"
+                >
+                  {{ level_info.level_number }}
+                </div>
+                <div class="xp-bar-container mini-xp-bar -ml-2">
+                  <div
+                    id="miniXpBarFill"
+                    class="xp-progress-bar bg-green-500"
+                    style="width: {{ level_info.progress_percent }}%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </a>
           {% if current_user.is_authenticated %}
           <button
             id="logoutButton"
