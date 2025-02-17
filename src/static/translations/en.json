@@ -51,5 +51,34 @@
     "tryAnother": "Try Another Question",
     "charactersRemaining": "Characters remaining:",
     "errorMessage": "Failed to submit response"
+  },
+  "mainPage": {
+    "inputLabels": {
+      "claim": "Your Claim",
+      "claimDescription": "State your position clearly...",
+      "reasoning": "Your Reasoning",
+      "reasoningDescription": "Formulate arguments to support your claim...",
+      "counterargument": "Counterargument (Optional)",
+      "counterargumentDescription": "Consider opposing views and refute them..."
+    },
+    "buttons": {
+      "submit": "Submit",
+      "analyzing": "Analyzing...",
+      "randomQuestion": "Random Question",
+      "selectQuestion": "Select Question"
+    },
+    "evaluation": {
+      "title": "Evaluation",
+      "overall": "Overall Rating",
+      "feedback": "Feedback",
+      "scores": {
+        "relevance": "Relevance",
+        "logic": "Logical Structure",
+        "clarity": "Clarity",
+        "depth": "Depth",
+        "objectivity": "Objectivity",
+        "creativity": "Creativity"
+      }
+    }
   }
 }

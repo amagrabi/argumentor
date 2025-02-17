@@ -37,7 +37,7 @@ def create_app():
     )
     os.makedirs(instance_path, exist_ok=True)
 
-    app = Flask(__name__, instance_path=instance_path)
+    app = Flask(__name__, instance_path=instance_path, static_folder="static")
     app.config.from_mapping(get_settings())
     # For sqlite
     # app.config["SQLALCHEMY_DATABASE_URI"] = (
@@ -105,7 +105,7 @@ def create_app():
 
     @app.route("/static/translations/<path:filename>")
     def serve_translations(filename):
-        return send_from_directory("translations", filename)
+        return send_from_directory("static/translations", filename)
 
     return app
 

@@ -69,3 +69,22 @@ export const ERROR_MESSAGES = {
   REQUIRED_FIELDS:
     "Please fill in both required fields (Claim and Argument) before submitting.",
 };
+
+export const EVALUATION_CATEGORIES = [
+  "Relevance",
+  "Logical Structure",
+  "Clarity",
+  "Depth",
+  "Objectivity",
+  "Creativity",
+];
+
+// Mapping of evaluation category labels to translation keys
+export const EVALUATION_TRANSLATION_MAPPING = {
+  Relevance: "relevance",
+  "Logical Structure": "logic",
+  Clarity: "clarity",
+  Depth: "depth",
+  Objectivity: "objectivity",
+  Creativity: "creativity",
+};

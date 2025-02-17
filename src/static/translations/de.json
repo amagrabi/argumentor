@@ -1,0 +1,136 @@
+{
+  "meta": {
+    "title": "ArguMentor - Schärfe deine Argumentationsfähigkeiten",
+    "description": "Teste deine Argumentationsfähigkeiten. Konstruiere Argumente für herausfordernde Fragen. Verbessere dich mit KI-gesteuertem Feedback."
+  },
+  "header": {
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "profile": "Profil"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "filterCategories": "Kategorien filtern",
+    "filterDescription": "Deaktiviere Kategorien, für die du keine Fragen erhalten möchtest. Standardmäßig sind alle aktiviert.",
+    "done": "Fertig"
+  },
+  "categories": {
+    "Philosophy": "Philosophie",
+    "AI & Future": "KI & Zukunft",
+    "Personal Growth & Relationships": "Persönliche Entwicklung & Beziehungen",
+    "Politics": "Politik",
+    "Ethics": "Ethik",
+    "Thought Experiments": "Gedankenexperimente",
+    "Business & Risk": "Business & Risiko",
+    "Biases & Fallacies": "Denkfehler & Fehlschlüsse",
+    "Fun & Casual": "Locker & Unterhaltsam"
+  },
+  "main": {
+    "slogan": "Teste deine Argumentationsfähigkeiten. Beantworte schwierige Fragen. Verbessere dich mit KI-gesteuertem Feedback.",
+    "howItWorks": "Wie es funktioniert",
+    "howToImprove": "Wie man sich verbessert",
+    "howToSupport": "Wie man unterstützt"
+  },
+  "footer": {
+    "privacyPolicy": "Datenschutzerklärung",
+    "termsOfService": "Nutzungsbedingungen",
+    "contact": "Kontakt"
+  },
+  "currentLang": "DE",
+  "languages": {
+    "en": "Englisch",
+    "de": "Deutsch"
+  },
+  "questionSelection": {
+    "title": "Wähle eine Frage",
+    "close": "✕",
+    "loading": "Fragen werden geladen..."
+  },
+  "challenge": {
+    "title": "Argument-Herausforderung",
+    "responseLabel": "Deine Antwort auf die Herausforderung",
+    "submit": "Absenden",
+    "tryAnother": "Andere Frage versuchen",
+    "charactersRemaining": "Verbleibende Zeichen:",
+    "errorMessage": "Fehler beim Absenden der Antwort"
+  },
+  "profile": {
+    "title": "Dein Profil",
+    "goBack": "Zurück",
+    "progress": "Fortschritt",
+    "metrics": {
+      "overall": "Gesamt",
+      "relevance": "Relevanz",
+      "logic": "Logische Struktur",
+      "clarity": "Klarheit",
+      "depth": "Tiefe",
+      "objectivity": "Objektivität",
+      "creativity": "Kreativität",
+      "challenge": "Herausforderung"
+    }
+  },
+  "auth": {
+    "loginTitle": "Anmelden",
+    "signupTitle": "Registrieren",
+    "usernameOrEmail": "Benutzername oder E-Mail",
+    "password": "Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "continueWithGoogle": "Mit Google fortfahren",
+    "notLoggedIn": "Du bist derzeit nicht angemeldet. Um deinen Fortschritt und deine eingereichten Antworten nicht zu verlieren, melde dich hier an"
+  },
+  "evaluation": {
+    "experiencePoints": "Erhaltene Erfahrungspunkte:",
+    "currentLevel": "Aktuelles Level:",
+    "progress": "Fortschritt:",
+    "nextLevel": "Nächstes Level:",
+    "overallRating": "Gesamtbewertung:",
+    "checkProfile": "Besuche deine",
+    "profilePage": "Profilseite",
+    "reviewProgress": "um deine beantworteten Fragen zu überprüfen und deinen Fortschritt zu verfolgen",
+    "levelUp": "Level aufgestiegen!",
+    "scores": {
+      "overall": "Gesamt",
+      "relevance": "Relevanz",
+      "logic": "Logische Struktur",
+      "clarity": "Klarheit",
+      "depth": "Tiefe",
+      "objectivity": "Objektivität",
+      "creativity": "Kreativität"
+    }
+  },
+  "mainPage": {
+    "intro": "Teste deine Argumentationsfähigkeiten. Beantworte schwierige Fragen. Verbessere dich mit KI-gesteuertem Feedback.",
+    "buttons": {
+      "randomQuestion": "Zufällige Frage",
+      "selectQuestion": "Frage auswählen",
+      "analyzing": "Analysiere...",
+      "submit": "Absenden"
+    },
+    "inputLabels": {
+      "claim": "Deine These",
+      "claimDescription": "Formuliere deine Position in einem klaren Satz...",
+      "reasoning": "Deine Begründung",
+      "reasoningDescription": "Formuliere Argumente zu deiner These...",
+      "counterargument": "Gegenargument (Optional)",
+      "counterargumentDescription": "Gehe auf mögliche Einwände ein und wiederlege sie..."
+    },
+    "evaluation": {
+      "title": "Bewertung",
+      "overall": "Gesamtbewertung",
+      "feedback": "Feedback",
+      "scores": {
+        "relevance": "Relevanz",
+        "logic": "Logische Struktur",
+        "clarity": "Klarheit",
+        "depth": "Tiefe",
+        "objectivity": "Objektivität",
+        "creativity": "Kreativität"
+      }
+    }
+  },
+  "errors": {
+    "requiredFields": "Bitte fülle beide erforderlichen Felder (These und Begründung) aus.",
+    "invalidResponse": "Ungültige Antwort vom Server",
+    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten"
+  }
+}

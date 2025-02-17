@@ -51,7 +51,7 @@ class Settings(BaseSettings):
     SUBMISSION_RATE_LIMITS: str = Field(default="10 per minute, 100 per day")
 
     TIER_EVAL_LIMITS: ClassVar[Dict[str, int]] = {
-        "anonymous": 5,
+        "anonymous": 10,
         "free": 20,
         "plus": 100,
         "pro": 1000,

@@ -323,7 +323,7 @@
 
       <!-- Slogan -->
       <div class="mb-4 space-y-2 md:space-y-6">
-        <p class="text-black text-center text-sm md:text-lg font-medium">
+        <p class="text-lg text-black mb-8 text-center" data-i18n="main.slogan">
           Test your reasoning skills. Construct arguments to challenging
           questions. Improve with AI-driven feedback.
         </p>
@@ -437,6 +437,7 @@
             <button
               id="rerollButton"
               class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1"
+              data-i18n="mainPage.buttons.randomQuestion"
             >
               <svg
                 class="w-4 h-4"
@@ -456,6 +457,7 @@
             <button
               id="selectQuestionButton"
               class="mt-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 text-sm rounded-full font-medium flex items-center space-x-1"
+              data-i18n="mainPage.buttons.selectQuestion"
             >
               <svg
                 class="w-4 h-4"
@@ -479,51 +481,63 @@
         <div class="mt-8">
           <div class="space-y-4">
             <div>
-              <label class="block text-lg font-bold mb-2">Your Claim</label>
+              <label
+                data-i18n="mainPage.inputLabels.claim"
+                class="block text-lg font-bold mb-2"
+                >Your Claim</label
+              >
               <textarea
                 id="claimInput"
-                class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-24"
-                placeholder="State your position clearly..."
-                data-maxlength="claim"
+                class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
+                data-i18n-placeholder="mainPage.inputLabels.claimDescription"
+                maxlength="200"
               ></textarea>
               <div class="mt-1 text-sm text-gray-500">
-                <span
-                  >Characters remaining: <span id="claimCount">150</span></span
+                <span data-i18n="challenge.charactersRemaining"
+                  >Characters remaining:</span
                 >
+                <span id="claimCount">150</span>
               </div>
             </div>
 
             <div>
-              <label class="block text-lg font-bold mb-2">Your Reasoning</label>
+              <label
+                data-i18n="mainPage.inputLabels.reasoning"
+                class="block text-lg font-bold mb-2"
+                >Your Reasoning</label
+              >
+
               <textarea
                 id="argumentInput"
                 class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
-                placeholder="Formulate arguments to support your claim..."
-                data-maxlength="argument"
+                data-i18n-placeholder="mainPage.inputLabels.reasoningDescription"
+                maxlength="1000"
               ></textarea>
               <div class="mt-1 text-sm text-gray-500">
-                <span
-                  >Characters remaining:
-                  <span id="argumentCount">1000</span></span
+                <span data-i18n="challenge.charactersRemaining"
+                  >Characters remaining:</span
                 >
+                <span id="argumentCount">1000</span>
               </div>
             </div>
 
             <div>
-              <label class="block text-lg font-bold mb-2"
-                >Anticipate Counterarguments (Optional)</label
+              <label
+                data-i18n="mainPage.inputLabels.counterargument"
+                class="block text-lg font-bold mb-2"
+                >Counterargument (Optional)</label
               >
               <textarea
                 id="counterargumentInput"
-                class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-24"
-                placeholder="Consider opposing views and refute them..."
-                data-maxlength="counterargument"
+                class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
+                data-i18n-placeholder="mainPage.inputLabels.counterargumentDescription"
+                maxlength="1000"
               ></textarea>
               <div class="mt-1 text-sm text-gray-500">
-                <span
-                  >Characters remaining:
-                  <span id="counterargumentCount">500</span></span
+                <span data-i18n="challenge.charactersRemaining"
+                  >Characters remaining:</span
                 >
+                <span id="counterargumentCount">500</span>
               </div>
             </div>
           </div>
@@ -535,6 +549,7 @@
               <button
                 id="submitAnswer"
                 class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"
+                data-i18n="challenge.submit"
               >
                 Submit
               </button>
@@ -545,10 +560,44 @@
 
       <!-- Evaluation Results -->
       <div id="evaluationResults" class="hidden bg-white p-8">
-        <h2 class="text-2xl font-bold mb-6">Evaluation</h2>
-        <div id="overallEvaluation" class="mb-6"></div>
+        <h2
+          class="text-2xl font-bold mb-6"
+          data-i18n="mainPage.evaluation.title"
+        >
+          Evaluation
+        </h2>
+        <div
+          id="overallEvaluation"
+          class="mb-6"
+          data-i18n="mainPage.evaluation.overall"
+        ></div>
         <div id="scores" class="grid gap-4 mb-8">
-          <!-- Dynamically populated scores and feedback -->
+          <div class="score-item">
+            <span data-i18n="mainPage.evaluation.scores.relevance"
+              >Relevance</span
+            >
+          </div>
+          <div class="score-item">
+            <span data-i18n="mainPage.evaluation.scores.logic"
+              >Logical Structure</span
+            >
+          </div>
+          <div class="score-item">
+            <span data-i18n="mainPage.evaluation.scores.clarity">Clarity</span>
+          </div>
+          <div class="score-item">
+            <span data-i18n="mainPage.evaluation.scores.depth">Depth</span>
+          </div>
+          <div class="score-item">
+            <span data-i18n="mainPage.evaluation.scores.objectivity"
+              >Objectivity</span
+            >
+          </div>
+          <div class="score-item">
+            <span data-i18n="mainPage.evaluation.scores.creativity"
+              >Creativity</span
+            >
+          </div>
         </div>
         <!-- XP and Level Info Section -->
         <div id="xpInfo" class="mt-4 text-center">
@@ -629,13 +678,16 @@
             >
               ⚔️
             </div>
-            <h2 class="text-2xl font-bold">Argument Challenge</h2>
+            <h2 class="text-2xl font-bold" data-i18n="challenge.title">
+              Argument Challenge
+            </h2>
           </div>
           <p id="challengeText" class="mb-4 text-gray-700"></p>
           <div>
             <label
               for="challengeResponseInput"
               class="block text-lg font-bold mb-2"
+              data-i18n="challenge.responseLabel"
               >Your Response to the Challenge</label
             >
             <textarea

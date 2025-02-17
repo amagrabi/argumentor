@@ -28,6 +28,15 @@ function applyTranslations() {
       element.textContent = translation;
     }
   });
+
+  // Add support for placeholder translations
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    const key = element.getAttribute("data-i18n-placeholder");
+    const translation = getNestedTranslation(key);
+    if (translation) {
+      element.placeholder = translation;
+    }
+  });
 }
 
 function getNestedTranslation(key) {

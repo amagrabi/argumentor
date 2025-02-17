@@ -3,6 +3,8 @@ import {
   DEFAULT_CATEGORIES,
   CATEGORY_ICONS,
   ERROR_MESSAGES,
+  EVALUATION_CATEGORIES,
+  EVALUATION_TRANSLATION_MAPPING,
 } from "./constants.js";
 import {
   typeWriter,
@@ -197,7 +199,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
   if (!claim || !argument) {
     document.getElementById("errorMessage").textContent =
-      "Please fill in both required fields (Claim and Argument) before submitting.";
+      translations.errors.requiredFields;
     return;
   }
 
@@ -234,7 +236,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
   // Disable button and show loading state
   submitBtn.innerHTML = `
     <span class="loading-dots">
-      <span class="animate-pulse">Analyzing</span>
+      <span class="animate-pulse">${translations.mainPage.buttons.analyzing}</span>
     </span>
   `;
   submitBtn.disabled = true;
@@ -283,9 +285,9 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
     overallEvalDiv.innerHTML = `
       <p class="text-l font-bold mb-2">
-        Overall Rating: <span id="totalScoreValue">${totalScore.toFixed(
-          1
-        )}/10</span>
+        ${
+          translations.mainPage.evaluation.overall
+        }: <span id="totalScoreValue">${totalScore.toFixed(1)}/10</span>
       </p>
       <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
         <div id="totalScoreBar" class="rounded-full total-progress-bar" style="width: ${totalScorePercent}%; background-color: ${totalScoreColor};"></div>
@@ -368,35 +370,38 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     // Now populate the detailed individual factor scores (the look and animation remain unchanged)
     const scoresDiv = document.getElementById("scores");
     scoresDiv.innerHTML = "";
-    const orderedCategories = [
-      "Relevance",
-      "Logical Structure",
-      "Clarity",
-      "Depth",
-      "Objectivity",
-      "Creativity",
-    ];
-    orderedCategories.forEach((category) => {
+
+    const evaluationHTML = EVALUATION_CATEGORIES.map((category) => {
       const finalScore = data.evaluation.scores[category] || 0;
       const finalWidthPercent = finalScore * 10;
       const color = scoreToColor(finalScore);
       const feedbackText = data.evaluation.feedback[category] || "";
-      scoresDiv.innerHTML += `
+
+      // Use the mapping defined in constants.js
+      const translationKey = EVALUATION_TRANSLATION_MAPPING[category];
+      const translatedCategory =
+        (translations.mainPage.evaluation.scores &&
+          translations.mainPage.evaluation.scores[translationKey]) ||
+        category;
+
+      return `
         <div class="mb-2">
           <div class="flex justify-between items-center">
-            <span class="font-medium">${category}</span>
+            <span class="font-medium">${translatedCategory}</span>
             <span class="font-medium score-value" data-final="${finalScore}" data-color="${color}" style="color: #e53e3e;">1/10</span>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
             <div class="rounded-full h-2 progress-fill"
-                  data-score="${finalWidthPercent}"
-                  data-color="${color}"
-                  style="width: 10%; background-color: #e53e3e;"></div>
+                 data-score="${finalWidthPercent}"
+                 data-color="${color}"
+                 style="width: 10%; background-color: #e53e3e;"></div>
           </div>
           <p class="text-sm text-gray-500 feedback" data-final="${feedbackText}"></p>
         </div>
       `;
-    });
+    }).join("");
+
+    scoresDiv.innerHTML = evaluationHTML;
 
     setTimeout(() => {
       document.querySelectorAll(".progress-fill").forEach((fill, index) => {
@@ -633,7 +638,11 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    challengeBtn.innerHTML = `<span class="loading-dots"><span class="animate-pulse">Analyzing</span></span>`;
+    challengeBtn.innerHTML = `
+      <span class="loading-dots">
+        <span class="animate-pulse">${translations.mainPage.buttons.analyzing}</span>
+      </span>
+    `;
     challengeBtn.disabled = true;
 
     try {
@@ -675,40 +684,43 @@ window.addEventListener("DOMContentLoaded", () => {
 
       let challengeHtml = `
         <p class="text-l font-bold mb-2">
-          Overall Rating: <span id="challengeTotalScoreValue" style="color: ${totalScoreColor};">${totalScore.toFixed(
+          ${translations.mainPage.evaluation.overall}:
+          <span id="challengeTotalScoreValue" style="color: ${totalScoreColor};">${totalScore.toFixed(
         1
       )}/10</span>
         </p>
         <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-          <div id="challengeTotalScoreBar" class="rounded-full total-progress-bar" style="width: ${totalScorePercent}%; background-color: ${totalScoreColor};"></div>
+          <div id="challengeTotalScoreBar" class="rounded-full total-progress-bar"
+               style="width: ${totalScorePercent}%; background-color: ${totalScoreColor};"></div>
         </div>
         <p id="challengeOverallFeedback" class="text-md">${
           data.evaluation.overall_feedback
         }</p>
         <div class="flex flex-wrap gap-2 mt-2">`;
-      const orderedCategories = [
-        "Relevance",
-        "Logical Structure",
-        "Clarity",
-        "Depth",
-        "Objectivity",
-        "Creativity",
-      ];
-      orderedCategories.forEach((category) => {
+
+      // Use the centralized evaluation categories from constants.js
+      EVALUATION_CATEGORIES.forEach((category) => {
         if (typeof data.evaluation.scores[category] !== "undefined") {
           const score = data.evaluation.scores[category];
+          const translationKey = EVALUATION_TRANSLATION_MAPPING[category];
+          // Lookup the translated category label; fallback to the original if missing
+          const translatedCategory =
+            (translations.mainPage.evaluation.scores &&
+              translations.mainPage.evaluation.scores[translationKey]) ||
+            category;
           challengeHtml += `<div class="px-2 py-1 rounded-full text-xs" style="background-color: ${scoreToColor(
             score
           )};">
-                                ${category}: ${score}/10
+                                ${translatedCategory}: ${score}/10
                               </div>`;
         }
       });
+
       challengeHtml += `</div>`;
       challengeEvalDiv.innerHTML = challengeHtml;
       challengeEvalDiv.classList.remove("hidden");
 
-      // Display XP message for challenge *within* the challenge evaluation section
+      // Display XP message for challenge within the challenge evaluation section
       const challengeXpMessage = document.createElement("p");
       challengeXpMessage.classList.add("text-sm", "text-red-600", "mt-4");
       challengeXpMessage.textContent = data.xp_message || "";
