@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ session.get('language', 'en') }}">
   <head>
     <!-- Google tag (gtag.js) -->
     <script
@@ -17,7 +17,7 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>How to Improve Your Reasoning - ArguMentor</title>
+    <title>{{ page_content.title or "How to Improve" }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="icon"
@@ -29,9 +29,7 @@
     <!-- Header with Go Back Button -->
     <header class="bg-gray-800 p-4">
       <div class="max-w-5xl mx-auto flex justify-between items-center">
-        <h1 class="text-white text-3xl font-bold">
-          How to Improve Your Reasoning
-        </h1>
+        <h1 class="text-white text-3xl font-bold">{{ page_content.title }}</h1>
         <a
           href="/"
           class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
@@ -44,47 +42,66 @@
     <main class="max-w-5xl mx-auto p-4">
       <!-- Introduction Section -->
       <section class="mb-8">
-        <h2 class="text-2xl font-bold mb-4">Mastering Logical Reasoning</h2>
-        <p class="mb-4">
-          Developing strong reasoning skills is about more than just defending a
-          position: it's about constructing a coherent, well-supported argument.
-          The techniques below offer actionable steps to refine your
-          argumentation and critical thinking.
-        </p>
+        <h2 class="text-2xl font-bold mb-4">
+          {{ page_content.overviewTitle or "Overview" }}
+        </h2>
+        <p class="mb-4">{{ page_content.overview }}</p>
       </section>
 
-      <!-- The SEEC Framework Section (Revised) -->
+      <!-- Build Your Argument Section -->
       <section class="mb-8">
-        <h3 class="text-xl font-semibold mb-2">
+        <h3
+          class="text-xl font-semibold mb-2"
+          data-i18n="howToImprovePage.argumentStepsTitle"
+        >
           Build Your Argument Step-by-Step
         </h3>
         <ol class="list-decimal pl-6 mb-4 space-y-2">
           <li>
-            <strong>State:</strong> Clearly articulate your main claim. Ask
-            yourself, "What exactly am I trying to prove?" Keep your statement
-            concise and debatable.
+            <strong data-i18n="howToImprovePage.argumentStep1Title"
+              >State:</strong
+            >
+            <span data-i18n="howToImprovePage.argumentStep1Content">
+              Clearly articulate your main claim. Ask yourself, "What exactly am
+              I trying to prove?" Keep your statement concise and debatable.
+            </span>
           </li>
           <li>
-            <strong>Explain:</strong> Detail your thought process by outlining
-            the rationale behind your claim. Describe the assumptions and
-            logical steps that lead you to your conclusion.
+            <strong data-i18n="howToImprovePage.argumentStep2Title"
+              >Explain:</strong
+            >
+            <span data-i18n="howToImprovePage.argumentStep2Content">
+              Detail your thought process by outlining the rationale behind your
+              claim. Describe the assumptions and logical steps that lead you to
+              your conclusion.
+            </span>
           </li>
           <li>
-            <strong>Evidence:</strong> Back up your reasoning with solid data,
-            reputable sources, or concrete examples. Look for statistics, case
-            studies, or expert opinions that lend credibility to your argument.
+            <strong data-i18n="howToImprovePage.argumentStep3Title"
+              >Evidence:</strong
+            >
+            <span data-i18n="howToImprovePage.argumentStep3Content">
+              Back up your reasoning with solid data, reputable sources, or
+              concrete examples. Look for statistics, case studies, or expert
+              opinions that lend credibility to your argument.
+            </span>
           </li>
           <li>
-            <strong>Conclusion:</strong> Summarize your argument by tying your
-            evidence back to your claim. Reiterate how your data supports your
-            position and address any potential counterarguments.
+            <strong data-i18n="howToImprovePage.argumentStep4Title"
+              >Conclusion:</strong
+            >
+            <span data-i18n="howToImprovePage.argumentStep4Content">
+              Summarize your argument by tying your evidence back to your claim.
+              Reiterate how your data supports your position and address any
+              potential counterarguments.
+            </span>
           </li>
         </ol>
-        <p class="mb-4">
+        <p class="mb-4" data-i18n="howToImprovePage.argumentStepsExplanation">
           Breaking your argument into these steps makes it easier to identify
           gaps in your reasoning and refine each part systematically.
         </p>
-        <p class="mb-4">
+        <p class="mb-4" data-i18n="howToImprovePage.argumentStepsAdditional">
           Always seek out credible information and avoid relying solely on
           assumptions. Validate your data and be open to updating your views
           when confronted with new evidence. This not only strengthens your
@@ -94,23 +111,28 @@
 
       <!-- Recognizing Cognitive Biases Section -->
       <section class="mb-8">
-        <h3 class="text-xl font-semibold mb-2">
+        <h3
+          class="text-xl font-semibold mb-2"
+          data-i18n="howToImprovePage.biasesSectionTitle"
+        >
           Understanding Cognitive Biases and Logical Fallacies
         </h3>
-        <p class="mb-4">
+        <p class="mb-4" data-i18n="howToImprovePage.biasesSectionContent">
           Our reasoning can be impaired by two common pitfalls. Cognitive biases
           are systematic errors in thinking caused by mental shortcuts, while
           logical fallacies are common flaws in reasoning that weaken the
-          arguments’ validity. Being aware of these sources of reasoning errors
+          arguments' validity. Being aware of these sources of reasoning errors
           can help you build clearer, more objective arguments.
         </p>
       </section>
 
       <!-- Cognitive Biases List Section -->
       <section class="mb-8">
-        <h2 class="text-2xl font-bold mb-4">Cognitive Biases</h2>
+        <h2 class="text-2xl font-bold mb-4">
+          {{ page_content.cognitiveBiasesTitle }}
+        </h2>
         <div class="grid gap-4 md:grid-cols-2">
-          {% for bias in biases %}
+          {% for bias in page_content.cognitive_biases %}
           <div class="bg-white p-4 rounded-lg border border-gray-200">
             <h3 class="font-bold text-lg mb-2">{{ bias.name }}</h3>
             <p class="text-gray-600">{{ bias.description }}.</p>
@@ -124,9 +146,11 @@
 
       <!-- Logical Fallacies List Section -->
       <section class="mb-8">
-        <h2 class="text-2xl font-bold mb-4">Logical Fallacies</h2>
+        <h2 class="text-2xl font-bold mb-4">
+          {{ page_content.logicalFallaciesTitle }}
+        </h2>
         <div class="grid gap-4 md:grid-cols-2">
-          {% for fallacy in fallacies %}
+          {% for fallacy in page_content.logical_fallacies %}
           <div class="bg-white p-4 rounded-lg border border-gray-200">
             <h3 class="font-bold text-lg mb-2">{{ fallacy.name }}</h3>
             <p class="text-gray-600 mb-2">{{ fallacy.description }}.</p>
@@ -147,5 +171,32 @@
         >
       </div>
     </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Get stored language preference
+        const currentLanguage = localStorage.getItem("language") || "en";
+
+        // Load translations
+        const response = await fetch(
+          `/static/translations/${currentLanguage}.json`
+        );
+        const translations = await response.json();
+
+        // Apply translations
+        document.querySelectorAll("[data-i18n]").forEach((element) => {
+          const key = element.getAttribute("data-i18n");
+          const translation = key
+            .split(".")
+            .reduce((obj, k) => obj && obj[k], translations);
+          if (translation) {
+            element.innerHTML = translation;
+          }
+        });
+
+        // Update document language
+        document.documentElement.lang = currentLanguage;
+      });
+    </script>
   </body>
 </html>

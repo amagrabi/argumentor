@@ -356,5 +356,115 @@
     "howToSupportDescription": "Help keep this project going by sharing <a href='javascript:void(0)' onclick='showFeedbackModal()' class='underline'>feedback</a> or <a href='https://buymeacoffee.com/amadeusmagrabi' target='_blank' rel='noopener noreferrer' class='underline'>buying me a coffee</a>.",
     "howToSupportLearnMore": "Learn More →",
     "buyCoffeeLink": "buying me a coffee"
+  },
+  "howToImprovePage": {
+    "title": "How to Improve",
+    "overview": "Identify biases in your thinking and avoid common logical fallacies to build stronger, more persuasive arguments. Being aware of these pitfalls can help you refine your approach to problem-solving and decision-making.",
+    "cognitiveBiasesTitle": "Cognitive Biases",
+    "logicalFallaciesTitle": "Logical Fallacies",
+    "cognitive_biases": [
+      {
+        "name": "Confirmation Bias",
+        "description": "Tendency to search for, interpret, favor, and recall information that confirms one's preexisting beliefs.",
+        "example": "Only reading news sources that align with your political views."
+      },
+      {
+        "name": "Halo Effect",
+        "description": "Letting one positive quality influence overall perception.",
+        "example": "Assuming attractive people are more competent."
+      },
+      {
+        "name": "Fundamental Attribution Error",
+        "description": "Attributing others' behavior to character rather than situation.",
+        "example": "Thinking someone's late because they're lazy rather than considering traffic."
+      },
+      {
+        "name": "Sunk Cost Fallacy",
+        "description": "Continuing a behavior due to previously invested resources.",
+        "example": "Finishing a boring movie because you already paid for the ticket."
+      },
+      {
+        "name": "Negativity Bias",
+        "description": "Giving more weight to negative instead of positive experiences.",
+        "example": "Remembering criticisms more vividly than praises."
+      },
+      {
+        "name": "Anchoring Bias",
+        "description": "Relying too heavily on the first piece of information encountered.",
+        "example": "First price quoted sets expectations for all subsequent negotiations."
+      },
+      {
+        "name": "Availability Heuristic",
+        "description": "Overestimating the importance of information that is readily available.",
+        "example": "Thinking plane crashes are common after seeing news reports about them."
+      },
+      {
+        "name": "Dunning-Kruger Effect",
+        "description": "People with low ability overestimating their skill level.",
+        "example": "Novice chess players may overestimate their skill because they don't recognize their weaknesses."
+      },
+      {
+        "name": "Bandwagon Effect",
+        "description": "Adopting beliefs because many others hold them.",
+        "example": "Believing a claim because it has many social media shares."
+      },
+      {
+        "name": "Hindsight Bias",
+        "description": "The tendency to believe, after an event has occurred, that one would have predicted the outcome beforehand.",
+        "example": "After a team loses a game, claiming 'I knew they were going to lose!'"
+      }
+    ],
+    "logical_fallacies": [
+      {
+        "name": "Strawman Fallacy",
+        "description": "Misrepresenting an argument to make it easier to attack.",
+        "example": "When someone says we need pollution controls, claiming 'They want to shut down all industry!'"
+      },
+      {
+        "name": "Ad Hominem",
+        "description": "Attacking the person making the argument rather than the argument itself.",
+        "example": "Rejecting a climate study because the author once worked for an oil company."
+      },
+      {
+        "name": "Whataboutism",
+        "description": "Deflecting criticism by accusing others of similar flaws.",
+        "example": "When accused of corruption, responding 'What about the other party's donations?'"
+      },
+      {
+        "name": "Base Rate Fallacy",
+        "description": "Neglecting general statistical probabilities when evaluating specific cases.",
+        "example": "Worrying about a positive cancer test result without considering the disease's rarity in the population."
+      },
+      {
+        "name": "Appeal to Authority",
+        "description": "Assuming a claim is true because an authority figure endorses it.",
+        "example": "This medical treatment must work because a famous actor promotes it."
+      },
+      {
+        "name": "False Dilemma",
+        "description": "Presenting two options as the only possibilities when others exist.",
+        "example": "Either we ban all cars or we let climate change destroy the planet."
+      },
+      {
+        "name": "Slippery Slope",
+        "description": "Arguing that a small first step will inevitably lead to extreme consequences.",
+        "example": "Legalizing marijuana will lead to heroin addiction epidemics."
+      },
+      {
+        "name": "Appeal to Nature",
+        "description": "Arguing something is good because it's natural.",
+        "example": "This chemical is dangerous because it's synthetic and not found in nature."
+      },
+      {
+        "name": "Gambler's Fallacy",
+        "description": "Believing past independent events affect future probabilities.",
+        "example": "Thinking a coin is 'due' for heads after 5 consecutive tails."
+      },
+      {
+        "name": "Appeal to Emotion",
+        "description": "Using emotion manipulation instead of valid reasoning.",
+        "example": "This policy will destroy children's futures! (without evidence)"
+      }
+    ]
   }
 }

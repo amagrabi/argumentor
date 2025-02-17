@@ -33,7 +33,7 @@
   },
   "main": {
     "slogan": "Teste deine Argumentationsfähigkeiten. Beantworte schwierige Fragen. Verbessere dich mit KI-gesteuertem Feedback.",
-    "howItWorks": "Wie es funktioniert",
+    "howItWorks": "So funktioniert es",
     "howToImprove": "Wie man sich verbessert",
     "howToSupport": "Wie man unterstützt",
     "buttons": {
@@ -223,20 +223,20 @@
     "title": "So funktioniert es",
     "goBack": "Zurück",
     "section1": {
-      "title": "Wähle eine Frage aus",
-      "description": "Suche dir eine interessante Frage aus einer Vielzahl von Kategorien aus."
+      "title": "Verstehe Deine Herausforderung",
+      "description": "Erhalte Fragen, die deine Argumentationsfähigkeiten auf die Probe stellen."
     },
     "section2": {
       "title": "Formuliere dein Argument",
-      "description": "Entwickle eine logische Argumentation, um die Frage zu beantworten."
+      "description": "Entwickle Argumente und erhalte Feedback zu deiner Leistung."
     },
     "section3": {
-      "title": "Bekomme KI-gestütztes Feedback",
-      "description": "Erhalte eine detaillierte Bewertung und Analyse deiner Argumentation."
+      "title": "Analysiere & Verbessere",
+      "description": "Analysiere deine Leistung, verfolge deinen Fortschritt und steigere dein Level."
     },
     "section4": {
-      "title": "Analyse & Verbesserung",
-      "description": "Analysiere deine Leistung, verfolge deinen Fortschritt und steigere dein Level."
+      "title": "Profilseite",
+      "description": "Sieh dir deinen Fortschritt und alle eingereichten Antworten an."
     },
     "overviewTitle": "Überblick",
     "overview": "Die Plattform wurde entwickelt, um deine Argumentations- und Entscheidungsfähigkeiten zu verbessern:",
@@ -252,7 +252,7 @@
     },
     "evaluationCriteria": {
       "title": "Bewertungskriterien",
-      "description": "Deine Argumente werden anhand folgender Schlüsseldimensionen bewertet. Die Bewertungen reichen von 1 (mangelhaft) bis 10 (ausgezeichnet):"
+      "description": "Deine Argumente werden nach folgenden Dimensionen bewertet:"
     }
   },
   "evaluationCriteria": {
@@ -354,8 +354,131 @@
     "platformGuideLearnMore": "Mehr erfahren →",
     "reasoningTipsDescription": "Konzentriere dich auf klare Prämissen und logische Schlussfolgerungen.",
     "reasoningTipsLearnMore": "Mehr erfahren →",
-    "howToSupportDescription": "Unterstütze das Projekt durch <a href='javascript:void(0)' onclick='showFeedbackModal()' class='underline'>feedback</a> oder über <a href='https://buymeacoffee.com/amadeusmagrabi' target='_blank' rel='noopener noreferrer' class='underline'>Buy Me A Coffee</a>.",
+    "howToSupportDescription": "Unterstütze das Projekt durch <a href='javascript:void(0)' onclick='showFeedbackModal()' class='underline'>Feedback</a> oder über <a href='https://buymeacoffee.com/amadeusmagrabi' target='_blank' rel='noopener noreferrer' class='underline'>Buy Me A Coffee</a>.",
     "howToSupportLearnMore": "Mehr erfahren →",
     "buyCoffeeLink": "Buy Me A Coffee"
+  },
+  "howToImprovePage": {
+    "title": "Wie man sich verbessert",
+    "overview": "Erkenne vorherrschende Denkverzerrungen und vermeide gängige logische Fehlschlüsse, um stärkere und überzeugendere Argumente zu entwickeln. Das Bewusstsein für diese Fallstricke kann dir helfen, deinen Ansatz zur Problemlösung und Entscheidungsfindung zu verfeinern.",
+    "cognitiveBiasesTitle": "Kognitive Verzerrungen",
+    "logicalFallaciesTitle": "Logische Fehlschlüsse",
+    "cognitive_biases": [
+      {
+        "name": "Bestätigungsfehler",
+        "description": "Tendenz, nach Informationen zu suchen, diese zu interpretieren, zu bevorzugen und sich zu merken, die vorbestehende Überzeugungen bestätigen.",
+        "example": "Nur Nachrichtenquellen lesen, die zu deinen politischen Ansichten passen."
+      },
+      {
+        "name": "Halo-Effekt",
+        "description": "Ein einzelnes positives Merkmal beeinflusst die Gesamtwahrnehmung.",
+        "example": "Annehmen, dass attraktive Personen kompetenter sind."
+      },
+      {
+        "name": "Fundamentaler Attributionsfehler",
+        "description": "Das Verhalten anderer wird eher dem Charakter als der Situation zugeschrieben.",
+        "example": "Jemanden zu spät kommen zu sehen und anzunehmen, dass er faul ist, statt den Verkehr zu berücksichtigen."
+      },
+      {
+        "name": "Fehlschluss der versunkenen Kosten",
+        "description": "Ein Verhalten wird fortgesetzt, weil bereits investierte Ressourcen berücksichtigt werden.",
+        "example": "Einen langweiligen Film zu Ende schauen, weil man bereits bezahlt hat."
+      },
+      {
+        "name": "Negativitätsverzerrung",
+        "description": "Negative Erfahrungen werden stärker gewichtet als positive.",
+        "example": "Kritik bleibt intensiver in Erinnerung als Lob."
+      },
+      {
+        "name": "Ankerheuristik",
+        "description": "Zu starke Abhängigkeit von der zuerst erhaltenen Information.",
+        "example": "Der erste angebotene Preis prägt die Erwartungen für alle weiteren Verhandlungen."
+      },
+      {
+        "name": "Verfügbarkeitsheuristik",
+        "description": "Die Bedeutung leicht verfügbarer Informationen wird überschätzt.",
+        "example": "Nachdem man Nachrichtenberichte über Flugzeugabstürze sieht, denkt man, dass solche Ereignisse häufig sind."
+      },
+      {
+        "name": "Dunning-Kruger-Effekt",
+        "description": "Menschen mit geringer Fähigkeit überschätzen oft ihr eigenes Können.",
+        "example": "Anfänger im Schach überschätzen möglicherweise ihr Talent, weil sie ihre Schwächen nicht erkennen."
+      },
+      {
+        "name": "Mitläufereffekt",
+        "description": "Glaubenssätze werden übernommen, weil viele andere sie teilen.",
+        "example": "An eine Aussage glauben, weil sie in sozialen Medien viele Shares erhält."
+      },
+      {
+        "name": "Rückschaufehler",
+        "description": "Nach einem Ereignis glaubt man, das Ergebnis vorausgesehen zu haben.",
+        "example": "Nach einer Niederlage behaupten: 'Ich wusste, dass sie verlieren würden!'"
+      }
+    ],
+    "logical_fallacies": [
+      {
+        "name": "Strohmann-Argument",
+        "description": "Ein Argument wird verzerrt dargestellt, um es leichter angreifen zu können.",
+        "example": "Wenn jemand strengere Umweltschutzmaßnahmen fordert, behauptet er: 'Sie wollen die ganze Industrie abschaffen!'"
+      },
+      {
+        "name": "Ad Hominem",
+        "description": "Statt des Arguments wird die Person, die es vorbringt, kritisiert.",
+        "example": "Eine Klimastudie ablehnen, weil der Autor einst für ein Ölunternehmen arbeitete."
+      },
+      {
+        "name": "Whataboutism",
+        "description": "Kritik wird abgeblockt, indem auf ähnliche Fehler anderer hingewiesen wird.",
+        "example": "Bei Korruptionsvorwürfen erwidern: 'Was ist mit den Spenden der anderen Partei?'"
+      },
+      {
+        "name": "Basisratenfehlschluss",
+        "description": "Die allgemeine statistische Wahrscheinlichkeit wird ignoriert, wenn Einzelfälle bewertet werden.",
+        "example": "Sich über einen positiven Krebs-Test zu sorgen, ohne die Seltenheit der Krankheit zu berücksichtigen."
+      },
+      {
+        "name": "Autoritätsargument",
+        "description": "Ein Anspruch wird als wahr angenommen, weil eine Autorität ihn unterstützt.",
+        "example": "Diese medizinische Behandlung muss wirken, weil ein berühmter Schauspieler sie bewirbt."
+      },
+      {
+        "name": "Falsches Dilemma",
+        "description": "Es werden nur zwei Möglichkeiten dargestellt, obwohl weitere existieren.",
+        "example": "Entweder verbieten wir alle Autos oder der Klimawandel zerstört die Welt."
+      },
+      {
+        "name": "Dammbruch-Argument",
+        "description": "Es wird behauptet, dass ein kleiner Anfangsschritt zwangsläufig zu extremen Folgen führt.",
+        "example": "Die Legalisierung von Marihuana führt zu einer Heroinabhängigkeitsepidemie."
+      },
+      {
+        "name": "Berufung auf die Natur",
+        "description": "Es wird argumentiert, dass etwas gut sei, weil es natürlich ist.",
+        "example": "Dieses chemische Produkt ist gefährlich, weil es synthetisch ist und in der Natur nicht vorkommt."
+      },
+      {
+        "name": "Spieler-Irrtum",
+        "description": "Die Annahme, dass vergangene unabhängige Ereignisse zukünftige Wahrscheinlichkeiten beeinflussen.",
+        "example": "Nach fünf aufeinanderfolgenden Münzwürfen immer 'Zahl' zu sehen, zu glauben, dass jetzt 'Kopf' fällig ist."
+      },
+      {
+        "name": "Appell an die Emotion",
+        "description": "Emotionale Appelle werden genutzt, anstatt valide Argumente zu liefern.",
+        "example": "Diese Politik wird die Zukunft der Kinder zerstören! (ohne Belege)"
+      }
+    ],
+    "argumentStepsTitle": "Baue dein Argument Schritt für Schritt auf",
+    "argumentStep1Title": "Formuliere:",
+    "argumentStep1Content": "Artikuliere deine Hauptaussage klar. Frage dich: 'Was genau möchte ich beweisen?' Halte deine Aussage präzise und diskutierbar.",
+    "argumentStep2Title": "Erkläre:",
+    "argumentStep2Content": "Beschreibe deinen Gedankengang, indem du die Logik hinter deiner Aussage darlegst. Erläutere die Annahmen und logischen Schritte, die zu deiner Schlussfolgerung führen.",
+    "argumentStep3Title": "Belege:",
+    "argumentStep3Content": "Untermauere deine Argumentation mit soliden Daten, seriösen Quellen oder konkreten Beispielen. Suche nach Statistiken, Fallstudien oder Expertenmeinungen, die deinem Argument Glaubwürdigkeit verleihen.",
+    "argumentStep4Title": "Fazit:",
+    "argumentStep4Content": "Fasse dein Argument zusammen, indem du deine Belege mit deiner Hauptaussage verbindest. Wiederhole, wie deine Daten deine Position stützen und gehe auf mögliche Gegenargumente ein.",
+    "argumentStepsExplanation": "Die Aufteilung deines Arguments in diese Schritte erleichtert es, Lücken in deiner Argumentation zu erkennen und jeden Teil systematisch zu verbessern.",
+    "argumentStepsAdditional": "Suche stets nach glaubwürdigen Informationen und vermeide es, dich ausschließlich auf Annahmen zu stützen. Überprüfe deine Daten und sei offen dafür, deine Ansichten zu aktualisieren, wenn du mit neuen Beweisen konfrontiert wirst. Dies stärkt nicht nur dein Argument, sondern erhöht auch seine Überzeugungskraft.",
+    "biasesSectionTitle": "Kognitive Verzerrungen und logische Fehlschlüsse verstehen",
+    "biasesSectionContent": "Unser Denken kann durch zwei häufige Fallstricke beeinträchtigt werden. Kognitive Verzerrungen sind systematische Denkfehler, die durch mentale Abkürzungen entstehen, während logische Fehlschlüsse häufige Fehler in der Argumentation sind, die die Gültigkeit der Argumente schwächen. Das Bewusstsein für diese Quellen von Denkfehlern kann dir helfen, klarere und objektivere Argumente aufzubauen."
   }
 }

@@ -2,7 +2,6 @@ import json
 import os
 import uuid
 
-import yaml
 from flask import (
     Blueprint,
     current_app,
@@ -107,14 +106,23 @@ def how_it_works():
     )
 
 
-@pages_bp.route("/reasoning_guide")
-def reasoning_guide():
-    data_path = os.path.join(current_app.root_path, "data", "biases_fallacies.yaml")
-    with open(data_path, "r") as f:
-        data = yaml.safe_load(f)
-    biases = data.get("cognitive_biases", [])
-    fallacies = data.get("logical_fallacies", [])
-    return render_template("reasoning_guide.html", biases=biases, fallacies=fallacies)
+@pages_bp.route("/how_to_improve")
+def how_to_improve():
+    # Get language from query parameter or session (default to "en")
+    lang = request.args.get("lang") or session.get("language", "en")
+    trans_file = os.path.join(
+        current_app.root_path, "static", "translations", f"{lang}.json"
+    )
+
+    with open(trans_file, "r", encoding="utf-8") as f:
+        translations = json.load(f)
+
+    # Get the page content from translations
+    page_content = translations.get("howToImprovePage", {})
+
+    return render_template(
+        "how_to_improve.html", page_content=page_content, translations=translations
+    )
 
 
 @pages_bp.route("/support")
