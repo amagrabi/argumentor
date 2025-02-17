@@ -400,26 +400,22 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       const color = scoreToColor(finalScore);
       const feedbackText = data.evaluation.feedback[category] || "";
 
-      // Use the mapping defined in constants.js
+      // Get translation key from mapping
       const translationKey = EVALUATION_TRANSLATION_MAPPING[category];
-      const translatedCategory =
-        (translations.evaluation.scores &&
-          translations.evaluation.scores[translationKey]) ||
-        category;
 
       return `
-        <div class="mb-2">
+        <div class="mb-2 score-item">
           <div class="flex justify-between items-center">
-            <span class="font-medium">${translatedCategory}</span>
-            <span class="font-medium score-value" data-final="${finalScore}" data-color="${color}" style="color: #e53e3e;">1/10</span>
+            <span data-i18n="evaluation.scores.${translationKey}">${
+        translations.evaluation.scores[translationKey] || category
+      }</span>
+            <span class="font-medium score-value" style="color: ${color};">${finalScore}/10</span>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
-            <div class="rounded-full h-2 progress-fill"
-                 data-score="${finalWidthPercent}"
-                 data-color="${color}"
-                 style="width: 10%; background-color: #e53e3e;"></div>
+            <div class="rounded-full h-2"
+                style="width: ${finalWidthPercent}%; background-color: ${color};"></div>
           </div>
-          <p class="text-sm text-gray-500 feedback" data-final="${feedbackText}"></p>
+          <p class="text-sm text-gray-500">${feedbackText}</p>
         </div>
       `;
     }).join("");
@@ -734,11 +730,14 @@ window.addEventListener("DOMContentLoaded", () => {
             (translations.evaluation.scores &&
               translations.evaluation.scores[translationKey]) ||
             category;
-          challengeHtml += `<div class="px-2 py-1 rounded-full text-xs" style="background-color: ${scoreToColor(
-            score
-          )};">
-                                ${translatedCategory}: ${score}/10
-                              </div>`;
+          challengeHtml += `<div class="px-2 py-1 rounded-full text-xs"
+                                data-category="${category}"
+                                data-translation-key="evaluation.scores.${translationKey}"
+                                style="background-color: ${scoreToColor(
+                                  score
+                                )};">
+                                  ${translatedCategory}: ${score}/10
+                                </div>`;
         }
       });
 
@@ -1005,4 +1004,41 @@ function scrollToChallengeEvaluation() {
       inline: "nearest",
     });
   }
+}
+
+function preserveEvaluationContent() {
+  const evaluationResults = document.getElementById("evaluationResults");
+  const overallEvaluation = document.getElementById("overallEvaluation");
+  const scores = document.getElementById("scores");
+
+  return {
+    isHidden: evaluationResults.classList.contains("hidden"),
+    overallHtml: overallEvaluation.innerHTML,
+    scoresHtml: scores.innerHTML,
+  };
+}
+
+function restoreEvaluationContent(content) {
+  const evaluationResults = document.getElementById("evaluationResults");
+  const overallEvaluation = document.getElementById("overallEvaluation");
+  const scores = document.getElementById("scores");
+
+  if (!content.isHidden) {
+    evaluationResults.classList.remove("hidden");
+    overallEvaluation.innerHTML = content.overallHtml;
+    scores.innerHTML = content.scoresHtml;
+  }
+}
+
+async function switchLanguage(lang) {
+  // Store evaluation content before switching
+  const evaluationContent = preserveEvaluationContent();
+
+  currentLanguage = lang;
+  await loadTranslations();
+  translatePage();
+  updateLanguageIndicator();
+
+  // Restore evaluation content after switching
+  restoreEvaluationContent(evaluationContent);
 }

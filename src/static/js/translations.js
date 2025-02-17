@@ -13,6 +13,7 @@ async function loadTranslations() {
     console.log("Translations loaded:", translations);
     applyTranslations();
     updateLanguageIndicator();
+    updateEvaluationTranslations();
 
     // Make translations globally available
     window.translations = translations;
@@ -159,3 +160,60 @@ function setLanguage(lang) {
 window.setLanguage = setLanguage;
 
 export { changeLanguage };
+
+function updateEvaluationTranslations() {
+  // Update overall evaluation title
+  const overallEvalDiv = document.getElementById("overallEvaluation");
+  if (overallEvalDiv) {
+    const totalScoreLabel = overallEvalDiv.querySelector(".text-l.font-bold");
+    if (totalScoreLabel) {
+      totalScoreLabel.firstChild.textContent = `${translations.evaluation.overall}: `;
+    }
+  }
+
+  // Update individual score categories
+  const scoresDiv = document.getElementById("scores");
+  if (scoresDiv) {
+    const scoreItems = scoresDiv.querySelectorAll(
+      ".score-item span:first-child"
+    );
+    scoreItems.forEach((span) => {
+      const key = span.getAttribute("data-i18n");
+      if (key) {
+        const translation = getNestedTranslation(key);
+        if (translation) {
+          span.textContent = translation;
+        }
+      }
+    });
+  }
+
+  // Update challenge evaluation if it exists
+  const challengeEvalDiv = document.getElementById(
+    "challengeEvaluationResults"
+  );
+  if (challengeEvalDiv) {
+    // Update overall rating text
+    const challengeTotalLabel =
+      challengeEvalDiv.querySelector(".text-l.font-bold");
+    if (challengeTotalLabel) {
+      challengeTotalLabel.firstChild.textContent = `${translations.evaluation.overall}: `;
+    }
+
+    // Update individual category scores in the challenge section
+    const categoryDivs = challengeEvalDiv.querySelectorAll(
+      "[data-translation-key]"
+    );
+    categoryDivs.forEach((div) => {
+      const translationKey = div.getAttribute("data-translation-key");
+      if (translationKey) {
+        const translation = getNestedTranslation(translationKey);
+        if (translation) {
+          // Preserve the score value (everything after the colon)
+          const score = div.textContent.split(":")[1];
+          div.textContent = `${translation}:${score}`;
+        }
+      }
+    });
+  }
+}
