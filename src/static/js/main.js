@@ -934,50 +934,6 @@ if (loginForm) {
   });
 }
 
-function renderEvaluationResults(evaluation) {
-  let html = "";
-
-  // Render argument structure if available.
-  if (evaluation.argument_structure) {
-    html += `<div class="argument-structure">
-               <h3>Argument Structure</h3>
-               ${renderArgumentStructure(evaluation.argument_structure)}
-             </div>`;
-  }
-
-  // Build the evaluation scores using our custom order.
-  const orderedCategories = [
-    "Relevance",
-    "Logical Structure",
-    "Clarity",
-    "Depth",
-    "Objectivity",
-    "Creativity",
-  ];
-  html += `<div class="evaluation-scores">`;
-  orderedCategories.forEach((category) => {
-    if (
-      evaluation.scores &&
-      typeof evaluation.scores[category] !== "undefined"
-    ) {
-      const score = evaluation.scores[category];
-      const color = scoreToColor(score);
-      html += `<div class="score-bar">
-                 <span class="score-label">${category}</span>
-                 <div class="progress-bar">
-                   <div class="progress-fill" data-score="${
-                     score * 10
-                   }" data-color="${color}" style="width: 0%; background-color: ${color};"></div>
-                 </div>
-                 <span class="score-value" data-final="${score}" data-color="${color}">${score}/10</span>
-               </div>`;
-    }
-  });
-  html += `</div>`;
-
-  document.getElementById("evaluationResults").innerHTML = html;
-}
-
 function updateXpIndicator(totalXp, levelInfo) {
   // Update the mini XP progress bar
   const miniXpBarFill = document.getElementById("miniXpBarFill");
@@ -1034,15 +990,4 @@ function scrollToChallengeEvaluation() {
       inline: "nearest",
     });
   }
-}
-
-function updateXpProgress(oldProgressPercent, newIncrementPercent) {
-  const xpOldBar = document.getElementById("xpOldBar");
-  const xpNewBar = document.getElementById("xpNewBar");
-
-  // Set the width of the old xp part (grey)
-  xpOldBar.style.width = `${oldProgressPercent}%`;
-  // Position the new xp part (green) immediately after the old part
-  xpNewBar.style.left = `${oldProgressPercent}%`;
-  xpNewBar.style.width = `${newIncrementPercent}%`;
 }
