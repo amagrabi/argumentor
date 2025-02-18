@@ -1,4 +1,5 @@
 function showLoginModal() {
+  const translations = window.translations || {};
   const modal = document.createElement("div");
   modal.innerHTML = `
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
@@ -6,31 +7,37 @@ function showLoginModal() {
       <div class="bg-white rounded-lg p-6 w-full max-w-md relative"
            onclick="event.stopPropagation()">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold">Login</h3>
+          <h3 class="text-lg font-semibold">${
+            translations.auth?.loginTitle || "Login"
+          }</h3>
           <button onclick="this.parentElement.parentElement.parentElement.remove(); event.stopPropagation()"
                   class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
         </div>
         <form id="loginForm" class="space-y-4">
           <div id="loginErrorMessage" class="text-sm text-red-500 mb-2 hidden"></div>
           <div>
-            <label class="block text-sm font-medium mb-1">Username or Email</label>
+            <label class="block text-sm font-medium mb-1">${
+              translations.auth?.usernameOrEmail || "Username or Email"
+            }</label>
             <input type="text" id="loginIdentity" required class="w-full px-3 py-2 border rounded-lg">
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">Password</label>
+            <label class="block text-sm font-medium mb-1">${
+              translations.auth?.password || "Password"
+            }</label>
             <input type="password" id="loginPassword" required class="w-full px-3 py-2 border rounded-lg">
           </div>
           <div class="text-right">
             <a href="#" onclick="showPasswordResetRequestModal()" class="text-sm text-blue-600 hover:text-blue-800">
-              Forgot Password?
+              ${translations.auth?.forgotPassword || "Forgot Password?"}
             </a>
           </div>
           <div class="flex gap-4">
             <button type="submit" class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-              Login
+              ${translations.auth?.loginTitle || "Login"}
             </button>
             <button type="button" onclick="switchToSignup()" class="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300">
-              Signup
+              ${translations.auth?.signupTitle || "Signup"}
             </button>
           </div>
         </form>
@@ -41,7 +48,7 @@ function showLoginModal() {
             <svg class="w-5 h-5" viewBox="0 0 24 24">
               <path fill="currentColor" d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a5.94 5.94 0 1 1 0-11.88c1.094 0 2.354.371 3.227 1.067l2.355-2.362A9.914 9.914 0 0 0 12.545 2C7.021 2 2.545 6.477 2.545 12s4.476 10 10 10c5.523 0 10-4.477 10-10a9.9 9.9 0 0 0-1.091-4.571l-8.909 3.81z"/>
             </svg>
-            Continue with Google
+            ${translations.auth?.continueWithGoogle || "Continue with Google"}
           </button>
         </div>
       </div>
@@ -64,22 +71,19 @@ function showLoginModal() {
         body: JSON.stringify({ login: identity, password }),
       });
 
-      // First check if response is json
-      const contentType = response.headers.get("content-type");
-      let data;
-      if (contentType && contentType.includes("application/json")) {
-        data = await response.json();
-      } else {
-        data = { error: await response.text() };
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw {
+          status: response.status,
+          message: data.error || "Login failed",
+        };
       }
 
-      if (!response.ok) throw new Error(data.error || "Login failed");
       modal.remove();
       window.location.reload();
     } catch (error) {
-      console.error("Login error:", error);
-      errorMessage.textContent = error.message;
-      errorMessage.classList.remove("hidden");
+      handleLoginError(error);
     }
   });
 
@@ -89,6 +93,7 @@ function showLoginModal() {
 }
 
 function showSignupModal() {
+  const translations = window.translations || {};
   const modal = document.createElement("div");
   modal.innerHTML = `
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
@@ -96,30 +101,38 @@ function showSignupModal() {
       <div class="bg-white rounded-lg p-6 w-full max-w-md relative"
            onclick="event.stopPropagation()">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold">Signup</h3>
+          <h3 class="text-lg font-semibold">${
+            translations.auth?.signupTitle || "Signup"
+          }</h3>
           <button onclick="this.parentElement.parentElement.parentElement.remove(); event.stopPropagation()"
                   class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
         </div>
         <form id="signupForm" class="space-y-4">
           <div id="signupErrorMessage" class="text-sm text-red-500 mb-2 hidden"></div>
           <div>
-            <label class="block text-sm font-medium mb-1">Username</label>
+            <label class="block text-sm font-medium mb-1">${
+              translations.auth?.username || "Username"
+            }</label>
             <input type="text" id="signupUsername" required class="w-full px-3 py-2 border rounded-lg">
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">Email</label>
+            <label class="block text-sm font-medium mb-1">${
+              translations.auth?.email || "Email"
+            }</label>
             <input type="email" id="signupEmail" required class="w-full px-3 py-2 border rounded-lg">
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">Password</label>
+            <label class="block text-sm font-medium mb-1">${
+              translations.auth?.password || "Password"
+            }</label>
             <input type="password" id="signupPassword" required class="w-full px-3 py-2 border rounded-lg">
           </div>
           <div class="flex gap-4">
             <button type="button" onclick="switchToLogin()" class="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300">
-              Login
+              ${translations.auth?.loginTitle || "Login"}
             </button>
             <button type="submit" class="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-              Signup
+              ${translations.auth?.signupTitle || "Signup"}
             </button>
           </div>
         </form>
@@ -130,7 +143,7 @@ function showSignupModal() {
             <svg class="w-5 h-5" viewBox="0 0 24 24">
               <path fill="currentColor" d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a5.94 5.94 0 1 1 0-11.88c1.094 0 2.354.371 3.227 1.067l2.355-2.362A9.914 9.914 0 0 0 12.545 2C7.021 2 2.545 6.477 2.545 12s4.476 10 10 10c5.523 0 10-4.477 10-10a9.9 9.9 0 0 0-1.091-4.571l-8.909 3.81z"/>
             </svg>
-            Continue with Google
+            ${translations.auth?.continueWithGoogle || "Continue with Google"}
           </button>
         </div>
       </div>
@@ -157,9 +170,7 @@ function showSignupModal() {
       modal.remove();
       window.location.reload();
     } catch (error) {
-      console.error("Signup error:", error);
-      errorMessage.textContent = error.message;
-      errorMessage.classList.remove("hidden");
+      handleSignupError(error);
     }
   });
 
@@ -253,6 +264,7 @@ function handleGoogleAuthResponse(response) {
 }
 
 function showGoogleUsernameModal(credential) {
+  const translations = window.translations || {};
   const modal = document.createElement("div");
   modal.innerHTML = `
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
@@ -260,18 +272,25 @@ function showGoogleUsernameModal(credential) {
       <div class="bg-white rounded-lg p-6 w-full max-w-md relative"
            onclick="event.stopPropagation()">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold">Choose Username</h3>
+          <h3 class="text-lg font-semibold">${
+            translations.auth?.googleAuth?.chooseUsername || "Choose Username"
+          }</h3>
           <button onclick="this.parentElement.parentElement.parentElement.remove()"
                   class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
         </div>
         <form id="googleUsernameForm" class="space-y-4">
           <div id="googleUsernameError" class="text-sm text-red-500 mb-2 hidden"></div>
           <div>
-            <label class="block text-sm font-medium mb-1">Username</label>
+            <label class="block text-sm font-medium mb-1">${
+              translations.auth?.username || "Username"
+            }</label>
+            <p class="text-sm text-gray-500 mb-2">${
+              translations.auth?.googleAuth?.usernameDescription
+            }</p>
             <input type="text" id="googleUsername" required class="w-full px-3 py-2 border rounded-lg">
           </div>
           <button type="submit" class="w-full bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-            Continue
+            ${translations.auth?.googleAuth?.continue || "Continue"}
           </button>
         </form>
       </div>
@@ -299,7 +318,14 @@ function showGoogleUsernameModal(credential) {
         window.location.reload();
       })
       .catch((error) => {
-        errorDiv.textContent = error;
+        // Translate error messages
+        if (error.includes("Username already exists")) {
+          errorDiv.textContent =
+            translations.auth?.googleAuth?.errors?.usernameExists || error;
+        } else {
+          errorDiv.textContent =
+            translations.auth?.errors?.serverError || error;
+        }
         errorDiv.classList.remove("hidden");
       });
   });
@@ -371,4 +397,45 @@ function showPasswordResetRequestModal() {
   });
 
   document.body.appendChild(modal);
+}
+
+function handleLoginError(error) {
+  const translations = window.translations || {};
+  const errorElement = document.getElementById("loginErrorMessage");
+  errorElement.classList.remove("hidden");
+
+  // Map HTTP status codes and error messages to translation keys
+  let errorMessage;
+  if (error.message.includes("Invalid credentials") || error.status === 401) {
+    errorMessage = translations.auth?.errors?.invalidCredentials;
+  } else if (error.message.includes("User not found")) {
+    errorMessage = translations.auth?.errors?.userNotFound;
+  } else if (error.message.includes("Too many attempts")) {
+    errorMessage = translations.auth?.errors?.tooManyAttempts;
+  } else {
+    errorMessage = translations.auth?.errors?.serverError;
+  }
+
+  errorElement.textContent = errorMessage || error.message;
+}
+
+function handleSignupError(error) {
+  const translations = window.translations || {};
+  const errorElement = document.getElementById("signupErrorMessage");
+  errorElement.classList.remove("hidden");
+
+  let errorMessage;
+  if (error.message.includes("Email already exists")) {
+    errorMessage = translations.auth?.errors?.emailInUse;
+  } else if (error.message.includes("Username already exists")) {
+    errorMessage = translations.auth?.errors?.usernameInUse;
+  } else if (error.message.includes("Password too weak")) {
+    errorMessage = translations.auth?.errors?.weakPassword;
+  } else if (error.message.includes("Invalid email")) {
+    errorMessage = translations.auth?.errors?.invalidEmail;
+  } else {
+    errorMessage = translations.auth?.errors?.serverError;
+  }
+
+  errorElement.textContent = errorMessage || error.message;
 }

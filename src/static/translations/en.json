@@ -87,10 +87,31 @@
     "loginTitle": "Login",
     "signupTitle": "Sign Up",
     "usernameOrEmail": "Username or Email",
+    "username": "Username",
+    "email": "Email",
     "password": "Password",
     "forgotPassword": "Forgot Password?",
     "continueWithGoogle": "Continue with Google",
-    "notLoggedIn": "You are currently not logged in. To avoid losing your progress and submitted answers, log in"
+    "notLoggedIn": "You are currently not logged in. To avoid losing your progress and submitted answers, log in",
+    "googleAuth": {
+      "chooseUsername": "Choose Username",
+      "usernameDescription": "",
+      "continue": "Continue",
+      "errors": {
+        "usernameExists": "Username already exists"
+      }
+    },
+    "errors": {
+      "invalidCredentials": "Invalid credentials",
+      "userNotFound": "User not found",
+      "emailInUse": "This email is already in use",
+      "usernameInUse": "This username is already in use",
+      "weakPassword": "Password is too weak",
+      "invalidEmail": "Invalid email address",
+      "accountLocked": "Account locked. Please try again later",
+      "tooManyAttempts": "Too many attempts. Please wait a moment",
+      "serverError": "A server error occurred. Please try again later"
+    }
   },
   "languages": {
     "en": "English",
