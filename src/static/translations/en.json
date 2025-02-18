@@ -543,5 +543,46 @@
       "submitButton": "Submit Feedback",
       "successMessage": "Thanks for the feedback!"
     }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "goBack": "Go Back",
+    "lastUpdated": "Last Updated: February 15, 2025",
+    "sections": {
+      "yourPrivacy": {
+        "title": "Your Privacy",
+        "content": "Your privacy is important. This privacy policy explains what data is collected and how it is used."
+      },
+      "dataCollected": {
+        "title": "What Data is Collected and Stored",
+        "content": "We collect and store information necessary for the proper functioning of the service. This may include anonymous identifiers, session data, user preferences, content you submit, and your feedback. If you sign in through a third-party service, your Google profile information is used solely for authentication purposes. You can request deletion of your data from our servers at any time."
+      },
+      "dataNotCollected": {
+        "title": "What is Not Collected or Stored",
+        "content": "We do not collect or store sensitive personal data that is not directly related to your usage and improvement on the platform. Personal identifiers beyond what is required for user authentication and session management are not stored."
+      },
+      "geminiData": {
+        "title": "Data Sent to Google Gemini",
+        "content": "When using this app, any text you submit is sent to Google Gemini to evaluate your arguments and provide feedback. By using this app, you agree to share your inputs with Google. Please do not submit any sensitive personal information. For more information about how this data is handled by Google, visit the",
+        "link": "Google Gemini Data Governance",
+        "page": "page"
+      },
+      "analyticsData": {
+        "title": "Data Sent to Google Analytics",
+        "content": "We use Google Analytics to better understand how visitors interact with our website. Google Analytics collects technical data such as pages visited, duration of visits, browser types, and device information through cookies and similar technologies. None of this data is used to personally identify you; it is aggregated and analyzed only to improve our site and services. For more details, please refer to",
+        "privacyPolicy": "Google's Privacy Policy",
+        "and": "and",
+        "practices": "Google Analytics' Data Collection practices"
+      },
+      "changes": {
+        "title": "Changes to This Policy",
+        "content": "We reserve the right to modify this privacy policy at any time. Any changes will be posted on this page along with an updated effective date. We encourage you to review this policy periodically to stay informed about how we are protecting your data."
+      },
+      "contact": {
+        "title": "Contact Information",
+        "content": "If you have any questions or concerns about this privacy policy or our data practices, please contact us",
+        "here": "here"
+      }
+    }
   }
 }

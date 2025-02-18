@@ -557,5 +557,46 @@
       "submitButton": "Feedback absenden",
       "successMessage": "Danke für dein Feedback!"
     }
+  },
+  "privacy": {
+    "title": "Datenschutzerklärung",
+    "goBack": "Zurück",
+    "lastUpdated": "Zuletzt aktualisiert: 15. Februar 2025",
+    "sections": {
+      "yourPrivacy": {
+        "title": "Dein Datenschutz",
+        "content": "Deine Privatsphäre ist wichtig. Diese Datenschutzerklärung erläutert, welche Daten erfasst und wie sie verwendet werden."
+      },
+      "dataCollected": {
+        "title": "Welche Daten werden erfasst und gespeichert",
+        "content": "Wir erfassen und speichern Informationen, die für das ordnungsgemäße Funktionieren des Dienstes erforderlich sind. Dies kann anonyme Kennungen, Sitzungsdaten, Benutzereinstellungen, von dir übermittelte Inhalte und dein Feedback umfassen. Wenn du dich über einen Drittanbieterdienst anmeldest, werden deine Google-Profilinformationen ausschließlich für Authentifizierungszwecke verwendet. Du kannst jederzeit die Löschung deiner Daten von unseren Servern beantragen."
+      },
+      "dataNotCollected": {
+        "title": "Was nicht erfasst oder gespeichert wird",
+        "content": "Wir erfassen oder speichern keine sensiblen persönlichen Daten, die nicht direkt mit deiner Nutzung und Verbesserung auf der Plattform zusammenhängen. Persönliche Kennungen, die über das für die Benutzerauthentifizierung und Sitzungsverwaltung erforderliche Maß hinausgehen, werden nicht gespeichert."
+      },
+      "geminiData": {
+        "title": "An Google Gemini übermittelte Daten",
+        "content": "Wenn du diese App nutzt, wird jeder von dir übermittelte Text an Google Gemini gesendet, um deine Argumente zu bewerten und Feedback zu geben. Durch die Nutzung dieser App erklärst du dich damit einverstanden, deine Eingaben mit Google zu teilen. Bitte übermittle keine sensiblen persönlichen Daten. Weitere Informationen zur Handhabung dieser Daten durch Google findest du auf der",
+        "link": "Google Gemini Data Governance",
+        "page": "Seite"
+      },
+      "analyticsData": {
+        "title": "An Google Analytics übermittelte Daten",
+        "content": "Wir verwenden Google Analytics, um besser zu verstehen, wie Besucher mit unserer Website interagieren. Google Analytics erfasst technische Daten wie besuchte Seiten, Besuchsdauer, Browsertypen und Geräteinformationen durch Cookies und ähnliche Technologien. Diese Daten werden nicht verwendet, um dich persönlich zu identifizieren; sie werden nur aggregiert und analysiert, um unsere Website und Dienste zu verbessern. Weitere Details findest du in der",
+        "privacyPolicy": "Datenschutzerklärung von Google",
+        "and": "und den",
+        "practices": "Datenerfassungspraktiken von Google Analytics"
+      },
+      "changes": {
+        "title": "Änderungen dieser Richtlinie",
+        "content": "Wir behalten uns das Recht vor, diese Datenschutzerklärung jederzeit zu ändern. Alle Änderungen werden auf dieser Seite zusammen mit einem aktualisierten Datum veröffentlicht. Wir empfehlen dir, diese Richtlinie regelmäßig zu überprüfen, um über den Schutz deiner Daten informiert zu bleiben."
+      },
+      "contact": {
+        "title": "Kontaktinformationen",
+        "content": "Wenn du Fragen oder Bedenken zu dieser Datenschutzerklärung oder unseren Datenpraktiken hast, kontaktiere uns bitte",
+        "here": "hier"
+      }
+    }
   }
 }

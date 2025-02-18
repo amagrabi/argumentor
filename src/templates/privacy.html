@@ -17,22 +17,29 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Privacy Policy - ArguMentor</title>
+    <title data-i18n="privacy.title">Privacy Policy - ArguMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="icon"
       type="image/png"
       href="{{ url_for('static', filename='img/favicon.png') }}"
     />
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/translations.js') }}"
+    ></script>
   </head>
   <body class="bg-white font-sans leading-normal tracking-normal text-gray-900">
     <!-- Header with Go Back Button -->
     <header class="bg-gray-800 p-4">
       <div class="max-w-5xl mx-auto flex justify-between items-center">
-        <h1 class="text-white text-3xl font-bold">Privacy Policy</h1>
+        <h1 class="text-white text-3xl font-bold" data-i18n="privacy.title">
+          Privacy Policy
+        </h1>
         <a
           href="/"
           class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
+          data-i18n="privacy.goBack"
           >Go Back</a
         >
       </div>
@@ -40,114 +47,113 @@
 
     <!-- Last Updated Date -->
     <div class="max-w-5xl mx-auto px-4 py-2">
-      <p class="text-sm text-gray-500">Last Updated: February 15, 2025</p>
+      <p class="text-sm text-gray-500" data-i18n="privacy.lastUpdated">
+        Last Updated: February 15, 2025
+      </p>
     </div>
 
     <!-- Main Content -->
     <main class="max-w-5xl mx-auto p-4">
       <!-- Introduction -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Your Privacy</h2>
-        <p class="mb-4">
-          Your privacy is important. This privacy policy explains what data is
-          collected and how it is used.
-        </p>
+        <h2
+          class="text-2xl font-bold mb-4"
+          data-i18n="privacy.sections.yourPrivacy.title"
+        >
+          Your Privacy
+        </h2>
+        <p class="mb-4" data-i18n="privacy.sections.yourPrivacy.content"></p>
       </section>
 
       <!-- What Data is Collected and Stored -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">
-          What Data is Collected and Stored
-        </h2>
-        <p class="mb-4">
-          We collect and store information necessary for the proper functioning
-          of the service. This may include anonymous identifiers, session data,
-          user preferences, content you submit, and any feedback you provide. If
-          you log in using a third-party service, your Google profile
-          information may be used solely for authentication purposes. You can
-          request to delete your data from our servers at any time.
-        </p>
+        <h2
+          class="text-2xl font-bold mb-4"
+          data-i18n="privacy.sections.dataCollected.title"
+        ></h2>
+        <p class="mb-4" data-i18n="privacy.sections.dataCollected.content"></p>
       </section>
 
       <!-- What is Not Collected or Stored -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">What is Not Collected or Stored</h2>
-        <p class="mb-4">
-          We do not collect or store sensitive personal data that is not
-          directly related to your usage and improvement on the platform.
-          Personal identifiers beyond what is necessary for user authentication
-          and session management are not retained.
-        </p>
+        <h2
+          class="text-2xl font-bold mb-4"
+          data-i18n="privacy.sections.dataNotCollected.title"
+        ></h2>
+        <p
+          class="mb-4"
+          data-i18n="privacy.sections.dataNotCollected.content"
+        ></p>
       </section>
 
       <!-- Data Sent to Google Gemini -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Data Sent to Google Gemini</h2>
+        <h2
+          class="text-2xl font-bold mb-4"
+          data-i18n="privacy.sections.geminiData.title"
+        ></h2>
         <p class="mb-4">
-          When you use this app, any text you submit is sent to Google Gemini to
-          evaluate your arguments and provide feedback. By using this app, you
-          agree to share your inputs with Google. Please refrain from submitting
-          sensitive personal data. For more information on how Google handles
-          this data, refer to the
+          <span data-i18n="privacy.sections.geminiData.content"></span>
           <a
             href="https://cloud.google.com/gemini/docs/discover/data-governance"
             class="text-gray-800 underline hover:text-gray-600"
             target="_blank"
             rel="noopener noreferrer"
-            >Google Gemini Data Governance</a
-          >
-          page.
+            data-i18n="privacy.sections.geminiData.link"
+          ></a>
+          <span data-i18n="privacy.sections.geminiData.page"></span>.
         </p>
       </section>
 
       <!-- Data Collected via Google Analytics -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Data Sent to Google Analytics</h2>
+        <h2
+          class="text-2xl font-bold mb-4"
+          data-i18n="privacy.sections.analyticsData.title"
+        ></h2>
         <p class="mb-4">
-          We use Google Analytics to better understand how visitors interact
-          with our website. Google Analytics collects technical data such as
-          pages visited, duration of visits, browser types, and device
-          information through cookies and similar technologies. None of this
-          data is used to personally identify you; it is aggregated and analyzed
-          only to improve our site and services. For more details, please refer
-          to
+          <span data-i18n="privacy.sections.analyticsData.content"></span>
           <a
             href="https://policies.google.com/privacy"
             class="text-gray-800 underline hover:text-gray-600"
             target="_blank"
             rel="noopener noreferrer"
-            >Google's Privacy Policy</a
-          >
-          and
+            data-i18n="privacy.sections.analyticsData.privacyPolicy"
+          ></a>
+          <span data-i18n="privacy.sections.analyticsData.and"></span>
           <a
             href="https://support.google.com/analytics/answer/6004245"
             class="text-gray-800 underline hover:text-gray-600"
             target="_blank"
             rel="noopener noreferrer"
-            >Google Analytics' Data Collection practices</a
+            data-i18n="privacy.sections.analyticsData.practices"
+          ></a
           >.
         </p>
       </section>
 
       <!-- Changes to This Policy -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Changes to This Policy</h2>
-        <p class="mb-4">
-          We reserve the right to modify this privacy policy at any time. Any
-          changes will be posted on this page along with an updated effective
-          date. We encourage you to review this policy periodically to stay
-          informed about how we are protecting your data.
-        </p>
+        <h2
+          class="text-2xl font-bold mb-4"
+          data-i18n="privacy.sections.changes.title"
+        ></h2>
+        <p class="mb-4" data-i18n="privacy.sections.changes.content"></p>
       </section>
 
       <!-- Contact Information -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Contact Information</h2>
+        <h2
+          class="text-2xl font-bold mb-4"
+          data-i18n="privacy.sections.contact.title"
+        ></h2>
         <p class="mb-4">
-          If you have any questions or concerns about this privacy policy or our
-          data practices, please contact us
-          <a href="/contact" class="text-gray-800 underline hover:text-gray-600"
-            >here</a
+          <span data-i18n="privacy.sections.contact.content"></span>
+          <a
+            href="/contact"
+            class="text-gray-800 underline hover:text-gray-600"
+            data-i18n="privacy.sections.contact.here"
+          ></a
           >.
         </p>
       </section>
@@ -157,9 +163,36 @@
         <a
           href="/"
           class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors"
-          >Go Back</a
-        >
+          data-i18n="privacy.goBack"
+        ></a>
       </div>
     </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Get stored language preference
+        const currentLanguage = localStorage.getItem("language") || "en";
+
+        // Load translations
+        const response = await fetch(
+          `/static/translations/${currentLanguage}.json`
+        );
+        const translations = await response.json();
+
+        // Apply translations
+        document.querySelectorAll("[data-i18n]").forEach((element) => {
+          const key = element.getAttribute("data-i18n");
+          const translation = key
+            .split(".")
+            .reduce((obj, k) => obj && obj[k], translations);
+          if (translation) {
+            element.textContent = translation;
+          }
+        });
+
+        // Update document language
+        document.documentElement.lang = currentLanguage;
+      });
+    </script>
   </body>
 </html>
