@@ -46,7 +46,8 @@
       "reasoning": "Deine Begründung",
       "reasoningDescription": "Erkläre die Logik und Beweise für deine These...",
       "counterargument": "Gegenargumente entkräften (optional)",
-      "counterargumentDescription": "Gehe auf mögliche Einwände ein, um dein Argument zu stärken..."
+      "counterargumentDescription": "Gehe auf mögliche Einwände ein, um dein Argument zu stärken...",
+      "challengeDescription": "Verteidige und verbessere dein Argument..."
     }
   },
   "challenge": {
@@ -550,8 +551,8 @@
           "description": "Biete Unterstützung für nicht-englische Sprachen an."
         },
         "moreQuestions": {
-          "title": "Mehr Fragen",
-          "description": "Erweitere die Sammlung an Fragen mit neuen interessanten Themen."
+          "title": "Individuelle Fragen",
+          "description": "Erlaube nutzerdefinierte Fragen und erweitere den Fragenkatalog."
         },
         "betterAnalytics": {
           "title": "Bessere Analysen",

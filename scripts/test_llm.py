@@ -1,7 +1,7 @@
 from google.genai import types
 
 from config import get_settings
-from services.llm import CLIENT, RESPONSE_SCHEMA, SYSTEM_INSTRUCTION
+from services.llm import CLIENT, RESPONSE_SCHEMA, SYSTEM_INSTRUCTION_EN
 
 SETTINGS = get_settings()
 
@@ -39,7 +39,7 @@ def generate():
         ],
         response_mime_type="application/json",
         response_schema=RESPONSE_SCHEMA,
-        system_instruction=[types.Part.from_text(text=SYSTEM_INSTRUCTION)],
+        system_instruction=[types.Part.from_text(text=SYSTEM_INSTRUCTION_EN)],
     )
 
     contents = [

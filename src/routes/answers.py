@@ -21,9 +21,16 @@ SETTINGS = get_settings()
 def create_evaluator():
     if SETTINGS.USE_LLM_EVALUATOR:
         from services.evaluator import LLMEvaluator
-        from services.llm import CLIENT, RESPONSE_SCHEMA, SYSTEM_INSTRUCTION
+        from services.llm import (
+            CLIENT,
+            RESPONSE_SCHEMA,
+            SYSTEM_INSTRUCTION_DE,
+            SYSTEM_INSTRUCTION_EN,
+        )
 
-        return LLMEvaluator(CLIENT, SYSTEM_INSTRUCTION, RESPONSE_SCHEMA)
+        system_instructions = {"en": SYSTEM_INSTRUCTION_EN, "de": SYSTEM_INSTRUCTION_DE}
+
+        return LLMEvaluator(CLIENT, system_instructions, RESPONSE_SCHEMA)
     else:
         from services.evaluator import DummyEvaluator
 

@@ -7,7 +7,6 @@ from google.genai import types
 
 from config import get_settings
 from services.base_evaluator import BaseEvaluator
-from services.llm import SYSTEM_INSTRUCTION
 
 SETTINGS = get_settings()
 logger = logging.getLogger(__name__)
@@ -113,118 +112,188 @@ class DummyEvaluator(BaseEvaluator):
 
 
 class LLMEvaluator(BaseEvaluator):
-    def __init__(self, client, system_instruction, response_schema):
+    def __init__(self, client, system_instructions, response_schema):
         self.client = client
-        self.system_instruction = system_instruction
+        self.system_instructions = system_instructions
         self.response_schema = response_schema
 
     def build_argument_prompt(
         self, question_text: str, claim: str, argument: str, counterargument: str
     ) -> str:
-        return f"""
-            Question (given to user): {question_text}
-            Claim to answer the question (written by user): {claim}
-            Argument to support the claim (written by user): {argument}
-            Counterargument rebuttal (written by user; optional): {counterargument}
-        """
+        # Get current language from Flask session
+        from flask import session
 
-    def evaluate_argument(
-        self, question_text: str, claim: str, argument: str, counterargument: str
-    ) -> Dict:
-        prompt = self.build_argument_prompt(
-            question_text, claim, argument, counterargument
-        )
-        logger.debug(f"LLM argument evaluation prompt: {prompt}")
-        response = self.client.models.generate_content(
-            model=SETTINGS.MODEL,
-            contents=[
-                types.Content(role="user", parts=[types.Part.from_text(text=prompt)])
-            ],
-            config=types.GenerateContentConfig(
-                temperature=0,
-                top_p=0,
-                top_k=1,
-                max_output_tokens=8192,
-                response_modalities=["TEXT"],
-                safety_settings=[
-                    types.SafetySetting(
-                        category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"
-                    ),
-                    types.SafetySetting(
-                        category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="OFF"
-                    ),
-                    types.SafetySetting(
-                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="OFF"
-                    ),
-                    types.SafetySetting(
-                        category="HARM_CATEGORY_HARASSMENT", threshold="OFF"
-                    ),
-                ],
-                response_mime_type="application/json",
-                response_schema=self.response_schema,
-                system_instruction=[types.Part.from_text(text=SYSTEM_INSTRUCTION)],
-            ),
-        )
-        logger.debug(f"LLM argument evaluation response: {response.text}")
-        return self._parse_response(json.loads(response.text))
+        language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
+
+        if language == "de":
+            return f"""
+                Frage (dem Benutzer gestellt): {question_text}
+                These zur Beantwortung der Frage (vom Benutzer): {claim}
+                Argument zur Unterstützung der These (vom Benutzer): {argument}
+                Widerlegung von Gegenargumenten (vom Benutzer; optional): {counterargument}
+            """
+        else:
+            return f"""
+                Question (given to user): {question_text}
+                Claim to answer the question (written by user): {claim}
+                Argument to support the claim (written by user): {argument}
+                Counterargument rebuttal (written by user; optional): {counterargument}
+            """
 
     def evaluate(
         self, question_text: str, claim: str, argument: str, counterargument: str
     ) -> Dict:
-        # For backward compatibility, delegate to evaluate_argument.
-        return self.evaluate_argument(question_text, claim, argument, counterargument)
+        from flask import session
+
+        language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
+        system_instruction = self.system_instructions.get(
+            language, self.system_instructions[SETTINGS.DEFAULT_LANGUAGE]
+        )
+
+        prompt = self.build_argument_prompt(
+            question_text, claim, argument, counterargument
+        )
+
+        try:
+            response = self.client.models.generate_content(
+                model=SETTINGS.MODEL,
+                contents=[
+                    types.Content(
+                        role="user", parts=[types.Part.from_text(text=prompt)]
+                    )
+                ],
+                config=types.GenerateContentConfig(
+                    temperature=0,
+                    top_p=0,
+                    top_k=1,
+                    max_output_tokens=8192,
+                    response_modalities=["TEXT"],
+                    safety_settings=[
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="OFF"
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="OFF"
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_HARASSMENT", threshold="OFF"
+                        ),
+                    ],
+                    response_mime_type="application/json",
+                    response_schema=self.response_schema,
+                    system_instruction=[types.Part.from_text(text=system_instruction)],
+                ),
+            )
+
+            try:
+                return self._parse_response(json.loads(response.text))
+            except (json.JSONDecodeError, KeyError) as e:
+                logger.error(f"Failed to parse LLM response: {e}")
+                logger.debug(f"Prompt used: {prompt}")
+                logger.debug(f"Raw response: {response.text}")
+                raise
+
+        except Exception as e:
+            logger.error(f"LLM API call failed: {e}")
+            logger.debug(f"Prompt used: {prompt}")
+            logger.debug(f"System instruction used: {system_instruction}")
+            raise
 
     def build_challenge_prompt(self, answer, challenge_response: str) -> str:
+        from flask import session
+
         from utils import auto_dedent
 
-        return auto_dedent(f"""
-            Original question (from system): {answer.question_text}
-            Original claim (from user): {answer.claim}
-            Original argument (from user): {answer.argument}
-            Original counterargument rebuttal (from user; optional): {answer.counterargument}
-            Challenge (from system): {answer.challenge}
+        language = session.get("language", "en")
 
-            Please evaluate the user's response to the challenge below.
-            Focus solely on the quality of this challenge response, and do not re-evaluate the original claim or argument.
+        if language == "de":
+            return auto_dedent(f"""
+                Ursprüngliche Frage (vom System): {answer.question_text}
+                Ursprüngliche These (vom Benutzer): {answer.claim}
+                Ursprüngliches Argument (vom Benutzer): {answer.argument}
+                Ursprüngliche Widerlegung von Gegenargumenten (vom Benutzer; optional): {answer.counterargument}
+                Challenge (vom System): {answer.challenge}
 
-            Challenge response (from user): {challenge_response}
-        """)
+                Bitte bewerte die Antwort des Benutzers auf die Challenge unten.
+                Konzentriere dich ausschließlich auf die Qualität dieser Challenge-Antwort und
+                bewerte nicht erneut die ursprüngliche These oder das ursprüngliche Argument.
+
+                Challenge-Antwort (vom Benutzer): {challenge_response}
+            """)
+        else:
+            return auto_dedent(f"""
+                Original question (from system): {answer.question_text}
+                Original claim (from user): {answer.claim}
+                Original argument (from user): {answer.argument}
+                Original counterargument rebuttal (from user; optional): {answer.counterargument}
+                Challenge (from system): {answer.challenge}
+
+                Please evaluate the user's response to the challenge below.
+                Focus solely on the quality of this challenge response, and do not re-evaluate the original claim or argument.
+
+                Challenge response (from user): {challenge_response}
+            """)
 
     def evaluate_challenge(self, answer, challenge_response: str) -> Dict:
-        prompt = self.build_challenge_prompt(answer, challenge_response)
-        logger.debug(f"LLM challenge evaluation prompt: {prompt}")
-        response = self.client.models.generate_content(
-            model=SETTINGS.MODEL,
-            contents=[
-                types.Content(role="user", parts=[types.Part.from_text(text=prompt)])
-            ],
-            config=types.GenerateContentConfig(
-                temperature=0,
-                top_p=0,
-                top_k=1,
-                max_output_tokens=8192,
-                response_modalities=["TEXT"],
-                safety_settings=[
-                    types.SafetySetting(
-                        category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"
-                    ),
-                    types.SafetySetting(
-                        category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="OFF"
-                    ),
-                    types.SafetySetting(
-                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="OFF"
-                    ),
-                    types.SafetySetting(
-                        category="HARM_CATEGORY_HARASSMENT", threshold="OFF"
-                    ),
-                ],
-                response_mime_type="application/json",
-                response_schema=self.response_schema,
-                system_instruction=[types.Part.from_text(text=SYSTEM_INSTRUCTION)],
-            ),
+        from flask import session
+
+        language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
+        system_instruction = self.system_instructions.get(
+            language, self.system_instructions[SETTINGS.DEFAULT_LANGUAGE]
         )
-        logger.debug(f"LLM challenge evaluation response: {response.text}")
-        return self._parse_response(json.loads(response.text))
+
+        prompt = self.build_challenge_prompt(answer, challenge_response)
+
+        try:
+            response = self.client.models.generate_content(
+                model=SETTINGS.MODEL,
+                contents=[
+                    types.Content(
+                        role="user", parts=[types.Part.from_text(text=prompt)]
+                    )
+                ],
+                config=types.GenerateContentConfig(
+                    temperature=0,
+                    top_p=0,
+                    top_k=1,
+                    max_output_tokens=8192,
+                    response_modalities=["TEXT"],
+                    safety_settings=[
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="OFF"
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="OFF"
+                        ),
+                        types.SafetySetting(
+                            category="HARM_CATEGORY_HARASSMENT", threshold="OFF"
+                        ),
+                    ],
+                    response_mime_type="application/json",
+                    response_schema=self.response_schema,
+                    system_instruction=[types.Part.from_text(text=system_instruction)],
+                ),
+            )
+
+            try:
+                return self._parse_response(json.loads(response.text))
+            except (json.JSONDecodeError, KeyError) as e:
+                logger.error(f"Failed to parse challenge response: {e}")
+                logger.debug(f"Challenge prompt used: {prompt}")
+                logger.debug(f"Raw challenge response: {response.text}")
+                raise
+
+        except Exception as e:
+            logger.error(f"LLM API call failed for challenge: {e}")
+            logger.debug(f"Challenge prompt used: {prompt}")
+            logger.debug(f"System instruction used: {system_instruction}")
+            raise
 
     def _parse_response(self, response) -> Dict:
         return {

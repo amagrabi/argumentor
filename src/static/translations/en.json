@@ -40,7 +40,8 @@
       "reasoning": "Your Reasoning",
       "reasoningDescription": "Explain the logic and evidence supporting your claim...",
       "counterargument": "Counterargument Rebuttal (optional)",
-      "counterargumentDescription": "Address potential objections to strengthen your argument..."
+      "counterargumentDescription": "Address potential objections to strengthen your argument...",
+      "challengeDescription": "Defend and refine your argument..."
     }
   },
   "questionSelection": {
@@ -536,8 +537,8 @@
           "description": "Offer support for non-English languages."
         },
         "moreQuestions": {
-          "title": "More Questions",
-          "description": "Expand the collection of questions with new interesting topics."
+          "title": "Custom Questions",
+          "description": "Add more questions and allow custom questions."
         },
         "betterAnalytics": {
           "title": "Better Analytics",
