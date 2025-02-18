@@ -109,7 +109,6 @@ def login():
     if not login_identity or not password:
         return jsonify({"error": "Both login and password are required."}), 400
 
-    # Query user by matching either email or username.
     user = User.query.filter(
         or_(User.email == login_identity, User.username == login_identity)
     ).first()
@@ -130,6 +129,15 @@ def login():
         db.session.commit()
         login_user(user)
         session["user_id"] = user.uuid
+
+        # Update session language with the user's saved preference.
+        if hasattr(user, "preferred_language") and user.preferred_language in [
+            "en",
+            "de",
+        ]:
+            session["language"] = user.preferred_language
+        else:
+            session["language"] = "en"
         session.modified = True
 
         level_info = get_level_info(user.xp)
@@ -144,6 +152,7 @@ def login():
                     "uuid": user.uuid,
                     "xp": user.xp,
                     "level_info": level_info,
+                    "preferred_language": user.preferred_language,
                 },
             }
         )
@@ -220,7 +229,12 @@ def google_auth():
         db.session.commit()
         login_user(user)
         session["user_id"] = user.uuid
-        return jsonify({"message": "Google login successful"})
+        return jsonify(
+            {
+                "message": "Google login successful",
+                "user": {"preferred_language": user.preferred_language},
+            }
+        )
     except ValueError:
         return jsonify({"error": "Invalid Google token"}), 401
 

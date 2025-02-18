@@ -11,6 +11,7 @@ class User(db.Model, UserMixin):
 
     uuid = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     username = db.Column(db.String(255), unique=True, nullable=False)
+    preferred_language = db.Column(db.String(2), default="en")
     xp = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
     tier = db.Column(db.String(20), nullable=False, default="anonymous")

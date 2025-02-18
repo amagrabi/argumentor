@@ -574,7 +574,40 @@ document
   .addEventListener("click", () => getNewQuestion(false));
 
 // Update the DOMContentLoaded handler
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLang = urlParams.get("lang");
+
+    if (urlLang && urlLang !== localStorage.getItem("language")) {
+      // First update the server-side language
+      await fetch("/set_language", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ language: urlLang }),
+      });
+
+      // Then update localStorage
+      localStorage.setItem("language", urlLang);
+
+      // Remove the lang parameter from URL
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete("lang");
+      window.history.replaceState({}, "", newUrl);
+
+      // Reload the page without trying to load categories first
+      window.location.reload();
+      return; // Exit early to prevent further execution
+    }
+
+    // Only load categories if we're not changing language
+    await loadSavedCategories();
+  } catch (error) {
+    console.error("Error in DOMContentLoaded:", error);
+  }
+
   // Add event delegation for settings button
   document.addEventListener("click", (e) => {
     const settingsButton = e.target.closest("#settingsButton");

@@ -62,13 +62,15 @@ function showLoginModal() {
     const identity = document.getElementById("loginIdentity").value;
     const password = document.getElementById("loginPassword").value;
     const errorMessage = document.getElementById("loginErrorMessage");
+
     try {
       errorMessage.textContent = "";
       errorMessage.classList.add("hidden");
+
       const response = await fetch("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ login: identity, password }),
+        body: JSON.stringify({ login: identity, password: password }),
       });
 
       const data = await response.json();
@@ -78,6 +80,10 @@ function showLoginModal() {
           status: response.status,
           message: data.error || "Login failed",
         };
+      }
+
+      if (data.user && data.user.preferred_language) {
+        localStorage.setItem("language", data.user.preferred_language);
       }
 
       modal.remove();
@@ -248,6 +254,11 @@ function handleGoogleAuthResponse(response) {
       return res.json();
     })
     .then((data) => {
+      // Handle language preference
+      if (data.user && data.user.preferred_language) {
+        localStorage.setItem("language", data.user.preferred_language);
+      }
+
       const authForm = document.querySelector("#authForm");
       if (authForm) {
         const modal = authForm.closest('div[class*="fixed inset-0"]');
@@ -313,7 +324,10 @@ function showGoogleUsernameModal(credential) {
           return res.json().then((data) => Promise.reject(data.error));
         return res.json();
       })
-      .then(() => {
+      .then((data) => {
+        if (data.user && data.user.preferred_language) {
+          localStorage.setItem("language", data.user.preferred_language);
+        }
         modal.remove();
         window.location.reload();
       })

@@ -193,8 +193,11 @@ def set_language():
 
     if language in ["en", "de"]:
         session["language"] = language
-        # Force reload questions in new language
         load_questions()
+        # If logged in, persist language preference in the user's account.
+        if current_user.is_authenticated:
+            current_user.preferred_language = language
+            db.session.commit()
         return jsonify({"status": "success"})
 
     return jsonify({"status": "error", "message": "Invalid language"}), 400

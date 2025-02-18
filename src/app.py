@@ -1,8 +1,9 @@
 import logging
 import os
 
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, session
 from flask_limiter.errors import RateLimitExceeded
+from flask_login import current_user
 from flask_migrate import Migrate
 from flask_talisman import Talisman
 
@@ -106,6 +107,15 @@ def create_app():
     @app.route("/static/translations/<path:filename>")
     def serve_translations(filename):
         return send_from_directory("static/translations", filename)
+
+    @app.before_request
+    def handle_language_parameter():
+        lang = request.args.get("lang")
+        if lang in ["en", "de"]:
+            session["language"] = lang
+            if current_user.is_authenticated:
+                current_user.preferred_language = lang
+                db.session.commit()
 
     return app
 
