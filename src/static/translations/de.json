@@ -480,5 +480,82 @@
     "argumentStepsAdditional": "Suche stets nach glaubwürdigen Informationen und vermeide es, dich ausschließlich auf Annahmen zu stützen. Überprüfe deine Daten und sei offen dafür, deine Ansichten zu aktualisieren, wenn du mit neuen Beweisen konfrontiert wirst. Dies stärkt nicht nur dein Argument, sondern erhöht auch seine Überzeugungskraft.",
     "biasesSectionTitle": "Kognitive Verzerrungen und logische Fehlschlüsse verstehen",
     "biasesSectionContent": "Unser Denken kann durch zwei häufige Fallstricke beeinträchtigt werden. Kognitive Verzerrungen sind systematische Denkfehler, die durch mentale Abkürzungen entstehen, während logische Fehlschlüsse häufige Fehler in der Argumentation sind, die die Gültigkeit der Argumente schwächen. Das Bewusstsein für diese Quellen von Denkfehlern kann dir helfen, klarere und objektivere Argumente aufzubauen."
+  },
+  "supportPage": {
+    "title": "Support - ArguMentor",
+    "header": "Unterstütze ArguMentor",
+    "goBack": "Zurück",
+    "howToSupport": "Wie du dieses Projekt unterstützen kannst",
+    "financialSupport": {
+      "title": "☕ Buy Me a Coffee",
+      "description": "Hilf dabei, die Server am Laufen zu halten und die Entwicklung neuer Funktionen zu unterstützen.",
+      "button": "Buy Me a Coffee"
+    },
+    "feedback": {
+      "title": "💭 Feedback geben",
+      "description": "Teile deine Erfahrungen, Vorschläge oder Ideen, um die Plattform zu verbessern.",
+      "button": "Feedback abgeben"
+    },
+    "share": {
+      "title": "🌟 Weiterempfehlen",
+      "description": "Hilf, die Plattform wachsen zu lassen und erzähle deinen Freunden davon.",
+      "button": "Teilen"
+    },
+    "roadmap": {
+      "title": "Roadmap",
+      "intro": "Wenn die Plattform mehr Unterstützung erhält, möchte ich folgende Funktionen hinzufügen:",
+      "features": {
+        "competitiveMode": {
+          "title": "Kompetitiver Modus",
+          "description": "Fordere deine Freunde heraus und messe dich in Streitgesprächen."
+        },
+        "voiceMode": {
+          "title": "Sprachunterstützung",
+          "description": "Formuliere deine Argumente, ohne tippen zu müssen."
+        },
+        "multipleLanguages": {
+          "title": "Mehrere Sprachen",
+          "description": "Biete Unterstützung für nicht-englische Sprachen an."
+        },
+        "moreQuestions": {
+          "title": "Mehr Fragen",
+          "description": "Erweitere die Sammlung an Fragen mit neuen interessanten Themen."
+        },
+        "betterAnalytics": {
+          "title": "Bessere Analysen",
+          "description": "Füge weitere Optionen hinzu, um deine Leistung zu analysieren und daraus zu lernen."
+        },
+        "enhanceFeedback": {
+          "title": "Verbessertes Feedback",
+          "description": "Verbessere die Qualität des automatisierten Feedbacks."
+        },
+        "darkMode": {
+          "title": "Dark Mode",
+          "description": "Für düstere Streitgespräche in der Nacht."
+        },
+        "leaderboard": {
+          "title": "Bestenliste",
+          "description": "Vergleiche deine Leistung mit anderen."
+        },
+        "argumentHighlights": {
+          "title": "Argument Highlights",
+          "description": "Verschaffe dir einen Überblick über die besten eingereichten Argumente."
+        }
+      }
+    },
+    "feedbackModal": {
+      "title": "Dein Feedback teilen",
+      "categoryLabel": "Kategorie",
+      "categoryOptions": {
+        "feature": "Funktionsanfrage",
+        "bug": "Fehlerbericht",
+        "general": "Allgemeines Feedback"
+      },
+      "messageLabel": "Nachricht",
+      "messagePlaceholder": "Teile deine Gedanken...",
+      "cancelButton": "Abbrechen",
+      "submitButton": "Feedback absenden",
+      "successMessage": "Danke für dein Feedback!"
+    }
   }
 }

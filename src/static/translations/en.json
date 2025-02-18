@@ -466,5 +466,82 @@
         "example": "This policy will destroy children's futures! (without evidence)"
       }
     ]
+  },
+  "supportPage": {
+    "title": "Support - ArguMentor",
+    "header": "Support ArguMentor",
+    "goBack": "Go Back",
+    "howToSupport": "How to Support this Project",
+    "financialSupport": {
+      "title": "☕ Buy Me a Coffee",
+      "description": "Help keep the servers running and support the development of new features.",
+      "button": "Buy Me a Coffee"
+    },
+    "feedback": {
+      "title": "💭 Share Feedback",
+      "description": "Share your experience, suggestions, or ideas to make the platform better.",
+      "button": "Give Feedback"
+    },
+    "share": {
+      "title": "🌟 Spread the Word",
+      "description": "Help grow the platform and tell your friends, colleagues, and enemies about it.",
+      "button": "Share"
+    },
+    "roadmap": {
+      "title": "Roadmap",
+      "intro": "If the platform gets more support, I want to add these features:",
+      "features": {
+        "competitiveMode": {
+          "title": "Competitive Mode",
+          "description": "Challenge your friends and compete in reasoning battles."
+        },
+        "voiceMode": {
+          "title": "Voice Mode",
+          "description": "Formulate your arguments without having to type."
+        },
+        "multipleLanguages": {
+          "title": "Multiple Languages",
+          "description": "Offer support for non-English languages."
+        },
+        "moreQuestions": {
+          "title": "More Questions",
+          "description": "Expand the collection of questions with new interesting topics."
+        },
+        "betterAnalytics": {
+          "title": "Better Analytics",
+          "description": "Add more options to analyze your performance and learn from it."
+        },
+        "enhanceFeedback": {
+          "title": "Enhance Feedback",
+          "description": "Improve the quality of the automated feedback."
+        },
+        "darkMode": {
+          "title": "Dark Mode",
+          "description": "For sinister reasoning sessions at night."
+        },
+        "leaderboard": {
+          "title": "Leaderboard",
+          "description": "Compare performance with others."
+        },
+        "argumentHighlights": {
+          "title": "Argument Highlights",
+          "description": "Learn from an overview of the best submitted arguments."
+        }
+      }
+    },
+    "feedbackModal": {
+      "title": "Share Your Feedback",
+      "categoryLabel": "Category",
+      "categoryOptions": {
+        "feature": "Feature Request",
+        "bug": "Bug Report",
+        "general": "General Feedback"
+      },
+      "messageLabel": "Message",
+      "messagePlaceholder": "Share your thoughts...",
+      "cancelButton": "Cancel",
+      "submitButton": "Submit Feedback",
+      "successMessage": "Thanks for the feedback!"
+    }
   }
 }

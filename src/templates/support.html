@@ -17,7 +17,7 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Support - ArguMentor</title>
+    <title data-i18n="supportPage.title">Support - ArguMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="icon"
@@ -29,10 +29,14 @@
     <!-- Header with Go Back Button -->
     <header class="bg-gray-800 p-4">
       <div class="max-w-5xl mx-auto flex justify-between items-center">
-        <h1 class="text-white text-3xl font-bold">Support ArguMentor</h1>
+        <h1
+          class="text-white text-3xl font-bold"
+          data-i18n="supportPage.header"
+        ></h1>
         <a
           href="/"
           class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
+          data-i18n="supportPage.goBack"
         >
           Go Back
         </a>
@@ -43,7 +47,10 @@
     <main class="max-w-5xl mx-auto p-4">
       <!-- How to Support Section -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-6">How to Support this Project</h2>
+        <h2
+          class="text-2xl font-bold mb-6"
+          data-i18n="supportPage.howToSupport"
+        ></h2>
 
         <!-- Support Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-11">
@@ -52,19 +59,23 @@
             class="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm flex flex-col h-full"
           >
             <div class="bg-gray-800 text-white px-3 py-2">
-              <h3 class="font-semibold text-base">☕ Buy Me a Coffee</h3>
+              <h3
+                class="font-semibold text-base"
+                data-i18n="supportPage.financialSupport.title"
+              ></h3>
             </div>
             <div class="p-3 flex flex-col flex-grow">
-              <p class="text-gray-600 text-sm mb-auto">
-                Help keep the servers running and support the development of new
-                features.
-              </p>
+              <p
+                class="text-gray-600 text-sm mb-auto"
+                data-i18n="supportPage.financialSupport.description"
+              ></p>
               <div class="mt-3">
                 <a
                   href="https://buymeacoffee.com/amadeusmagrabi"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="inline-block bg-gray-800 text-white px-4 py-1.5 rounded-full text-sm hover:bg-gray-700 transition-colors"
+                  data-i18n="supportPage.financialSupport.button"
                 >
                   Buy Me a Coffee
                 </a>
@@ -77,19 +88,23 @@
             class="bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm flex flex-col h-full"
           >
             <div class="bg-gray-800 text-white px-3 py-2">
-              <h3 class="font-semibold text-base">💭 Share Feedback</h3>
+              <h3
+                class="font-semibold text-base"
+                data-i18n="supportPage.feedback.title"
+              ></h3>
             </div>
             <div class="p-3 flex flex-col flex-grow">
-              <p class="text-gray-600 text-sm mb-3">
-                Share your experience, suggestions, or ideas to make the
-                platform better.
-              </p>
-              <button
-                onclick="showFeedbackModal()"
-                class="inline-block bg-gray-800 text-white px-4 py-1.5 rounded-full text-sm hover:bg-gray-700 transition-colors"
-              >
-                Give Feedback
-              </button>
+              <p
+                class="text-gray-600 text-sm mb-auto"
+                data-i18n="supportPage.feedback.description"
+              ></p>
+              <div class="mt-3">
+                <button
+                  onclick="showFeedbackModal()"
+                  class="inline-block bg-gray-800 text-white px-4 py-1.5 rounded-full text-sm hover:bg-gray-700 transition-colors"
+                  data-i18n="supportPage.feedback.button"
+                ></button>
+              </div>
             </div>
           </div>
 
@@ -98,17 +113,21 @@
             class="bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm flex flex-col h-full"
           >
             <div class="bg-gray-800 text-white px-3 py-2">
-              <h3 class="font-semibold text-base">🌟 Spread the Word</h3>
+              <h3
+                class="font-semibold text-base"
+                data-i18n="supportPage.share.title"
+              ></h3>
             </div>
             <div class="p-3 flex flex-col flex-grow">
-              <p class="text-gray-600 text-sm mb-auto">
-                Help grow the platform and tell your friends, colleagues, and
-                enemies about it.
-              </p>
+              <p
+                class="text-gray-600 text-sm mb-auto"
+                data-i18n="supportPage.share.description"
+              ></p>
               <div class="mt-3">
                 <button
                   onclick="shareArguMentor()"
                   class="inline-block bg-gray-800 text-white px-4 py-1.5 rounded-full text-sm hover:bg-gray-700 transition-colors"
+                  data-i18n="supportPage.share.button"
                 >
                   Share
                 </button>
@@ -120,94 +139,129 @@
 
       <!-- Roadmap Section -->
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-6">Roadmap</h2>
+        <h2
+          class="text-2xl font-bold mb-6"
+          data-i18n="supportPage.roadmap.title"
+        ></h2>
         <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
           <div class="space-y-4">
-            <p>
-              If the platform gets more support, I want to add these features:
-            </p>
+            <p data-i18n="supportPage.roadmap.intro"></p>
             <ul class="space-y-3">
               <li class="flex items-start">
                 <span class="text-green-500 mr-2">⭐</span>
                 <div>
-                  <span class="font-medium">Competitive Mode</span>
-                  <p class="text-gray-600 text-sm">
-                    Challenge your friends and compete in reasoning battles.
-                  </p>
+                  <span
+                    class="font-medium"
+                    data-i18n="supportPage.roadmap.features.competitiveMode.title"
+                  ></span>
+                  <p
+                    class="text-gray-600 text-sm"
+                    data-i18n="supportPage.roadmap.features.competitiveMode.description"
+                  ></p>
                 </div>
               </li>
               <li class="flex items-start">
                 <span class="text-green-500 mr-2">⭐</span>
                 <div>
-                  <span class="font-medium">Voice Mode</span>
-                  <p class="text-gray-600 text-sm">
-                    Formulate your arguments without having to type.
-                  </p>
+                  <span
+                    class="font-medium"
+                    data-i18n="supportPage.roadmap.features.voiceMode.title"
+                  ></span>
+                  <p
+                    class="text-gray-600 text-sm"
+                    data-i18n="supportPage.roadmap.features.voiceMode.description"
+                  ></p>
                 </div>
               </li>
               <li class="flex items-start">
                 <span class="text-green-500 mr-2">⭐</span>
                 <div>
-                  <span class="font-medium">Multiple Languages</span>
-                  <p class="text-gray-600 text-sm">
-                    Offer support for non-English languages.
-                  </p>
+                  <span
+                    class="font-medium"
+                    data-i18n="supportPage.roadmap.features.multipleLanguages.title"
+                  ></span>
+                  <p
+                    class="text-gray-600 text-sm"
+                    data-i18n="supportPage.roadmap.features.multipleLanguages.description"
+                  ></p>
                 </div>
               </li>
               <li class="flex items-start">
                 <span class="text-green-500 mr-2">⭐</span>
                 <div>
-                  <span class="font-medium">More Questions</span>
-                  <p class="text-gray-600 text-sm">
-                    Expand the collection of questions with new interesting
-                    topics.
-                  </p>
+                  <span
+                    class="font-medium"
+                    data-i18n="supportPage.roadmap.features.moreQuestions.title"
+                  ></span>
+                  <p
+                    class="text-gray-600 text-sm"
+                    data-i18n="supportPage.roadmap.features.moreQuestions.description"
+                  ></p>
                 </div>
               </li>
               <li class="flex items-start">
                 <span class="text-green-500 mr-2">⭐</span>
                 <div>
-                  <span class="font-medium">Better Analytics</span>
-                  <p class="text-gray-600 text-sm">
-                    Add more options to analyze your performance and learn from
-                    it.
-                  </p>
+                  <span
+                    class="font-medium"
+                    data-i18n="supportPage.roadmap.features.betterAnalytics.title"
+                  ></span>
+                  <p
+                    class="text-gray-600 text-sm"
+                    data-i18n="supportPage.roadmap.features.betterAnalytics.description"
+                  ></p>
                 </div>
               </li>
               <li class="flex items-start">
                 <span class="text-green-500 mr-2">⭐</span>
                 <div>
-                  <span class="font-medium">Enhance Feedback</span>
-                  <p class="text-gray-600 text-sm">
-                    Improve the quality of the automated feedback.
-                  </p>
+                  <span
+                    class="font-medium"
+                    data-i18n="supportPage.roadmap.features.enhanceFeedback.title"
+                  ></span>
+                  <p
+                    class="text-gray-600 text-sm"
+                    data-i18n="supportPage.roadmap.features.enhanceFeedback.description"
+                  ></p>
                 </div>
               </li>
               <li class="flex items-start">
                 <span class="text-green-500 mr-2">⭐</span>
                 <div>
-                  <span class="font-medium">Dark Mode</span>
-                  <p class="text-gray-600 text-sm">
-                    For sinister reasoning sessions at night.
-                  </p>
+                  <span
+                    class="font-medium"
+                    data-i18n="supportPage.roadmap.features.darkMode.title"
+                  ></span>
+                  <p
+                    class="text-gray-600 text-sm"
+                    data-i18n="supportPage.roadmap.features.darkMode.description"
+                  ></p>
                 </div>
               </li>
               <li class="flex items-start">
                 <span class="text-green-500 mr-2">⭐</span>
                 <div>
-                  <span class="font-medium">Leaderboard</span>
-                  <p class="text-gray-600 text-sm">
-                    Compare performance with others.
-                  </p>
+                  <span
+                    class="font-medium"
+                    data-i18n="supportPage.roadmap.features.leaderboard.title"
+                  ></span>
+                  <p
+                    class="text-gray-600 text-sm"
+                    data-i18n="supportPage.roadmap.features.leaderboard.description"
+                  ></p>
                 </div>
               </li>
               <li class="flex items-start">
                 <span class="text-green-500 mr-2">⭐</span>
                 <div>
-                  <span class="font-medium">Argument Highlights</span>
-                  <p class="text-gray-600 text-sm">
-                    Learn from an overview of the best submitted arguments.
-                  </p>
+                  <span
+                    class="font-medium"
+                    data-i18n="supportPage.roadmap.features.argumentHighlights.title"
+                  ></span>
+                  <p
+                    class="text-gray-600 text-sm"
+                    data-i18n="supportPage.roadmap.features.argumentHighlights.description"
+                  ></p>
                 </div>
               </li>
             </ul>
@@ -220,6 +274,7 @@
         <a
           href="/"
           class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors"
+          data-i18n="supportPage.goBack"
         >
           Go Back
         </a>
@@ -232,30 +287,44 @@
       class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center"
     >
       <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
-        <h3 class="text-xl font-bold mb-4">Share Your Feedback</h3>
+        <h3
+          class="text-xl font-bold mb-4"
+          data-i18n="supportPage.feedbackModal.title"
+        ></h3>
         <form id="feedbackForm" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Category</label
-            >
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              data-i18n="supportPage.feedbackModal.categoryLabel"
+            ></label>
             <select
               id="feedbackCategory"
               class="w-full rounded-lg border border-gray-300 px-3 py-2"
             >
-              <option value="feature">Feature Request</option>
-              <option value="bug">Bug Report</option>
-              <option value="general">General Feedback</option>
+              <option
+                value="feature"
+                data-i18n="supportPage.feedbackModal.categoryOptions.feature"
+              ></option>
+              <option
+                value="bug"
+                data-i18n="supportPage.feedbackModal.categoryOptions.bug"
+              ></option>
+              <option
+                value="general"
+                data-i18n="supportPage.feedbackModal.categoryOptions.general"
+              ></option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Message</label
-            >
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              data-i18n="supportPage.feedbackModal.messageLabel"
+            ></label>
             <textarea
               id="feedbackMessage"
               rows="4"
               class="w-full rounded-lg border border-gray-300 px-3 py-2"
-              placeholder="Share your thoughts..."
+              data-i18n-placeholder="supportPage.feedbackModal.messagePlaceholder"
             ></textarea>
           </div>
           <div class="flex justify-end gap-2">
@@ -263,20 +332,24 @@
               type="button"
               onclick="hideFeedbackModal()"
               class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+              data-i18n="supportPage.feedbackModal.cancelButton"
             >
               Cancel
             </button>
             <button
               type="submit"
               class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700"
+              data-i18n="supportPage.feedbackModal.submitButton"
             >
               Submit Feedback
             </button>
           </div>
         </form>
-        <div id="feedbackSuccess" class="mt-3 text-green-600 text-sm hidden">
-          Thanks for the feedback!
-        </div>
+        <div
+          id="feedbackSuccess"
+          class="mt-3 text-green-600 text-sm hidden"
+          data-i18n="supportPage.feedbackModal.successMessage"
+        ></div>
       </div>
     </div>
 
@@ -389,6 +462,31 @@
               .classList.remove("hidden");
           }
         });
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Get stored language preference (default to "en")
+        const currentLanguage = localStorage.getItem("language") || "en";
+
+        // Load translations from the appropriate JSON file
+        const response = await fetch(
+          `/static/translations/${currentLanguage}.json`
+        );
+        const translations = await response.json();
+
+        // Find all elements with the data-i18n attribute
+        document.querySelectorAll("[data-i18n]").forEach((element) => {
+          const key = element.getAttribute("data-i18n");
+          const translation = key
+            .split(".")
+            .reduce((obj, k) => obj && obj[k], translations);
+          if (translation) {
+            element.innerHTML = translation;
+          }
+        });
+
+        // Update document language attribute
+        document.documentElement.lang = currentLanguage;
+      });
     </script>
   </body>
 </html>
