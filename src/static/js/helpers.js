@@ -22,14 +22,17 @@ export function typeWriter(element, text, speed) {
 // Helper function to update the question display
 export function updateQuestionDisplay(question) {
   const questionElem = document.getElementById("questionDescription");
-  if (questionElem) {
-    questionElem.textContent = question.description;
+  if (questionElem && question) {
+    // Try to get the translated question text if available
+    const translatedQuestion =
+      window.translations?.questions?.[question.category]?.[question.id];
+    questionElem.textContent = translatedQuestion || question.description;
   }
+
   const categoryBadge = document.getElementById("categoryBadge");
   if (categoryBadge) {
-    // Get the translated category name
     const translatedCategory =
-      translations.categories?.[question.category] || question.category;
+      window.translations?.categories?.[question.category] || question.category;
     const categoryText = CATEGORY_ICONS[question.category]
       ? `${CATEGORY_ICONS[question.category]} ${translatedCategory}`
       : translatedCategory;

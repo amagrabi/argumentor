@@ -96,18 +96,6 @@ function updateLanguageIndicator() {
 }
 
 async function changeLanguage(lang) {
-  // Close the dropdown menu
-  const dropdown = document.getElementById("languageDropdown");
-  if (dropdown) {
-    dropdown.classList.add("hidden");
-  }
-
-  // Update language selector aria-expanded state
-  const languageSelector = document.getElementById("languageSelector");
-  if (languageSelector) {
-    languageSelector.setAttribute("aria-expanded", "false");
-  }
-
   currentLanguage = lang;
   localStorage.setItem("language", lang);
 
@@ -120,7 +108,25 @@ async function changeLanguage(lang) {
     body: JSON.stringify({ language: lang }),
   });
 
-  // Force page reload to ensure all translations are applied
+  // Load new translations
+  await loadTranslations();
+
+  // Update current question if it exists
+  const currentQuestion = JSON.parse(sessionStorage.getItem("currentQuestion"));
+  if (currentQuestion && currentQuestion.id && currentQuestion.category) {
+    const translatedQuestion =
+      translations?.questions?.[currentQuestion.category]?.[currentQuestion.id];
+    if (translatedQuestion) {
+      currentQuestion.description = translatedQuestion;
+      updateQuestionDisplay(currentQuestion);
+      sessionStorage.setItem(
+        "currentQuestion",
+        JSON.stringify(currentQuestion)
+      );
+    }
+  }
+
+  // Force page reload to ensure all other translations are applied
   window.location.reload();
 }
 

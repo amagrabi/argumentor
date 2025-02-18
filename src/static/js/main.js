@@ -62,8 +62,13 @@ async function getNewQuestion(shouldScroll = true) {
       console.error("Error fetching new question:", question.error);
       return;
     }
-    currentQuestion = question;
-    sessionStorage.setItem("currentQuestion", JSON.stringify(question));
+    currentQuestion = {
+      ...question,
+      id: question.id, // Ensure ID is included
+      category: question.category,
+      description: question.description,
+    };
+    sessionStorage.setItem("currentQuestion", JSON.stringify(currentQuestion));
 
     document.getElementById("claimInput").value = "";
     document.getElementById("argumentInput").value = "";
