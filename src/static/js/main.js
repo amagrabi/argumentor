@@ -5,6 +5,8 @@ import {
   ERROR_MESSAGES,
   EVALUATION_CATEGORIES,
   EVALUATION_TRANSLATION_MAPPING,
+  SUPPORTED_LANGUAGES,
+  DEFAULT_LANGUAGE,
 } from "./constants.js";
 import {
   typeWriter,
@@ -579,33 +581,42 @@ window.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const urlLang = urlParams.get("lang");
 
-    if (urlLang && urlLang !== localStorage.getItem("language")) {
-      // First update the server-side language
-      await fetch("/set_language", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ language: urlLang }),
-      });
+    if (urlLang) {
+      // Validate language parameter
+      const validLang = SUPPORTED_LANGUAGES.includes(urlLang)
+        ? urlLang
+        : DEFAULT_LANGUAGE;
 
-      // Then update localStorage
-      localStorage.setItem("language", urlLang);
+      if (validLang !== localStorage.getItem("language")) {
+        // First update the server-side language
+        await fetch("/set_language", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ language: validLang }),
+        });
 
-      // Remove the lang parameter from URL
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete("lang");
-      window.history.replaceState({}, "", newUrl);
+        // Then update localStorage
+        localStorage.setItem("language", validLang);
 
-      // Reload the page without trying to load categories first
-      window.location.reload();
-      return; // Exit early to prevent further execution
+        // Remove the lang parameter from URL
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.delete("lang");
+        window.history.replaceState({}, "", newUrl);
+
+        // Reload the page without trying to load categories first
+        window.location.reload();
+        return; // Exit early to prevent further execution
+      }
     }
 
     // Only load categories if we're not changing language
     await loadSavedCategories();
   } catch (error) {
     console.error("Error in DOMContentLoaded:", error);
+    // Ensure we have a valid language set
+    localStorage.setItem("language", DEFAULT_LANGUAGE);
   }
 
   // Add event delegation for settings button

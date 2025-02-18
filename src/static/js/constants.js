@@ -1,5 +1,8 @@
 import { hexToRgb } from "./utils.js";
 
+export const SUPPORTED_LANGUAGES = ["en", "de"];
+export const DEFAULT_LANGUAGE = "en";
+
 // Categories
 export const DEFAULT_CATEGORIES = [
   "Philosophy",

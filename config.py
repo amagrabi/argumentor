@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import ClassVar, Dict
+from typing import ClassVar, Dict, List
 
 from dotenv import load_dotenv
 from pydantic import Field
@@ -55,6 +55,9 @@ class Settings(BaseSettings):
         "free": 20,
         "plus": 100,
     }
+
+    SUPPORTED_LANGUAGES: ClassVar[List[str]] = ["en", "de"]
+    DEFAULT_LANGUAGE: str = "en"
 
     model_config = SettingsConfigDict(
         env_file=".env",

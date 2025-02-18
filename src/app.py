@@ -111,7 +111,13 @@ def create_app():
     @app.before_request
     def handle_language_parameter():
         lang = request.args.get("lang")
-        if lang in ["en", "de"]:
+        if lang:
+            # If language is not supported, use default
+            lang = (
+                lang
+                if lang in SETTINGS.SUPPORTED_LANGUAGES
+                else SETTINGS.DEFAULT_LANGUAGE
+            )
             session["language"] = lang
             if current_user.is_authenticated:
                 current_user.preferred_language = lang

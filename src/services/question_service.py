@@ -4,12 +4,19 @@ from random import choice
 
 from flask import current_app, session
 
+from config import get_settings
+
+SETTINGS = get_settings()
 _questions_cache = None
 
 
 def load_questions():
     global _questions_cache
     language = session.get("language", "en")
+
+    # Ensure we're using a supported language
+    if language not in SETTINGS.SUPPORTED_LANGUAGES:
+        session["language"] = SETTINGS.DEFAULT_LANGUAGE
 
     # Always reload questions when language changes
     translations_path = (

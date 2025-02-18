@@ -1,14 +1,26 @@
 import { updateQuestionDisplay } from "./helpers.js";
+import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE } from "./constants.js";
 
-let currentLanguage = localStorage.getItem("language") || "en";
+let currentLanguage = localStorage.getItem("language") || DEFAULT_LANGUAGE;
 export let translations = {};
 
 async function loadTranslations() {
   try {
+    // Validate language and default to English if invalid
+    if (!SUPPORTED_LANGUAGES.includes(currentLanguage)) {
+      currentLanguage = DEFAULT_LANGUAGE;
+      localStorage.setItem("language", DEFAULT_LANGUAGE);
+    }
+
     console.log("Loading translations for language:", currentLanguage);
     const response = await fetch(
       `/static/translations/${currentLanguage}.json`
     );
+
+    if (!response.ok) {
+      throw new Error(`Failed to load translations for ${currentLanguage}`);
+    }
+
     translations = await response.json();
     console.log("Translations loaded:", translations);
     applyTranslations();
@@ -31,6 +43,11 @@ async function loadTranslations() {
     }
   } catch (error) {
     console.error("Error loading translations:", error);
+    // Fallback to English if translation loading fails
+    if (currentLanguage !== DEFAULT_LANGUAGE) {
+      localStorage.setItem("language", DEFAULT_LANGUAGE);
+      window.location.reload();
+    }
   }
 }
 
