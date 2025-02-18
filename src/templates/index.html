@@ -467,12 +467,44 @@
         </div>
 
         <!-- Toggle for Input Mode -->
-        <div id="inputModeToggle" class="mt-4">
+        <div class="mt-8 mb-6 flex border-b border-gray-200">
           <button
-            id="toggleInputMode"
-            class="bg-blue-500 text-white px-4 py-2 rounded"
+            id="textModeTab"
+            class="flex-1 px-4 py-2 text-sm border-b border-gray-600 text-gray-600 hover:text-gray-600 font-medium flex items-center justify-center space-x-2 transition-colors"
           >
-            Switch to Voice Input
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
+            </svg>
+            <span>Write</span>
+          </button>
+          <button
+            id="voiceModeTab"
+            class="flex-1 px-4 py-2 text-sm border-b border-transparent text-gray-500 hover:text-gray-600 font-medium flex items-center justify-center space-x-2 transition-colors"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+              />
+            </svg>
+            <span>Speak</span>
           </button>
         </div>
 
@@ -545,36 +577,55 @@
         </div>
 
         <!-- Voice Input Section (Initially Hidden) -->
-        <div id="voiceInputSection" style="display: none" class="mt-4">
-          <h3 class="text-lg font-bold mb-2">Voice Input</h3>
-          <div class="mb-2">
-            <button
-              id="recordButton"
-              class="bg-gray-800 text-white px-4 py-2 rounded"
-            >
-              Start Recording
-            </button>
-            <button
-              id="stopButton"
-              class="bg-gray-800 text-white px-4 py-2 rounded"
-              disabled
-            >
-              Stop Recording
-            </button>
-            <span
-              id="recordingStatus"
-              class="ml-2 text-sm text-gray-600"
-            ></span>
+        <div id="voiceInputSection" style="display: none" class="mt-6">
+          <div class="mb-6">
+            <div class="flex flex-col items-center">
+              <button
+                id="recordButton"
+                class="w-14 h-14 bg-white border-2 border-gray-800 rounded-full flex items-center justify-center hover:bg-gray-50 transition-all duration-200"
+              >
+                <svg
+                  class="w-8 h-8"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                  />
+                </svg>
+              </button>
+
+              <!-- Recording status and timer -->
+              <div class="mt-2 text-center">
+                <div
+                  id="recordingStatus"
+                  class="text-sm font-medium text-gray-600"
+                ></div>
+                <div
+                  id="recordingTimer"
+                  class="mt-1 font-mono text-sm text-gray-500 hidden"
+                >
+                  <span id="timerDisplay">0:00</span>
+                  <span class="mx-1">/</span>
+                  <span>3:00</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <label for="voiceTranscript" class="block text-lg font-bold mb-2">
+
+          <div class="space-y-4">
+            <label for="voiceTranscript" class="block text-lg font-bold">
               Your Recorded Answer
             </label>
             <textarea
               id="voiceTranscript"
               class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
               placeholder="Your transcribed answer will appear here..."
-              maxlength=""
+              readonly
             ></textarea>
             <div class="mt-1 text-sm text-gray-500">
               <span>Characters remaining:</span>
@@ -685,19 +736,6 @@
               >to review answered questions and track your progress.</span
             >
           </p>
-          {% if not current_user.is_authenticated %}
-          <div
-            class="mt-4 mb-4 max-w-full md:w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"
-          >
-            <span data-i18n="evaluation.notLoggedIn"></span>
-            <a
-              href="#"
-              onclick="showAuthModal()"
-              class="text-gray-800 underline hover:text-gray-600"
-              ><span data-i18n="evaluation.here"></span></a
-            ><span data-i18n="evaluation.loginSuffix"></span>
-          </div>
-          {% endif %}
         </div>
 
         <!-- New Challenge Response Section -->
