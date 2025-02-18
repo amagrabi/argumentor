@@ -90,16 +90,13 @@
               <h3
                 class="text-lg font-semibold mb-2"
                 data-i18n="profile.accountInfo"
-              >
-                Account Info
-              </h3>
+              ></h3>
               <p class="text-base mb-2">
                 <span
                   class="text-gray-500 font-medium"
                   data-i18n="profile.username"
-                >
-                  Username:
-                </span>
+                ></span
+                ><span class="text-gray-500 font-medium">: </span>
                 {{ current_user.username if current_user.is_authenticated else
                 "Anonymous" }}
               </p>
@@ -107,9 +104,8 @@
                 <span
                   class="text-gray-500 font-medium"
                   data-i18n="profile.email"
-                >
-                  Email:
-                </span>
+                ></span
+                ><span class="text-gray-500 font-medium">: </span>
                 {{ user.email or "unknown" }}
               </p>
             </div>
@@ -120,8 +116,8 @@
               class="text-gray-500 font-medium"
               data-i18n="profile.accountType"
             >
-              Account Type:
-            </span>
+            </span
+            ><span class="text-gray-500 font-medium">: </span>
             {% if user.tier == "free" %}
             <span class="ml-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full"
               >Free</span
@@ -138,17 +134,29 @@
             {% endif %}
           </div>
           <div class="text-base mb-3">
-            <span class="text-gray-500 font-medium">Daily Evaluations:</span>
+            <span
+              class="text-gray-500 font-medium"
+              data-i18n="profile.dailyEvaluations"
+            ></span
+            ><span class="text-gray-500 font-medium">: </span>
             <span class="ml-1 px-2 py-1 bg-gray-100 text-gray-800 rounded-full">
               {{ daily_eval_count }} / {{ eval_limit }}
             </span>
           </div>
           <p class="text-base mb-2">
-            <span class="text-gray-500 font-medium">Total XP:</span>
+            <span
+              class="text-gray-500 font-medium"
+              data-i18n="profile.totalXP"
+            ></span
+            ><span class="text-gray-500 font-medium">: </span>
             <strong>{{ xp }}</strong>
           </p>
           <p class="text-base mb-3">
-            <span class="text-gray-500 font-medium">Current Level:</span>
+            <span
+              class="text-gray-500 font-medium"
+              data-i18n="profile.currentLevel"
+            ></span
+            ><span class="text-gray-500 font-medium">: </span>
             <span class="text-lg"
               ><strong>{{ level_info.display_name }}</strong></span
             >
@@ -160,7 +168,11 @@
             ></div>
           </div>
           <p class="text-sm mt-2">
-            <span class="text-gray-500 font-medium">Progress:</span>
+            <span
+              class="text-gray-500 font-medium"
+              data-i18n="profile.progress"
+            ></span
+            ><span class="text-gray-500 font-medium">: </span>
             {{ level_info.xp_into_level }} / {{ level_info.xp_needed }} XP
           </p>
         </div>
@@ -169,9 +181,7 @@
           <h2
             class="text-xl font-bold mb-4"
             data-i18n="profile.progressOverTime"
-          >
-            Progress Over Time
-          </h2>
+          ></h2>
 
           <div class="mb-8 max-w-full mx-auto px-4">
             <div
@@ -184,58 +194,42 @@
                     id="showOverall"
                     class="px-3 py-1 rounded-full bg-gray-800 text-white text-sm"
                     data-i18n="profile.overall"
-                  >
-                    Overall
-                  </button>
+                  ></button>
                   <button
                     id="showRelevance"
                     class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
                     data-i18n="profile.relevance"
-                  >
-                    Relevance
-                  </button>
+                  ></button>
                   <button
                     id="showLogic"
                     class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
                     data-i18n="profile.logic"
-                  >
-                    Logical Structure
-                  </button>
+                  ></button>
                   <button
                     id="showClarity"
                     class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
                     data-i18n="profile.clarity"
-                  >
-                    Clarity
-                  </button>
+                  ></button>
                   <button
                     id="showDepth"
                     class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
                     data-i18n="profile.depth"
-                  >
-                    Depth
-                  </button>
+                  ></button>
                   <button
                     id="showObjectivity"
                     class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
                     data-i18n="profile.objectivity"
-                  >
-                    Objectivity
-                  </button>
+                  ></button>
                   <button
                     id="showCreativity"
                     class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
                     data-i18n="profile.creativity"
-                  >
-                    Creativity
-                  </button>
+                  ></button>
                   <button
                     id="showChallenge"
                     class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
                     data-i18n="profile.challenge"
-                  >
-                    Challenge
-                  </button>
+                  ></button>
                 </div>
               </div>
               <div
@@ -249,9 +243,10 @@
         </div>
 
         <div>
-          <h2 class="text-xl font-bold mb-4" data-i18n="profile.yourAnswers">
-            Your Answers
-          </h2>
+          <h2
+            class="text-xl font-bold mb-4"
+            data-i18n="profile.yourAnswers"
+          ></h2>
 
           {% if user and user.answers %}
           <ul class="space-y-4">
@@ -298,20 +293,28 @@
                 <div class="mt-2 space-y-2">
                   <!-- Claim and Argument Sections -->
                   <p class="text-sm break-words pr-40">
-                    <span class="font-medium text-sm text-black">Claim:</span>
+                    <span
+                      class="font-medium text-sm text-black"
+                      data-i18n="profile.claim"
+                    ></span
+                    ><span>: </span>
                     <span class="text-gray-600">{{ answer.claim }}</span>
                   </p>
                   <p class="text-sm break-words mt-1">
-                    <span class="font-medium text-sm text-black"
-                      >Argument:</span
-                    >
+                    <span
+                      class="font-medium text-sm text-black"
+                      data-i18n="profile.argument"
+                    ></span
+                    ><span>: </span>
                     <span class="text-gray-600">{{ answer.argument }}</span>
                   </p>
                   {% if answer.counterargument %}
                   <p class="text-sm break-words mt-1">
-                    <span class="font-medium text-sm text-black"
-                      >Counterargument Rebuttal:</span
-                    >
+                    <span
+                      class="font-medium text-sm text-black"
+                      data-i18n="profile.counterargument"
+                    ></span
+                    ><span>: </span>
                     <span class="text-gray-600"
                       >{{ answer.counterargument }}</span
                     >
@@ -325,9 +328,11 @@
                   </p>
                   {% endif %} {% if answer.challenge_response %}
                   <p class="text-sm break-words mt-1">
-                    <span class="font-medium text-sm text-black"
-                      >Challenge Response:</span
-                    >
+                    <span
+                      class="font-medium text-sm text-black"
+                      data-i18n="profile.challengeResponse"
+                    ></span
+                    ><span>: </span>
                     <span class="text-gray-600"
                       >{{ answer.challenge_response }}</span
                     >
@@ -342,9 +347,10 @@
                   class="flex items-center justify-between cursor-pointer"
                   onclick="this.nextElementSibling.classList.toggle('hidden')"
                 >
-                  <span class="text-sm font-medium text-black"
-                    >Feedback Details</span
-                  >
+                  <span
+                    class="text-sm font-medium text-black"
+                    data-i18n="profile.feedbackDetails"
+                  ></span>
                   <svg
                     class="w-4 h-4 transform transition-transform"
                     fill="none"
@@ -365,7 +371,11 @@
                   sum) / (answer.evaluation_scores.values() | length) %}
                   <p class="flex flex-col">
                     <span class="flex items-center">
-                      <span class="font-medium text-black">Overall:</span>
+                      <span
+                        class="font-medium text-black"
+                        data-i18n="profile.overall"
+                      >
+                      </span>
                       <span
                         class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(overall_score) }}"
                       >
@@ -376,23 +386,28 @@
                     <span>{{ answer.evaluation_feedback.Overall }}</span>
                   </p>
 
-                  {% set ordered_categories = ["Relevance", "Logical Structure",
-                  "Clarity", "Depth", "Objectivity", "Creativity"] %} {% for
-                  category in ordered_categories %}
+                  {% set ordered_categories = [ ("Relevance", "relevance"),
+                  ("Logical Structure", "logic"), ("Clarity", "clarity"),
+                  ("Depth", "depth"), ("Objectivity", "objectivity"),
+                  ("Creativity", "creativity") ] %} {% for display_name,
+                  translation_key in ordered_categories %}
                   <p class="flex flex-col">
                     <span class="flex items-center">
-                      <span class="font-medium text-black"
-                        >{{ category }}:</span
-                      >
-                      {% if answer.evaluation_scores[category] is defined %}
                       <span
-                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.evaluation_scores[category]) }}"
+                        class="font-medium text-black"
+                        data-i18n="evaluation.scores.{{ translation_key }}"
                       >
-                        {{ answer.evaluation_scores[category] }}/10
+                        {{ display_name }}
+                      </span>
+                      {% if answer.evaluation_scores[display_name] is defined %}
+                      <span
+                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.evaluation_scores[display_name]) }}"
+                      >
+                        {{ answer.evaluation_scores[display_name] }}/10
                       </span>
                       {% endif %}
                     </span>
-                    <span>{{ answer.evaluation_feedback[category] }}</span>
+                    <span>{{ answer.evaluation_feedback[display_name] }}</span>
                   </p>
                   {% endfor %}
 
@@ -406,7 +421,10 @@
                   </div>
                   <p class="mt-2 flex flex-col">
                     <span class="flex items-center">
-                      <span class="font-medium text-black">Overall:</span>
+                      <span
+                        class="font-medium text-black"
+                        data-i18n="profile.overall"
+                      ></span>
                       <span
                         class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.challenge_evaluation_scores.Overall) }}"
                       >
@@ -419,25 +437,32 @@
                       >{{ answer.challenge_evaluation_feedback.Overall }}</span
                     >
                   </p>
-                  {% set ordered_challenge_categories = ["Relevance", "Logical
-                  Structure", "Clarity", "Depth", "Objectivity", "Creativity"]
-                  %} {% for category in ordered_challenge_categories %}
+                  {% set ordered_challenge_categories = [ ("Relevance",
+                  "relevance"), ("Logical Structure", "logic"), ("Clarity",
+                  "clarity"), ("Depth", "depth"), ("Objectivity",
+                  "objectivity"), ("Creativity", "creativity") ] %} {% for
+                  display_name, translation_key in ordered_challenge_categories
+                  %}
                   <p class="flex flex-col">
                     <span class="flex items-center">
-                      <span class="font-medium text-black"
-                        >{{ category }}:</span
+                      <span
+                        class="font-medium text-black"
+                        data-i18n="evaluation.scores.{{ translation_key }}"
                       >
-                      {% if answer.challenge_evaluation_scores[category] is
+                        {{ display_name }}
+                      </span>
+                      {% if answer.challenge_evaluation_scores[display_name] is
                       defined %}
                       <span
-                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.challenge_evaluation_scores[category]) }}"
+                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.challenge_evaluation_scores[display_name]) }}"
                       >
-                        {{ answer.challenge_evaluation_scores[category] }}/10
+                        {{ answer.challenge_evaluation_scores[display_name]
+                        }}/10
                       </span>
                       {% endif %}
                     </span>
                     <span
-                      >{{ answer.challenge_evaluation_feedback[category]
+                      >{{ answer.challenge_evaluation_feedback[display_name]
                       }}</span
                     >
                   </p>

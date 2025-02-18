@@ -61,25 +61,36 @@
   "profile": {
     "title": "Dein Profil",
     "goBack": "Zurück",
-    "progress": "Fortschritt",
     "accountInfo": "Kontoinformationen",
     "username": "Benutzername",
-    "email": "E-Mail",
+    "email": "Email",
     "accountType": "Kontotyp",
-    "overall": "",
+    "dailyEvaluations": "Tägliche Bewertungen",
+    "currentLevel": "Aktuelles Level",
+    "totalXP": "Erfahrungspunkte",
+    "progress": "Fortschritt",
+    "overall": "Gesamt",
     "relevance": "Relevanz",
     "logic": "Logische Struktur",
     "clarity": "Klarheit",
     "depth": "Tiefe",
     "objectivity": "Objektivität",
     "creativity": "Kreativität",
-    "challenge": "Herausforderung",
+    "challenge": "Challenge",
     "yourAnswers": "Deine Antworten",
-    "progressOverTime": "Fortschritt"
+    "progressOverTime": "Fortschritt über die Zeit",
+    "rating": "Bewertung",
+    "time": "Zeit",
+    "claim": "These",
+    "argument": "Argument",
+    "counterargument": "Gegenarugumente",
+    "challengeResponse": "Antwort",
+    "feedbackDetails": "Details"
   },
   "evaluation": {
     "title": "Bewertung",
     "overall": "Gesamtbewertung",
+    "argumentstructure": "Argumentstruktur (geschätzt)",
     "checkProfile": "Besuche deine",
     "profilePage": "Profilseite",
     "reviewProgress": "um deine beantworteten Fragen zu überprüfen und deinen Fortschritt zu verfolgen.",
@@ -223,20 +234,20 @@
     "title": "So funktioniert es",
     "goBack": "Zurück",
     "section1": {
-      "title": "Verstehe Deine Herausforderung",
-      "description": "Erhalte Fragen, die deine Argumentationsfähigkeiten auf die Probe stellen."
+      "title": "Wähle eine Frage aus",
+      "description": "Suche dir eine Frage aus einem der Themenbereiche aus."
     },
     "section2": {
       "title": "Formuliere dein Argument",
-      "description": "Entwickle Argumente und erhalte Feedback zu deiner Leistung."
+      "description": "Stelle deine These auf und begründe sie mit einem Argument."
     },
     "section3": {
-      "title": "Analysiere & Verbessere",
-      "description": "Analysiere deine Leistung, verfolge deinen Fortschritt und steigere dein Level."
+      "title": "Erhalte direktes Feedback",
+      "description": "Erhalte eine KI-gesteuerte Bewertung und Feedback zu deinem Argument."
     },
     "section4": {
-      "title": "Profilseite",
-      "description": "Sieh dir deinen Fortschritt und alle eingereichten Antworten an."
+      "title": "Analyse & Verbesserung",
+      "description": "Analyse deine Leistung, verfolge deinen Fortschritt und steigere dein Level."
     },
     "overviewTitle": "Überblick",
     "overview": "Die Plattform wurde entwickelt, um deine Argumentations- und Entscheidungsfähigkeiten zu verbessern:",
@@ -489,7 +500,7 @@
     "financialSupport": {
       "title": "☕ Buy Me a Coffee",
       "description": "Hilf dabei, die Server am Laufen zu halten und die Entwicklung neuer Funktionen zu unterstützen.",
-      "button": "Buy Me a Coffee"
+      "button": "Unterstützen"
     },
     "feedback": {
       "title": "💭 Feedback geben",
@@ -547,8 +558,8 @@
       "title": "Dein Feedback teilen",
       "categoryLabel": "Kategorie",
       "categoryOptions": {
-        "feature": "Funktionsanfrage",
-        "bug": "Fehlerbericht",
+        "feature": "Feature-Anfrage",
+        "bug": "Bug-Report",
         "general": "Allgemeines Feedback"
       },
       "messageLabel": "Nachricht",
@@ -559,7 +570,7 @@
     }
   },
   "privacy": {
-    "title": "Datenschutzerklärung",
+    "title": "Datenschutz",
     "goBack": "Zurück",
     "lastUpdated": "Zuletzt aktualisiert: 15. Februar 2025",
     "sections": {
@@ -606,20 +617,19 @@
     "sections": {
       "acceptance": {
         "title": "Annahme der Bedingungen",
-        "content": "Diese Nutzungsbedingungen ('Bedingungen') regeln Ihre Nutzung unserer Website und Dienste. Durch den Zugriff auf oder die Nutzung unserer Plattform erklären Sie sich mit diesen Bedingungen einverstanden. Bitte lesen Sie sie sorgfältig durch."
+        "content": "Diese Nutzungsbedingungen regeln die Nutzung unserer Website und Dienste. Durch den Zugriff auf oder die Nutzung unserer Plattform erklärst du dich mit diesen Bedingungen einverstanden. Bitte lies sie sorgfältig durch."
       },
       "userContent": {
         "title": "Nutzerverantwortung",
-        "content": "Sie verpflichten sich, die ArguMentor-Plattform nur für rechtmäßige Zwecke und in einer Weise zu nutzen, die weder die Rechte anderer verletzt noch die Nutzung und den Genuss des Dienstes durch Dritte einschränkt. Sie sind für die Vertraulichkeit Ihres Kontos und Passworts verantwortlich."
+        "content": "Du verpflichtest dich, die ArguMentor-Plattform nur für rechtmäßige Zwecke und in einer Weise zu nutzen, die weder die Rechte anderer verletzt noch die Nutzung und den Genuss des Dienstes durch Dritte einschränkt. Du bist für die Vertraulichkeit deines Kontos und Passworts verantwortlich."
       },
       "prohibited": {
         "title": "Verbotene Aktivitäten",
-        "content": "Sie verpflichten sich, keine unerlaubten Aktivitäten durchzuführen, einschließlich, aber nicht beschränkt auf: Manipulation des Dienstes, Veröffentlichung unangemessener Inhalte, Eingriffe in die Sicherheit oder den Betrieb der Plattform oder Verletzung geltender Gesetze und Vorschriften."
+        "content": "Du verpflichtest dich, keine unerlaubten Aktivitäten durchzuführen, einschließlich, aber nicht beschränkt auf: Manipulation des Dienstes, Veröffentlichung unangemessener Inhalte, Eingriffe in die Sicherheit oder den Betrieb der Plattform oder Verletzung geltender Gesetze und Vorschriften."
       },
       "privacy": {
         "title": "Geistiges Eigentum",
-        "content": "Die Inhalte auf ArguMentor, einschließlich, aber nicht beschränkt auf Texte, Grafiken, Logos und Bilder, sind Eigentum von ArguMentor oder seinen Lizenzgebern und durch Gesetze zum geistigen Eigentum geschützt. Sie stimmen zu, keine Teile der Website ohne unsere vorherige schriftliche Zustimmung zu reproduzieren, zu modifizieren oder zu verbreiten.",
-        "link": "Datenschutzerklärung"
+        "content": "Die Inhalte auf ArguMentor, einschließlich, aber nicht beschränkt auf Texte, Grafiken, Logos und Bilder, sind Eigentum von ArguMentor oder seinen Lizenzgebern und durch Gesetze zum geistigen Eigentum geschützt. Du stimmst zu, keine Teile der Website ohne unsere vorherige schriftliche Zustimmung zu reproduzieren, zu modifizieren oder zu verbreiten."
       },
       "disclaimer": {
         "title": "Haftungsausschluss",
@@ -635,8 +645,8 @@
       },
       "contact": {
         "title": "Kontaktinformationen",
-        "content": "Wenn Sie Fragen zu diesen Bedingungen haben,",
-        "here": "kontaktieren Sie uns"
+        "content": "Wenn du Fragen zu diesen Bedingungen hast,",
+        "here": "kontaktiere uns"
       }
     }
   },
@@ -651,5 +661,10 @@
     "or": "schicken oder das Projekt über ",
     "buyMeACoffee": "Buy Me a Coffee",
     "supportText": " unterstützen."
+  },
+  "footer": {
+    "privacyPolicy": "Datenschutz",
+    "termsOfService": "Nutzungsbedingungen",
+    "contact": "Kontakt"
   }
 }

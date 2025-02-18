@@ -1,3 +1,21 @@
+// Import translations
+let translations = {};
+
+// Load translations when DOM is ready
+async function loadTranslations() {
+  const currentLanguage = localStorage.getItem("language") || "en";
+  try {
+    const response = await fetch(
+      `/static/translations/${currentLanguage}.json`
+    );
+    translations = await response.json();
+    // Make translations globally available
+    window.translations = translations;
+  } catch (error) {
+    console.error("Error loading translations:", error);
+  }
+}
+
 // Initialize the chart variable
 let progressChart = null;
 
@@ -13,7 +31,10 @@ const colors = {
   challenge: "#a0522d",
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  // Load translations first
+  await loadTranslations();
+
   const answersDataElement = document.getElementById("answersData");
   const answers = JSON.parse(answersDataElement.textContent);
 
@@ -147,7 +168,7 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
           x: {
             title: {
               display: true,
-              text: "Time",
+              text: translations.profile.time,
               font: { size: 14 },
             },
             grid: {
@@ -167,7 +188,7 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
             },
             title: {
               display: true,
-              text: "Ratings",
+              text: translations.profile.rating,
               font: { size: 14 },
             },
             grid: {

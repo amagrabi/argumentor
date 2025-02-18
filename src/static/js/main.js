@@ -317,7 +317,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       </div>
       <p id="overallFeedback" class="text-md">
         ${data.evaluation.overall_feedback}
-      </p>
+</p>
     `;
 
     // Now set the score color after the element exists
@@ -342,7 +342,9 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       overallEvalDiv.innerHTML += `
         <div class="mt-8 flex justify-center">
           <div class="w-full max-w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h3 class="text-lg font-bold mb-4 text-center text-gray-800">Estimated Argument Structure</h3>
+            <h3 class="text-lg font-bold mb-4 text-center text-gray-800">
+              ${translations.evaluation.argumentstructure}:
+            </h3>
             <div id="argumentStructureViz" class="overflow-x-auto flex justify-center"></div>
           </div>
         </div>
@@ -503,7 +505,8 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     }
 
     if (data.leveled_up) {
-      document.getElementById("levelUpMessage").textContent = "Level Up!";
+      document.getElementById("levelUpMessage").textContent =
+        translations.evaluation.levelUp;
     } else {
       document.getElementById("levelUpMessage").textContent = "";
     }

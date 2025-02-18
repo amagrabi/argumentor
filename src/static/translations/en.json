@@ -60,6 +60,7 @@
   "evaluation": {
     "title": "Evaluation",
     "overall": "Overall Rating",
+    "argumentstructure": "Argument Structure (estimate)",
     "checkProfile": "Check your",
     "profilePage": "Profile Page",
     "reviewProgress": "to review answered questions and track your progress.",
@@ -208,11 +209,14 @@
   "profile": {
     "title": "Your Profile",
     "goBack": "Go Back",
-    "progress": "Progress",
     "accountInfo": "Account Info",
     "username": "Username",
     "email": "Email",
     "accountType": "Account Type",
+    "dailyEvaluations": "Daily Evaluations",
+    "currentLevel": "Current Level",
+    "totalXP": "Total XP",
+    "progress": "Progress",
     "overall": "Overall",
     "relevance": "Relevance",
     "logic": "Logic",
@@ -222,7 +226,14 @@
     "creativity": "Creativity",
     "challenge": "Challenge",
     "yourAnswers": "Your Answers",
-    "progressOverTime": "Progress Over Time"
+    "progressOverTime": "Progress Over Time",
+    "rating": "Rating",
+    "time": "Time",
+    "claim": "Claim",
+    "argument": "Argument",
+    "counterargument": "Counterarguments",
+    "challengeResponse": "Challenge Response",
+    "feedbackDetails": "Details"
   },
   "howItWorksPage": {
     "title": "How It Works",
@@ -604,8 +615,7 @@
       },
       "privacy": {
         "title": "Intellectual Property",
-        "content": "The content on ArguMentor, including but not limited to text, graphics, logos, and images, is the property of ArguMentor or its licensors and is protected by intellectual property laws. You agree not to reproduce, modify, or distribute any part of the site without our prior written consent.",
-        "link": "Privacy Policy"
+        "content": "The content on ArguMentor, including but not limited to text, graphics, logos, and images, is the property of ArguMentor or its licensors and is protected by intellectual property laws. You agree not to reproduce, modify, or distribute any part of the site without our prior written consent."
       },
       "disclaimer": {
         "title": "Disclaimer of Warranties",
@@ -637,5 +647,10 @@
     "or": "or",
     "buyMeACoffee": "buy me a coffee",
     "supportText": "to support the platform."
+  },
+  "footer": {
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "contact": "Contact"
   }
 }
