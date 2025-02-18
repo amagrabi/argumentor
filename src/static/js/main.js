@@ -7,6 +7,7 @@ import {
   EVALUATION_TRANSLATION_MAPPING,
   SUPPORTED_LANGUAGES,
   DEFAULT_LANGUAGE,
+  CHAR_LIMITS,
 } from "./constants.js";
 import {
   typeWriter,
@@ -45,6 +46,14 @@ mermaid.initialize({
 let selectedCategories = [];
 // Global variable to store the currently displayed question.
 let currentQuestion = null;
+
+// Initialize voice input maxlength and counter
+const voiceTranscript = document.getElementById("voiceTranscript");
+const voiceCount = document.getElementById("voiceCount");
+if (voiceTranscript && voiceCount) {
+  voiceTranscript.setAttribute("maxlength", CHAR_LIMITS.VOICE.toString());
+  voiceCount.textContent = CHAR_LIMITS.VOICE.toString();
+}
 
 // Modified getNewQuestion function:
 // 1. It appends the selectedCategories as a query parameter to the request URL.
@@ -199,30 +208,65 @@ setupCharCounter(
 );
 setupCharCounter("challengeResponseInput", "challengeCount", "challenge");
 
-// Updated submission handler
+// Updated submission handler for handling both text and voice input
 document.getElementById("submitAnswer").addEventListener("click", async () => {
   const startTime = Date.now();
-  const claim = document.getElementById("claimInput").value.trim();
-  const argument = document.getElementById("argumentInput").value.trim();
-  const submitBtn = document.getElementById("submitAnswer");
-  const counterargument = document
-    .getElementById("counterargumentInput")
-    .value.trim();
-
   const errorMessage = document.getElementById("errorMessage");
-  if (!claim || !argument) {
-    const defaultError =
-      "Please fill in both required fields (Claim and Argument) before submitting.";
-    errorMessage.textContent =
-      translations?.errors?.requiredFields || defaultError;
-    errorMessage.classList.remove("hidden");
-    return;
+  const submitBtn = document.getElementById("submitAnswer");
+  let claim, argument, counterargument;
+
+  // Determine the current input mode (voice or text)
+  const inputMode = window.currentInputMode();
+  if (inputMode === "voice") {
+    const voiceResponse = document
+      .getElementById("voiceTranscript")
+      .value.trim();
+    if (!voiceResponse) {
+      const defaultError = "Please provide your response before submitting.";
+      errorMessage.textContent =
+        translations?.errors?.requiredFields || defaultError;
+      errorMessage.classList.remove("hidden");
+      return;
+    }
+
+    // For voice mode, split the response into claim and argument portions
+    const maxClaimLength = CHAR_LIMITS.CLAIM;
+    const maxArgumentLength = CHAR_LIMITS.ARGUMENT;
+
+    // Use the first part (up to maxClaimLength) as the claim
+    claim = voiceResponse.substring(0, maxClaimLength);
+
+    // Use the remaining text (up to maxArgumentLength) as the argument
+    // If the voice response is shorter than maxClaimLength, use the whole text
+    argument =
+      voiceResponse.length <= maxClaimLength
+        ? voiceResponse
+        : voiceResponse.substring(0, maxArgumentLength);
+
+    counterargument = "";
+  } else {
+    claim = document.getElementById("claimInput").value.trim();
+    argument = document.getElementById("argumentInput").value.trim();
+    counterargument = document
+      .getElementById("counterargumentInput")
+      .value.trim();
+
+    if (!claim || !argument) {
+      const defaultError =
+        "Please fill in both required fields (Claim and Argument) before submitting.";
+      errorMessage.textContent =
+        translations?.errors?.requiredFields || defaultError;
+      errorMessage.classList.remove("hidden");
+      return;
+    }
   }
 
   const payload = {
+    // The backend expects separate fields, so in voice mode both fields are set to the same text.
     claim,
     argument,
     counterargument: counterargument || null,
+    // ... include any additional properties (e.g., question_text, question_id) as needed.
   };
 
   if (currentQuestion?.id) {
@@ -350,7 +394,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
         <div class="mt-8 flex justify-center">
           <div class="w-full max-w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h3 class="text-lg font-bold mb-4 text-center text-gray-800">
-              ${translations.evaluation.argumentstructure}:
+              ${translations.evaluation.argumentstructure}
             </h3>
             <div id="argumentStructureViz" class="overflow-x-auto flex justify-center"></div>
           </div>

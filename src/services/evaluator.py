@@ -120,25 +120,37 @@ class LLMEvaluator(BaseEvaluator):
     def build_argument_prompt(
         self, question_text: str, claim: str, argument: str, counterargument: str
     ) -> str:
-        # Get current language from Flask session
         from flask import session
 
         language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
 
-        if language == "de":
-            return f"""
-                Frage (dem Benutzer gestellt): {question_text}
-                These zur Beantwortung der Frage (vom Benutzer): {claim}
-                Argument zur Unterstützung der These (vom Benutzer): {argument}
-                Widerlegung von Gegenargumenten (vom Benutzer; optional): {counterargument}
-            """
+        # If the claim equals the argument and there is no counterargument, assume it's a voice response.
+        if claim == argument and not counterargument:
+            if language == "de":
+                return f"""
+                    Frage (dem Benutzer gestellt): {question_text}
+                    Antwort (vom Benutzer): {claim}
+                """
+            else:
+                return f"""
+                    Question (given to user): {question_text}
+                    Answer (from user): {claim}
+                """
         else:
-            return f"""
-                Question (given to user): {question_text}
-                Claim to answer the question (written by user): {claim}
-                Argument to support the claim (written by user): {argument}
-                Counterargument rebuttal (written by user; optional): {counterargument}
-            """
+            if language == "de":
+                return f"""
+                    Frage (dem Benutzer gestellt): {question_text}
+                    These zur Beantwortung der Frage (vom Benutzer): {claim}
+                    Argument zur Unterstützung der These (vom Benutzer): {argument}
+                    Widerlegung von Gegenargumenten (vom Benutzer; optional): {counterargument}
+                """
+            else:
+                return f"""
+                    Question (given to user): {question_text}
+                    Claim to answer the question (written by user): {claim}
+                    Argument to support the claim (written by user): {argument}
+                    Counterargument rebuttal (written by user; optional): {counterargument}
+                """
 
     def evaluate(
         self, question_text: str, claim: str, argument: str, counterargument: str

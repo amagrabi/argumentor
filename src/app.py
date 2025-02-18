@@ -17,6 +17,7 @@ from routes.pages import pages_bp
 from routes.password_reset import mail, password_reset_bp
 from routes.preferences import preferences_bp
 from routes.questions import questions_bp
+from routes.transcribe import transcribe_bp
 
 SETTINGS = get_settings()
 
@@ -65,6 +66,7 @@ def create_app():
     app.register_blueprint(questions_bp)
     app.register_blueprint(preferences_bp)
     app.register_blueprint(password_reset_bp)
+    app.register_blueprint(transcribe_bp)
 
     # Register CLI commands
     register_commands(app)

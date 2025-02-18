@@ -35,6 +35,7 @@ export const CHAR_LIMITS = {
   ARGUMENT: 1000,
   COUNTERARGUMENT: 500,
   CHALLENGE: 1000,
+  VOICE: 2000,
 };
 
 // Color gradient configuration for scores

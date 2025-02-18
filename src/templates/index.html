@@ -466,15 +466,26 @@
           </div>
         </div>
 
-        <!-- Answer Section -->
-        <div class="mt-8">
+        <!-- Toggle for Input Mode -->
+        <div id="inputModeToggle" class="mt-4">
+          <button
+            id="toggleInputMode"
+            class="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Switch to Voice Input
+          </button>
+        </div>
+
+        <!-- Text Input Section (Default Mode) -->
+        <div id="textInputSection">
           <div class="space-y-4">
             <div>
               <label
                 data-i18n="main.inputLabels.claim"
                 class="block text-lg font-bold mb-2"
-                >Your Claim</label
               >
+                Your Claim
+              </label>
               <textarea
                 id="claimInput"
                 class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
@@ -485,7 +496,7 @@
                 <span data-i18n="challenge.charactersRemaining"
                   >Characters remaining:</span
                 >
-                <span id="claimCount">150</span>
+                <span id="claimCount">200</span>
               </div>
             </div>
 
@@ -493,9 +504,9 @@
               <label
                 data-i18n="main.inputLabels.reasoning"
                 class="block text-lg font-bold mb-2"
-                >Your Reasoning</label
               >
-
+                Your Reasoning
+              </label>
               <textarea
                 id="argumentInput"
                 class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
@@ -514,13 +525,14 @@
               <label
                 data-i18n="main.inputLabels.counterargument"
                 class="block text-lg font-bold mb-2"
-                >Counterargument (Optional)</label
               >
+                Counterargument (Optional)
+              </label>
               <textarea
                 id="counterargumentInput"
                 class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
                 data-i18n-placeholder="main.inputLabels.counterargumentDescription"
-                maxlength="1000"
+                maxlength="500"
               ></textarea>
               <div class="mt-1 text-sm text-gray-500">
                 <span data-i18n="challenge.charactersRemaining"
@@ -530,19 +542,58 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Moved Error Message Above the Submit Button -->
-          <div class="mt-4">
-            <div id="errorMessage" class="text-sm text-red-500 mb-1"></div>
-            <div class="flex justify-between items-center">
-              <button
-                id="submitAnswer"
-                class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"
-                data-i18n="challenge.submit"
-              >
-                Submit
-              </button>
+        <!-- Voice Input Section (Initially Hidden) -->
+        <div id="voiceInputSection" style="display: none" class="mt-4">
+          <h3 class="text-lg font-bold mb-2">Voice Input</h3>
+          <div class="mb-2">
+            <button
+              id="recordButton"
+              class="bg-gray-800 text-white px-4 py-2 rounded"
+            >
+              Start Recording
+            </button>
+            <button
+              id="stopButton"
+              class="bg-gray-800 text-white px-4 py-2 rounded"
+              disabled
+            >
+              Stop Recording
+            </button>
+            <span
+              id="recordingStatus"
+              class="ml-2 text-sm text-gray-600"
+            ></span>
+          </div>
+          <div>
+            <label for="voiceTranscript" class="block text-lg font-bold mb-2">
+              Your Recorded Answer
+            </label>
+            <textarea
+              id="voiceTranscript"
+              class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
+              placeholder="Your transcribed answer will appear here..."
+              maxlength=""
+            ></textarea>
+            <div class="mt-1 text-sm text-gray-500">
+              <span>Characters remaining:</span>
+              <span id="voiceCount"></span>
             </div>
+          </div>
+        </div>
+
+        <!-- Moved Error Message Above the Submit Button -->
+        <div class="mt-4">
+          <div id="errorMessage" class="text-sm text-red-500 mb-1"></div>
+          <div class="flex justify-between items-center">
+            <button
+              id="submitAnswer"
+              class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-colors"
+              data-i18n="challenge.submit"
+            >
+              Submit
+            </button>
           </div>
         </div>
       </main>
@@ -744,10 +795,6 @@
     </div>
 
     <!-- Include custom JavaScript -->
-    <script
-      type="module"
-      src="{{ url_for('static', filename='js/main.js') }}"
-    ></script>
     <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
     <script>
       function initGoogleAuth() {
@@ -930,5 +977,11 @@
         </a>
       </div>
     </footer>
+
+    <!-- JavaScript Modules -->
+    <script type="module" src="/static/js/constants.js"></script>
+    <script type="module" src="/static/js/helpers.js"></script>
+    <script type="module" src="/static/js/voice.js"></script>
+    <script type="module" src="/static/js/main.js"></script>
   </body>
 </html>

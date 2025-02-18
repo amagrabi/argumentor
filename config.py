@@ -58,6 +58,7 @@ class Settings(BaseSettings):
 
     SUPPORTED_LANGUAGES: ClassVar[List[str]] = ["en", "de"]
     DEFAULT_LANGUAGE: str = "en"
+    LANGUAGE_CODES: ClassVar[Dict[str, str]] = {"en": "en-US", "de": "de-DE"}
 
     model_config = SettingsConfigDict(
         env_file=".env",

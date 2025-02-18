@@ -19,6 +19,7 @@ dependencies = [
     "google-auth",
     "google-genai",
     "google-cloud-aiplatform",
+    "google-cloud-speech",
     "gunicorn",
     "psycopg2-binary",
     "pydantic-settings",
