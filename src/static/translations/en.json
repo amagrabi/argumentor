@@ -584,5 +584,46 @@
         "here": "here"
       }
     }
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "goBack": "Go Back",
+    "lastUpdated": "Last Updated: February 18, 2025",
+    "sections": {
+      "acceptance": {
+        "title": "Acceptance of Terms",
+        "content": "These Terms of Service (“Terms”) govern your use of our website and services. By accessing or using our platform, you agree to be bound by these Terms. Please read them carefully."
+      },
+      "userContent": {
+        "title": "User Responsibilities",
+        "content": "You agree to use the ArguMentor platform only for lawful purposes and in a manner that does not infringe upon the rights of others or restrict the use and enjoyment of the service by any third party. You are responsible for maintaining the confidentiality of your account and password."
+      },
+      "prohibited": {
+        "title": "Prohibited Activities",
+        "content": "You agree not to engage in any unauthorized activities, including but not limited to: manipulating the service, posting inappropriate content, interfering with the security or operation of the platform, or violating any applicable laws or regulations."
+      },
+      "privacy": {
+        "title": "Intellectual Property",
+        "content": "The content on ArguMentor, including but not limited to text, graphics, logos, and images, is the property of ArguMentor or its licensors and is protected by intellectual property laws. You agree not to reproduce, modify, or distribute any part of the site without our prior written consent.",
+        "link": "Privacy Policy"
+      },
+      "disclaimer": {
+        "title": "Disclaimer of Warranties",
+        "content": "The ArguMentor platform is provided “as is” without any warranties of any kind, express or implied. We do not guarantee the accuracy, completeness, or usefulness of any information on the platform and are not responsible for any errors or omissions."
+      },
+      "liability": {
+        "title": "Limitation of Liability",
+        "content": "In no event shall ArguMentor or its affiliates be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in connection with your use of the platform. Your use is at your own risk."
+      },
+      "changes": {
+        "title": "Changes to Terms",
+        "content": "We reserve the right to modify these Terms at any time. Any changes will be posted on this page along with an updated effective date. Your continued use of the service constitutes acceptance of the updated Terms."
+      },
+      "contact": {
+        "title": "Contact Information",
+        "content": "If you have any questions about these terms, please",
+        "here": "contact us"
+      }
+    }
   }
 }

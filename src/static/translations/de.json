@@ -598,5 +598,46 @@
         "here": "hier"
       }
     }
+  },
+  "terms": {
+    "title": "Nutzungsbedingungen",
+    "goBack": "Zurück",
+    "lastUpdated": "Zuletzt aktualisiert: 18. Februar 2025",
+    "sections": {
+      "acceptance": {
+        "title": "Annahme der Bedingungen",
+        "content": "Diese Nutzungsbedingungen ('Bedingungen') regeln Ihre Nutzung unserer Website und Dienste. Durch den Zugriff auf oder die Nutzung unserer Plattform erklären Sie sich mit diesen Bedingungen einverstanden. Bitte lesen Sie sie sorgfältig durch."
+      },
+      "userContent": {
+        "title": "Nutzerverantwortung",
+        "content": "Sie verpflichten sich, die ArguMentor-Plattform nur für rechtmäßige Zwecke und in einer Weise zu nutzen, die weder die Rechte anderer verletzt noch die Nutzung und den Genuss des Dienstes durch Dritte einschränkt. Sie sind für die Vertraulichkeit Ihres Kontos und Passworts verantwortlich."
+      },
+      "prohibited": {
+        "title": "Verbotene Aktivitäten",
+        "content": "Sie verpflichten sich, keine unerlaubten Aktivitäten durchzuführen, einschließlich, aber nicht beschränkt auf: Manipulation des Dienstes, Veröffentlichung unangemessener Inhalte, Eingriffe in die Sicherheit oder den Betrieb der Plattform oder Verletzung geltender Gesetze und Vorschriften."
+      },
+      "privacy": {
+        "title": "Geistiges Eigentum",
+        "content": "Die Inhalte auf ArguMentor, einschließlich, aber nicht beschränkt auf Texte, Grafiken, Logos und Bilder, sind Eigentum von ArguMentor oder seinen Lizenzgebern und durch Gesetze zum geistigen Eigentum geschützt. Sie stimmen zu, keine Teile der Website ohne unsere vorherige schriftliche Zustimmung zu reproduzieren, zu modifizieren oder zu verbreiten.",
+        "link": "Datenschutzerklärung"
+      },
+      "disclaimer": {
+        "title": "Haftungsausschluss",
+        "content": "Die ArguMentor-Plattform wird ohne jegliche ausdrückliche oder stillschweigende Gewährleistung bereitgestellt. Wir garantieren nicht die Richtigkeit, Vollständigkeit oder Nützlichkeit der Informationen auf der Plattform und sind nicht für etwaige Fehler oder Auslassungen verantwortlich."
+      },
+      "liability": {
+        "title": "Haftungsbeschränkung",
+        "content": "In keinem Fall haften ArguMentor oder seine verbundenen Unternehmen für direkte, indirekte, zufällige, besondere oder Folgeschäden, die sich aus oder im Zusammenhang mit Ihrer Nutzung der Plattform ergeben. Die Nutzung erfolgt auf eigenes Risiko."
+      },
+      "changes": {
+        "title": "Änderungen der Bedingungen",
+        "content": "Wir behalten uns das Recht vor, diese Bedingungen jederzeit zu ändern. Alle Änderungen werden auf dieser Seite zusammen mit einem aktualisierten Datum veröffentlicht. Ihre fortgesetzte Nutzung des Dienstes stellt die Annahme der aktualisierten Bedingungen dar."
+      },
+      "contact": {
+        "title": "Kontaktinformationen",
+        "content": "Wenn Sie Fragen zu diesen Bedingungen haben,",
+        "here": "kontaktieren Sie uns"
+      }
+    }
   }
 }
