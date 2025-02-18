@@ -22,7 +22,9 @@ class Settings(BaseSettings):
     GCLOUD_PROJECT_NAME: str = Field(default="fallback")
     GCLOUD_PROJECT_REGION: str = Field(default="us-central1")
     GOOGLE_APPLICATION_CREDENTIALS: str = Field(default="fallback")
+    GCS_BUCKET: str = Field(default="fallback")  # for voice recordings
 
+    # For Google logins
     GOOGLE_CLIENT_ID: str = Field(default="fallback")
     GOOGLE_CLIENT_SECRET: str = Field(default="fallback")
 
@@ -36,7 +38,14 @@ class Settings(BaseSettings):
     # If false, cheaper dummy responses will be returned
     USE_LLM_EVALUATOR: bool = Field(default=True)
 
-    MODEL: str = Field(default="gemini-2.0-flash-001")
+    MODEL: str = Field(default="gemini-2.0-flash-001")  # LLM
+
+    # Voice transcription
+    VOICE_MODEL: str = Field(
+        default="telephony"
+    )  # Alternative: default, telephony, latest_long
+    VOICE_ENHANCED: bool = Field(default=True)
+    VOICE_PUNCTUATION: bool = Field(default=True)
 
     # Maximum characters allowed for each field
     MAX_CLAIM: int = Field(default=200)
