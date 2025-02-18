@@ -639,5 +639,17 @@
         "here": "kontaktieren Sie uns"
       }
     }
+  },
+  "contact": {
+    "title": "Kontakt",
+    "goBack": "Zurück",
+    "owner": "Diese Website wird von Amadeus Magrabi betrieben.",
+    "contactMe": "Du kannst mich",
+    "here": "hier kontaktieren",
+    "feedback": "Du kannst mir Feedback über das Formular auf der",
+    "supportPage": "Support-Seite",
+    "or": "schicken oder das Projekt über ",
+    "buyMeACoffee": "Buy Me a Coffee",
+    "supportText": " unterstützen."
   }
 }

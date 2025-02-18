@@ -625,5 +625,17 @@
         "here": "contact us"
       }
     }
+  },
+  "contact": {
+    "title": "Contact",
+    "goBack": "Go Back",
+    "owner": "This website is owned and operated by Amadeus Magrabi.",
+    "contactMe": "You can contact me",
+    "here": "here",
+    "feedback": "You can also send me feedback via the form on the",
+    "supportPage": "support page",
+    "or": "or",
+    "buyMeACoffee": "buy me a coffee",
+    "supportText": "to support the platform."
   }
 }

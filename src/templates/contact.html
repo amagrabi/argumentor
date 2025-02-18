@@ -17,22 +17,29 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contact</title>
+    <title data-i18n="contact.title">Contact</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="icon"
       type="image/png"
       href="{{ url_for('static', filename='img/favicon.png') }}"
     />
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/translations.js') }}"
+    ></script>
   </head>
   <body class="bg-white font-sans leading-normal tracking-normal text-gray-900">
     <!-- Header with Go Back Button -->
     <header class="bg-gray-800 p-4">
       <div class="max-w-5xl mx-auto flex justify-between items-center">
-        <h1 class="text-white text-3xl font-bold">Disclaimer</h1>
+        <h1 class="text-white text-3xl font-bold" data-i18n="contact.title">
+          Contact
+        </h1>
         <a
           href="/"
           class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
+          data-i18n="contact.goBack"
           >Go Back</a
         >
       </div>
@@ -40,35 +47,44 @@
     <!-- Main Content -->
     <main class="max-w-5xl mx-auto p-4">
       <section class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Contact</h2>
-        <p class="mb-4">
+        <h2 class="text-2xl font-bold mb-4" data-i18n="contact.title">
+          Contact
+        </h2>
+        <p class="mb-4" data-i18n="contact.owner">
           This website is owned and operated by Amadeus Magrabi.
         </p>
         <p class="mb-4">
-          You can contact me
+          <span data-i18n="contact.contactMe">You can contact me</span>
           <a
             href="https://amadeusmagrabi.com"
             class="text-gray-800 underline hover:text-gray-600"
             target="_blank"
             rel="noopener noreferrer"
+            data-i18n="contact.here"
             >here</a
           >.
         </p>
 
         <p class="mb-4">
-          You can also send me feedback via the form on the
-          <a href="/support" class="text-gray-800 underline hover:text-gray-600"
+          <span data-i18n="contact.feedback"
+            >You can also send me feedback via the form on the</span
+          >
+          <a
+            href="/support"
+            class="text-gray-800 underline hover:text-gray-600"
+            data-i18n="contact.supportPage"
             >support page</a
           >
-          or
+          <span data-i18n="contact.or">or</span>
           <a
             href="https://buymeacoffee.com/amadeusmagrabi"
             class="text-gray-800 underline hover:text-gray-600"
             target="_blank"
             rel="noopener noreferrer"
+            data-i18n="contact.buyMeACoffee"
             >buy me a coffee</a
           >
-          to support the platform.
+          <span data-i18n="contact.supportText">to support the platform.</span>
         </p>
       </section>
     </main>
@@ -77,8 +93,36 @@
       <a
         href="/"
         class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors"
+        data-i18n="contact.goBack"
         >Go Back</a
       >
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Get stored language preference
+        const currentLanguage = localStorage.getItem("language") || "en";
+
+        // Load translations
+        const response = await fetch(
+          `/static/translations/${currentLanguage}.json`
+        );
+        const translations = await response.json();
+
+        // Apply translations
+        document.querySelectorAll("[data-i18n]").forEach((element) => {
+          const key = element.getAttribute("data-i18n");
+          const translation = key
+            .split(".")
+            .reduce((obj, k) => obj && obj[k], translations);
+          if (translation) {
+            element.textContent = translation;
+          }
+        });
+
+        // Update document language
+        document.documentElement.lang = currentLanguage;
+      });
+    </script>
   </body>
 </html>
