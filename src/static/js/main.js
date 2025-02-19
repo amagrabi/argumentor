@@ -8,6 +8,7 @@ import {
   SUPPORTED_LANGUAGES,
   DEFAULT_LANGUAGE,
   CHAR_LIMITS,
+  VOICE_LIMITS,
 } from "./constants.js";
 import {
   typeWriter,
@@ -15,6 +16,7 @@ import {
   scoreToColor,
   setupCharCounter,
 } from "./helpers.js";
+import { translations } from "./translations.js";
 
 // Initialize mermaid
 mermaid.initialize({

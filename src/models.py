@@ -32,6 +32,8 @@ class User(db.Model, UserMixin):
     feedback = db.relationship(
         "Feedback", backref="user", lazy=True, cascade="all, delete-orphan"
     )
+    last_voice_transcription = db.Column(db.DateTime, nullable=True)
+    daily_voice_count = db.Column(db.Integer, default=0, nullable=True)
 
     def get_id(self):
         return str(self.uuid)

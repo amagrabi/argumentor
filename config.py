@@ -64,6 +64,11 @@ class Settings(BaseSettings):
         "free": 20,
         "plus": 100,
     }
+    TIER_VOICE_LIMITS: ClassVar[Dict[str, int]] = {
+        "anonymous": 10,
+        "free": 20,
+        "plus": 100,
+    }
 
     SUPPORTED_LANGUAGES: ClassVar[List[str]] = ["en", "de"]
     DEFAULT_LANGUAGE: str = "en"

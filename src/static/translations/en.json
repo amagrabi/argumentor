@@ -264,7 +264,8 @@
     "argument": "Argument",
     "counterargument": "Counterarguments",
     "challengeResponse": "Challenge Response",
-    "feedbackDetails": "Details"
+    "feedbackDetails": "Details",
+    "dailyVoiceRecordings": "Daily Voice Recordings"
   },
   "howItWorksPage": {
     "title": "How It Works",

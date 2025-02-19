@@ -103,7 +103,8 @@
     "argument": "Argument",
     "counterargument": "Gegenarugumente",
     "challengeResponse": "Antwort",
-    "feedbackDetails": "Details"
+    "feedbackDetails": "Details",
+    "dailyVoiceRecordings": "Tägliche Sprachaufnahmen"
   },
   "evaluation": {
     "title": "Bewertung",

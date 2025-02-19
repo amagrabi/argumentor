@@ -1,9 +1,13 @@
 import inspect
 from datetime import UTC, datetime, time
 
+from flask_sqlalchemy import SQLAlchemy
+
 from config import get_settings
+from models import User
 
 SETTINGS = get_settings()
+db = SQLAlchemy()
 
 
 def auto_dedent(obj, strip_newlines=False):
@@ -47,3 +51,23 @@ def get_daily_evaluation_count(user_uuid):
 def get_eval_limit(tier):
     """Returns the evaluation limit for a given user tier."""
     return SETTINGS.TIER_EVAL_LIMITS.get(tier, SETTINGS.TIER_EVAL_LIMITS["anonymous"])
+
+
+def get_daily_voice_count(user_uuid):
+    """Returns the total number of voice transcription attempts made by the user today."""
+    user = User.query.filter_by(uuid=user_uuid).first()
+    if not user or not user.last_voice_transcription:
+        return 0
+
+    today_start = datetime.combine(datetime.now(UTC).date(), time.min)
+    if user.last_voice_transcription < today_start:
+        user.daily_voice_count = 0
+        db.session.commit()
+        return 0
+
+    return user.daily_voice_count
+
+
+def get_voice_limit(tier):
+    """Returns the voice recording limit for a given user tier."""
+    return SETTINGS.TIER_VOICE_LIMITS.get(tier, SETTINGS.TIER_VOICE_LIMITS["anonymous"])

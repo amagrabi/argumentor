@@ -95,6 +95,14 @@ async function startRecording() {
           body: formData,
         });
         const data = await response.json();
+
+        if (!response.ok) {
+          recordingStatus.innerHTML =
+            data.error || "Error during transcription.";
+          recordButton.disabled = false;
+          return;
+        }
+
         let transcript = data.transcript || "";
         transcriptField.value = transcript;
         voiceCount.textContent = (
@@ -118,6 +126,7 @@ async function startRecording() {
           translations?.main?.voiceInput?.status?.transcriptionError ||
           "Error during transcription.";
         console.error(error);
+        recordButton.disabled = false;
       }
       // Re-enable the record button once transcription is complete.
       recordButton.disabled = false;

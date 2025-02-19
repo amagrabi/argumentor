@@ -1,10 +1,14 @@
 import logging
 import uuid
+from datetime import UTC, datetime, time
 
 from flask import Blueprint, jsonify, request, session
 from google.cloud import speech, storage
 
 from config import get_settings
+from extensions import db
+from models import User
+from utils import get_daily_voice_count, get_voice_limit
 
 logger = logging.getLogger(__name__)
 transcribe_bp = Blueprint("transcribe", __name__)
@@ -91,10 +95,54 @@ def transcribe_audio(audio_content, file_mime, delete_after_transcription=True):
 
 @transcribe_bp.route("/transcribe_voice", methods=["POST"])
 def transcribe_voice():
+    user_uuid = session.get("user_id")
+    if not user_uuid:
+        return jsonify({"error": "User not identified."}), 400
+
+    # Check daily voice recording count
+    user = User.query.filter_by(uuid=user_uuid).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 400
+
+    daily_count = get_daily_voice_count(user_uuid)
+    voice_limit = get_voice_limit(user.tier)
+
+    if daily_count >= voice_limit:
+        return jsonify(
+            {
+                "error": (
+                    f"Daily voice recording limit reached ({voice_limit}). "
+                    'If you need a higher limit, send me <a href="#" class="underline" onclick="showFeedbackModal(); return false;">feedback</a>.'
+                )
+            }
+        ), 429
+
+    # Get the audio file from the request
     if "file" not in request.files:
-        return jsonify({"error": "No file provided"}), 400
-    file = request.files["file"]
-    audio_content = file.read()
-    logger.debug(f"File MIME type received: {file.mimetype}")
-    transcript = transcribe_audio(audio_content, file.mimetype)
-    return jsonify({"transcript": transcript})
+        return jsonify({"error": "No audio file provided"}), 400
+
+    audio_file = request.files["file"]
+    if not audio_file:
+        return jsonify({"error": "No audio file provided"}), 400
+
+    try:
+        # Update voice transcription count
+        today_start = datetime.combine(datetime.now(UTC).date(), time.min)
+        if (
+            not user.last_voice_transcription
+            or user.last_voice_transcription < today_start
+        ):
+            user.daily_voice_count = 1
+        else:
+            user.daily_voice_count += 1
+        user.last_voice_transcription = datetime.now(UTC)
+        db.session.commit()
+
+        # Process the transcription
+        transcript = transcribe_audio(audio_file.read(), audio_file.content_type)
+        return jsonify({"transcript": transcript})
+
+    except Exception as e:
+        logger.error(f"Error in voice transcription: {str(e)}")
+        db.session.rollback()
+        return jsonify({"error": "Error processing voice recording"}), 500

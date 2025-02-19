@@ -19,7 +19,12 @@ from extensions import db, limiter
 from models import Feedback, User
 from services.leveling import get_level_info
 from services.question_service import load_questions
-from utils import get_daily_evaluation_count, get_eval_limit
+from utils import (
+    get_daily_evaluation_count,
+    get_daily_voice_count,
+    get_eval_limit,
+    get_voice_limit,
+)
 
 pages_bp = Blueprint("pages", __name__)
 
@@ -142,6 +147,8 @@ def profile():
     level_info = get_level_info(user.xp)
     daily_eval_count = get_daily_evaluation_count(user.uuid)
     eval_limit = get_eval_limit(user.tier)
+    daily_voice_count = get_daily_voice_count(user.uuid)
+    voice_limit = get_voice_limit(user.tier)
     # Convert answers to dictionaries for JSON serialization
     answers_dict = [answer.to_dict() for answer in user.answers]
     # Sync session XP with database
@@ -154,6 +161,8 @@ def profile():
         answers_json=answers_dict,
         daily_eval_count=daily_eval_count,
         eval_limit=eval_limit,
+        daily_voice_count=daily_voice_count,
+        voice_limit=voice_limit,
     )
 
 
