@@ -81,7 +81,7 @@ def transcribe_audio(audio_content, file_mime, delete_after_transcription=True):
     finally:
         if delete_after_transcription:
             try:
-                storage_client = storage.Client()
+                storage_client = storage.Client(credentials=google_credentials)
                 bucket_name = SETTINGS.GCS_BUCKET
                 bucket = storage_client.bucket(bucket_name)
                 # Extract the filename from the uri
