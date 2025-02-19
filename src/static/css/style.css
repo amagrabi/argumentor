@@ -222,3 +222,23 @@ textarea:focus {
 .input-mode-tab.active::after {
   transform: scaleX(1);
 }
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 3px solid rgba(0, 0, 0, 0.2);
+  border-top: 3px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  position: relative;
+  bottom: 2px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -57,7 +57,7 @@ def transcribe_audio(audio_content, file_mime, delete_after_transcription=True):
         # enable_word_time_offsets=True,
     )
 
-    logger.debug(f"Transcription config: {config}")
+    # logger.debug(f"Transcription config: {config}")
 
     audio = speech.RecognitionAudio(uri=gcs_uri)
     transcript = ""

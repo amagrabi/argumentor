@@ -294,11 +294,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
   document.getElementById("challengeErrorMessage").textContent = "";
 
   // Disable button and show loading state
-  submitBtn.innerHTML = `
-    <span class="loading-dots">
-      <span class="animate-pulse">${translations.challenge.analyzing}</span>
-    </span>
-  `;
+  submitBtn.innerHTML = `${translations.challenge.analyzing} <span class="spinner"></span>`;
   submitBtn.disabled = true;
 
   try {
@@ -756,11 +752,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    challengeBtn.innerHTML = `
-      <span class="loading-dots">
-        <span class="animate-pulse">${translations.challenge.analyzing}</span>
-      </span>
-    `;
+    challengeBtn.innerHTML = `${translations.challenge.analyzing} <span class="spinner"></span> `;
     challengeBtn.disabled = true;
 
     try {

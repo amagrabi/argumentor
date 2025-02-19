@@ -77,7 +77,7 @@ async function startRecording() {
     mediaRecorder.addEventListener("stop", async () => {
       recordingStatus.innerHTML =
         (translations?.main?.voiceInput?.status?.transcribing ||
-          "Transcribing...") + '<span class="loading-dots"></span>';
+          "Transcribing") + '<span class="spinner"></span>';
       const audioBlob = new Blob(audioChunks, {
         type: "audio/webm",
       });
