@@ -6,7 +6,7 @@ from flask import Blueprint, jsonify, request, session
 from google.cloud import speech, storage
 
 from config import get_settings
-from extensions import db
+from extensions import db, google_credentials
 from models import User
 from utils import get_daily_voice_count, get_voice_limit
 
@@ -16,9 +16,8 @@ SETTINGS = get_settings()
 
 
 def upload_audio_to_gcs(audio_content, file_mime):
-    # Initialize a GCS client
-    storage_client = storage.Client()
-    # The bucket name should be configured in your settings (or set a default)
+    # Initialize a GCS client with our credentials
+    storage_client = storage.Client(credentials=google_credentials)
     bucket_name = SETTINGS.GCS_BUCKET
     bucket = storage_client.bucket(bucket_name)
     extension = "webm" if "webm" in file_mime or "ogg" in file_mime else "wav"
@@ -33,7 +32,8 @@ def transcribe_audio(audio_content, file_mime, delete_after_transcription=True):
     # Upload the audio to GCS and get its URI
     gcs_uri = upload_audio_to_gcs(audio_content, file_mime)
 
-    client = speech.SpeechClient()
+    # Initialize speech client with our credentials
+    client = speech.SpeechClient(credentials=google_credentials)
     logger.debug(f"Using GCS URI for transcription: {gcs_uri}")
 
     current_language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
