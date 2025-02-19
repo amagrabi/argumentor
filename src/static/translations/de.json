@@ -5,6 +5,7 @@
   },
   "errors": {
     "requiredFields": "Bitte fülle beide erforderlichen Felder (These und Argument) aus, bevor du absendest.",
+    "voiceRequiredField": "Bitte gib deine Antwort ein, bevor du absendest.",
     "unexpectedError": "Ein unerwarteter Fehler ist bei der Verarbeitung deiner Eingabe aufgetreten. Bitte versuche es erneut und sende Feedback, falls das Problem weiterhin besteht.",
     "similarAnswer": "Du hast bereits eine sehr ähnliche Antwort auf diese Frage eingereicht. Ändere dein Argument, um eine neue Bewertung zu erhalten.",
     "tooManySubmissions": "Zu viele Einreichungen. Bitte warte, bevor du es erneut versuchst."

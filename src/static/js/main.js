@@ -226,7 +226,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     if (!voiceResponse) {
       const defaultError = "Please provide your response before submitting.";
       errorMessage.textContent =
-        translations?.errors?.requiredFields || defaultError;
+        translations?.errors?.voiceRequiredField || defaultError;
       errorMessage.classList.remove("hidden");
       return;
     }
@@ -242,16 +242,8 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     const maxClaimLength = CHAR_LIMITS.CLAIM;
     const maxArgumentLength = CHAR_LIMITS.ARGUMENT;
 
-    // Use the first part (up to maxClaimLength) as the claim
     claim = voiceResponse.substring(0, maxClaimLength);
-
-    // Use the remaining text (up to maxArgumentLength) as the argument
-    // If the voice response is shorter than maxClaimLength, use the whole text
-    argument =
-      voiceResponse.length <= maxClaimLength
-        ? voiceResponse
-        : voiceResponse.substring(0, maxArgumentLength);
-
+    argument = voiceResponse.substring(0, maxArgumentLength);
     counterargument = "";
   } else {
     claim = document.getElementById("claimInput").value.trim();

@@ -167,6 +167,8 @@ function stopRecording() {
 transcriptField.addEventListener("input", () => {
   const remaining = MAX_VOICE_LENGTH - transcriptField.value.length;
   voiceCount.textContent = remaining.toString();
+  // Clear error message on input
+  document.getElementById("errorMessage").textContent = "";
 });
 
 // Update the tab switching logic
