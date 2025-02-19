@@ -1,4 +1,4 @@
-import { CHAR_LIMITS } from "./constants.js";
+import { CHAR_LIMITS, VOICE_LIMITS } from "./constants.js";
 import { translations } from "./translations.js";
 
 // HTML elements for voice recording
@@ -75,9 +75,14 @@ async function startRecording() {
     });
 
     mediaRecorder.addEventListener("stop", async () => {
+      // Immediately update the UI to reflect that recording has stopped.
+      stopRecording();
+
+      // Now update the status to indicate that transcription is starting.
       recordingStatus.innerHTML =
         (translations?.main?.voiceInput?.status?.transcribing ||
-          "Transcribing") + '<span class="spinner"></span>';
+          "Transcribing...") + '<span class="spinner"></span>';
+
       const audioBlob = new Blob(audioChunks, {
         type: "audio/webm",
       });
@@ -91,36 +96,40 @@ async function startRecording() {
         });
         const data = await response.json();
         let transcript = data.transcript || "";
-
-        // Truncate if exceeds maximum length
-        if (transcript.length > MAX_VOICE_LENGTH) {
-          transcript = transcript.substring(0, MAX_VOICE_LENGTH);
-        }
-
         transcriptField.value = transcript;
         voiceCount.textContent = (
-          MAX_VOICE_LENGTH - transcript.length
+          VOICE_LIMITS.MAX_CHARS - transcript.length
         ).toString();
-        recordingStatus.innerHTML =
-          translations?.main?.voiceInput?.status?.transcriptionComplete ||
-          "Transcription complete. You may edit the text.";
+
+        // If the transcript exceeds the character limit, highlight it.
+        if (transcript.length > VOICE_LIMITS.MAX_CHARS) {
+          transcriptField.classList.add("border-red-500");
+          recordingStatus.innerHTML =
+            translations?.main?.voiceInput?.status?.tooLong ||
+            "Transcription exceeds character limit. Please edit before submitting.";
+        } else {
+          transcriptField.classList.remove("border-red-500");
+          recordingStatus.innerHTML =
+            translations?.main?.voiceInput?.status?.transcriptionComplete ||
+            "Transcription complete. You may edit the text.";
+        }
       } catch (error) {
         recordingStatus.innerHTML =
           translations?.main?.voiceInput?.status?.transcriptionError ||
           "Error during transcription.";
         console.error(error);
       }
+      // Re-enable the record button once transcription is complete.
       recordButton.disabled = false;
-      stopRecording();
     });
 
     mediaRecorder.start();
-    // Automatically stop recording after 3 minutes (180000 ms)
+    // Automatically stop recording after MAX_RECORDING_TIME
     recordingTimeout = setTimeout(() => {
       if (mediaRecorder && mediaRecorder.state !== "inactive") {
         mediaRecorder.stop();
       }
-    }, 180000);
+    }, VOICE_LIMITS.MAX_RECORDING_TIME);
   } catch (error) {
     console.error("Error accessing microphone:", error);
     recordingStatus.innerHTML =
@@ -130,22 +139,19 @@ async function startRecording() {
 }
 
 function stopRecording() {
+  // If the recorder is still active, stop it.
   if (mediaRecorder && mediaRecorder.state !== "inactive") {
-    isRecording = false;
     mediaRecorder.stop();
-    clearInterval(timerInterval);
-    recordingTimer.classList.add("hidden");
-    recordButton.classList.remove(
-      "bg-red-50",
-      "border-red-500",
-      "text-red-500"
-    );
-    recordButton.innerHTML = `
-      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
-      </svg>
-    `;
   }
+  // Always perform the UI reset.
+  isRecording = false;
+  clearInterval(timerInterval);
+  recordingTimer.classList.add("hidden");
+  recordButton.classList.remove("bg-red-50", "border-red-500", "text-red-500");
+  recordButton.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+  </svg>`;
 }
 
 // Update remaining character count as user edits

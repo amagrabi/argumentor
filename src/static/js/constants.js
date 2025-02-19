@@ -92,3 +92,9 @@ export const EVALUATION_TRANSLATION_MAPPING = {
   Objectivity: "objectivity",
   Creativity: "creativity",
 };
+
+// Add this with the other constants
+export const VOICE_LIMITS = {
+  MAX_RECORDING_TIME: 180000, // 60000=1 minute  180000=3 minutes
+  MAX_CHARS: 2000,
+};

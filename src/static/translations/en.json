@@ -46,6 +46,11 @@
     "inputModes": {
       "write": "Write",
       "speak": "Speak"
+    },
+    "voiceInput": {
+      "status": {
+        "tooLong": "Transcription exceeds character limit. Please edit before submitting."
+      }
     }
   },
   "questionSelection": {

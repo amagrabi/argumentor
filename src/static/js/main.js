@@ -229,6 +229,13 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       return;
     }
 
+    if (voiceResponse.length > VOICE_LIMITS.MAX_CHARS) {
+      const defaultError = `Please reduce your response to ${VOICE_LIMITS.MAX_CHARS} characters or less.`;
+      errorMessage.textContent = translations?.errors?.tooLong || defaultError;
+      errorMessage.classList.remove("hidden");
+      return;
+    }
+
     // For voice mode, split the response into claim and argument portions
     const maxClaimLength = CHAR_LIMITS.CLAIM;
     const maxArgumentLength = CHAR_LIMITS.ARGUMENT;

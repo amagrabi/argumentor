@@ -62,7 +62,8 @@
         "transcribing": "Transkribiere...",
         "transcriptionComplete": "Transkription abgeschlossen. Du kannst den Text bearbeiten.",
         "transcriptionError": "Fehler bei der Transkription.",
-        "microphoneError": "Fehler beim Zugriff auf das Mikrofon."
+        "microphoneError": "Fehler beim Zugriff auf das Mikrofon.",
+        "tooLong": "Transkription überschreitet das Zeichenlimit. Bitte vor dem Absenden bearbeiten."
       }
     }
   },
