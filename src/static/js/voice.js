@@ -75,9 +75,9 @@ async function startRecording() {
     });
 
     mediaRecorder.addEventListener("stop", async () => {
-      recordingStatus.textContent =
-        translations?.main?.voiceInput?.status?.transcribing ||
-        "Transcribing...";
+      recordingStatus.innerHTML =
+        (translations?.main?.voiceInput?.status?.transcribing ||
+          "Transcribing...") + '<span class="loading-dots"></span>';
       const audioBlob = new Blob(audioChunks, {
         type: "audio/webm",
       });
@@ -101,11 +101,11 @@ async function startRecording() {
         voiceCount.textContent = (
           MAX_VOICE_LENGTH - transcript.length
         ).toString();
-        recordingStatus.textContent =
+        recordingStatus.innerHTML =
           translations?.main?.voiceInput?.status?.transcriptionComplete ||
           "Transcription complete. You may edit the text.";
       } catch (error) {
-        recordingStatus.textContent =
+        recordingStatus.innerHTML =
           translations?.main?.voiceInput?.status?.transcriptionError ||
           "Error during transcription.";
         console.error(error);
@@ -123,7 +123,7 @@ async function startRecording() {
     }, 180000);
   } catch (error) {
     console.error("Error accessing microphone:", error);
-    recordingStatus.textContent =
+    recordingStatus.innerHTML =
       translations?.main?.voiceInput?.status?.microphoneError ||
       "Error accessing microphone.";
   }
