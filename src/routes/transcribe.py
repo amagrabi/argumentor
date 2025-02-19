@@ -34,12 +34,15 @@ def transcribe_audio(audio_content, file_mime, delete_after_transcription=True):
 
     # Initialize speech client with our credentials
     client = speech.SpeechClient(credentials=google_credentials)
-    logger.debug(f"Using GCS URI for transcription: {gcs_uri}")
 
     current_language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
     language_code = getattr(SETTINGS, "LANGUAGE_CODES", {}).get(
         current_language, "en-US"
     )
+
+    # Add debug logging
+    logger.debug(f"Current language: {current_language}")
+    logger.debug(f"Using language code for speech recognition: {language_code}")
 
     # Configure encoding and sample rate based on file mime type
     if "webm" in file_mime or "ogg" in file_mime:
