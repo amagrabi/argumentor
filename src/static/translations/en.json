@@ -42,6 +42,10 @@
       "counterargument": "Counterargument Rebuttal (optional)",
       "counterargumentDescription": "Address potential objections to strengthen your argument...",
       "challengeDescription": "Defend and refine your argument..."
+    },
+    "inputModes": {
+      "write": "Write",
+      "speak": "Speak"
     }
   },
   "questionSelection": {

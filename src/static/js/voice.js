@@ -1,4 +1,5 @@
 import { CHAR_LIMITS } from "./constants.js";
+import { translations } from "./translations.js";
 
 // HTML elements for voice recording
 const textModeTab = document.getElementById("textModeTab");
@@ -62,7 +63,8 @@ async function startRecording() {
       </svg>
     `;
 
-    recordingStatus.textContent = "Recording...";
+    recordingStatus.textContent =
+      translations?.main?.voiceInput?.status?.recording || "Recording...";
     recordingTimer.classList.remove("hidden");
     startTime = Date.now();
     timerInterval = setInterval(updateTimer, 1000);
@@ -73,7 +75,9 @@ async function startRecording() {
     });
 
     mediaRecorder.addEventListener("stop", async () => {
-      recordingStatus.textContent = "Transcribing...";
+      recordingStatus.textContent =
+        translations?.main?.voiceInput?.status?.transcribing ||
+        "Transcribing...";
       const audioBlob = new Blob(audioChunks, {
         type: "audio/webm",
       });
@@ -98,9 +102,12 @@ async function startRecording() {
           MAX_VOICE_LENGTH - transcript.length
         ).toString();
         recordingStatus.textContent =
+          translations?.main?.voiceInput?.status?.transcriptionComplete ||
           "Transcription complete. You may edit the text.";
       } catch (error) {
-        recordingStatus.textContent = "Error during transcription.";
+        recordingStatus.textContent =
+          translations?.main?.voiceInput?.status?.transcriptionError ||
+          "Error during transcription.";
         console.error(error);
       }
       recordButton.disabled = false;
@@ -116,7 +123,9 @@ async function startRecording() {
     }, 180000);
   } catch (error) {
     console.error("Error accessing microphone:", error);
-    recordingStatus.textContent = "Error accessing microphone.";
+    recordingStatus.textContent =
+      translations?.main?.voiceInput?.status?.microphoneError ||
+      "Error accessing microphone.";
   }
 }
 

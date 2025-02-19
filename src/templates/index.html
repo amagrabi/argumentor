@@ -485,7 +485,7 @@
                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
               />
             </svg>
-            <span>Write</span>
+            <span data-i18n="main.inputModes.write">Write</span>
           </button>
           <button
             id="voiceModeTab"
@@ -504,7 +504,7 @@
                 d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
               />
             </svg>
-            <span>Speak</span>
+            <span data-i18n="main.inputModes.speak">Speak</span>
           </button>
         </div>
 
@@ -618,17 +618,22 @@
           </div>
 
           <div class="space-y-4">
-            <label for="voiceTranscript" class="block text-lg font-bold">
+            <label
+              for="voiceTranscript"
+              class="block text-lg font-bold"
+              data-i18n="main.voiceInput.recordedAnswer"
+            >
               Your Recorded Answer
             </label>
             <textarea
               id="voiceTranscript"
               class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
-              placeholder="Your transcribed answer will appear here..."
-              readonly
+              data-i18n-placeholder="main.voiceInput.transcriptPlaceholder"
             ></textarea>
             <div class="mt-1 text-sm text-gray-500">
-              <span>Characters remaining:</span>
+              <span data-i18n="main.voiceInput.charactersRemaining"
+                >Characters remaining:</span
+              >
               <span id="voiceCount"></span>
             </div>
           </div>

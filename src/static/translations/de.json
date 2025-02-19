@@ -48,6 +48,22 @@
       "counterargument": "Gegenargumente entkräften (optional)",
       "counterargumentDescription": "Gehe auf mögliche Einwände ein, um dein Argument zu stärken...",
       "challengeDescription": "Verteidige und verbessere dein Argument..."
+    },
+    "inputModes": {
+      "write": "Schreiben",
+      "speak": "Sprechen"
+    },
+    "voiceInput": {
+      "recordedAnswer": "Deine aufgenommene Antwort",
+      "transcriptPlaceholder": "Deine transkribierte Antwort erscheint hier...",
+      "charactersRemaining": "Verbleibende Zeichen:",
+      "status": {
+        "recording": "Aufnahme läuft...",
+        "transcribing": "Transkribiere...",
+        "transcriptionComplete": "Transkription abgeschlossen. Du kannst den Text bearbeiten.",
+        "transcriptionError": "Fehler bei der Transkription.",
+        "microphoneError": "Fehler beim Zugriff auf das Mikrofon."
+      }
     }
   },
   "challenge": {
