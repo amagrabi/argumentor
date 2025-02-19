@@ -242,3 +242,39 @@ textarea:focus {
     transform: rotate(360deg);
   }
 }
+
+.g_id_signin {
+  min-height: 45px;
+  height: 45px;
+  overflow: hidden;
+}
+
+.g_id_signin iframe {
+  min-height: 45px !important;
+}
+
+/* Modal transition */
+.fixed.inset-0 > div {
+  /* Target modal content */
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.divider-text {
+  padding: 0 1rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}

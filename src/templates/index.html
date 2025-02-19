@@ -18,7 +18,11 @@
 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="google-signin-client_id" content="{{ GOOGLE_CLIENT_ID }}" />
+    <meta
+      name="google-signin-client_id"
+      content="{{ GOOGLE_CLIENT_ID }}"
+      data-use-fedcm="true"
+    />
     <title>ArguMentor - Sharpen Your Reasoning Skills</title>
     <meta
       name="description"
@@ -839,18 +843,6 @@
 
     <!-- Include custom JavaScript -->
     <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
-    <script>
-      function initGoogleAuth() {
-        const meta = document.querySelector(
-          'meta[name="google-signin-client_id"]'
-        );
-        const clientId = meta ? meta.getAttribute("content") : "";
-        google.accounts.id.initialize({
-          client_id: clientId,
-          callback: handleGoogleAuthResponse,
-        });
-      }
-    </script>
 
     <!-- Feedback Modal -->
     <div

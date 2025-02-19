@@ -93,6 +93,7 @@ def create_app():
             "https://accounts.google.com",
             "https://www.googletagmanager.com",
             "'unsafe-inline'",
+            "https://fedcm.googleapis.com",
         ],
         "style-src": [
             "'self'",
@@ -101,8 +102,17 @@ def create_app():
             "'unsafe-inline'",
         ],
         "img-src": ["'self'", "data:", "https://img.icons8.com"],
-        "frame-src": ["https://accounts.google.com"],
-        "connect-src": ["'self'", "https://accounts.google.com"],
+        "frame-src": [
+            "https://accounts.google.com",
+            "https://fedcm.googleapis.com",
+            "https://identity.google.com",
+        ],
+        "connect-src": [
+            "'self'",
+            "https://accounts.google.com",
+            "https://fedcm.googleapis.com",
+            "https://identity.google.com",
+        ],
     }
     Talisman(app, content_security_policy=csp)
 

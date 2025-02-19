@@ -1,5 +1,8 @@
 function showLoginModal() {
   const translations = window.translations || {};
+  const meta = document.querySelector('meta[name="google-signin-client_id"]');
+  const clientId = meta ? meta.getAttribute("content") : "";
+
   const modal = document.createElement("div");
   modal.innerHTML = `
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
@@ -41,15 +44,25 @@ function showLoginModal() {
             </button>
           </div>
         </form>
+        <div class="divider">
+          <span class="divider-text">OR</span>
+        </div>
         <div id="googleButtonContainer" class="mt-4"></div>
         <div class="mt-6">
-          <button onclick="handleGoogleAuth()"
-                  class="w-full flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            <svg class="w-5 h-5" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a5.94 5.94 0 1 1 0-11.88c1.094 0 2.354.371 3.227 1.067l2.355-2.362A9.914 9.914 0 0 0 12.545 2C7.021 2 2.545 6.477 2.545 12s4.476 10 10 10c5.523 0 10-4.477 10-10a9.9 9.9 0 0 0-1.091-4.571l-8.909 3.81z"/>
-            </svg>
-            ${translations.auth?.continueWithGoogle || "Continue with Google"}
-          </button>
+          <div id="g_id_onload"
+               data-client_id="${clientId}"
+               data-login_uri="/google-auth"
+               data-auto_prompt="false"
+               data-auto_select="true"
+               data-context="signin">
+          </div>
+          <div class="g_id_signin w-full"
+               data-type="standard"
+               data-theme="filled_blue"
+               data-text="continue_with"
+               data-shape="rectangular"
+               data-logo_alignment="left">
+          </div>
         </div>
       </div>
     </div>
@@ -96,10 +109,25 @@ function showLoginModal() {
   // Remove any existing modal and append this one
   document.querySelectorAll("div.fixed.inset-0").forEach((el) => el.remove());
   document.body.appendChild(modal);
+
+  if (window.google && google.accounts && google.accounts.id) {
+    const signinContainer = modal.querySelector(".g_id_signin");
+    google.accounts.id.renderButton(signinContainer, {
+      type: "standard",
+      theme: "filled_blue",
+      text: "continue_with",
+      shape: "rectangular",
+      logo_alignment: "left",
+      width: signinContainer.offsetWidth,
+      height: 45,
+    });
+  }
 }
 
 function showSignupModal() {
   const translations = window.translations || {};
+  const meta = document.querySelector('meta[name="google-signin-client_id"]');
+  const clientId = meta ? meta.getAttribute("content") : "";
   const modal = document.createElement("div");
   modal.innerHTML = `
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
@@ -144,13 +172,20 @@ function showSignupModal() {
         </form>
         <div id="googleButtonContainer" class="mt-4"></div>
         <div class="mt-6">
-          <button onclick="handleGoogleAuth()"
-                  class="w-full flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            <svg class="w-5 h-5" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a5.94 5.94 0 1 1 0-11.88c1.094 0 2.354.371 3.227 1.067l2.355-2.362A9.914 9.914 0 0 0 12.545 2C7.021 2 2.545 6.477 2.545 12s4.476 10 10 10c5.523 0 10-4.477 10-10a9.9 9.9 0 0 0-1.091-4.571l-8.909 3.81z"/>
-            </svg>
-            ${translations.auth?.continueWithGoogle || "Continue with Google"}
-          </button>
+          <div id="g_id_onload"
+               data-client_id="${clientId}"
+               data-login_uri="/google-auth"
+               data-auto_prompt="false"
+               data-auto_select="true"
+               data-context="signin">
+          </div>
+          <div class="g_id_signin w-full"
+               data-type="standard"
+               data-theme="filled_blue"
+               data-text="continue_with"
+               data-shape="rectangular"
+               data-logo_alignment="left">
+          </div>
         </div>
       </div>
     </div>
@@ -183,6 +218,19 @@ function showSignupModal() {
   // Remove any existing modal and add this one
   document.querySelectorAll("div.fixed.inset-0").forEach((el) => el.remove());
   document.body.appendChild(modal);
+
+  if (window.google && google.accounts && google.accounts.id) {
+    const signinContainer = modal.querySelector(".g_id_signin");
+    google.accounts.id.renderButton(signinContainer, {
+      type: "standard",
+      theme: "filled_blue",
+      text: "continue_with",
+      shape: "rectangular",
+      logo_alignment: "left",
+      width: signinContainer.offsetWidth,
+      height: 45,
+    });
+  }
 }
 
 function switchToSignup() {
@@ -207,20 +255,22 @@ function initGoogleAuth() {
   google.accounts.id.initialize({
     client_id: clientId,
     callback: handleGoogleAuthResponse,
+    use_fedcm_for_prompt: true,
   });
 }
 
 // Handle Google auth button click
 function handleGoogleAuth() {
-  console.log("Google auth button clicked");
   if (google && google.accounts && google.accounts.id) {
-    google.accounts.id.prompt((notification) => {
-      console.log("Google prompt response:", notification);
+    google.accounts.id.prompt((fedcmNotification) => {
+      if (
+        fedcmNotification.isNotDisplayed() ||
+        fedcmNotification.isSkippedMoment()
+      ) {
+        // Implement your fallback UI here
+        showLoginModal();
+      }
     });
-  } else {
-    console.error(
-      "Google API not available. Check if the script loaded properly."
-    );
   }
 }
 
@@ -353,8 +403,16 @@ function showGoogleUsernameModal(credential) {
   script.src = "https://accounts.google.com/gsi/client";
   script.async = true;
   script.defer = true;
+  script.onload = () => {
+    const meta = document.querySelector('meta[name="google-signin-client_id"]');
+    const clientId = meta?.getAttribute("content") || "";
+    google.accounts.id.initialize({
+      client_id: clientId,
+      callback: handleGoogleAuthResponse,
+      use_fedcm_for_prompt: true,
+    });
+  };
   document.head.appendChild(script);
-  script.onload = initGoogleAuth;
 })();
 
 function showPasswordResetRequestModal() {
