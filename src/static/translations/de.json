@@ -610,7 +610,7 @@
   "privacy": {
     "title": "Datenschutz",
     "goBack": "Zurück",
-    "lastUpdated": "Zuletzt aktualisiert: 15. Februar 2025",
+    "lastUpdated": "Zuletzt aktualisiert: 19. Februar 2025",
     "sections": {
       "yourPrivacy": {
         "title": "Dein Datenschutz",
@@ -645,6 +645,10 @@
         "title": "Kontaktinformationen",
         "content": "Wenn du Fragen oder Bedenken zu dieser Datenschutzerklärung oder unseren Datenpraktiken hast, kontaktiere uns bitte",
         "here": "hier"
+      },
+      "speechData": {
+        "title": "An Google Speech API übermittelte Daten",
+        "content": "Wenn du die Sprachaufnahmefunktion nutzt, wird deine Eingabe über die Google Speech-to-Text API transkribiert. Um längere Aufnahmen verarbeiten zu können, werden die Daten temporär im Google Cloud Storage gespeichert. Die Daten werden ausschließlich für die Transkription verwendet und unmittelbar nach der Texterstellung gelöscht."
       }
     }
   },
