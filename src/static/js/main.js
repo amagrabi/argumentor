@@ -216,7 +216,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
   let claim, argument, counterargument;
 
   // Determine the current input mode (voice or text)
-  const inputMode = window.currentInputMode();
+  const inputMode = window.currentInputMode;
   if (inputMode === "voice") {
     const voiceResponse = document
       .getElementById("voiceTranscript")

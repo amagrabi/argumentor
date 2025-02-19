@@ -67,6 +67,8 @@ class Answer(db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
 
+    input_mode = db.Column(db.String(10), nullable=True)  # "text" or "voice"
+
     __table_args__ = (db.Index("ix_user_question", "user_uuid", "question_id"),)
 
     def __repr__(self):

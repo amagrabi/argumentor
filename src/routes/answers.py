@@ -188,6 +188,8 @@ def submit_answer():
                 if question_text:
                     break
 
+    input_mode = "voice" if claim == argument else "text"
+
     new_answer = Answer(
         user_uuid=user_uuid,
         question_id=question_id,
@@ -207,6 +209,7 @@ def submit_answer():
         challenge=evaluation.get("challenge"),
         challenge_evaluation_scores={},
         challenge_evaluation_feedback={},
+        input_mode=input_mode,
     )
     db.session.add(new_answer)
     db.session.commit()
