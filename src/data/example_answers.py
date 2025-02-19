@@ -3,6 +3,53 @@ from utils import auto_dedent
 EXAMPLE_ANSWERS = [
     {
         "question_text": """
+            What is more important, experiences or material possessions?
+        """,
+        "claim": """
+            Material possessions are ultimately more important than experiences
+            for long-term well-being and a fulfilling life.
+        """,
+        "argument": """
+            While experiences are often lauded for their ability to create memories
+            and personal growth, material possessions provide a more fundamental and
+            lasting foundation for a good life. Experiences are ephemeral; they fade
+            into memory, and their positive effects diminish over time. In contrast,
+            well-chosen material possessions offer enduring benefits that contribute
+            to stability, security, and continued well-being.
+
+            Firstly, material possessions provide security and stability. Owning a home,
+            for example, offers shelter and a sense of place, crucial for mental and
+            emotional well-being. Financial assets, like savings and investments,
+            provide a safety net against unforeseen circumstances such as job loss or
+            medical emergencies. This security reduces stress and allows individuals
+            to navigate life's challenges with greater confidence. Experiences, however
+            enriching, do not offer this tangible security; the memories of a vacation
+            cannot pay the rent during hard times.
+
+            Secondly, many material possessions are inherently practical and functional,
+            directly improving daily life. Reliable transportation, efficient appliances,
+            and comfortable living spaces are not luxuries, but necessities that
+            enhance our quality of life day in and day out. These possessions
+            save time, reduce effort, and create a more comfortable and productive environment.
+            While experiences can be enjoyable, they often require a foundation of material
+            comfort to be fully appreciated. It's difficult to savor a travel experience when
+            one is constantly worried about basic needs or lacks a comfortable home to return to.
+
+            Thirdly, material possessions can create a lasting legacy and provide
+            for future generations. Assets and heirlooms can be passed down, offering
+            continued benefit and connection across time. This provides a sense of
+            continuity and purpose that extends beyond one's own lifespan. Experiences,
+            being personal and intangible, cannot be directly inherited in the same way.
+            While stories and memories can be shared, the tangible benefits of experiences
+            are not transferable to future generations.
+
+            Finally, it's important to recognize that material possessions are not inherently opposed to experiences; they can often facilitate and enhance them. Having a car enables travel experiences, owning sports equipment allows for active and engaging hobbies, and a comfortable home provides a base for social gatherings and shared experiences. The key is to prioritize meaningful material possessions that contribute to long-term well-being and enable a richer life, rather than succumbing to mindless consumerism.
+            In conclusion, while the fleeting joy of experiences is valuable, it is the enduring stability, practicality, and legacy provided by material possessions that ultimately contribute more significantly to a secure, comfortable, and fulfilling life, both for ourselves and for those who come after us.
+        """,
+        "counterargument": "",
+    },
+    {
+        "question_text": """
             In decision-making, is relying on the bandwagon effect a justifiable
             strategy when evidence is scarce, or is it a flawed approach that should
             be avoided at all costs?

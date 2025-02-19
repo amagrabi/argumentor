@@ -65,11 +65,12 @@ def get_questions():
 
 
 def get_fixed_question():
-    """Get the first question from Philosophy category"""
+    """Get the experiences vs possessions question from Personal Growth category"""
     questions = get_questions()
-    philosophy_questions = questions.get("Philosophy", [])
-    if philosophy_questions:
-        return philosophy_questions[0]
+    personal_growth_questions = questions.get("Personal Growth & Relationships", [])
+    for question in personal_growth_questions:
+        if question["id"] == SETTINGS.DEFAULT_QUESTION:
+            return question
     return None
 
 

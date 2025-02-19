@@ -69,6 +69,8 @@ class Settings(BaseSettings):
     DEFAULT_LANGUAGE: str = "en"
     LANGUAGE_CODES: ClassVar[Dict[str, str]] = {"en": "en-US", "de": "de-DE"}
 
+    DEFAULT_QUESTION: str = "experiences"  # id of first question new users see
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
