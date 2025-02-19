@@ -156,20 +156,20 @@ transcriptField.addEventListener("input", () => {
 
 // Update the tab switching logic
 textModeTab.addEventListener("click", () => {
-  textModeTab.classList.add("border-gray-600", "text-gray-800");
-  textModeTab.classList.remove("text-gray-500", "border-transparent");
-  voiceModeTab.classList.remove("border-gray-600", "text-gray-800");
-  voiceModeTab.classList.add("text-gray-500", "border-transparent");
+  textModeTab.classList.add("active", "text-gray-800");
+  textModeTab.classList.remove("text-gray-500");
+  voiceModeTab.classList.remove("active", "text-gray-800");
+  voiceModeTab.classList.add("text-gray-500");
   textInputSection.style.display = "block";
   voiceInputSection.style.display = "none";
   window.currentInputMode = "text";
 });
 
 voiceModeTab.addEventListener("click", () => {
-  voiceModeTab.classList.add("border-gray-600", "text-gray-800");
-  voiceModeTab.classList.remove("text-gray-500", "border-transparent");
-  textModeTab.classList.remove("border-gray-600", "text-gray-800");
-  textModeTab.classList.add("text-gray-500", "border-transparent");
+  voiceModeTab.classList.add("active", "text-gray-800");
+  voiceModeTab.classList.remove("text-gray-500");
+  textModeTab.classList.remove("active", "text-gray-800");
+  textModeTab.classList.add("text-gray-500");
   voiceInputSection.style.display = "block";
   textInputSection.style.display = "none";
   window.currentInputMode = "voice";
