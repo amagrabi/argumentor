@@ -7,6 +7,7 @@ from flask_limiter.errors import RateLimitExceeded
 from flask_login import current_user
 from flask_migrate import Migrate
 from flask_talisman import Talisman
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from commands import register_commands
 from config import get_settings
@@ -44,6 +45,12 @@ def create_app():
     app.config.from_mapping(get_settings())
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=2)
     app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
+    app.config["PROXY_FIX_X_FOR"] = 1
+    app.config["PROXY_FIX_X_PROTO"] = 1
+    app.config["PROXY_FIX_X_HOST"] = 1
+    app.config["PROXY_FIX_X_PORT"] = 1
+    app.config["PROXY_FIX_X_PREFIX"] = 1
+    app.config["PROXY_TIMEOUT"] = 120
     # For sqlite
     # app.config["SQLALCHEMY_DATABASE_URI"] = (
     #     f"sqlite:///{os.path.join(instance_path, 'argumentor.db')}"
@@ -137,6 +144,10 @@ def create_app():
             if current_user.is_authenticated:
                 current_user.preferred_language = lang
                 db.session.commit()
+
+    app.wsgi_app = ProxyFix(
+        app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1
+    )
 
     return app
 
