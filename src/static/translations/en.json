@@ -49,7 +49,8 @@
     },
     "voiceInput": {
       "status": {
-        "tooLong": "Transcription exceeds character limit. Please edit before submitting."
+        "tooLong": "Transcription exceeds character limit. Please edit before submitting.",
+        "transcriptionTimeout": "Transcription timed out. Please try a shorter recording."
       }
     }
   },

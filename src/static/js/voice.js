@@ -31,6 +31,12 @@ function formatTime(ms) {
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 }
 
+// Function to format max recording time as MM:SS
+function formatMaxRecordingTime() {
+  const ms = VOICE_LIMITS.MAX_RECORDING_TIME;
+  return formatTime(ms);
+}
+
 // Function to update timer display
 function updateTimer() {
   const elapsed = Date.now() - startTime;
@@ -90,10 +96,18 @@ async function startRecording() {
       formData.append("file", audioBlob, "recording");
 
       try {
+        // Set longer timeout for fetch
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes
+
         const response = await fetch("/transcribe_voice", {
           method: "POST",
           body: formData,
+          signal: controller.signal,
         });
+
+        clearTimeout(timeoutId);
+
         const data = await response.json();
 
         if (!response.ok) {
@@ -122,9 +136,15 @@ async function startRecording() {
             "Transcription complete. You may edit the text.";
         }
       } catch (error) {
-        recordingStatus.innerHTML =
-          translations?.main?.voiceInput?.status?.transcriptionError ||
-          "Error during transcription.";
+        if (error.name === "AbortError") {
+          recordingStatus.innerHTML =
+            translations?.main?.voiceInput?.status?.transcriptionTimeout ||
+            "Transcription timed out. Please try a shorter recording.";
+        } else {
+          recordingStatus.innerHTML =
+            translations?.main?.voiceInput?.status?.transcriptionError ||
+            "Error during transcription.";
+        }
         console.error(error);
         recordButton.disabled = false;
       }
@@ -139,6 +159,10 @@ async function startRecording() {
         mediaRecorder.stop();
       }
     }, VOICE_LIMITS.MAX_RECORDING_TIME);
+
+    // Update max recording time display
+    document.getElementById("maxRecordingTime").textContent =
+      formatMaxRecordingTime();
   } catch (error) {
     console.error("Error accessing microphone:", error);
     recordingStatus.innerHTML =

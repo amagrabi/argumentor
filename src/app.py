@@ -1,5 +1,6 @@
 import logging
 import os
+from datetime import timedelta
 
 from flask import Flask, jsonify, request, send_from_directory, session
 from flask_limiter.errors import RateLimitExceeded
@@ -41,6 +42,8 @@ def create_app():
 
     app = Flask(__name__, instance_path=instance_path, static_folder="static")
     app.config.from_mapping(get_settings())
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=2)
+    app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
     # For sqlite
     # app.config["SQLALCHEMY_DATABASE_URI"] = (
     #     f"sqlite:///{os.path.join(instance_path, 'argumentor.db')}"

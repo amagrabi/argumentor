@@ -28,7 +28,7 @@ def upload_audio_to_gcs(audio_content, file_mime):
     return f"gs://{bucket_name}/{filename}"
 
 
-def transcribe_audio(audio_content, file_mime, delete_after_transcription=True):
+def transcribe_audio(audio_content, file_mime, delete_after_transcription=False):
     # Upload the audio to GCS and get its URI
     gcs_uri = upload_audio_to_gcs(audio_content, file_mime)
 
@@ -69,9 +69,9 @@ def transcribe_audio(audio_content, file_mime, delete_after_transcription=True):
     audio = speech.RecognitionAudio(uri=gcs_uri)
     transcript = ""
     try:
-        # Use long_running_recognize for longer recordings (up to 3 minutes)
+        # Use long_running_recognize for longer recordings
         operation = client.long_running_recognize(config=config, audio=audio)
-        response = operation.result(timeout=180)
+        response = operation.result(timeout=120)
 
         for result in response.results:
             transcript += result.alternatives[0].transcript + " "

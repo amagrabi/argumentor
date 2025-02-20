@@ -29,6 +29,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+    "aiohttp",
     "pre-commit",
     "pytest",
     "ruff",

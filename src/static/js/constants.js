@@ -95,6 +95,6 @@ export const EVALUATION_TRANSLATION_MAPPING = {
 
 // Add this with the other constants
 export const VOICE_LIMITS = {
-  MAX_RECORDING_TIME: 180000, // 60000=1 minute  180000=3 minutes
+  MAX_RECORDING_TIME: 120000, // 60000=1 minute
   MAX_CHARS: 2000,
 };

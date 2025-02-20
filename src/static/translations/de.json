@@ -64,7 +64,8 @@
         "transcriptionComplete": "Transkription abgeschlossen. Du kannst den Text bearbeiten.",
         "transcriptionError": "Fehler bei der Transkription.",
         "microphoneError": "Fehler beim Zugriff auf das Mikrofon.",
-        "tooLong": "Transkription überschreitet das Zeichenlimit. Bitte vor dem Absenden bearbeiten."
+        "tooLong": "Transkription überschreitet das Zeichenlimit. Bitte vor dem Absenden bearbeiten.",
+        "transcriptionTimeout": "Transkription überschreitet das Zeitlimit. Bitte versuche es erneut mit einer kürzeren Aufnahme."
       }
     }
   },
