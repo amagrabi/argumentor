@@ -55,6 +55,9 @@ def transcribe_audio(audio_content, file_mime, delete_after_transcription=False)
     language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
     language_code = getattr(SETTINGS, "LANGUAGE_CODES", {}).get(language, "en-US")
 
+    # Log the language being used for transcription.
+    logger.info("Transcribing audio using language: %s (%s)", language, language_code)
+
     def process_audio_chunk(audio_segment, language_code):
         """
         Exports the given AudioSegment to a WAV byte stream and then performs synchronous speech recognition.

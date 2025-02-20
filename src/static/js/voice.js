@@ -1,4 +1,4 @@
-import { CHAR_LIMITS, VOICE_LIMITS } from "./constants.js";
+import { CHAR_LIMITS, VOICE_LIMITS, DEFAULT_LANGUAGE } from "./constants.js";
 import { translations } from "./translations.js";
 
 // HTML elements for voice recording
@@ -95,12 +95,15 @@ async function startRecording() {
       const formData = new FormData();
       formData.append("file", audioBlob, "recording");
 
+      // Get the current language from local storage (or fallback to "en")
+      const language = localStorage.getItem("language") || "en";
+
       try {
         // Set longer timeout for fetch
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes
 
-        const response = await fetch("/transcribe_voice", {
+        const response = await fetch(`/transcribe_voice?lang=${language}`, {
           method: "POST",
           body: formData,
           signal: controller.signal,

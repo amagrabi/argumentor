@@ -623,6 +623,21 @@ document
 
 // Update the DOMContentLoaded handler
 window.addEventListener("DOMContentLoaded", async () => {
+  const language = localStorage.getItem("language") || "en";
+
+  // Update the server-side session language to match localStorage
+  try {
+    await fetch("/set_language", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ language }),
+    });
+  } catch (error) {
+    console.error("Error setting language on server:", error);
+  }
+
   try {
     const urlParams = new URLSearchParams(window.location.search);
     const urlLang = urlParams.get("lang");

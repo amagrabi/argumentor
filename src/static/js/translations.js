@@ -2,6 +2,7 @@ import { updateQuestionDisplay } from "./helpers.js";
 import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE } from "./constants.js";
 
 let currentLanguage = localStorage.getItem("language") || DEFAULT_LANGUAGE;
+localStorage.setItem("language", currentLanguage);
 export let translations = {};
 
 async function loadTranslations() {
