@@ -151,7 +151,10 @@ function getDatasetsForMetrics(answers, selectedMetrics) {
 function initializeChart(answers, defaultMetrics = ["overall"]) {
   const ctx = document.getElementById("progressChart")?.getContext("2d");
   if (ctx) {
-    const labels = answers.map((a) =>
+    // Create reversed copy of answers array to maintain original data
+    const reversedAnswers = [...answers].reverse();
+
+    const labels = reversedAnswers.map((a) =>
       new Date(a.created_at).toLocaleDateString()
     );
 
@@ -159,7 +162,7 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
       type: "line",
       data: {
         labels: labels,
-        datasets: getDatasetsForMetrics(answers, defaultMetrics),
+        datasets: getDatasetsForMetrics(reversedAnswers, defaultMetrics),
       },
       options: {
         responsive: true,
@@ -246,8 +249,14 @@ function updateChartMultiple(answers, buttons) {
     buttons[key].classList.contains("button-active")
   );
 
-  progressChart.data.datasets = getDatasetsForMetrics(answers, activeMetrics);
-  progressChart.data.labels = answers.map((a) =>
+  // Create reversed copy of answers array
+  const reversedAnswers = [...answers].reverse();
+
+  progressChart.data.datasets = getDatasetsForMetrics(
+    reversedAnswers,
+    activeMetrics
+  );
+  progressChart.data.labels = reversedAnswers.map((a) =>
     new Date(a.created_at).toLocaleDateString()
   );
   progressChart.update();

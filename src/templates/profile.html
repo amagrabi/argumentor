@@ -262,10 +262,9 @@
             data-i18n="profile.yourAnswers"
           ></h2>
 
-          {% if user and user.answers %}
+          {% if answers_json %}
           <ul class="space-y-4">
-            {% for answer in user.answers|sort(attribute='created_at')|reverse
-            %}
+            {% for answer in answers_json %}
             <li
               class="border p-4 rounded-lg group hover:bg-gray-50 transition-colors"
             >
@@ -276,11 +275,11 @@
                 <div
                   class="absolute top-0 right-0 text-sm text-gray-500 text-right"
                 >
-                  <p>{{ answer.created_at.strftime('%Y-%m-%d') }}</p>
+                  <p>{{ answer.created_at[:10] }}</p>
                   <p
-                    class="{% if answer|calculate_valid_xp > 0 %}text-green-600{% endif %}"
+                    class="{% if answer.xp_earned > 0 %}text-green-600{% endif %}"
                   >
-                    +{{ answer|calculate_valid_xp }} XP
+                    +{{ answer.xp_earned }} XP
                   </p>
                   <p>
                     Argument:

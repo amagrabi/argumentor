@@ -16,7 +16,7 @@ from flask_login import current_user
 
 from config import get_settings
 from extensions import db, limiter
-from models import Feedback, User
+from models import Answer, Feedback, User
 from services.leveling import get_level_info
 from services.question_service import load_questions
 from utils import (
@@ -149,10 +149,18 @@ def profile():
     eval_limit = get_eval_limit(user.tier)
     daily_voice_count = get_daily_voice_count(user.uuid)
     voice_limit = get_voice_limit(user.tier)
-    # Convert answers to dictionaries for JSON serialization
-    answers_dict = [answer.to_dict() for answer in user.answers]
-    # Sync session XP with database
+
+    # Query answers sorted by created_at descending and then by id descending to break ties
+    answers = (
+        Answer.query.filter_by(user_uuid=user.uuid)
+        .order_by(Answer.created_at.desc(), Answer.id.desc())
+        .all()
+    )
+    answers_dict = [answer.to_dict() for answer in answers]
+
+    # Sync session XP with database.
     session["xp"] = user.xp
+
     return render_template(
         "profile.html",
         xp=user.xp,

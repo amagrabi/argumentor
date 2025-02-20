@@ -1,4 +1,5 @@
 import logging
+from datetime import UTC, datetime
 from difflib import SequenceMatcher
 
 from flask import Blueprint, jsonify, request, session
@@ -137,9 +138,11 @@ def submit_answer():
 
     old_xp = user.xp if user else 0
 
-    existing_answers = Answer.query.filter_by(
-        user_uuid=user_uuid, question_id=data.get("question_id")
-    ).all()
+    existing_answers = (
+        Answer.query.filter_by(user_uuid=user.uuid)
+        .order_by(Answer.created_at.desc(), Answer.id.desc())
+        .all()
+    )
 
     for existing in existing_answers:
         existing_counter = (existing.counterargument or "").strip()
@@ -210,6 +213,7 @@ def submit_answer():
         challenge_evaluation_scores={},
         challenge_evaluation_feedback={},
         input_mode=input_mode,
+        created_at=datetime.now(UTC),
     )
     db.session.add(new_answer)
     db.session.commit()
@@ -348,7 +352,11 @@ def submit_challenge_response():
 
 
 def recalc_user_xp(user):
-    answers = Answer.query.filter_by(user_uuid=user.uuid).all()
+    answers = (
+        Answer.query.filter_by(user_uuid=user.uuid)
+        .order_by(Answer.created_at.desc(), Answer.id.desc())
+        .all()
+    )
     total_xp = 0
 
     for answer in answers:
