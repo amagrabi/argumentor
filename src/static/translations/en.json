@@ -44,8 +44,8 @@
       "challengeDescription": "Defend and refine your argument..."
     },
     "inputModes": {
-      "write": "Write",
-      "speak": "Speak"
+      "write": "Text",
+      "speak": "Voice"
     },
     "voiceInput": {
       "status": {

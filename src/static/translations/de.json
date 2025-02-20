@@ -51,8 +51,8 @@
       "challengeDescription": "Verteidige und verbessere dein Argument..."
     },
     "inputModes": {
-      "write": "Schreiben",
-      "speak": "Sprechen"
+      "write": "Text",
+      "speak": "Sprache"
     },
     "voiceInput": {
       "recordedAnswer": "Deine aufgenommene Antwort",
