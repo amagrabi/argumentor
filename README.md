@@ -73,6 +73,12 @@ Install pre-commit hooks for auto-formatting:
 pre-commit install
 ```
 
+Install ffmpeg (for voice transcription):
+
+```sh
+brew install ffmpeg
+```
+
 Run tests:
 
 ```sh
@@ -83,6 +89,14 @@ Deploy to Heroku:
 
 ```sh
 git push heroku main
+```
+
+Setting up buildpacks for heroku (in case app needs to be configured from scratch):
+
+```sh
+heroku buildpacks:add heroku/python
+heroku buildpacks:add --index 1 https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git
+heroku buildpacks:add --index 1 https://github.com/heroku/heroku-buildpack-apt.git
 ```
 
 Recreate db for local development:

@@ -29,71 +29,93 @@ def upload_audio_to_gcs(audio_content, file_mime):
 
 
 def transcribe_audio(audio_content, file_mime, delete_after_transcription=False):
-    # Upload the audio to GCS and get its URI
-    gcs_uri = upload_audio_to_gcs(audio_content, file_mime)
+    """
+    Transcribes the audio content. If the audio is longer than a certain threshold (here, 30 seconds),
+    it is split into 30-second chunks that are transcribed concurrently.
+    """
+    import io
+    from concurrent.futures import ThreadPoolExecutor, as_completed
 
-    # Initialize speech client with our credentials
-    client = speech.SpeechClient(credentials=google_credentials)
+    from flask import session
+    from pydub import AudioSegment
 
-    current_language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
-    language_code = getattr(SETTINGS, "LANGUAGE_CODES", {}).get(
-        current_language, "en-US"
-    )
+    # Determine the input format based on file_mime.
+    input_format = "webm" if "webm" in file_mime or "ogg" in file_mime else "wav"
 
-    # Add debug logging
-    logger.debug(f"Current language: {current_language}")
-    logger.debug(f"Using language code for speech recognition: {language_code}")
-
-    # Configure encoding and sample rate based on file mime type
-    if "webm" in file_mime or "ogg" in file_mime:
-        encoding = speech.RecognitionConfig.AudioEncoding.WEBM_OPUS
-        sample_rate_hertz = 48000
-    else:
-        encoding = speech.RecognitionConfig.AudioEncoding.LINEAR16
-        sample_rate_hertz = 16000
-
-    config = speech.RecognitionConfig(
-        encoding=encoding,
-        sample_rate_hertz=sample_rate_hertz,
-        language_code=language_code,
-        model=SETTINGS.VOICE_MODEL,
-        use_enhanced=SETTINGS.VOICE_ENHANCED,
-        enable_automatic_punctuation=SETTINGS.VOICE_PUNCTUATION,
-        audio_channel_count=1,
-        # enable_word_confidence=True,
-        # enable_word_time_offsets=True,
-    )
-
-    # logger.debug(f"Transcription config: {config}")
-
-    audio = speech.RecognitionAudio(uri=gcs_uri)
-    transcript = ""
     try:
-        # Use long_running_recognize for longer recordings
-        operation = client.long_running_recognize(config=config, audio=audio)
-        response = operation.result(timeout=120)
-
-        for result in response.results:
-            transcript += result.alternatives[0].transcript + " "
+        audio = AudioSegment.from_file(io.BytesIO(audio_content), format=input_format)
     except Exception as e:
-        logger.error(f"Transcription error: {str(e)}")
-        transcript = ""
-    finally:
-        if delete_after_transcription:
-            try:
-                storage_client = storage.Client(credentials=google_credentials)
-                bucket_name = SETTINGS.GCS_BUCKET
-                bucket = storage_client.bucket(bucket_name)
-                # Extract the filename from the uri
-                file_path = gcs_uri.replace(f"gs://{bucket_name}/", "")
-                blob = bucket.blob(file_path)
-                blob.delete()
-                logger.debug(f"Deleted temporary audio file from GCS: {gcs_uri}")
-            except Exception as delete_error:
-                logger.error(
-                    f"Error deleting temporary audio file from GCS: {delete_error}"
-                )
-    return transcript.strip()
+        logger.error(f"Error loading audio file for chunking: {e}")
+        return ""
+
+    # Define chunk length (in milliseconds); here we use 30 seconds.
+    chunk_length_ms = 30000
+
+    # Capture session-dependent data before launching background tasks.
+    language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
+    language_code = getattr(SETTINGS, "LANGUAGE_CODES", {}).get(language, "en-US")
+
+    def process_audio_chunk(audio_segment, language_code):
+        """
+        Exports the given AudioSegment to a WAV byte stream and then performs synchronous speech recognition.
+        """
+        # Convert the audio segment's sample rate to 16000 Hz and sample width to 16 bit (2 bytes)
+        audio_segment = audio_segment.set_frame_rate(16000).set_sample_width(2)
+        buffer = io.BytesIO()
+        audio_segment.export(buffer, format="wav")
+        chunk_bytes = buffer.getvalue()
+
+        # Prepare Google Speech API client and config.
+        client = speech.SpeechClient(credentials=google_credentials)
+        config = speech.RecognitionConfig(
+            encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
+            sample_rate_hertz=16000,  # Matches the exported WAV header
+            language_code=language_code,
+            model=SETTINGS.VOICE_MODEL,
+            use_enhanced=SETTINGS.VOICE_ENHANCED,
+            enable_automatic_punctuation=SETTINGS.VOICE_PUNCTUATION,
+            audio_channel_count=1,
+        )
+
+        audio_request = speech.RecognitionAudio(content=chunk_bytes)
+        try:
+            # Use synchronous recognition with a timeout.
+            response = client.recognize(config=config, audio=audio_request, timeout=30)
+            chunk_transcript = ""
+            for result in response.results:
+                chunk_transcript += result.alternatives[0].transcript + " "
+            return chunk_transcript
+        except Exception as e:
+            logger.error(f"Error transcribing chunk: {e}")
+            return ""
+
+    # If the entire audio is short enough, process it as one chunk.
+    if len(audio) <= chunk_length_ms:
+        transcript = process_audio_chunk(audio, language_code)
+        return transcript.strip()
+    else:
+        # Split audio into 30-second chunks.
+        chunks = [
+            audio[i : i + chunk_length_ms]
+            for i in range(0, len(audio), chunk_length_ms)
+        ]
+        transcript_chunks = ["" for _ in range(len(chunks))]
+
+        # Process each chunk concurrently.
+        with ThreadPoolExecutor(max_workers=len(chunks)) as executor:
+            future_to_index = {
+                executor.submit(process_audio_chunk, chunk, language_code): idx
+                for idx, chunk in enumerate(chunks)
+            }
+            for future in as_completed(future_to_index):
+                idx = future_to_index[future]
+                try:
+                    transcript_chunks[idx] = future.result().strip()
+                except Exception as e:
+                    logger.error(f"Error processing chunk {idx}: {e}")
+                    transcript_chunks[idx] = ""
+        full_transcript = " ".join(transcript_chunks)
+        return full_transcript.strip()
 
 
 @transcribe_bp.route("/transcribe_voice", methods=["POST"])

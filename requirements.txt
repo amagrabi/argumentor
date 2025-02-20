@@ -157,6 +157,8 @@ pyasn1==0.6.1
     #   rsa
 pyasn1-modules==0.4.1
     # via google-auth
+pyaudio==0.2.14
+    # via argumentor (pyproject.toml)
 pydantic==2.10.6
     # via
     #   google-cloud-aiplatform
@@ -165,6 +167,8 @@ pydantic==2.10.6
 pydantic-core==2.27.2
     # via pydantic
 pydantic-settings==2.7.1
+    # via argumentor (pyproject.toml)
+pydub==0.25.1
     # via argumentor (pyproject.toml)
 pygments==2.19.1
     # via rich
