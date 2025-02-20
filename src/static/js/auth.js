@@ -47,7 +47,7 @@ function showLoginModal() {
         <div class="divider">
           <span class="divider-text">OR</span>
         </div>
-        <div id="googleButtonContainer" class="mt-4"></div>
+        <div id="googleButtonContainer"></div>
         <div class="mt-6">
           <div id="g_id_onload"
                data-client_id="${clientId}"
@@ -170,7 +170,10 @@ function showSignupModal() {
             </button>
           </div>
         </form>
-        <div id="googleButtonContainer" class="mt-4"></div>
+        <div class="divider">
+          <span class="divider-text">OR</span>
+        </div>
+        <div id="googleButtonContainer"></div>
         <div class="mt-6">
           <div id="g_id_onload"
                data-client_id="${clientId}"

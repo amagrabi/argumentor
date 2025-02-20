@@ -263,7 +263,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   text-align: center;
-  margin: 1rem 0;
+  margin: 1.5em 0;
 }
 
 .divider::before,
