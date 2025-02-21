@@ -44,10 +44,18 @@ def create_app():
     app.config.from_mapping(get_settings())
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=2)
     app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
-    # For sqlite
-    # app.config["SQLALCHEMY_DATABASE_URI"] = (
-    #     f"sqlite:///{os.path.join(instance_path, 'argumentor.db')}"
-    # )
+
+    # Add SQLAlchemy engine options tuned for production
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "pool_size": 10,  # Number of persistent connections to keep open
+        "max_overflow": 20,  # Additional connections allowed beyond pool_size under load
+        "pool_timeout": 30,  # Increased wait time (in seconds) for a free connection
+        "pool_recycle": 180,  # Recycle connections older than 3 minutes (helps avoid stale connections)
+        "pool_pre_ping": True,  # Check connection health before using it
+    }
+
+    # Ensure the connection is cleaned up properly when returned to the pool
+    app.config["SQLALCHEMY_POOL_RESET_ON_RETURN"] = "rollback"
 
     # Initialize extensions
     db.init_app(app)
@@ -137,6 +145,15 @@ def create_app():
             if current_user.is_authenticated:
                 current_user.preferred_language = lang
                 db.session.commit()
+
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        db.session.remove()  # Ensure the session is cleaned up
+        return jsonify(error=str(e)), 500
+
+    @app.teardown_appcontext
+    def shutdown_session(exception=None):
+        db.session.remove()
 
     return app
 

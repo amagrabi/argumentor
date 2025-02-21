@@ -180,24 +180,30 @@ def profile():
     error_message="Too many submissions. Please wait before trying again.",
 )
 def submit_feedback():
-    if not request.is_json:
-        return jsonify({"error": "Content-Type must be application/json"}), 400
+    try:
+        if not request.is_json:
+            return jsonify({"error": "Content-Type must be application/json"}), 400
 
-    data = request.json
-    message = data.get("message", "").strip()
-    category = data.get("category", "").strip()
+        data = request.json
+        message = data.get("message", "").strip()
+        category = data.get("category", "").strip()
 
-    if not message or not category:
-        return jsonify({"error": "Message and category are required"}), 400
+        if not message or not category:
+            return jsonify({"error": "Message and category are required"}), 400
 
-    feedback = Feedback(
-        user_uuid=session.get("user_id"), message=message, category=category
-    )
+        feedback = Feedback(
+            user_uuid=session.get("user_id"), message=message, category=category
+        )
 
-    db.session.add(feedback)
-    db.session.commit()
+        db.session.add(feedback)
+        db.session.commit()
 
-    return jsonify({"success": True})
+        return jsonify({"success": True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        db.session.remove()
 
 
 @pages_bp.route("/set_language", methods=["POST"])
