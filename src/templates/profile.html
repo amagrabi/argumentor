@@ -364,7 +364,21 @@
                     ><span>: </span>
                     <span class="text-gray-600">{{ answer.argument }}</span>
                   </p>
-                  {% endif %}
+
+                  <!-- Move Counterargument Section here -->
+                  {% if answer.counterargument and answer.input_mode != 'voice'
+                  %}
+                  <p class="text-sm break-words mt-1">
+                    <span
+                      class="font-medium text-sm text-black"
+                      data-i18n="profile.counterargument"
+                    ></span
+                    ><span>: </span>
+                    <span class="text-gray-600"
+                      >{{ answer.counterargument }}</span
+                    >
+                  </p>
+                  {% endif %} {% endif %}
 
                   <!-- New Evaluation Section -->
                   {% if answer.evaluation_feedback.Overall %}
@@ -385,21 +399,6 @@
                       >Challenge:</span
                     >
                     <span class="text-gray-600">{{ answer.challenge }}</span>
-                  </p>
-                  {% endif %}
-
-                  <!-- Counterargument Section -->
-                  {% if answer.counterargument and answer.input_mode != 'voice'
-                  %}
-                  <p class="text-sm break-words mt-1">
-                    <span
-                      class="font-medium text-sm text-black"
-                      data-i18n="profile.counterargument"
-                    ></span
-                    ><span>: </span>
-                    <span class="text-gray-600"
-                      >{{ answer.counterargument }}</span
-                    >
                   </p>
                   {% endif %}
                 </div>
