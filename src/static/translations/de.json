@@ -413,9 +413,11 @@
   },
   "howToImprovePage": {
     "title": "Wie man sich verbessert",
+    "overviewTitle": "Überblick",
     "overview": "Erkenne vorherrschende Denkverzerrungen und vermeide gängige logische Fehlschlüsse, um stärkere und überzeugendere Argumente zu entwickeln. Das Bewusstsein für diese Fallstricke kann dir helfen, deinen Ansatz zur Problemlösung und Entscheidungsfindung zu verfeinern.",
     "cognitiveBiasesTitle": "Kognitive Verzerrungen",
     "logicalFallaciesTitle": "Logische Fehlschlüsse",
+    "exampleTitle": "Beispiel",
     "cognitive_biases": [
       {
         "name": "Bestätigungsfehler",
@@ -562,13 +564,9 @@
           "title": "Kompetitiver Modus",
           "description": "Fordere deine Freunde heraus und messe dich in Streitgesprächen."
         },
-        "voiceMode": {
-          "title": "Sprachunterstützung",
-          "description": "Formuliere deine Argumente, ohne tippen zu müssen."
-        },
         "multipleLanguages": {
-          "title": "Mehrere Sprachen",
-          "description": "Biete Unterstützung für nicht-englische Sprachen an."
+          "title": "Neue Sprachen",
+          "description": "Unterstützung für weitere Sprachen."
         },
         "moreQuestions": {
           "title": "Individuelle Fragen",

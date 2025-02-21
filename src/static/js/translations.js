@@ -13,17 +13,14 @@ async function loadTranslations() {
       localStorage.setItem("language", DEFAULT_LANGUAGE);
     }
 
-    console.log("Loading translations for language:", currentLanguage);
     const response = await fetch(
       `/static/translations/${currentLanguage}.json`
     );
-
     if (!response.ok) {
       throw new Error(`Failed to load translations for ${currentLanguage}`);
     }
 
     translations = await response.json();
-    console.log("Translations loaded:", translations);
     applyTranslations();
     updateLanguageIndicator();
     updateEvaluationTranslations();
@@ -42,6 +39,9 @@ async function loadTranslations() {
         updateQuestionDisplay(currentQuestion);
       }
     }
+
+    // Mark translations as loaded
+    document.documentElement.classList.add("translations-loaded");
   } catch (error) {
     console.error("Error loading translations:", error);
     // Fallback to English if translation loading fails

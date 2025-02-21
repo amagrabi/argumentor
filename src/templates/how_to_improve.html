@@ -139,7 +139,7 @@
             <h3 class="font-bold text-lg mb-2">{{ bias.name }}</h3>
             <p class="text-gray-600">{{ bias.description }}.</p>
             <p class="text-gray-400 text-sm italic">
-              Example: {{ bias.example }}
+              {{ page_content.exampleTitle }}: {{ bias.example }}
             </p>
           </div>
           {% endfor %}
@@ -157,7 +157,7 @@
             <h3 class="font-bold text-lg mb-2">{{ fallacy.name }}</h3>
             <p class="text-gray-600 mb-2">{{ fallacy.description }}.</p>
             <p class="text-gray-400 text-sm italic">
-              Example: {{ fallacy.example }}
+              {{ page_content.exampleTitle }}: {{ fallacy.example }}
             </p>
           </div>
           {% endfor %}

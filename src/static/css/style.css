@@ -314,3 +314,29 @@ textarea:focus {
   width: 100% !important;
   min-height: 400px;
 }
+
+body.loading-translations [data-i18n] {
+  visibility: hidden;
+}
+
+/* Optional loading indicator */
+body.loading-translations [data-i18n]::after {
+  visibility: visible;
+  content: "";
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  background-color: transparent;
+}
+
+/* Hide all translatable content initially */
+[data-i18n] {
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+}
+
+/* Show content when translations are loaded */
+.translations-loaded [data-i18n] {
+  opacity: 1;
+}

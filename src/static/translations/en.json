@@ -404,9 +404,11 @@
   },
   "howToImprovePage": {
     "title": "How to Improve",
+    "overviewTitle": "Overview",
     "overview": "Identify biases in your thinking and avoid common logical fallacies to build stronger, more persuasive arguments. Being aware of these pitfalls can help you refine your approach to problem-solving and decision-making.",
     "cognitiveBiasesTitle": "Cognitive Biases",
     "logicalFallaciesTitle": "Logical Fallacies",
+    "exampleTitle": "Example",
     "cognitive_biases": [
       {
         "name": "Confirmation Bias",
@@ -540,13 +542,9 @@
           "title": "Competitive Mode",
           "description": "Challenge your friends and compete in reasoning battles."
         },
-        "voiceMode": {
-          "title": "Voice Mode",
-          "description": "Formulate your arguments without having to type."
-        },
         "multipleLanguages": {
-          "title": "Multiple Languages",
-          "description": "Offer support for non-English languages."
+          "title": "More Languages",
+          "description": "Offer support for new languages."
         },
         "moreQuestions": {
           "title": "Custom Questions",
