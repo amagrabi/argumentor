@@ -78,9 +78,8 @@
           onclick="showAuthModal()"
           class="text-gray-800 underline hover:text-gray-600"
         >
-          <span data-i18n="evaluation.here"></span>
-        </a>
-        <span data-i18n="evaluation.loginSuffix"></span>
+          <span data-i18n="evaluation.here"></span></a
+        ><span data-i18n="evaluation.loginSuffix"></span>
       </div>
       {% endif %}
 
@@ -293,7 +292,7 @@
                   {% if answer.challenge and answer.challenge_evaluation_scores
                   %}
                   <p>
-                    Challenge:
+                    Challenge Evaluation:
                     <span
                       class="ml-1 text-sm {{ score_color(answer.challenge_evaluation_scores.Overall) }}"
                     >
@@ -303,8 +302,6 @@
                     </span>
                   </p>
                   {% endif %}
-
-                  <!-- Add input mode indicator -->
                   <p>
                     {% if answer.input_mode == 'voice' %}
                     <svg
@@ -392,13 +389,22 @@
                   </p>
                   {% endif %}
 
-                  <!-- Challenge Section -->
+                  <!-- Challenge Section (Left Side) -->
                   {% if answer.challenge %}
                   <p class="text-sm break-words mt-1">
                     <span class="font-medium text-sm text-black"
                       >Challenge:</span
                     >
                     <span class="text-gray-600">{{ answer.challenge }}</span>
+                  </p>
+                  {% endif %} {% if answer.challenge_response %}
+                  <p class="text-sm break-words mt-1">
+                    <span class="font-medium text-sm text-black"
+                      >Challenge Response:</span
+                    >
+                    <span class="text-gray-600"
+                      >{{ answer.challenge_response }}</span
+                    >
                   </p>
                   {% endif %}
                 </div>
