@@ -29,10 +29,10 @@ def upload_audio_to_gcs(audio_content, file_mime):
     return f"gs://{bucket_name}/{filename}"
 
 
-def transcribe_audio(audio_content, file_mime, delete_after_transcription=False):
+def transcribe_audio(audio_content, file_mime):
     """
-    Transcribes the audio content. If the audio is longer than a certain threshold (here, 30 seconds),
-    it is split into 30-second chunks that are transcribed concurrently.
+    Transcribes the audio content. If the audio is longer than a certain threshold,
+    it is split into chunks that are transcribed concurrently.
     """
     import io
     from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -40,6 +40,7 @@ def transcribe_audio(audio_content, file_mime, delete_after_transcription=False)
     from flask import session
     from pydub import AudioSegment
 
+    chunk_length_ms = SETTINGS.VOICE_CHUNK_LIMIT
     # Determine the input format based on file_mime.
     input_format = "webm" if "webm" in file_mime or "ogg" in file_mime else "wav"
 
@@ -48,9 +49,6 @@ def transcribe_audio(audio_content, file_mime, delete_after_transcription=False)
     except Exception as e:
         logger.error(f"Error loading audio file for chunking: {e}")
         return ""
-
-    # Define chunk length (in milliseconds); here we use 30 seconds.
-    chunk_length_ms = 30000
 
     # Capture session-dependent data before launching background tasks.
     language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
@@ -101,7 +99,7 @@ def transcribe_audio(audio_content, file_mime, delete_after_transcription=False)
         transcript = process_audio_chunk(audio, language_code)
         return transcript.strip()
     else:
-        # Split audio into 30-second chunks.
+        # Split audio into chunks.
         chunks = [
             audio[i : i + chunk_length_ms]
             for i in range(0, len(audio), chunk_length_ms)
@@ -175,7 +173,6 @@ def transcribe_voice():
         # Process the transcription
         transcript = transcribe_audio(audio_file.read(), audio_file.content_type)
         return jsonify({"transcript": transcript})
-
     except Exception as e:
         logger.error(f"Error in voice transcription: {str(e)}")
         db.session.rollback()

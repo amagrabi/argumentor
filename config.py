@@ -46,6 +46,8 @@ class Settings(BaseSettings):
     )  # Alternative: default, telephony, latest_long
     VOICE_ENHANCED: bool = Field(default=True)
     VOICE_PUNCTUATION: bool = Field(default=True)
+    # Chunk sizes, larger than 1 minute incompatible with current API
+    VOICE_CHUNK_LIMIT: int = Field(default=50000)
 
     # Maximum characters allowed for each field
     MAX_CLAIM: int = Field(default=200)
