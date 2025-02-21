@@ -103,17 +103,18 @@ def submit_answer():
         eval_limit = get_eval_limit(user.tier)
 
         if daily_count >= eval_limit:
-            return (
-                jsonify(
-                    {
-                        "error": (
-                            f"Daily evaluation limit reached ({eval_limit}). "
-                            'If you need a higher limit, send me <a href="#" class="underline" onclick="showFeedbackModal(); return false;">feedback</a>.'
-                        )
-                    }
-                ),
-                429,
-            )
+            error_message = f"Daily evaluation limit reached ({eval_limit}). "
+            if user.tier == "anonymous":
+                error_message += (
+                    'Log in for higher limits <a href="#" class="underline" '
+                    'onclick="showAuthModal(); return false;">here</a>.'
+                )
+            else:
+                error_message += (
+                    'If you need a higher limit, let me know in the <a href="#" class="underline" '
+                    'onclick="showFeedbackModal(); return false;">feedback</a>.'
+                )
+            return jsonify({"error": error_message}), 429
 
         evaluator = create_evaluator()
         evaluation = evaluator.evaluate(question_text, claim, argument, counterargument)
@@ -296,17 +297,18 @@ def submit_challenge_response():
         eval_limit = get_eval_limit(user.tier)
 
         if daily_count >= eval_limit:
-            return (
-                jsonify(
-                    {
-                        "error": (
-                            f"Daily evaluation limit reached ({eval_limit}). "
-                            'If you need a higher limit, send me <a href="#" class="underline" onclick="showFeedbackModal(); return false;">feedback</a>.'
-                        )
-                    }
-                ),
-                429,
-            )
+            error_message = f"Daily evaluation limit reached ({eval_limit}). "
+            if user.tier == "anonymous":
+                error_message += (
+                    'Log in for higher limits <a href="#" class="underline" '
+                    'onclick="showAuthModal(); return false;">here</a>.'
+                )
+            else:
+                error_message += (
+                    'If you need a higher limit, let me know in the <a href="#" class="underline" '
+                    'onclick="showFeedbackModal(); return false;">feedback</a>.'
+                )
+            return jsonify({"error": error_message}), 429
 
         evaluator = create_evaluator()
         evaluation = evaluator.evaluate_challenge(answer, challenge_response)

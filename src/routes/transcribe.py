@@ -140,14 +140,18 @@ def transcribe_voice():
     voice_limit = get_voice_limit(user.tier)
 
     if daily_count >= voice_limit:
-        return jsonify(
-            {
-                "error": (
-                    f"Daily voice recording limit reached ({voice_limit}). "
-                    'If you need a higher limit, send me <a href="#" class="underline" onclick="showFeedbackModal(); return false;">feedback</a>.'
-                )
-            }
-        ), 429
+        error_message = f"Daily voice recording limit reached ({voice_limit}). "
+        if user.tier == "anonymous":
+            error_message += (
+                'Log in for higher limits <a href="#" class="underline" '
+                'onclick="showAuthModal(); return false;">here</a>.'
+            )
+        else:
+            error_message += (
+                'If you need a higher limit, let me know in the <a href="#" class="underline" '
+                'onclick="showFeedbackModal(); return false;">feedback</a>.'
+            )
+        return jsonify({"error": error_message}), 429
 
     # Get the audio file from the request
     if "file" not in request.files:
