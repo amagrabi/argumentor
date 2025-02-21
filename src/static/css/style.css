@@ -1,3 +1,11 @@
+.profile-button {
+  min-width: 36px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .loading-dots::after {
   content: ".";
   animation: dot-animation 1.5s infinite;
@@ -72,6 +80,7 @@ textarea:focus {
   min-height: 120px;
   display: flex;
   flex-direction: column;
+  height: 100%; /* Ensure all cards are same height */
 }
 
 .card-header {
@@ -79,6 +88,9 @@ textarea:focus {
   padding: 0.5rem 0.75rem;
   background-color: #2e3746;
   color: white;
+  min-height: 32px; /* Consistent header height */
+  display: flex;
+  align-items: center;
 }
 
 .card-content {
@@ -86,7 +98,26 @@ textarea:focus {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  min-height: 80px;
+  position: relative;
+}
+
+.card-content p {
+  margin-bottom: 2rem; /* Space for links */
+}
+
+.card-content a {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+}
+
+/* Special handling for support card links */
+.card-content p a {
+  position: static;
+  display: inline;
+  padding: 0;
+  margin: 0;
 }
 
 /* Remove previous card animation styles */
@@ -107,6 +138,45 @@ textarea:focus {
 
   .educational-card .card-content {
     padding: 0.5rem;
+  }
+
+  .card-header {
+    min-height: 24px; /* Consistent mobile height */
+    padding: 0.25rem 0.5rem;
+  }
+
+  .card-header h3 {
+    line-height: 1.2;
+    height: 1.2em; /* Force single line */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-content {
+    min-height: 60px;
+    padding: 0.5rem;
+  }
+
+  .card-content p {
+    margin-bottom: 1.5rem;
+  }
+
+  #rerollButton,
+  #selectQuestionButton {
+    font-size: 0.7rem; /* Smaller text */
+    padding: 0.25rem 0.75rem; /* Smaller padding */
+  }
+
+  #rerollButton svg,
+  #selectQuestionButton svg {
+    width: 0.875rem; /* 14px */
+    height: 0.875rem;
+  }
+
+  #categoryBadge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.75rem;
   }
 }
 
