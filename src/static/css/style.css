@@ -278,3 +278,39 @@ textarea:focus {
   color: #6b7280;
   font-size: 0.875rem;
 }
+
+/* Add after line 98 */
+.argument-structure-box {
+  min-height: fit-content;
+  overflow-y: auto;
+  max-height: none;
+  padding: 1.5rem;
+}
+
+.argument-structure-box #argumentStructureViz {
+  min-height: 400px;
+  height: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Style for mermaid nodes */
+.argument-structure-box .node rect {
+  padding: 1rem !important;
+}
+
+.argument-structure-box .node-text {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  max-width: 250px !important;
+}
+
+.argument-structure-box svg {
+  height: auto !important;
+  width: 100% !important;
+  min-height: 400px;
+}

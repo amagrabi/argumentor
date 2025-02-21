@@ -24,15 +24,19 @@ mermaid.initialize({
   theme: "base",
   flowchart: {
     curve: "basis",
-    padding: 30,
-    nodeSpacing: 50,
-    rankSpacing: 70,
+    padding: 50,
+    nodeSpacing: 80,
+    rankSpacing: 100,
     htmlLabels: true,
     defaultRenderer: "elk",
+    wrap: true,
+    maxTextSize: 1000,
+    nodeMaxWidth: 250,
+    useMaxWidth: false,
   },
   themeVariables: {
     fontFamily: "system-ui, -apple-system, sans-serif",
-    fontSize: "16px",
+    fontSize: "14px",
     primaryColor: "#4F46E5",
     primaryTextColor: "#1F2937",
     lineColor: "#9CA3AF",
@@ -410,9 +414,22 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
         ${structure.nodes
           .map(
             (node) =>
-              `${safeIds[node.id]}["<div class='p-2 rounded-xl no-wrap-text'>${
-                node.text
-              }</div>"]`
+              `${safeIds[node.id]}["${node.text
+                .split(" ")
+                .reduce(
+                  (lines, word) => {
+                    const currentLine = lines[lines.length - 1];
+                    if (currentLine.length + word.length < 40) {
+                      lines[lines.length - 1] =
+                        currentLine + (currentLine ? " " : "") + word;
+                    } else {
+                      lines.push(word);
+                    }
+                    return lines;
+                  },
+                  [""]
+                )
+                .join("<br/>")}"]`
           )
           .join(";\n")}
         ${structure.edges

@@ -6,6 +6,7 @@ from typing import Dict
 from google.genai import types
 
 from config import get_settings
+from data.argument_structures import ARGUMENT_STRUCTURE_SHORT
 from services.base_evaluator import BaseEvaluator
 
 SETTINGS = get_settings()
@@ -46,18 +47,7 @@ class DummyEvaluator(BaseEvaluator):
 
         challenge_text = "While your argument is persuasive, consider addressing potential counterarguments and clarifying any ambiguous points."
 
-        argument_structure = {
-            "nodes": [
-                {
-                    "id": "p1",
-                    "type": "premise",
-                    "text": "Main premise from the argument",
-                },
-                {"id": "p2", "type": "premise", "text": "Supporting premise"},
-                {"id": "c1", "type": "conclusion", "text": claim},
-            ],
-            "edges": [{"from": "p1", "to": "c1"}, {"from": "p2", "to": "c1"}],
-        }
+        argument_structure = ARGUMENT_STRUCTURE_SHORT  # ARGUMENT_STRUCTURE_LONG
 
         return {
             "scores": scores,
