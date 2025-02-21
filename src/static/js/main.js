@@ -244,7 +244,8 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
     claim = voiceResponse.substring(0, maxClaimLength);
     argument = voiceResponse.substring(0, maxArgumentLength);
-    counterargument = "";
+    counterargument =
+      document.getElementById("counterargumentInput").value.trim() || "";
   } else {
     claim = document.getElementById("claimInput").value.trim();
     argument = document.getElementById("argumentInput").value.trim();
@@ -263,11 +264,11 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
   }
 
   const payload = {
-    // The backend expects separate fields, so in voice mode both fields are set to the same text.
     claim,
     argument,
     counterargument: counterargument || null,
-    // ... include any additional properties (e.g., question_text, question_id) as needed.
+    input_mode: inputMode,
+    question_id: currentQuestion?.id,
   };
 
   if (currentQuestion?.id) {

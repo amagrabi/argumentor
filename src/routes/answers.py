@@ -191,7 +191,8 @@ def submit_answer():
                 if question_text:
                     break
 
-    input_mode = "voice" if claim == argument else "text"
+    # Get mode from request payload
+    input_mode = data.get("input_mode", "text")
 
     new_answer = Answer(
         user_uuid=user_uuid,

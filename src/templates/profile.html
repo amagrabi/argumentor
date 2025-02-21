@@ -344,9 +344,7 @@
                   <!-- Claim and Argument Sections -->
                   {% if answer.input_mode == 'voice' %}
                   <p class="text-sm break-words pr-40">
-                    <span class="font-medium text-sm text-black"
-                      >Argument:</span
-                    >
+                    <span class="font-medium text-sm text-black">Answer:</span>
                     <span class="text-gray-600">{{ answer.argument }}</span>
                   </p>
                   {% else %}
@@ -366,7 +364,33 @@
                     ><span>: </span>
                     <span class="text-gray-600">{{ answer.argument }}</span>
                   </p>
-                  {% endif %} {% if answer.counterargument %}
+                  {% endif %}
+
+                  <!-- New Evaluation Section -->
+                  {% if answer.evaluation_feedback.Overall %}
+                  <p class="text-sm break-words mt-1">
+                    <span class="font-medium text-sm text-black"
+                      >Evaluation:</span
+                    >
+                    <span class="text-gray-600"
+                      >{{ answer.evaluation_feedback.Overall }}</span
+                    >
+                  </p>
+                  {% endif %}
+
+                  <!-- Challenge Section -->
+                  {% if answer.challenge %}
+                  <p class="text-sm break-words mt-1">
+                    <span class="font-medium text-sm text-black"
+                      >Challenge:</span
+                    >
+                    <span class="text-gray-600">{{ answer.challenge }}</span>
+                  </p>
+                  {% endif %}
+
+                  <!-- Counterargument Section -->
+                  {% if answer.counterargument and answer.input_mode != 'voice'
+                  %}
                   <p class="text-sm break-words mt-1">
                     <span
                       class="font-medium text-sm text-black"
@@ -375,24 +399,6 @@
                     ><span>: </span>
                     <span class="text-gray-600"
                       >{{ answer.counterargument }}</span
-                    >
-                  </p>
-                  {% endif %} {% if answer.challenge %}
-                  <p class="text-sm break-words mt-1">
-                    <span class="font-medium text-sm text-black"
-                      >Challenge:</span
-                    >
-                    <span class="text-gray-600">{{ answer.challenge }}</span>
-                  </p>
-                  {% endif %} {% if answer.challenge_response %}
-                  <p class="text-sm break-words mt-1">
-                    <span
-                      class="font-medium text-sm text-black"
-                      data-i18n="profile.challengeResponse"
-                    ></span
-                    ><span>: </span>
-                    <span class="text-gray-600"
-                      >{{ answer.challenge_response }}</span
                     >
                   </p>
                   {% endif %}
@@ -424,26 +430,6 @@
                   </svg>
                 </div>
                 <div class="hidden mt-2 space-y-2 text-sm text-gray-600">
-                  <!-- Main Evaluation Feedback Section -->
-                  {% set overall_score = (answer.evaluation_scores.values() |
-                  sum) / (answer.evaluation_scores.values() | length) %}
-                  <p class="flex flex-col">
-                    <span class="flex items-center">
-                      <span
-                        class="font-medium text-black"
-                        data-i18n="profile.overall"
-                      >
-                      </span>
-                      <span
-                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(overall_score) }}"
-                      >
-                        {{ overall_score|round(1, 'common') if overall_score !=
-                        overall_score|int else overall_score|int }}/10
-                      </span>
-                    </span>
-                    <span>{{ answer.evaluation_feedback.Overall }}</span>
-                  </p>
-
                   {% set ordered_categories = [ ("Relevance", "relevance"),
                   ("Logical Structure", "logic"), ("Clarity", "clarity"),
                   ("Depth", "depth"), ("Objectivity", "objectivity"),
@@ -469,7 +455,7 @@
                   </p>
                   {% endfor %}
 
-                  <!-- Optional: If challenge evaluation feedback is similarly displayed, enforce the same order -->
+                  <!-- Optional: If challenge evaluation feedback exists -->
                   {% if answer.challenge_evaluation_feedback and
                   answer.challenge_evaluation_feedback.Overall %}
                   <div class="mt-4 border-t border-gray-200 pt-2">
@@ -477,24 +463,6 @@
                       >Challenge Details</span
                     >
                   </div>
-                  <p class="mt-2 flex flex-col">
-                    <span class="flex items-center">
-                      <span
-                        class="font-medium text-black"
-                        data-i18n="profile.overall"
-                      ></span>
-                      <span
-                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.challenge_evaluation_scores.Overall) }}"
-                      >
-                        {{
-                        "%.1f"|format(answer.challenge_evaluation_scores.Overall|float)
-                        }}/10
-                      </span>
-                    </span>
-                    <span
-                      >{{ answer.challenge_evaluation_feedback.Overall }}</span
-                    >
-                  </p>
                   {% set ordered_challenge_categories = [ ("Relevance",
                   "relevance"), ("Logical Structure", "logic"), ("Clarity",
                   "clarity"), ("Depth", "depth"), ("Objectivity",

@@ -92,6 +92,7 @@ class Answer(db.Model):
             "challenge_evaluation_feedback": self.challenge_evaluation_feedback,
             "challenge_xp_earned": self.challenge_xp_earned,
             "created_at": self.created_at.isoformat(),
+            "input_mode": self.input_mode,
         }
 
 
