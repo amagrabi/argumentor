@@ -178,6 +178,16 @@ textarea:focus {
     font-size: 0.7rem;
     padding: 0.25rem 0.75rem;
   }
+
+  #progressChart {
+    max-height: 50vh;
+  }
+
+  .chart-container {
+    margin-bottom: 2rem;
+    height: auto !important;
+    min-height: 200px;
+  }
 }
 
 @media (min-width: 768px) {
@@ -409,4 +419,37 @@ body.loading-translations [data-i18n]::after {
 /* Show content when translations are loaded */
 .translations-loaded [data-i18n] {
   opacity: 1;
+}
+
+/* Add these styles */
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  max-height: 400px;
+}
+
+.chart-container {
+  position: relative;
+  height: 250px;
+}
+
+@media (max-width: 768px) {
+  .chart-wrapper {
+    max-height: 300px;
+    padding: 0.5rem;
+  }
+
+  .chart-container {
+    height: 200px;
+  }
+
+  /* Adjust button spacing on mobile */
+  .chart-wrapper .flex.flex-wrap {
+    gap: 0.25rem !important;
+  }
+
+  .chart-wrapper button {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+  }
 }

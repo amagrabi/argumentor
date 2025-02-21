@@ -170,12 +170,23 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
         scales: {
           x: {
             title: {
-              display: true,
+              display: window.innerWidth >= 768,
               text: translations.profile.time,
-              font: { size: 14 },
+              font: {
+                size: window.innerWidth < 768 ? 10 : 14,
+              },
             },
             grid: {
               display: false,
+            },
+            ticks: {
+              maxRotation: 45,
+              minRotation: 45,
+              font: {
+                size: window.innerWidth < 768 ? 8 : 12,
+              },
+              autoSkip: true,
+              maxTicksLimit: window.innerWidth < 768 ? 6 : 12,
             },
           },
           y: {
@@ -183,16 +194,20 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
             min: 0,
             max: 10.5,
             ticks: {
-              stepSize: 1,
+              stepSize: window.innerWidth < 768 ? 2 : 1,
               callback: function (value) {
                 return value === 10.5 ? 10 : value;
               },
-              font: { size: 12 },
+              font: {
+                size: window.innerWidth < 768 ? 8 : 12,
+              },
             },
             title: {
-              display: true,
+              display: window.innerWidth >= 768,
               text: translations.profile.rating,
-              font: { size: 14 },
+              font: {
+                size: window.innerWidth < 768 ? 10 : 14,
+              },
             },
             grid: {
               display: true,
@@ -203,39 +218,6 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
         plugins: {
           legend: {
             display: false,
-          },
-          tooltip: {
-            usePointStyle: true,
-            callbacks: {
-              labelColor: function (context) {
-                return {
-                  backgroundColor: context.dataset.borderColor,
-                  borderColor: context.dataset.borderColor,
-                  borderWidth: 1,
-                  borderRadius: 50,
-                  pointStyle: "circle",
-                };
-              },
-              labelPointStyle: function (context) {
-                return {
-                  pointStyle: "circle",
-                  rotation: 0,
-                };
-              },
-            },
-            mode: "index",
-            intersect: false,
-            titleFont: { size: 14 },
-            bodyFont: { size: 12 },
-          },
-        },
-        interaction: {
-          mode: "nearest",
-          intersect: false,
-        },
-        elements: {
-          line: {
-            borderJoinStyle: "round",
           },
         },
       },
