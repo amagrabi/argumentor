@@ -1,4 +1,5 @@
 import logging
+import re
 import uuid
 from datetime import UTC, datetime, time
 
@@ -62,8 +63,11 @@ def transcribe_audio(audio_content, file_mime, delete_after_transcription=False)
         """
         Exports the given AudioSegment to a WAV byte stream and then performs synchronous speech recognition.
         """
-        # Convert the audio segment's sample rate to 16000 Hz and sample width to 16 bit (2 bytes)
-        audio_segment = audio_segment.set_frame_rate(16000).set_sample_width(2)
+        # Convert the audio segment's sample rate to 16000 Hz, sample width to 16 bit (2 bytes),
+        # and ensure it's in mono (1 channel)
+        audio_segment = (
+            audio_segment.set_frame_rate(16000).set_sample_width(2).set_channels(1)
+        )
         buffer = io.BytesIO()
         audio_segment.export(buffer, format="wav")
         chunk_bytes = buffer.getvalue()
@@ -118,7 +122,9 @@ def transcribe_audio(audio_content, file_mime, delete_after_transcription=False)
                     logger.error(f"Error processing chunk {idx}: {e}")
                     transcript_chunks[idx] = ""
         full_transcript = " ".join(transcript_chunks)
-        return full_transcript.strip()
+        # Replace any occurrence of multiple whitespace characters with a single space
+        clean_transcript = re.sub(r"\s+", " ", full_transcript).strip()
+        return clean_transcript
 
 
 @transcribe_bp.route("/transcribe_voice", methods=["POST"])
