@@ -238,17 +238,18 @@ def submit_answer():
             f"Answer processed for user: {user_uuid} for question: {data.get('question_id')}"
         )
 
-        return jsonify(
-            {
-                "evaluation": evaluation,
-                "xp_earned": xp_earned,
-                "total_xp": total_xp,
-                "leveled_up": leveled_up,
-                "level_info": level_info,
-                "relevance_too_low": relevance_too_low,
-                "answer_id": new_answer.id,
-            }
-        )
+        response_data = {
+            "evaluation": evaluation,
+            "xp_gained": xp_earned,
+            "total_xp": total_xp,
+            "leveled_up": leveled_up,
+            "level_info": level_info,
+            "relevance_too_low": relevance_too_low,
+            "answer_id": new_answer.id,
+            "current_level": level_info["display_name"],
+        }
+
+        return jsonify(response_data)
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
