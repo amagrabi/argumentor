@@ -26,6 +26,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     {% include 'partials/favicons.html' %}
+    <!-- Include the main stylesheet -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
     <script
       type="module"
       src="{{ url_for('static', filename='js/translations.js') }}"
@@ -35,6 +40,16 @@
       src="{{ url_for('static', filename='js/profile.js') }}"
     ></script>
     <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <style>
+      /* Only on the profile page, reset the top offset on the move-down elements */
+      #xpInfo.profile-xp .move-down {
+        top: 10px !important;
+      }
+      /* Lower the XP bar, progress text, and next level text on the profile page */
+      #xpInfo.profile-xp .xp-bar-wrapper {
+        margin-top: 60px !important;
+      }
+    </style>
   </head>
   {% macro score_color(score) -%} {% set score_float = score|float|round(1,
   'common') %} {% if score_float >= 9.95 %} text-emerald-600 bg-emerald-50 {%
@@ -64,6 +79,47 @@
     </header>
 
     <main class="max-w-5xl mx-auto p-4">
+      <div id="xpInfo" class="mt-4 text-center profile-xp">
+        <div class="flex items-center justify-center">
+          <div class="level-image-wrapper">
+            {% set variant = "xp" %} {% set show_text = false %} {% include
+            'partials/level_indicator.html' %}
+            <div class="level-number-indicator">
+              {{ level_info.level_number }}
+            </div>
+          </div>
+          <div class="flex flex-col text-left">
+            <p class="text-sm text-gray-600 mb-0 move-down">
+              {{ current_user.username if current_user.is_authenticated else
+              'Anonymous' }}
+            </p>
+            <p class="text-base mb-0 move-down" id="currentLevel">
+              <strong>{{ level_info.display_name }}</strong>
+            </p>
+            <div class="xp-bar-wrapper mt-2">
+              <div class="xp-bar-container">
+                <div
+                  class="xp-progress-bar bg-green-500 h-full transition-all duration-500"
+                  style="width: {{ level_info.progress_percent }}%;"
+                ></div>
+              </div>
+              <p class="text-sm mt-1">
+                <span data-i18n="evaluation.progress">Progress:</span>
+                <span id="xpProgressText"
+                  >{{ level_info.xp_into_level }} / {{ level_info.xp_needed
+                  }}</span
+                >
+                XP
+              </p>
+              <p class="text-sm mt-1">
+                <span data-i18n="evaluation.nextLevel">Next Level:</span>
+                <span id="nextLevel">{{ level_info.next_level }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {% if not current_user.is_authenticated %}
       <div
         class="mt-4 mb-4 max-w-full md:w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"
@@ -159,30 +215,6 @@
             ></span
             ><span class="text-gray-500 font-medium">: </span>
             <strong>{{ xp }}</strong>
-          </p>
-          <p class="text-base mb-3">
-            <span
-              class="text-gray-500 font-medium"
-              data-i18n="profile.currentLevel"
-            ></span
-            ><span class="text-gray-500 font-medium">: </span>
-            <span class="text-lg"
-              ><strong>{{ level_info.display_name }}</strong></span
-            >
-          </p>
-          <div class="w-full bg-gray-200 h-4 rounded-full mt-2">
-            <div
-              class="bg-green-500 h-full rounded-full"
-              style="width: {{ level_info.progress_percent }}%"
-            ></div>
-          </div>
-          <p class="text-sm mt-2">
-            <span
-              class="text-gray-500 font-medium"
-              data-i18n="profile.progress"
-            ></span
-            ><span class="text-gray-500 font-medium">: </span>
-            {{ level_info.xp_into_level }} / {{ level_info.xp_needed }} XP
           </p>
         </div>
 
@@ -535,6 +567,35 @@
 
         // Update document language
         document.documentElement.lang = currentLanguage;
+
+        // --- XP and Level Update Logic (from main.js) ---
+
+        function updateLevelAndXPBar(levelInfo) {
+          // Update XP bar
+          const xpProgressBar = document.querySelector(".xp-progress-bar");
+          if (xpProgressBar) {
+            xpProgressBar.style.width = levelInfo.progress_percent + "%";
+          }
+
+          // Update the level display element
+          const currentLevelElem = document.getElementById("currentLevel"); // Corrected ID
+          if (currentLevelElem) {
+            currentLevelElem.innerHTML =
+              "<strong>" + levelInfo.display_name + "</strong>"; // Use innerHTML to render the <strong> tag
+          }
+
+          // Update the level number indicator
+          const levelNumberElem = document.querySelector(
+            ".level-number-indicator"
+          );
+          if (levelNumberElem) {
+            levelNumberElem.textContent = levelInfo.level_number;
+          }
+        }
+
+        // --- Initial update on page load ---
+        const levelInfo = {{ level_info | tojson }};
+        updateLevelAndXPBar(levelInfo);
       });
     </script>
   </body>

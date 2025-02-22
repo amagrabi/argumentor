@@ -1,0 +1,14 @@
+{% set variant = variant if variant is defined else "xp" %} {% set show_text =
+show_text if show_text is defined else true %}
+<div class="level-indicator {{ variant }}">
+  <div class="level-image-container">
+    <img
+      src="{{ url_for('static', filename='img/levels/level_7.webp') }}"
+      alt="Level Image"
+      class="level-image"
+    />
+  </div>
+  {% if show_text %}
+  <span class="level-text">{{ level_info.display_name }}</span>
+  {% endif %}
+</div>

@@ -551,24 +551,12 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       data.level_info.next_level;
 
     // Update XP bar based on evaluation results
-    const xpOldBar = document.getElementById("xpOldBar");
-    const xpNewBar = document.getElementById("xpNewBar");
-
-    if (data.leveled_up) {
-      xpOldBar.style.display = "none";
-      xpNewBar.style.left = "0%";
-      xpNewBar.style.width = data.level_info.progress_percent + "%";
+    const xpProgressBar = document.querySelector("#xpInfo .xp-progress-bar");
+    if (xpProgressBar) {
+      // Animate the width change
+      xpProgressBar.style.width = data.level_info.progress_percent + "%";
     } else {
-      xpOldBar.style.display = "block";
-      const oldXpValue = data.current_xp - data.xp_gained;
-      const oldPercent =
-        ((oldXpValue - data.level_info.current_threshold) /
-          data.level_info.xp_needed) *
-        100;
-      xpOldBar.style.width = oldPercent + "%";
-      xpNewBar.style.left = oldPercent + "%";
-      const newPortion = data.level_info.progress_percent - oldPercent;
-      xpNewBar.style.width = newPortion + "%";
+      console.warn("XP progress bar not found. Skipping XP bar update.");
     }
 
     if (data.leveled_up) {

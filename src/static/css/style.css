@@ -275,22 +275,79 @@ textarea:focus {
   white-space: nowrap;
 }
 
-/* Add this to your existing CSS */
+/* Update the XP bar container to be responsive */
 .xp-bar-container {
   position: relative;
-  width: 100%;
-  height: 1rem;
+  height: 0.9rem;
   background-color: #e5e7eb;
-  border-radius: 9999px;
+  border-radius: 0 9999px 9999px 0;
   overflow: hidden;
+  width: 450px;
+  border: 0px solid black;
+  border-left: none;
+  margin-left: -40px; /* Connect with the image */
+  z-index: 1;
+}
+
+/* Reset and realign the text container */
+#xpInfo .flex.flex-col {
+  margin-top: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* Reduced from 8px */
+}
+
+/* Align all text elements consistently */
+#xpInfo .flex.flex-col p.text-sm,
+#xpInfo .flex.flex-col p.text-base,
+#xpInfo p.text-sm {
+  position: relative;
+  padding-left: 30px;
+  margin: 2px 0; /* Reduced vertical spacing */
+}
+
+/* Remove previous spacing adjustments */
+#xpInfo .flex.flex-col p.text-sm {
+  margin-bottom: 8px; /* Reduced from 28px */
+}
+
+/* Remove the negative top positioning */
+#currentLevel {
+  position: relative;
+  top: 0; /* Changed from -30px to 0 */
+  z-index: 2;
+  margin-bottom: 4px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .xp-bar-container {
+    width: calc(100% + 40px);
+    max-width: 300px;
+    margin-left: -40px;
+  }
+
+  #xpInfo .flex.flex-col {
+    padding-left: 3px;
+  }
+
+  #xpInfo .flex.flex-col p.text-sm,
+  #xpInfo .flex.flex-col p.text-base,
+  #xpInfo p.text-sm {
+    padding-left: 3px;
+  }
 }
 
 .xp-progress-bar {
   position: absolute;
   height: 100%;
-  transition: width 0.4s ease-out, left 0.4s ease-out;
-  margin: 0;
-  padding: 0;
+  transition: width 0.5s ease-out;
+  min-width: 1px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 9999px;
+  border-bottom-right-radius: 9999px;
 }
 
 /* Specific styling for the old XP bar */
@@ -302,7 +359,7 @@ textarea:focus {
 /* Specific styling for the new XP bar */
 #xpNewBar {
   z-index: 2;
-  border-radius: 0 9999px 9999px 0;
+  border-border-radius: 0 9999px 9999px 0;
 }
 
 /* When the new bar starts from the beginning */
@@ -313,7 +370,7 @@ textarea:focus {
 /* Mini XP bar specific styles */
 .mini-xp-bar {
   height: 0.3rem !important;
-  width: 100px !important;
+  width: 170px !important;
 }
 
 /* Add these styles */
@@ -539,4 +596,178 @@ body.loading-translations [data-i18n]::after {
   overflow-wrap: break-word;
   /* Optionally add some padding if required */
   padding: 5px;
+}
+
+/* Level Indicator Styles */
+.level-indicator {
+  display: flex;
+  align-items: center;
+}
+
+/* The image container is always circular with a black border */
+.level-indicator .level-image-container {
+  border-radius: 50%;
+  border: 2px solid black;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  flex: 0 0 auto;
+}
+
+/* Header variant: smaller image and level text */
+.level-indicator.header .level-image-container {
+  width: 50px;
+  height: 50px;
+}
+
+.level-indicator.header .level-text {
+  font-size: 10px;
+  color: #4a5568; /* text-gray-700 */
+}
+
+/* XP variant: larger image and level text */
+.level-indicator.xp .level-image-container {
+  width: 180px; /* Reduced from 200px */
+  height: 180px; /* Reduced from 200px */
+  border-radius: 50%;
+  border: 3px solid black;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  margin-right: 0;
+}
+
+.level-indicator.xp .level-text {
+  font-size: 1.25rem;
+  color: #1a202c; /* text-gray-900 */
+}
+
+.level-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Remove right margin from the level image in the evaluation section */
+#xpInfo .level-indicator.xp .level-image-container {
+  margin-right: 0;
+}
+
+/* Ensure the wrapper is relatively positioned for absolute placement of the indicator */
+.level-image-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-right: 0px; /* Removed margin between image and text */
+}
+
+/* Circular level number indicator over the top of the level image */
+.level-number-indicator {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: black;
+  color: white;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid white;
+  z-index: 3;
+}
+
+/* (Optional) Ensure the XP progress bar fills its container */
+.xp-progress-bar {
+  height: 100%;
+}
+
+/* Update the level indicator spacing */
+.level-indicator.xp {
+  margin-bottom: 0.5rem; /* Add space between image and text */
+}
+
+#xpInfo .flex.flex-col {
+  margin-top: 0;
+  padding-left: 20px;
+}
+
+#xpInfo .flex.flex-col p.text-sm,
+#xpInfo .flex.flex-col p.text-base {
+  position: relative;
+  left: -38px;
+  margin-bottom: -31px;
+}
+
+#xpInfo .flex.flex-col p.text-sm {
+  margin-bottom: 0px;
+}
+
+#currentLevel {
+  position: relative;
+  top: 0;
+  z-index: 2;
+}
+
+.xp-progress-bar.bg-green-500 {
+  background-color: #0da846 !important;
+}
+
+@media (max-width: 768px) {
+  .xp-bar-container.mini-xp-bar {
+    margin-left: -30px;
+  }
+}
+
+#xpInfo p.text-sm {
+  text-align: left;
+  padding-left: 30px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.xp-bar-wrapper {
+  margin-top: 40px;
+}
+
+/* Adjust formatting of level indicators in the evaluation section */
+#evaluationResults .flex.flex-col p.text-sm,
+#evaluationResults .flex.flex-col p.text-base {
+  margin-top: 0.1rem;
+}
+
+#evaluationResults .xp-bar-wrapper {
+  margin-top: 100px;
+}
+
+#evaluationResults .xp-bar-wrapper p.text-sm {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#xpInfo .move-down {
+  position: relative;
+  top: 40px !important;
+}
+
+/* Increase font size for username and level text in evaluation section */
+#xpInfo .flex.flex-col p.move-down {
+  font-size: 1.25rem !important;
+}
+
+/* Decrease font size for progress and next level text in evaluation section */
+#xpInfo .xp-bar-wrapper p {
+  font-size: 0.75rem !important;
+}
+
+/* Override username font-size in the evaluation section */
+#xpInfo .flex.flex-col p.move-down:first-child {
+  font-size: 1rem !important;
 }

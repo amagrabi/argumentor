@@ -74,6 +74,15 @@
       }
     </script>
     <script type="module" src="/static/js/translations.js"></script>
+    <style>
+      /* Adjust the vertical positioning in the evaluation section to match the profile page */
+      #xpInfo .move-down {
+        top: 10px !important;
+      }
+      #xpInfo .xp-bar-wrapper {
+        margin-top: 60px !important;
+      }
+    </style>
   </head>
   <body class="bg-white min-h-screen">
     <div class="max-w-5xl mx-auto px-4 py-6">
@@ -81,59 +90,65 @@
       <header
         class="flex flex-col sm:flex-row justify-between items-center mb-4"
       >
-        <div
-          class="flex items-center justify-center sm:justify-start space-x-3 w-full sm:w-auto"
-        >
+        <!-- Left side with logo -->
+        <div class="flex items-center justify-center sm:justify-start w-auto">
           <img
             width="60"
             height="60"
             src="{{ url_for('static', filename='img/logo.png') }}"
             alt="ArguMentor"
-            class="mb-0"
+            class="mt-3"
           />
-          <h1 class="text-xl md:text-2xl font-bold">ArguMentor</h1>
+          <h1 class="text-xl md:text-2xl font-bold" style="margin-left: 6px">
+            ArguMentor
+          </h1>
         </div>
-        <div class="flex items-center space-x-2 mt-2 sm:mt-0">
+
+        <!-- Center section with level indicator -->
+        <div class="flex-1 flex justify-center items-center mt-2 sm:mt-0">
           <a href="/profile" class="no-underline">
-            <div
-              id="userInfo"
-              class="flex flex-col items-end self-center mr-4 -space-y-0"
-            >
-              <span
-                id="usernameElem"
-                class="text-[10px] text-gray-700 leading-tight"
-              >
-                {{ current_user.username if current_user.is_authenticated and
-                current_user.username else 'Anonymous' }}
-              </span>
-              <span
-                id="userLevelElem"
-                class="text-[9px] text-gray-500 leading-tight"
-              >
-                {{ level_info.display_name }}
-              </span>
-              <!-- XP progress bar with level circle -->
-              <div class="flex items-center">
+            <div id="userInfo" class="flex items-center space-x-0">
+              <!-- Level image wrapper -->
+              <div class="level-image-wrapper relative z-10">
+                {% set variant = "header" %}{% set show_text = false %}{%
+                include 'partials/level_indicator.html' %}
                 <div
-                  id="levelNumber"
-                  class="w-4 h-4 bg-green-500 border-2 border-white rounded-full flex items-center justify-center text-[7px] text-white font-bold z-10"
+                  class="level-number-indicator absolute -top-2 left-1/2 transform -translate-x-[60%] w-4 h-4 text-[8px] flex items-center justify-center"
+                  style="border: 1px solid white; background-color: black"
                 >
                   {{ level_info.level_number }}
                 </div>
-                <div class="xp-bar-container mini-xp-bar -ml-2">
+              </div>
+              <!-- User details with adjusted spacing -->
+              <div class="flex flex-col">
+                <span id="usernameElem" class="text-[10px] text-gray-700">
+                  {{ current_user.username if current_user.is_authenticated else
+                  'Anonymous' }}
+                </span>
+                <span id="userLevelElem" class="text-[10px] text-gray-600">
+                  {{ level_info.display_name }}
+                </span>
+                <div
+                  class="xp-bar-container mini-xp-bar mt-1 w-[280px] flex-none"
+                  style="margin-left: -30px; position: relative; z-index: 0"
+                >
                   <div
                     id="miniXpBarFill"
-                    class="xp-progress-bar bg-green-500"
-                    style="width: {{ level_info.progress_percent }}%"
+                    class="xp-progress-bar bg-gray-600 h-2"
+                    style="width: {{ level_info.progress_percent }}%;"
                   ></div>
                 </div>
               </div>
             </div>
           </a>
+        </div>
+
+        <!-- Right side with buttons -->
+        <div class="flex items-center justify-end space-x-0.5 mt-2 sm:mt-0">
           {% if current_user.is_authenticated %}
           <button
             id="logoutButton"
-            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm"
+            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs"
             data-i18n="header.logout"
           >
             Logout
@@ -697,46 +712,63 @@
           </div>
         </div>
         <!-- XP and Level Info Section -->
-        <div id="xpInfo" class="mt-4 text-center">
-          <!-- New message element for explaining no XP if relevance is too low -->
-          <p id="xpMessage" class="text-sm text-red-600"></p>
+        <div id="xpInfo" class="mt-4 text-center profile-xp">
+          <!-- Updated error/message paragraphs with inline style overriding left text-align -->
+          <p
+            id="xpMessage"
+            class="text-sm text-red-600 text-center"
+            style="text-align: center; padding-left: 0"
+          ></p>
           <p
             id="levelUpMessage"
-            class="text-green-600 font-bold"
+            class="text-green-600 font-bold text-center"
             data-i18n="evaluation.levelUp"
+            style="text-align: center; padding-left: 0"
           ></p>
           <p>
-            <span data-i18n="evaluation.experiencePoints"
-              >Experience Points Gained:</span
-            >
+            <span data-i18n="evaluation.experiencePoints">
+              Experience Points Gained:
+            </span>
             <span id="xpGained"><strong>0</strong></span>
           </p>
-          <p>
-            <span data-i18n="evaluation.currentLevel">Current Level:</span>
-            <span id="currentLevel"
-              ><strong>Level 1 (Novice Thinker)</strong></span
-            >
-          </p>
-          <div class="xp-bar-container mx-auto max-w-md mt-2">
-            <div
-              id="xpOldBar"
-              class="xp-progress-bar bg-gray-500"
-              style="width: 0%"
-            ></div>
-            <div
-              id="xpNewBar"
-              class="xp-progress-bar bg-green-500"
-              style="width: 0%"
-            ></div>
+          <!-- Two-column layout: left column for level image, right column for username, level name, XP bar and progress info -->
+          <div class="flex items-center justify-center">
+            <!-- Left column: level image with number indicator -->
+            <div class="level-image-wrapper">
+              {% set variant = "xp" %} {% set show_text = false %} {% include
+              'partials/level_indicator.html' %}
+              <!-- Circular level number indicator -->
+              <div class="level-number-indicator">
+                {{ level_info.level_number }}
+              </div>
+            </div>
+            <!-- Right column: username, level name, XP bar and progress info -->
+            <div class="flex flex-col text-left">
+              <p class="text-sm text-gray-600 mb-0 move-down">
+                {{ current_user.username if current_user.is_authenticated else
+                'Anonymous' }}
+              </p>
+              <p class="text-base mb-0 move-down" id="currentLevel">
+                <strong>{{ level_info.display_name }}</strong>
+              </p>
+              <div class="xp-bar-wrapper mt-2">
+                <div class="xp-bar-container">
+                  <div
+                    class="xp-progress-bar bg-green-500 h-full transition-all duration-500"
+                    style="width: {{ level_info.progress_percent }}%;"
+                  ></div>
+                </div>
+                <p class="text-sm mt-1">
+                  <span data-i18n="evaluation.progress">Progress:</span>
+                  <span id="xpProgressText">0 / 0</span> XP
+                </p>
+                <p class="text-sm mt-1">
+                  <span data-i18n="evaluation.nextLevel">Next Level:</span>
+                  <span id="nextLevel">Level 2 (Inquisitive Mind)</span>
+                </p>
+              </div>
+            </div>
           </div>
-          <p class="text-sm mt-1">
-            <span data-i18n="evaluation.progress">Progress:</span>
-            <span id="xpProgressText">0 / 0</span> XP
-          </p>
-          <p class="text-sm mt-1">
-            <span data-i18n="evaluation.nextLevel">Next Level:</span>
-            <span id="nextLevel">Level 2 (Inquisitive Mind)</span>
-          </p>
         </div>
         <!-- Additional instructions/link to the profile page -->
         <div class="mt-4 text-center">
