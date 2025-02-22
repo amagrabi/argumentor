@@ -24,11 +24,7 @@
       src="{{ url_for('static', filename='js/translations.js') }}"
     ></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="icon"
-      type="image/png"
-      href="{{ url_for('static', filename='img/favicon.png') }}"
-    />
+    {% include 'partials/favicons.html' %}
   </head>
   <body class="bg-white font-sans leading-normal tracking-normal text-gray-900">
     <!-- Header with Go Back Button -->

@@ -188,6 +188,42 @@ textarea:focus {
     height: auto !important;
     min-height: 200px;
   }
+
+  .argument-structure-box {
+    padding: 0.75rem;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  .argument-structure-box #argumentStructureViz {
+    min-height: auto;
+    max-height: none;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .argument-structure-box .node rect {
+    padding: 1.25rem !important;
+    width: 160px !important;
+  }
+
+  .argument-structure-box .node-text {
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    max-width: 160px !important;
+  }
+
+  .argument-structure-box svg {
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto;
+  }
+
+  /* Reduce heading size on mobile */
+  .argument-structure-box h3 {
+    font-size: 1rem !important;
+    margin-bottom: 0.75rem !important;
+  }
 }
 
 @media (min-width: 768px) {
@@ -364,11 +400,11 @@ textarea:focus {
   min-height: fit-content;
   overflow-y: auto;
   max-height: none;
-  padding: 1.5rem;
+  padding: 1rem;
 }
 
 .argument-structure-box #argumentStructureViz {
-  min-height: 400px;
+  min-height: 300px;
   height: auto;
   width: 100%;
   display: flex;
@@ -378,21 +414,30 @@ textarea:focus {
 
 /* Style for mermaid nodes */
 .argument-structure-box .node rect {
-  padding: 1rem !important;
+  fill: #f8fafc !important;
+  stroke: #1f2937 !important;
+  stroke-width: 2px !important;
+  rx: 12px !important;
+  ry: 12px !important;
+  width: 180px !important;
+  padding: 16px !important;
 }
 
 .argument-structure-box .node-text {
   font-size: 14px !important;
   line-height: 1.5 !important;
+  max-width: 160px !important;
+  word-break: break-word !important;
   white-space: pre-wrap !important;
-  word-wrap: break-word !important;
-  max-width: 250px !important;
+  display: block !important;
+  color: #1f2937 !important;
+  padding: 8px !important;
 }
 
 .argument-structure-box svg {
-  height: auto !important;
   width: 100% !important;
-  min-height: 400px;
+  height: auto !important;
+  min-height: auto;
 }
 
 body.loading-translations [data-i18n] {
@@ -452,4 +497,46 @@ body.loading-translations [data-i18n]::after {
     padding: 0.25rem 0.75rem;
     font-size: 0.75rem;
   }
+
+  .argument-structure-box {
+    padding: 0.75rem;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  .argument-structure-box #argumentStructureViz {
+    min-height: auto;
+    max-height: none;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .argument-structure-box .node rect {
+    fill: #f8fafc !important;
+    stroke: #1f2937 !important;
+    stroke-width: 2px !important;
+    rx: 12px !important;
+    ry: 12px !important;
+    width: 180px !important;
+    padding: 16px !important;
+  }
+
+  .argument-structure-box .node-text {
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    max-width: 160px !important;
+    word-break: break-word !important;
+    white-space: pre-wrap !important;
+    display: block !important;
+    color: #1f2937 !important;
+    padding: 8px !important;
+  }
+}
+
+.mermaid .node > foreignObject > div {
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  /* Optionally add some padding if required */
+  padding: 5px;
 }

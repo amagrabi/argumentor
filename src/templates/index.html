@@ -62,11 +62,7 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
-    <link
-      rel="icon"
-      type="image/png"
-      href="{{ url_for('static', filename='img/favicon.png') }}"
-    />
+    {% include 'partials/favicons.html' %}
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script type="application/ld+json">
       {
@@ -89,10 +85,11 @@
           class="flex items-center justify-center sm:justify-start space-x-3 w-full sm:w-auto"
         >
           <img
-            width="40"
-            height="40"
-            src="https://img.icons8.com/external-outline-berkahicon/64/external-Brain-health-app-outline-berkahicon.png"
+            width="60"
+            height="60"
+            src="{{ url_for('static', filename='img/logo.png') }}"
             alt="ArguMentor"
+            class="mb-0"
           />
           <h1 class="text-xl md:text-2xl font-bold">ArguMentor</h1>
         </div>
@@ -335,10 +332,9 @@
       <!-- Slogan -->
       <div class="mb-4 space-y-2 md:space-y-6">
         <p
-          class="text-lg md:text-lg text-sm text-black mb-8 text-center"
+          class="text-lg md:text-lg text-sm text-black mb-6 text-center"
           data-i18n="main.slogan"
         ></p>
-
         <!-- Updated Educational Cards Grid for mobile -->
         <div class="grid grid-cols-3 gap-1 md:gap-6 px-2 md:px-14">
           <!-- Platform Guide Card -->

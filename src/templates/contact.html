@@ -19,11 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title data-i18n="contact.title">Contact</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="icon"
-      type="image/png"
-      href="{{ url_for('static', filename='img/favicon.png') }}"
-    />
+    {% include 'partials/favicons.html' %}
     <script
       type="module"
       src="{{ url_for('static', filename='js/translations.js') }}"

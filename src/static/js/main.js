@@ -24,19 +24,19 @@ mermaid.initialize({
   theme: "base",
   flowchart: {
     curve: "basis",
-    padding: 50,
-    nodeSpacing: 80,
-    rankSpacing: 100,
+    padding: window.innerWidth < 768 ? 20 : 50,
+    nodeSpacing: window.innerWidth < 768 ? 50 : 80,
+    rankSpacing: window.innerWidth < 768 ? 80 : 100,
     htmlLabels: true,
     defaultRenderer: "elk",
     wrap: true,
-    maxTextSize: 1000,
-    nodeMaxWidth: 250,
-    useMaxWidth: false,
+    maxTextSize: window.innerWidth < 768 ? 120 : 200,
+    nodeMaxWidth: window.innerWidth < 768 ? 180 : 250,
+    rankDir: window.innerWidth < 768 ? "TB" : "TD",
   },
   themeVariables: {
     fontFamily: "system-ui, -apple-system, sans-serif",
-    fontSize: "14px",
+    fontSize: window.innerWidth < 768 ? "14px" : "14px",
     primaryColor: "#4F46E5",
     primaryTextColor: "#1F2937",
     lineColor: "#9CA3AF",
@@ -45,6 +45,7 @@ mermaid.initialize({
     clusterBorder: "#E5E7EB",
     nodeBorder: "#4F46E5",
     mainBkg: "#FFFFFF",
+    nodeTextColor: "#1F2937",
   },
 });
 
@@ -393,9 +394,9 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       });
 
       overallEvalDiv.innerHTML += `
-        <div class="mt-8 flex justify-center">
-          <div class="w-full max-w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h3 class="text-lg font-bold mb-4 text-center text-gray-800">
+        <div class="mt-6 flex justify-center">
+          <div class="w-full max-w-full bg-white rounded-xl shadow-sm border border-gray-100 argument-structure-box">
+            <h3 class="text-base sm:text-lg font-bold mb-3 text-center text-gray-800">
               ${translations.evaluation.argumentstructure}
             </h3>
             <div id="argumentStructureViz" class="overflow-x-auto flex justify-center"></div>
