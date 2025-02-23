@@ -572,22 +572,8 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     evaluationResults.classList.add("fade-in");
     evaluationResults.scrollIntoView({ behavior: "smooth" });
 
-    // Update header elements immediately after answer submission
-    const userLevelElem = document.getElementById("userLevelElem");
-    if (userLevelElem) {
-      userLevelElem.textContent = data.current_level;
-    }
-
-    const miniXpBarFill = document.getElementById("miniXpBarFill");
-    if (miniXpBarFill) {
-      miniXpBarFill.style.width = data.level_info.progress_percent + "%";
-    }
-
-    // Update the small circle indicator of the level
-    const levelNumberElem = document.getElementById("levelNumber");
-    if (levelNumberElem && data.level_info) {
-      levelNumberElem.textContent = data.level_info.level_number;
-    }
+    // Update all level-related UI elements using updateXpIndicator
+    updateXpIndicator(data.total_xp, data.level_info);
 
     // After a successful answer submission, store the answer ID for later use:
     if (data.answer_id) {
@@ -1072,11 +1058,22 @@ function updateXpIndicator(totalXp, levelInfo) {
     userLevelElem.textContent = levelInfo.display_name;
   }
 
-  // Update the level number indicator
-  const levelNumberElem = document.getElementById("levelNumber");
-  if (levelNumberElem) {
-    levelNumberElem.textContent = levelInfo.level_number;
-  }
+  // Update all level number indicators (both the small header one and the circular one on images)
+  const levelNumberElems = document.querySelectorAll(
+    "#levelNumber, .level-number-indicator"
+  );
+  levelNumberElems.forEach((elem) => {
+    if (elem) {
+      elem.textContent = levelInfo.level_number;
+    }
+  });
+
+  // Update all level images on the page
+  const levelImages = document.querySelectorAll(".level-image");
+  levelImages.forEach((img) => {
+    img.src = levelInfo.level_image;
+    img.alt = levelInfo.level_label;
+  });
 }
 
 // Function to load saved categories

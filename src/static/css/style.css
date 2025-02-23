@@ -282,10 +282,10 @@ textarea:focus {
   background-color: #e5e7eb;
   border-radius: 0 9999px 9999px 0;
   overflow: hidden;
-  width: 450px;
+  width: 600px; /* Increased from 450px */
   border: 0px solid black;
   border-left: none;
-  margin-left: -40px; /* Connect with the image */
+  margin-left: -30px; /* Adjusted from -40px to reduce overlap with profile image */
   z-index: 1;
 }
 
@@ -324,8 +324,8 @@ textarea:focus {
 @media (max-width: 768px) {
   .xp-bar-container {
     width: calc(100% + 40px);
-    max-width: 300px;
-    margin-left: -40px;
+    max-width: 350px; /* Increased from 300px */
+    margin-left: -30px; /* Adjusted from -40px */
   }
 
   #xpInfo .flex.flex-col {
@@ -370,7 +370,8 @@ textarea:focus {
 /* Mini XP bar specific styles */
 .mini-xp-bar {
   height: 0.3rem !important;
-  width: 170px !important;
+  width: 180px !important; /* Increased from 170px */
+  margin-left: -20px !important; /* Adjusted to reduce overlap with profile image while maintaining connection */
 }
 
 /* Add these styles */
@@ -619,12 +620,31 @@ body.loading-translations [data-i18n]::after {
   justify-content: center;
   margin-right: 8px;
   flex: 0 0 auto;
+  position: relative;
+  width: 50px; /* Default size */
+  height: 50px; /* Default size */
+}
+
+.level-image {
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1); /* Reduced scale to show more of the image */
 }
 
 /* Header variant: smaller image and level text */
 .level-indicator.header .level-image-container {
   width: 50px;
   height: 50px;
+}
+
+.level-indicator.header .level-image {
+  transform: translate(-50%, -50%) scale(1); /* Slightly larger scale for header since it's already small */
 }
 
 .level-indicator.header .level-text {
@@ -636,26 +656,18 @@ body.loading-translations [data-i18n]::after {
 .level-indicator.xp .level-image-container {
   width: 180px;
   height: 180px;
-  border-radius: 50%;
   border: 3px solid black;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 2;
   margin-right: 0;
+  z-index: 2;
+}
+
+.level-indicator.xp .level-image {
+  transform: translate(-50%, -50%) scale(1); /* Keep consistent with base scale */
 }
 
 .level-indicator.xp .level-text {
   font-size: 1.25rem;
   color: #1a202c; /* text-gray-900 */
-}
-
-.level-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 /* Remove right margin from the level image in the evaluation section */
@@ -727,7 +739,8 @@ body.loading-translations [data-i18n]::after {
 
 @media (max-width: 768px) {
   .xp-bar-container.mini-xp-bar {
-    margin-left: -30px;
+    margin-left: -20px; /* Keep consistent with desktop */
+    width: 200px !important; /* Slightly smaller on mobile but still larger than original */
   }
 }
 

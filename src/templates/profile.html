@@ -569,7 +569,6 @@
         document.documentElement.lang = currentLanguage;
 
         // --- XP and Level Update Logic (from main.js) ---
-
         function updateLevelAndXPBar(levelInfo) {
           // Update XP bar
           const xpProgressBar = document.querySelector(".xp-progress-bar");
@@ -578,18 +577,22 @@
           }
 
           // Update the level display element
-          const currentLevelElem = document.getElementById("currentLevel"); // Corrected ID
+          const currentLevelElem = document.getElementById("currentLevel");
           if (currentLevelElem) {
-            currentLevelElem.innerHTML =
-              "<strong>" + levelInfo.display_name + "</strong>"; // Use innerHTML to render the <strong> tag
+            currentLevelElem.innerHTML = "<strong>" + levelInfo.display_name + "</strong>";
           }
 
           // Update the level number indicator
-          const levelNumberElem = document.querySelector(
-            ".level-number-indicator"
-          );
+          const levelNumberElem = document.querySelector(".level-number-indicator");
           if (levelNumberElem) {
             levelNumberElem.textContent = levelInfo.level_number;
+          }
+
+          // Update the level image
+          const levelImage = document.querySelector(".level-image");
+          if (levelImage) {
+            levelImage.src = levelInfo.level_image;
+            levelImage.alt = levelInfo.level_label;
           }
         }
 
