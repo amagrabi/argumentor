@@ -22,9 +22,21 @@ from routes.transcribe import transcribe_bp
 
 SETTINGS = get_settings()
 
+# Configure logging using the settings value directly
+log_level = getattr(logging, SETTINGS.LOG_LEVEL.upper(), logging.DEBUG)
 logging.basicConfig(
-    level=SETTINGS.LOG_LEVEL, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=log_level,
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+    force=True,  # Ensure our configuration takes precedence
 )
+
+# Get the root logger and set its level
+root_logger = logging.getLogger()
+root_logger.setLevel(log_level)
+
+# Create a logger for this module
+logger = logging.getLogger(__name__)
+logger.debug("Logging configured with level: %s", SETTINGS.LOG_LEVEL)
 
 
 def add_cors_headers(response):

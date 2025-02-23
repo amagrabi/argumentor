@@ -50,7 +50,14 @@
     "voiceInput": {
       "status": {
         "tooLong": "Transcription exceeds character limit. Please edit before submitting.",
-        "transcriptionTimeout": "Transcription timed out. Please try a shorter recording."
+        "transcriptionTimeout": "Transcription timed out. Please try a shorter recording.",
+        "recording": "Recording...",
+        "transcribing": "Transcribing...",
+        "postProcessing": "Post-processing...",
+        "transcriptionComplete": "Transcription complete. You may edit the text.",
+        "transcriptionImproved": "Transcription complete. You may edit the text.",
+        "transcriptionError": "Error during transcription.",
+        "microphoneError": "Error accessing microphone."
       }
     }
   },

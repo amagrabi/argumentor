@@ -61,7 +61,9 @@
       "status": {
         "recording": "Aufnahme läuft...",
         "transcribing": "Transkribiere...",
+        "postProcessing": "Nachbearbeitung...",
         "transcriptionComplete": "Transkription abgeschlossen. Du kannst den Text bearbeiten.",
+        "transcriptionImproved": "Transkription abgeschlossen. Du kannst den Text bearbeiten.",
         "transcriptionError": "Fehler bei der Transkription.",
         "microphoneError": "Fehler beim Zugriff auf das Mikrofon.",
         "tooLong": "Transkription überschreitet das Zeichenlimit. Bitte vor dem Absenden bearbeiten.",

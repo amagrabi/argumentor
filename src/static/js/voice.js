@@ -98,16 +98,27 @@ async function startRecording() {
       // Get the current language from local storage (or fallback to "en")
       const language = localStorage.getItem("language") || "en";
 
+      // Get the current question from session storage
+      const currentQuestion = JSON.parse(
+        sessionStorage.getItem("currentQuestion")
+      );
+      const questionText = currentQuestion ? currentQuestion.description : "";
+
       try {
         // Set longer timeout for fetch
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes
 
-        const response = await fetch(`/transcribe_voice?lang=${language}`, {
-          method: "POST",
-          body: formData,
-          signal: controller.signal,
-        });
+        const response = await fetch(
+          `/transcribe_voice?lang=${language}&question=${encodeURIComponent(
+            questionText
+          )}`,
+          {
+            method: "POST",
+            body: formData,
+            signal: controller.signal,
+          }
+        );
 
         clearTimeout(timeoutId);
 
@@ -115,12 +126,27 @@ async function startRecording() {
 
         if (!response.ok) {
           recordingStatus.innerHTML =
-            data.error || "Error during transcription.";
+            data.error ||
+            translations?.main?.voiceInput?.status?.transcriptionError ||
+            "Error during transcription.";
           recordButton.disabled = false;
           return;
         }
 
+        // Show post-processing status
+        recordingStatus.innerHTML =
+          (translations?.main?.voiceInput?.status?.postProcessing ||
+            "Post-processing...") + '<span class="spinner"></span>';
+
         let transcript = data.transcript || "";
+
+        // Update status based on whether the transcription was improved
+        recordingStatus.innerHTML = data.was_improved
+          ? translations?.main?.voiceInput?.status?.transcriptionImproved ||
+            "Transcription complete and enhanced. You may edit the text."
+          : translations?.main?.voiceInput?.status?.transcriptionComplete ||
+            "Transcription complete. You may edit the text.";
+
         transcriptField.value = transcript;
         voiceCount.textContent = (
           VOICE_LIMITS.MAX_CHARS - transcript.length
@@ -134,9 +160,6 @@ async function startRecording() {
             "Transcription exceeds character limit. Please edit before submitting.";
         } else {
           transcriptField.classList.remove("border-red-500");
-          recordingStatus.innerHTML =
-            translations?.main?.voiceInput?.status?.transcriptionComplete ||
-            "Transcription complete. You may edit the text.";
         }
       } catch (error) {
         if (error.name === "AbortError") {

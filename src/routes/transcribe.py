@@ -4,6 +4,7 @@ import uuid
 from datetime import UTC, datetime, time
 
 from flask import Blueprint, jsonify, request, session
+from google import genai
 from google.cloud import speech, storage
 
 from config import get_settings
@@ -14,6 +15,127 @@ from utils import get_daily_voice_count, get_voice_limit
 logger = logging.getLogger(__name__)
 transcribe_bp = Blueprint("transcribe", __name__)
 SETTINGS = get_settings()
+
+# Initialize Gemini client
+CLIENT = genai.Client(
+    vertexai=True,
+    credentials=google_credentials,
+    project=SETTINGS.GCLOUD_PROJECT_NAME,
+    location=SETTINGS.GCLOUD_PROJECT_REGION,
+)
+
+TRANSCRIPTION_SYSTEM_PROMPT_EN = """
+You are a transcription post-processor. You are seeing text that has
+been recorded by users who are answering a difficult question and constructing
+arguments to support a specific claim.
+
+Your task is to improve the quality of speech-to-text transcriptions by:
+1. Fixing punctuation and capitalization
+2. Correcting obvious word recognition errors or add missing words based on context
+3. Maintaining the original meaning while making the text more readable
+4. Remove meaningless filler words like "um" or "you know"
+
+Only make changes when you are highly confident they improve transcription accuracy or readability.
+"""
+
+TRANSCRIPTION_SYSTEM_PROMPT_DE = """
+Du bist ein Transkriptions-Nachbearbeiter. Du siehst Text, der von
+Benutzern aufgenommen wurde, die eine schwierige Frage beantworten und
+Argumente zur Unterstützung einer bestimmten These konstruieren.
+
+Deine Aufgabe ist es, die Qualität der Sprache-zu-Text-Transkriptionen zu verbessern durch:
+1. Korrektur von Zeichensetzung und Großschreibung
+2. Korrektur offensichtlicher Worterkennungsfehler oder Ergänzung fehlender Wörter basierend auf dem Kontext
+3. Beibehaltung der ursprünglichen Bedeutung bei gleichzeitiger Verbesserung der Lesbarkeit
+4. Entfernung bedeutungsloser Füllwörter wie "ähm" oder "sozusagen"
+
+Nimm nur dann Änderungen vor, wenn du sehr sicher bist, dass sie die Transkriptionsgenauigkeit oder Lesbarkeit verbessern.
+"""
+
+TRANSCRIPTION_SYSTEM_PROMPTS = {
+    "en": TRANSCRIPTION_SYSTEM_PROMPT_EN,
+    "de": TRANSCRIPTION_SYSTEM_PROMPT_DE,
+}
+
+
+def post_process_transcription(
+    transcript: str, language: str = "en", question_text: str = None
+) -> str:
+    """
+    Uses LLM to improve the transcription quality by fixing common issues.
+    """
+    try:
+        logger.debug(f"Original transcription before post-processing: {transcript}")
+
+        # Select the appropriate system prompt based on language
+        system_prompt = TRANSCRIPTION_SYSTEM_PROMPTS.get(
+            language, TRANSCRIPTION_SYSTEM_PROMPT_EN
+        )
+
+        prompt = f"""
+        Please improve this speech-to-text transcription while preserving its original meaning.
+        Focus on fixing punctuation, capitalization, and obvious recognition errors.
+        The user tried to answer this question: {question_text}
+
+        Original transcription:
+        {transcript}
+        """
+
+        if language == "de":
+            prompt = f"""
+            Bitte verbessere diese Sprache-zu-Text-Transkription unter Beibehaltung ihrer ursprünglichen Bedeutung.
+            Konzentriere dich auf die Korrektur von Zeichensetzung, Großschreibung und offensichtlichen Erkennungsfehlern.
+            Der Benutzer versucht, diese Frage zu beantworten: {question_text}
+
+            Ursprüngliche Transkription:
+            {transcript}
+            """
+
+        response = CLIENT.models.generate_content(
+            model=SETTINGS.MODEL,
+            contents=[
+                genai.types.Content(
+                    role="user", parts=[genai.types.Part.from_text(text=prompt)]
+                )
+            ],
+            config=genai.types.GenerateContentConfig(
+                temperature=0.1,  # Low temperature for more consistent output
+                top_p=0.8,
+                top_k=40,
+                max_output_tokens=2048,
+                safety_settings=[
+                    genai.types.SafetySetting(
+                        category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"
+                    ),
+                    genai.types.SafetySetting(
+                        category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="OFF"
+                    ),
+                    genai.types.SafetySetting(
+                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="OFF"
+                    ),
+                    genai.types.SafetySetting(
+                        category="HARM_CATEGORY_HARASSMENT", threshold="OFF"
+                    ),
+                ],
+                system_instruction=[genai.types.Part.from_text(text=system_prompt)],
+            ),
+        )
+
+        improved_transcript = response.text.strip()
+        logger.debug(
+            f"Improved transcription after post-processing: {improved_transcript}"
+        )
+
+        if improved_transcript == transcript:
+            logger.debug("No improvements made during post-processing")
+        else:
+            logger.debug("Transcription was improved during post-processing")
+
+        return improved_transcript if improved_transcript else transcript
+
+    except Exception as e:
+        logger.error(f"Error in LLM post-processing: {str(e)}")
+        return transcript  # Return original transcript if post-processing fails
 
 
 def upload_audio_to_gcs(audio_content, file_mime):
@@ -127,6 +249,7 @@ def transcribe_audio(audio_content, file_mime):
 
 @transcribe_bp.route("/transcribe_voice", methods=["POST"])
 def transcribe_voice():
+    logger.debug("Starting voice transcription request")
     user_uuid = session.get("user_id")
     if not user_uuid:
         return jsonify({"error": "User not identified."}), 400
@@ -162,6 +285,7 @@ def transcribe_voice():
         return jsonify({"error": "No audio file provided"}), 400
 
     try:
+        logger.debug("Processing voice transcription")
         # Update voice transcription count
         today_start = datetime.combine(datetime.now(UTC).date(), time.min)
         if (
@@ -174,9 +298,38 @@ def transcribe_voice():
         user.last_voice_transcription = datetime.now(UTC)
         db.session.commit()
 
-        # Process the transcription
+        # Get the current language and question
+        language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
+        question_text = request.args.get("question", "")
+        logger.debug(f"Using language: {language}, Question: {question_text}")
+
+        # Process the initial transcription
+        logger.debug("Starting initial transcription")
         transcript = transcribe_audio(audio_file.read(), audio_file.content_type)
-        return jsonify({"transcript": transcript})
+
+        # Return early if transcription failed
+        if not transcript:
+            logger.error("Initial transcription failed")
+            return jsonify({"error": "Error during transcription"}), 500
+
+        logger.debug("Initial transcription successful, starting post-processing")
+        # Post-process the transcription with LLM, including the question context
+        improved_transcript = post_process_transcription(
+            transcript, language, question_text
+        )
+        logger.debug("Post-processing complete")
+
+        was_improved = improved_transcript != transcript
+        logger.debug(f"Transcription was improved: {was_improved}")
+
+        return jsonify(
+            {
+                "transcript": improved_transcript,
+                "status": "success",
+                "was_improved": was_improved,
+            }
+        )
+
     except Exception as e:
         logger.error(f"Error in voice transcription: {str(e)}")
         db.session.rollback()
