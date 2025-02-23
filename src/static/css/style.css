@@ -427,9 +427,14 @@ textarea:focus {
 }
 
 /* Modal transition */
+.fixed.inset-0 {
+  z-index: 50; /* High z-index for modal overlay */
+}
+
 .fixed.inset-0 > div {
   /* Target modal content */
   transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+  z-index: 51; /* Even higher z-index for modal content */
 }
 
 .divider {
@@ -629,8 +634,8 @@ body.loading-translations [data-i18n]::after {
 
 /* XP variant: larger image and level text */
 .level-indicator.xp .level-image-container {
-  width: 180px; /* Reduced from 200px */
-  height: 180px; /* Reduced from 200px */
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
   border: 3px solid black;
   overflow: hidden;
