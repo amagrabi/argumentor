@@ -406,16 +406,17 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
       const graph = `graph TD;
         %% Node styling
-        classDef premise fill:#F8FAFC,stroke:#1F2937,stroke-width:2px,rx:12,ry:12;
-        classDef conclusion fill:#EEF2FF,stroke:#1F2937,stroke-width:2px,rx:12,ry:12;
+        classDef premise fill:#F8FAFC,stroke:#1F2937,stroke-width:2px,rx:8,ry:8;
+        classDef conclusion fill:#EEF2FF,stroke:#1F2937,stroke-width:2px,rx:8,ry:8;
 
         %% Edge styling
         linkStyle default stroke:#9CA3AF,stroke-width:2px;
 
+        %% Define nodes
         ${structure.nodes
           .map(
             (node) =>
-              `${safeIds[node.id]}["${node.text
+              `${safeIds[node.id]}[${node.text
                 .split(" ")
                 .reduce(
                   (lines, word) => {
@@ -430,23 +431,39 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
                   },
                   [""]
                 )
-                .join("<br/>")}"]`
+                .join("<br>")}]:::${node.type}`
           )
-          .join(";\n")}
-        ${structure.edges
-          .map((edge) => `${safeIds[edge.from]}-->${safeIds[edge.to]}`)
-          .join(";\n")}
+          .join("\n        ")}
 
-        %% Apply classes
-        ${structure.nodes
-          .map(
-            (node) =>
-              `class ${safeIds[node.id]} ${
-                node.type === "premise" ? "premise" : "conclusion"
-              }`
-          )
-          .join(";\n")}
-      `;
+        %% Define edges
+        ${structure.edges
+          .map((edge) => `${safeIds[edge.from]} --> ${safeIds[edge.to]}`)
+          .join("\n        ")}`;
+
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: "default",
+        flowchart: {
+          curve: "basis",
+          padding: 10,
+          nodeSpacing: 30,
+          rankSpacing: 40,
+          htmlLabels: true,
+          wrap: true,
+          defaultRenderer: "elk",
+        },
+        themeVariables: {
+          fontFamily: "system-ui, -apple-system, sans-serif",
+          fontSize: "14px",
+          primaryColor: "#1F2937",
+          primaryTextColor: "#1F2937",
+          lineColor: "#9CA3AF",
+          mainBkg: "#F8FAFC",
+          nodeBorder: "#1F2937",
+          nodeTextColor: "#1F2937",
+          edgeLabelBackground: "#FFFFFF",
+        },
+      });
 
       mermaid
         .render("argumentGraph", graph)

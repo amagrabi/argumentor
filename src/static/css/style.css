@@ -191,15 +191,14 @@ textarea:focus {
 
   .argument-structure-box {
     padding: 0.75rem;
-    overflow-x: hidden;
+    overflow: visible;
     width: 100%;
   }
 
   .argument-structure-box #argumentStructureViz {
-    min-height: auto;
-    max-height: none;
+    min-height: fit-content;
     width: 100%;
-    overflow-x: hidden;
+    overflow: visible;
   }
 
   .argument-structure-box .node rect {
@@ -223,6 +222,11 @@ textarea:focus {
   .argument-structure-box h3 {
     font-size: 1rem !important;
     margin-bottom: 0.75rem !important;
+  }
+
+  .mermaid .node .label {
+    font-size: 12px;
+    padding: 4px !important;
   }
 }
 
@@ -461,46 +465,67 @@ textarea:focus {
 /* Add after line 98 */
 .argument-structure-box {
   min-height: fit-content;
-  overflow-y: auto;
+  overflow: visible;
   max-height: none;
   padding: 1rem;
+  margin: 1rem 0;
 }
 
 .argument-structure-box #argumentStructureViz {
-  min-height: 300px;
+  min-height: fit-content;
   height: auto;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  overflow: visible;
 }
 
-/* Style for mermaid nodes */
-.argument-structure-box .node rect {
+/* Mermaid specific styles */
+.mermaid {
+  overflow: visible !important;
+}
+
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node ellipse,
+.mermaid .node polygon,
+.mermaid .node path {
   fill: #f8fafc !important;
   stroke: #1f2937 !important;
   stroke-width: 2px !important;
-  rx: 12px !important;
-  ry: 12px !important;
-  width: 180px !important;
-  padding: 16px !important;
+  rx: 8px !important;
+  ry: 8px !important;
 }
 
-.argument-structure-box .node-text {
-  font-size: 14px !important;
-  line-height: 1.5 !important;
-  max-width: 160px !important;
-  word-break: break-word !important;
-  white-space: pre-wrap !important;
-  display: block !important;
-  color: #1f2937 !important;
+.mermaid .node.premise rect {
+  fill: #f8fafc !important;
+}
+
+.mermaid .node.conclusion rect {
+  fill: #eef2ff !important;
+}
+
+.mermaid .node .label {
+  color: #1f2937;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
   padding: 8px !important;
 }
 
-.argument-structure-box svg {
-  width: 100% !important;
-  height: auto !important;
-  min-height: auto;
+.mermaid .edgePath .path {
+  stroke: #9ca3af !important;
+  stroke-width: 2px !important;
+}
+
+.mermaid .edgeLabel {
+  background-color: #ffffff !important;
+  padding: 4px !important;
+}
+
+.mermaid .flowchart-link {
+  stroke: #9ca3af !important;
+  stroke-width: 2px !important;
 }
 
 body.loading-translations [data-i18n] {
@@ -563,45 +588,54 @@ body.loading-translations [data-i18n]::after {
 
   .argument-structure-box {
     padding: 0.75rem;
-    overflow-x: hidden;
+    overflow: visible;
     width: 100%;
   }
 
   .argument-structure-box #argumentStructureViz {
-    min-height: auto;
-    max-height: none;
+    min-height: fit-content;
     width: 100%;
-    overflow-x: hidden;
+    overflow: visible;
   }
 
-  .argument-structure-box .node rect {
-    fill: #f8fafc !important;
-    stroke: #1f2937 !important;
-    stroke-width: 2px !important;
-    rx: 12px !important;
-    ry: 12px !important;
-    width: 180px !important;
-    padding: 16px !important;
+  .argument-structure-box .node rect,
+  .mermaid .node > foreignObject > div {
+    min-width: 180px !important;
+    max-width: 180px !important;
   }
 
   .argument-structure-box .node-text {
-    font-size: 14px !important;
-    line-height: 1.5 !important;
-    max-width: 160px !important;
-    word-break: break-word !important;
-    white-space: pre-wrap !important;
-    display: block !important;
-    color: #1f2937 !important;
-    padding: 8px !important;
+    font-size: 12px !important;
+    max-width: 180px !important;
+    padding: 4px !important;
   }
 }
 
 .mermaid .node > foreignObject > div {
-  white-space: normal;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  /* Optionally add some padding if required */
-  padding: 5px;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  padding: 8px !important;
+  width: 100% !important;
+  text-align: center !important;
+  min-width: 250px !important;
+}
+
+.mermaid .node rect {
+  fill: #f8fafc !important;
+  stroke: #1f2937 !important;
+  stroke-width: 2px !important;
+  rx: 8px !important;
+  ry: 8px !important;
+}
+
+.mermaid .edgeLabel {
+  background-color: white !important;
+}
+
+.mermaid .edgePath {
+  stroke: #9ca3af !important;
+  stroke-width: 2px !important;
 }
 
 /* Level Indicator Styles */
