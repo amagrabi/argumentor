@@ -125,7 +125,14 @@ def create_app():
             "https://identity.google.com",
         ],
     }
-    Talisman(app, content_security_policy=csp)
+
+    # Initialize Talisman with custom configurations
+    Talisman(
+        app,
+        content_security_policy=csp,
+        permissions_policy={},  # Empty dict to avoid setting any permissions policy
+        force_https=False,  # Since we're running locally
+    )
 
     @app.route("/static/translations/<path:filename>")
     def serve_translations(filename):

@@ -143,11 +143,11 @@ function toggleDropdown() {
 // Close dropdown when clicking outside
 document.addEventListener("click", (event) => {
   const container = document.getElementById("languageContainer");
-  if (!container.contains(event.target)) {
-    document.getElementById("languageDropdown").classList.add("hidden");
-    document
-      .getElementById("languageSelector")
-      .setAttribute("aria-expanded", "false");
+  if (container && !container.contains(event.target)) {
+    const dropdown = document.getElementById("languageDropdown");
+    const selector = document.getElementById("languageSelector");
+    if (dropdown) dropdown.classList.add("hidden");
+    if (selector) selector.setAttribute("aria-expanded", "false");
   }
 });
 

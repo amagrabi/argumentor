@@ -29,18 +29,6 @@
       content="ArguMentor is a platform that helps you build & refine your reasoning skills. Construct compelling arguments and receive AI-driven feedback to improve your decision-making."
     />
     <link rel="canonical" href="https://www.argumentorai.com" />
-    <link
-      rel="preload"
-      href="/static/translations/de.json"
-      as="fetch"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="preload"
-      href="/static/translations/en.json"
-      as="fetch"
-      crossorigin="anonymous"
-    />
     <meta
       property="og:description"
       content="Test and improve your reasoning skills. Construct arguments to challenging questions and receive in-depth, AI-driven feedback."
@@ -56,6 +44,21 @@
       name="twitter:description"
       content="Join a community focused on building better arguments and decision-making skills through AI-driven feedback."
     />
+    <script>
+      // Load translations immediately
+      (async function loadTranslations() {
+        const currentLanguage = localStorage.getItem("language") || "en";
+        try {
+          const response = await fetch(
+            `/static/translations/${currentLanguage}.json`
+          );
+          if (!response.ok) throw new Error("Failed to load translations");
+          window.translations = await response.json();
+        } catch (error) {
+          console.error("Error loading translations:", error);
+        }
+      })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Link to custom CSS -->
     <link
