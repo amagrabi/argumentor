@@ -1,12 +1,12 @@
 {
   "meta": {
     "title": "ArguMentor - Schärfe deine Argumentationsfähigkeiten",
-    "description": "Teste deine Argumentationsfähigkeiten. Konstruiere Argumente für herausfordernde Fragen. Verbessere dich mit KI-gesteuertem Feedback."
+    "description": "Teste deine Argumentationsfähigkeiten mit herausfordernden Fragen und verbessere dich durch KI-gestütztes Feedback."
   },
   "errors": {
-    "requiredFields": "Bitte fülle beide erforderlichen Felder (These und Argument) aus, bevor du absendest.",
-    "voiceRequiredField": "Bitte gib deine Antwort ein, bevor du absendest.",
-    "unexpectedError": "Ein unerwarteter Fehler ist bei der Verarbeitung deiner Eingabe aufgetreten. Bitte versuche es erneut und sende Feedback, falls das Problem weiterhin besteht.",
+    "requiredFields": "Bitte fülle die Felder für These und Argument aus, bevor du abschickst.",
+    "voiceRequiredField": "Bitte gib deine Antwort ein, bevor du abschickst.",
+    "unexpectedError": "Es ist ein unerwarteter Fehler aufgetreten. Bitte versuche es erneut und gib Feedback, wenn das Problem weiterhin besteht.",
     "similarAnswer": "Du hast bereits eine sehr ähnliche Antwort auf diese Frage eingereicht. Ändere dein Argument, um eine neue Bewertung zu erhalten.",
     "tooManySubmissions": "Zu viele Einreichungen. Bitte warte, bevor du es erneut versuchst."
   },
@@ -18,7 +18,7 @@
   "settings": {
     "title": "Einstellungen",
     "filterCategories": "Kategorien filtern",
-    "filterDescription": "Deaktiviere Kategorien, für die du keine Fragen erhalten möchtest. Standardmäßig sind alle aktiviert.",
+    "filterDescription": "Deaktiviere Kategorien, zu denen du keine Fragen erhalten möchtest. Standardmäßig sind alle aktiviert.",
     "done": "Fertig"
   },
   "categories": {
@@ -33,10 +33,10 @@
     "Fun & Casual": "Locker & Unterhaltsam"
   },
   "main": {
-    "slogan": "Teste deine Argumentationsfähigkeiten. Beantworte schwierige Fragen. Verbessere dich mit KI-gesteuertem Feedback.",
+    "slogan": "Teste deine Argumentationsfähigkeiten. Beantworte schwierige Fragen. Verbessere dich mit KI-gestütztem Feedback.",
     "howItWorks": "So funktioniert es",
-    "howToImprove": "Wie man sich verbessert",
-    "howToSupport": "Wie man unterstützt",
+    "howToImprove": "So verbesserst du dich",
+    "howToSupport": "So kannst du unterstützen",
     "buttons": {
       "randomQuestion": "Zufällige Frage",
       "selectQuestion": "Frage auswählen"
@@ -66,7 +66,7 @@
         "transcriptionImproved": "Transkription abgeschlossen. Du kannst den Text bearbeiten.",
         "transcriptionError": "Fehler bei der Transkription.",
         "microphoneError": "Fehler beim Zugriff auf das Mikrofon.",
-        "tooLong": "Transkription überschreitet das Zeichenlimit. Bitte vor dem Absenden bearbeiten.",
+        "tooLong": "Die Transkription überschreitet das Zeichenlimit. Bitte bearbeite sie vor dem Abschicken.",
         "transcriptionTimeout": "Transkription überschreitet das Zeitlimit. Bitte versuche es erneut mit einer kürzeren Aufnahme."
       }
     }
@@ -100,12 +100,12 @@
     "creativity": "Kreativität",
     "challenge": "Challenge",
     "yourAnswers": "Deine Antworten",
-    "progressOverTime": "Fortschritt über die Zeit",
+    "progressOverTime": "Fortschritt im Laufe der Zeit",
     "rating": "Bewertung",
     "time": "Zeit",
     "claim": "These",
     "argument": "Argument",
-    "counterargument": "Gegenarugumente",
+    "counterargument": "Gegenargumente",
     "challengeResponse": "Antwort",
     "feedbackDetails": "Details",
     "dailyVoiceRecordings": "Tägliche Sprachaufnahmen"
@@ -173,40 +173,40 @@
   "currentLang": "de",
   "questions": {
     "Philosophy": {
-      "freewill": "Kann der freie Willen existieren, wenn alle Entscheidungen letztlich durch biologische und physikalische Einflüsse bestimmt werden?",
-      "altruism": "Ist eine Handlung noch altruistisch, wenn man persönliche Befriedigung daraus zieht?",
+      "freewill": "Kann der freie Wille existieren, wenn alle Entscheidungen letztlich durch biologische und physikalische Einflüsse bestimmt sind?",
+      "altruism": "Ist eine Handlung noch selbstlos, wenn man selbst etwas Positives daraus zieht?",
       "moral-vs-logic": "Ist es ethischer, der moralischen Intuition oder der logischen Argumentation zu folgen, wenn sie im Widerspruch zueinander stehen?",
       "consciousness": "Ist Bewusstsein eine ausschließlich menschliche Eigenschaft, oder könnten auch andere Tiere es besitzen?",
       "simulation": "Leben wir in einer Simulation?",
-      "truth": "Wird das Konzept der 'Wahrheit' primär von individuellen Perspektiven und kulturellen Kontexten geprägt, oder gibt es objektive Wahrheiten, die unabhängig von menschlicher Interpretation existieren?",
-      "human-nature": "Ist die 'menschliche Natur' ein fester Satz von Eigenschaften, oder ist menschliches Verhalten hauptsächlich ein Produkt von Lernen und gesellschaftlichen Einflüssen?",
+      "truth": "Hängt unsere Vorstellung von 'Wahrheit' hauptsächlich von persönlichen Erfahrungen und kulturellem Hintergrund ab, oder gibt es absolute Wahrheiten?",
+      "human-nature": "Gibt es eine unveränderliche menschliche Natur, oder wird unser Verhalten vor allem durch Lernen und Gesellschaft geprägt?",
       "objective-morality": "Existiert objektive Moral, oder ist Moral rein sozial konstruiert?",
-      "self-meaning": "Müssen Menschen ihren eigenen Sinn erschaffen, um existenzielle Verzweiflung zu vermeiden?"
+      "self-meaning": "Muss jeder Mensch seinen eigenen Lebenssinn finden, um nicht in existenzielle Krisen zu geraten?"
     },
     "AI & Future": {
-      "ai-future": "Ist eine Zukunft, in der KI die menschliche Intelligenz übertrifft, eine existenzielle Bedrohung oder der nächste Schritt der menschlichen Evolution?",
-      "ai-decisions": "Sollte KI autonom Leben-oder-Tod-Entscheidungen treffen dürfen (z. B. in der automatisierten Kriegsführung), wenn dadurch Menschenleben gerettet werden?",
+      "ai-future": "Wenn KI eines Tages intelligenter als Menschen wird, ist das dann eine Gefahr für uns oder der nächste Evolutionsschritt?",
+      "ai-decisions": "Sollten wir KI erlauben, eigenständig über Leben und Tod zu entscheiden (z.B. im Krieg), wenn dadurch Menschenleben gerettet werden könnten?",
       "ai-creative": "Kann eine KI kreativ sein?",
-      "ai-replication": "Wenn eine KI die Persönlichkeit eines verstorbenen geliebten Menschen überzeugend nachbilden kann, ist es ethisch vertretbar, mit dieser KI so zu interagieren, als wäre sie die echte Person?",
-      "ai-research": "Sollte KI-Forschung transparent und offen durchgeführt werden, oder sollte sie streng reguliert werden, um potenzielle Risiken zu vermeiden?",
+      "ai-replication": "Wäre es okay, mit einer KI zu interagieren, die die Persönlichkeit eines verstorbenen Angehörigen täuschend echt nachahmt?",
+      "ai-research": "Sollte KI-Forschung öffentlich und transparent sein, oder braucht es strenge Kontrollen wegen möglicher Risiken?",
       "ai-rights": "Sollten KIs, falls sie Bewusstsein erlangen, rechtlich als Personen anerkannt werden und ähnliche Rechte wie Menschen erhalten?",
       "genetic": "Sollte menschliche genetische Modifikation erlaubt sein, um Erbkrankheiten zu eliminieren?",
       "ai-emotions": "Könnte eine KI jemals echte Emotionen empfinden?",
       "crypto-impact": "Ist die Umweltbelastung durch Kryptowährungen durch ihr finanzielles Innovationspotenzial gerechtfertigt?"
     },
     "Personal Growth & Relationships": {
-      "follow-passion": "Sollte man seiner Leidenschaft folgen, auch wenn dies weniger finanzielle Sicherheit bedeutet?",
+      "follow-passion": "Sollte man seiner Leidenschaft folgen, auch wenn das weniger finanzielle Sicherheit bedeutet?",
       "generalist-specialist": "Ist es besser, ein Generalist mit breiten Fähigkeiten zu sein oder ein Spezialist mit tiefgehendem Fachwissen?",
-      "honesty": "Ist es in persönlichen Beziehungen immer ethisch überlegen, auf Ehrlichkeit zu setzen, selbst wenn das bedeutet, die Gefühle des Partners zu verletzen?",
+      "honesty": "Ist es in Beziehungen immer besser, ehrlich zu sein, auch wenn man damit den Partner verletzt?",
       "address-issues": "Ist es in Beziehungen besser, kleine Probleme sofort anzusprechen oder sie vorübergehend ruhen zu lassen?",
       "experiences": "Was ist wichtiger, Erlebnisse oder Besitz?",
       "liked-respected": "Ist es wichtiger, gemocht oder respektiert zu werden?"
     },
     "Politics": {
       "mandatory-vote": "Sollte die Stimmabgabe in Demokratien verpflichtend sein?",
-      "gender-quota": "Ist die Einführung einer Quote, die 50% Frauen in der Unternehmensführung vorschreibt, ein effektiver Weg, um Geschlechtergerechtigkeit zu fördern?",
-      "data-privacy": "Sollten Regierungen die Befugnis haben, auf persönliche Daten zuzugreifen, um die nationale Sicherheit zu verbessern, oder ist Datenschutz wichtiger?",
-      "referendum": "Sollten in einer Demokratie wichtige politische Entscheidungen per Volksabstimmung getroffen werden, oder ist es besser, sich auf gewählte Vertreter zu verlassen?",
+      "gender-quota": "Ist eine 50%-Frauenquote in Führungspositionen ein guter Weg zu mehr Gleichberechtigung?",
+      "data-privacy": "Was ist wichtiger: Dass der Staat zur Sicherheit auf private Daten zugreifen darf oder der Schutz unserer Privatsphäre?",
+      "referendum": "Sollten in einer Demokratie wichtige politische Entscheidungen durch Volksabstimmungen getroffen werden, oder ist es besser, sich auf gewählte Vertreter zu verlassen?",
       "media-regulation": "Sollten soziale Medien Inhalte regulieren, um Fehlinformationen zu verhindern, oder sollten sie absolute Meinungsfreiheit bewahren?",
       "climate-pay": "Sollten entwickelte Nationen angesichts ihrer historischen Emissionen proportional mehr für den Klimaschutz bezahlen?",
       "capitalism": "Ist der Kapitalismus das optimale System, um das langfristige Wohlbefinden der Menschheit zu maximieren, oder bieten alternative Modelle bessere Perspektiven?",
@@ -222,15 +222,15 @@
     "Ethics": {
       "meat-ethics": "Ist der Fleischkonsum ethisch vertretbar?",
       "abortion-autonomy": "Sollte der Zugang zu Abtreibungen eingeschränkt werden, um potenzielle Rechte des Fötus zu schützen, oder steht die körperliche Autonomie im Vordergrund?",
-      "animal-research": "Ist es moralisch vertretbar, Tiere für wissenschaftliche Forschung zu nutzen, wenn dies zu bedeutenden medizinischen Durchbrüchen für den Menschen führen kann?",
+      "animal-research": "Ist es okay, Tiere für medizinische Forschung zu nutzen, wenn dadurch wichtige Krankheiten geheilt werden könnten?",
       "trolley": "Würdest du einen Hebel betätigen, um einen außer Kontrolle geratenen Zug umzuleiten, sodass eine Person statt fünf getötet wird?",
-      "break-law": "Ist es jemals gerechtfertigt, das Gesetz zu brechen, wenn es dem größeren Wohl dient?",
+      "break-law": "Ist es jemals gerechtfertigt, das Gesetz zu brechen, wenn es dem Gemeinwohl dient?",
       "whistleblowers": "Sollten Whistleblower, die Fehlverhalten in Unternehmen oder Regierungen aufdecken, voll geschützt werden, auch wenn sie Geheimhaltungsvereinbarungen verletzen?",
       "personality-sentencing": "Sollten Persönlichkeitsmerkmale bei der Strafzumessung berücksichtigt werden?",
       "user-data": "Sollten Unternehmen die umfangreiche Sammlung von Nutzerdaten erlauben, wenn dies zu einem individualisierteren Service führt?"
     },
     "Thought Experiments": {
-      "controlled-emotions": "Stell dir eine Welt vor, in der Emotionen mithilfe von Technologie präzise kontrolliert werden können. Wäre das eine Utopie oder eine Dystopie?",
+      "controlled-emotions": "Stell dir eine Welt vor, in der Emotionen durch Technologie präzise kontrolliert werden können. Wäre das eine Utopie oder eine Dystopie?",
       "teleportation-vs-time": "Welcher wissenschaftliche Durchbruch hätte einen tieferen Einfluss auf die Gesellschaft: Teleportation oder Zeitreise?",
       "perfect-happiness": "Wenn eine Maschine dir perfektes Glück schenken könnte, es sich jedoch nur um eine Illusion handelt, wäre es eine gute Idee sie zu nutzen?",
       "sacrifice": "Würdest du 1% der Bevölkerung opfern, um das Aussterben der Menschheit zu verhindern?",
@@ -241,8 +241,8 @@
       "global-issue": "Wenn du ein globales Problem lösen müsstest (z. B. Welthunger, Klimawandel oder nukleare Abrüstung), welches wäre es und warum?"
     },
     "Business & Risk": {
-      "rapid-scaling": "Sollten Unternehmen in wettbewerbsintensiven Märkten schnelles Wachstum gegenüber der Rentabilität vorziehen?",
-      "layoffs": "Sollten Unternehmen strukturierte Entlassungen akzeptieren, um langfristiges Wachstum zu fördern, oder ist dies ein Zeichen für systematisches Missmanagement?",
+      "rapid-scaling": "Sollten Unternehmen in wettbewerbsintensiven Märkten schnelles Wachstum der Rentabilität vorziehen?",
+      "layoffs": "Sind geplante Kündigungswellen vertretbar, wenn sie dem langfristigen Unternehmenswachstum dienen, oder ist das ein Zeichen von schlechter Führung?",
       "market-dominance": "Ist es bei Fusionen und Übernahmen sinnvoll, rasche Marktdominanz anzustreben, auch wenn kulturelle Konflikte und Integrationsprobleme übersehen werden könnten?",
       "supply-chain": "Sollten Unternehmen für die Umweltauswirkungen ihrer gesamten Lieferkette verantwortlich gemacht werden?",
       "financial-survival": "Sollten Unternehmen in wirtschaftlich unsicheren Zeiten eher das direkte finanzielle Überleben sichern – zum Beispiel durch Kürzungen bei F&E – oder in Innovation für künftiges Wachstum investieren?",
@@ -253,18 +253,18 @@
       "shareholder-welfare": "Sollten Unternehmen die Dividenden der Aktionäre über das Wohlergehen der Mitarbeiter stellen?"
     },
     "Biases & Fallacies": {
-      "cancer-drug": "Ein neues Krebstherapeutikum zeigt in Studien eine Überlebensrate von 90%, aber einige Experten bezweifeln seine Wirksamkeit. Sollte es zugelassen werden?",
+      "cancer-drug": "Ein neues Krebstherapeutikum zeigt in Studien eine Überlebensrate von 90%, aber einige Experten zweifeln an seiner Wirksamkeit. Sollte es zugelassen werden?",
       "coffee-study": "Eine Studie zeigt, dass Kaffeetrinker länger leben. Sollte die WHO daher eine Empfehlung zum Kaffeekonsum aussprechen?",
       "authority": "Garantiert ein Verweis auf eine Autorität zwangsläufig die Richtigkeit einer Aussage?",
       "anecdote": "Ist es ein logischer Fehlschluss, aus einer einzigen Anekdote eine allgemeine Schlussfolgerung zu ziehen?",
       "slippery-slope": "Ist das Schneeballargument immer ein Fehlschluss, oder kann es manchmal eine valide Methode sein, um potenzielle negative Folgen abzuschätzen?",
-      "bandwagon": "Ist es in Entscheidungssituationen gerechtfertigt, sich dem Herdentrieb anzuschließen, wenn nur wenige Belege vorliegen, oder ist dies ein fehlerhafter Ansatz?",
+      "bandwagon": "Ist es eine vertretbare Strategie, einfach der Mehrheit zu folgen, wenn man sich unsicher ist und nur wenige Informationen zur Verfügung hat?",
       "majority-view": "Sollten wir bei widersprüchlichen Studien der Mehrheitsmeinung Glauben schenken, oder abweichenden Ergebnissen mehr Gewicht beigemessen werden?",
       "evidence-weight": "Welches Gewicht sollte anekdotischer Evidenz im Vergleich zu statistischen Daten und systematischer Forschung eingeräumt werden?",
       "argument-source": "Ist es in Debatten legitim, die Quelle oder persönlichen Interessen des Sprechers zu berücksichtigen, oder sollte der Fokus ausschließlich auf der Logik des Arguments liegen?"
     },
     "Fun & Casual": {
-      "big-fish-small-pond": "Ist es besser, ein großer Fisch in einem kleinen Teich zu sein oder ein kleiner Fisch in einem großen Teich?",
+      "big-fish-small-pond": "Ist es besser, ein großer Fisch in einem kleinen Teich oder ein kleiner Fisch in einem großen Teich zu sein?",
       "bear-vs-gorilla": "Wer würde in einem Kampf gewinnen – ein Grizzlybär oder ein Silberrücken-Gorilla?",
       "cats-dogs": "Sind Katzen oder Hunde die besseren Haustiere?",
       "hotdog-sandwich": "Ist ein Hotdog ein Sandwich?",
@@ -279,35 +279,35 @@
     "goBack": "Zurück",
     "section1": {
       "title": "Wähle eine Frage aus",
-      "description": "Suche dir eine Frage aus einem der Themenbereiche aus."
+      "description": "Wähle eine Frage aus einem der Themenbereiche."
     },
     "section2": {
-      "title": "Formuliere dein Argument",
-      "description": "Stelle deine These auf und begründe sie mit einem Argument."
+      "title": "Argument entwickeln",
+      "description": "Formuliere deine These und unterstütze sie mit logischen Argumenten."
     },
     "section3": {
-      "title": "Erhalte direktes Feedback",
-      "description": "Erhalte eine KI-gesteuerte Bewertung und Feedback zu deinem Argument."
+      "title": "Feedback erhalten",
+      "description": "Erhalte eine Bewertung und Feedback zu deinem Argument durch KI."
     },
     "section4": {
-      "title": "Analyse & Verbesserung",
-      "description": "Analyse deine Leistung, verfolge deinen Fortschritt und steigere dein Level."
+      "title": "Analysieren & Verbessern",
+      "description": "Analysiere deine Leistung, verfolge deinen Fortschritt und steigere dein Level."
     },
     "overviewTitle": "Überblick",
-    "overview": "Die Plattform wurde entwickelt, um deine Argumentations- und Entscheidungsfähigkeiten zu verbessern:",
+    "overview": "Diese Plattform hilft dir, deine Argumentations- und Entscheidungsfähigkeiten zu verbessern.",
     "profileSection": {
       "title": "Profilseite",
-      "description": "Dein Profil zeigt eine Übersicht deines Fortschritts. Besuche deine <a href='/profile' class='text-gray-800 underline hover:text-gray-600'>Profilseite</a>, um dein Level, deinen Fortschritt im Zeitverlauf und eine Liste all deiner eingereichten Antworten zu sehen.",
-      "detailedFeedback": "Detailliertes Bewertungsfeedback ist für jede deiner Antworten verfügbar und gibt dir Einblicke in deine Stärken sowie Bereiche mit Verbesserungspotenzial."
+      "description": "Dein Profil bietet eine Übersicht über deinen Fortschritt. Besuche deine <a href='/profile' class='text-gray-800 underline hover:text-gray-600'>Profilseite</a>, um dein Level, deinen Fortschritt im Zeitverlauf und alle deine eingereichten Antworten zu sehen.",
+      "detailedFeedback": "Detailliertes Feedback zu jeder deiner Antworten gibt dir Einblicke in deine Stärken und Bereiche, die du verbessern kannst."
     },
     "challengeSection": {
       "title": "Challenge",
-      "description": "Zusätzlich zu deinem Hauptargument hast du die Möglichkeit, dich einer Challenge zu stellen. Sie hilft dir, logische Unstimmigkeiten, unklare Punkte oder unberücksichtigte Gegenargumente zu identifizieren.",
-      "additionalInfo": "Das Beantworten der Challenge führt zu einer zusätzlichen Bewertung und kann weitere XP einbringen. Die Challenge ist optional – du kannst auch zu einer anderen Frage übergehen."
+      "description": "Neben deinem Hauptargument kannst du dich einer Challenge stellen, um logische Unstimmigkeiten, unklare Punkte oder unberücksichtigte Gegenargumente zu erkennen.",
+      "additionalInfo": "Das Lösen der Challenge bringt zusätzliche Bewertungen und XP. Die Challenge ist optional – du kannst auch direkt zu einer anderen Frage wechseln."
     },
     "evaluationCriteria": {
       "title": "Bewertungskriterien",
-      "description": "Deine Argumente werden nach folgenden Dimensionen bewertet:"
+      "description": "Deine Argumente werden anhand folgender Kriterien bewertet:"
     }
   },
   "evaluationCriteria": {
@@ -416,111 +416,111 @@
   "howToImprovePage": {
     "title": "Wie man sich verbessert",
     "overviewTitle": "Überblick",
-    "overview": "Erkenne vorherrschende Denkverzerrungen und vermeide gängige logische Fehlschlüsse, um stärkere und überzeugendere Argumente zu entwickeln. Das Bewusstsein für diese Fallstricke kann dir helfen, deinen Ansatz zur Problemlösung und Entscheidungsfindung zu verfeinern.",
+    "overview": "Erkenne Denkverzerrungen und vermeide logische Fehlschlüsse, um stärkere und überzeugendere Argumente zu entwickeln. Dieses Bewusstsein hilft dir, deinen Ansatz zur Problemlösung und Entscheidungsfindung zu verbessern.",
     "cognitiveBiasesTitle": "Kognitive Verzerrungen",
     "logicalFallaciesTitle": "Logische Fehlschlüsse",
     "exampleTitle": "Beispiel",
     "cognitive_biases": [
       {
         "name": "Bestätigungsfehler",
-        "description": "Tendenz, nach Informationen zu suchen, diese zu interpretieren, zu bevorzugen und sich zu merken, die vorbestehende Überzeugungen bestätigen.",
+        "description": "Die Neigung, Informationen zu suchen und zu erinnern, die die eigenen Überzeugungen bestätigen.",
         "example": "Nur Nachrichtenquellen lesen, die zu deinen politischen Ansichten passen."
       },
       {
         "name": "Halo-Effekt",
-        "description": "Ein einzelnes positives Merkmal beeinflusst die Gesamtwahrnehmung.",
+        "description": "Ein positives Merkmal beeinflusst die gesamte Wahrnehmung einer Person.",
         "example": "Annehmen, dass attraktive Personen kompetenter sind."
       },
       {
         "name": "Fundamentaler Attributionsfehler",
-        "description": "Das Verhalten anderer wird eher dem Charakter als der Situation zugeschrieben.",
+        "description": "Man schreibt das Verhalten anderer eher ihrem Charakter als der Situation zu.",
         "example": "Jemanden zu spät kommen zu sehen und anzunehmen, dass er faul ist, statt den Verkehr zu berücksichtigen."
       },
       {
         "name": "Fehlschluss der versunkenen Kosten",
-        "description": "Ein Verhalten wird fortgesetzt, weil bereits investierte Ressourcen berücksichtigt werden.",
+        "description": "Man hält an einem Verhalten fest, weil man bereits investiert hat.",
         "example": "Einen langweiligen Film zu Ende schauen, weil man bereits bezahlt hat."
       },
       {
         "name": "Negativitätsverzerrung",
-        "description": "Negative Erfahrungen werden stärker gewichtet als positive.",
+        "description": "Negative Erlebnisse haben mehr Gewicht als positive.",
         "example": "Kritik bleibt intensiver in Erinnerung als Lob."
       },
       {
         "name": "Ankerheuristik",
-        "description": "Zu starke Abhängigkeit von der zuerst erhaltenen Information.",
+        "description": "Man verlässt sich zu sehr auf die erste erhaltene Information.",
         "example": "Der erste angebotene Preis prägt die Erwartungen für alle weiteren Verhandlungen."
       },
       {
         "name": "Verfügbarkeitsheuristik",
-        "description": "Die Bedeutung leicht verfügbarer Informationen wird überschätzt.",
+        "description": "Man überschätzt die Bedeutung von leicht verfügbaren Informationen.",
         "example": "Nachdem man Nachrichtenberichte über Flugzeugabstürze sieht, denkt man, dass solche Ereignisse häufig sind."
       },
       {
         "name": "Dunning-Kruger-Effekt",
-        "description": "Menschen mit geringer Fähigkeit überschätzen oft ihr eigenes Können.",
+        "description": "Menschen mit wenig Können überschätzen oft ihre Fähigkeiten.",
         "example": "Anfänger im Schach überschätzen möglicherweise ihr Talent, weil sie ihre Schwächen nicht erkennen."
       },
       {
         "name": "Mitläufereffekt",
-        "description": "Glaubenssätze werden übernommen, weil viele andere sie teilen.",
+        "description": "Man übernimmt Überzeugungen, weil viele andere sie teilen.",
         "example": "An eine Aussage glauben, weil sie in sozialen Medien viele Shares erhält."
       },
       {
         "name": "Rückschaufehler",
-        "description": "Nach einem Ereignis glaubt man, das Ergebnis vorausgesehen zu haben.",
+        "description": "Man glaubt nach einem Ereignis, das Ergebnis vorhergesehen zu haben.",
         "example": "Nach einer Niederlage behaupten: 'Ich wusste, dass sie verlieren würden!'"
       }
     ],
     "logical_fallacies": [
       {
         "name": "Strohmann-Argument",
-        "description": "Ein Argument wird verzerrt dargestellt, um es leichter angreifen zu können.",
+        "description": "Man stellt ein Argument verzerrt dar, um es leichter anzugreifen.",
         "example": "Wenn jemand strengere Umweltschutzmaßnahmen fordert, behauptet er: 'Sie wollen die ganze Industrie abschaffen!'"
       },
       {
         "name": "Ad Hominem",
-        "description": "Statt des Arguments wird die Person, die es vorbringt, kritisiert.",
+        "description": "Man greift die Person an, statt das Argument zu widerlegen.",
         "example": "Eine Klimastudie ablehnen, weil der Autor einst für ein Ölunternehmen arbeitete."
       },
       {
         "name": "Whataboutism",
-        "description": "Kritik wird abgeblockt, indem auf ähnliche Fehler anderer hingewiesen wird.",
+        "description": "Man lenkt von Kritik ab, indem man auf ähnliche Fehler anderer hinweist.",
         "example": "Bei Korruptionsvorwürfen erwidern: 'Was ist mit den Spenden der anderen Partei?'"
       },
       {
         "name": "Basisratenfehlschluss",
-        "description": "Die allgemeine statistische Wahrscheinlichkeit wird ignoriert, wenn Einzelfälle bewertet werden.",
+        "description": "Man ignoriert die allgemeine Wahrscheinlichkeit bei der Bewertung von Einzelfällen.",
         "example": "Sich über einen positiven Krebs-Test zu sorgen, ohne die Seltenheit der Krankheit zu berücksichtigen."
       },
       {
         "name": "Autoritätsargument",
-        "description": "Ein Anspruch wird als wahr angenommen, weil eine Autorität ihn unterstützt.",
+        "description": "Man hält eine Aussage für wahr, weil eine Autorität sie unterstützt.",
         "example": "Diese medizinische Behandlung muss wirken, weil ein berühmter Schauspieler sie bewirbt."
       },
       {
         "name": "Falsches Dilemma",
-        "description": "Es werden nur zwei Möglichkeiten dargestellt, obwohl weitere existieren.",
+        "description": "Man stellt nur zwei Optionen dar, obwohl es mehr gibt.",
         "example": "Entweder verbieten wir alle Autos oder der Klimawandel zerstört die Welt."
       },
       {
         "name": "Dammbruch-Argument",
-        "description": "Es wird behauptet, dass ein kleiner Anfangsschritt zwangsläufig zu extremen Folgen führt.",
+        "description": "Man behauptet, ein kleiner Schritt führe zwangsläufig zu extremen Folgen.",
         "example": "Die Legalisierung von Marihuana führt zu einer Heroinabhängigkeitsepidemie."
       },
       {
         "name": "Berufung auf die Natur",
-        "description": "Es wird argumentiert, dass etwas gut sei, weil es natürlich ist.",
+        "description": "Man argumentiert, etwas sei gut, weil es natürlich ist.",
         "example": "Dieses chemische Produkt ist gefährlich, weil es synthetisch ist und in der Natur nicht vorkommt."
       },
       {
         "name": "Spieler-Irrtum",
-        "description": "Die Annahme, dass vergangene unabhängige Ereignisse zukünftige Wahrscheinlichkeiten beeinflussen.",
+        "description": "Man glaubt, vergangene Ereignisse beeinflussen zukünftige Wahrscheinlichkeiten.",
         "example": "Nach fünf aufeinanderfolgenden Münzwürfen immer 'Zahl' zu sehen, zu glauben, dass jetzt 'Kopf' fällig ist."
       },
       {
         "name": "Appell an die Emotion",
-        "description": "Emotionale Appelle werden genutzt, anstatt valide Argumente zu liefern.",
+        "description": "Man nutzt emotionale Appelle statt logischer Argumente.",
         "example": "Diese Politik wird die Zukunft der Kinder zerstören! (ohne Belege)"
       }
     ],
@@ -533,34 +533,34 @@
     "argumentStep3Content": "Untermauere deine Argumentation mit soliden Daten, seriösen Quellen oder konkreten Beispielen. Suche nach Statistiken, Fallstudien oder Expertenmeinungen, die deinem Argument Glaubwürdigkeit verleihen.",
     "argumentStep4Title": "Fazit:",
     "argumentStep4Content": "Fasse dein Argument zusammen, indem du deine Belege mit deiner Hauptaussage verbindest. Wiederhole, wie deine Daten deine Position stützen und gehe auf mögliche Gegenargumente ein.",
-    "argumentStepsExplanation": "Die Aufteilung deines Arguments in diese Schritte erleichtert es, Lücken in deiner Argumentation zu erkennen und jeden Teil systematisch zu verbessern.",
-    "argumentStepsAdditional": "Suche stets nach glaubwürdigen Informationen und vermeide es, dich ausschließlich auf Annahmen zu stützen. Überprüfe deine Daten und sei offen dafür, deine Ansichten zu aktualisieren, wenn du mit neuen Beweisen konfrontiert wirst. Dies stärkt nicht nur dein Argument, sondern erhöht auch seine Überzeugungskraft.",
+    "argumentStepsExplanation": "Diese Schritte helfen dir, Lücken in deiner Argumentation zu erkennen und jeden Teil systematisch zu verbessern.",
+    "argumentStepsAdditional": "Suche nach glaubwürdigen Informationen und vermeide es, dich nur auf Annahmen zu stützen. Überprüfe deine Daten und sei bereit, deine Ansichten zu ändern, wenn du neue Beweise erhältst. Das stärkt dein Argument und macht es überzeugender.",
     "biasesSectionTitle": "Kognitive Verzerrungen und logische Fehlschlüsse verstehen",
-    "biasesSectionContent": "Unser Denken kann durch zwei häufige Fallstricke beeinträchtigt werden. Kognitive Verzerrungen sind systematische Denkfehler, die durch mentale Abkürzungen entstehen, während logische Fehlschlüsse häufige Fehler in der Argumentation sind, die die Gültigkeit der Argumente schwächen. Das Bewusstsein für diese Quellen von Denkfehlern kann dir helfen, klarere und objektivere Argumente aufzubauen."
+    "biasesSectionContent": "Unser Denken kann durch zwei häufige Fallstricke beeinträchtigt werden. Kognitive Verzerrungen sind Denkfehler, die durch mentale Abkürzungen entstehen. Logische Fehlschlüsse sind häufige Argumentationsfehler, die die Gültigkeit von Argumenten schwächen. Das Bewusstsein für diese Quellen von Denkfehlern kann dir helfen, klarere und objektivere Argumente aufzubauen."
   },
   "supportPage": {
     "title": "Support - ArguMentor",
-    "header": "Unterstütze ArguMentor",
+    "header": "ArguMentor unterstützen",
     "goBack": "Zurück",
     "howToSupport": "Wie du dieses Projekt unterstützen kannst",
     "financialSupport": {
       "title": "☕ Buy Me a Coffee",
-      "description": "Hilf dabei, die Server am Laufen zu halten und die Entwicklung neuer Funktionen zu unterstützen.",
+      "description": "Hilf dabei, die Server am Laufen zu halten und die Entwicklung neuer Features zu unterstützen.",
       "button": "Unterstützen"
     },
     "feedback": {
       "title": "💭 Feedback geben",
-      "description": "Teile deine Erfahrungen, Vorschläge oder Ideen, um die Plattform zu verbessern.",
+      "description": "Teile deine Erfahrungen, Vorschläge oder Ideen, um die Plattform besser zu machen.",
       "button": "Feedback abgeben"
     },
     "share": {
       "title": "🌟 Weiterempfehlen",
-      "description": "Hilf, die Plattform wachsen zu lassen und erzähle deinen Freunden davon.",
+      "description": "Hilf der Plattform zu wachsen, indem du sie weiterempfehlst.",
       "button": "Teilen"
     },
     "roadmap": {
       "title": "Roadmap",
-      "intro": "Wenn die Plattform mehr Unterstützung erhält, möchte ich folgende Funktionen hinzufügen:",
+      "intro": "Einige Ideen für neue Features, falls die Plattform mehr Unterstützung erhält:",
       "features": {
         "competitiveMode": {
           "title": "Kompetitiver Modus",
@@ -605,7 +605,7 @@
         "general": "Allgemeines Feedback"
       },
       "messageLabel": "Nachricht",
-      "messagePlaceholder": "Teile deine Gedanken...",
+      "messagePlaceholder": "Teile uns deine Gedanken mit...",
       "cancelButton": "Abbrechen",
       "submitButton": "Feedback absenden",
       "successMessage": "Danke für dein Feedback!"
