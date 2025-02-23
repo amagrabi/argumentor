@@ -151,7 +151,7 @@
           {% if current_user.is_authenticated %}
           <button
             id="logoutButton"
-            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs"
+            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm"
             data-i18n="header.logout"
           >
             Logout
@@ -910,30 +910,44 @@
       class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center"
     >
       <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
-        <h3 class="text-xl font-bold mb-4">Share Your Feedback</h3>
+        <h3
+          class="text-xl font-bold mb-4"
+          data-i18n="supportPage.feedbackModal.title"
+        ></h3>
         <form id="feedbackForm" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Category</label
-            >
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              data-i18n="supportPage.feedbackModal.categoryLabel"
+            ></label>
             <select
               id="feedbackCategory"
               class="w-full rounded-lg border border-gray-300 px-3 py-2"
             >
-              <option value="feature">Feature Request</option>
-              <option value="bug">Bug Report</option>
-              <option value="general">General Feedback</option>
+              <option
+                value="feature"
+                data-i18n="supportPage.feedbackModal.categoryOptions.feature"
+              ></option>
+              <option
+                value="bug"
+                data-i18n="supportPage.feedbackModal.categoryOptions.bug"
+              ></option>
+              <option
+                value="general"
+                data-i18n="supportPage.feedbackModal.categoryOptions.general"
+              ></option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Message</label
-            >
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              data-i18n="supportPage.feedbackModal.messageLabel"
+            ></label>
             <textarea
               id="feedbackMessage"
               rows="4"
               class="w-full rounded-lg border border-gray-300 px-3 py-2"
-              placeholder="Share your thoughts..."
+              data-i18n-placeholder="supportPage.feedbackModal.messagePlaceholder"
             ></textarea>
           </div>
           <div class="flex justify-end gap-2">
@@ -941,34 +955,43 @@
               type="button"
               onclick="hideFeedbackModal()"
               class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
-            >
-              Cancel
-            </button>
+              data-i18n="supportPage.feedbackModal.cancelButton"
+            ></button>
             <button
               type="submit"
               class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700"
-            >
-              Submit Feedback
-            </button>
+              data-i18n="supportPage.feedbackModal.submitButton"
+            ></button>
           </div>
         </form>
-        <div id="feedbackSuccess" class="mt-3 text-green-600 text-sm hidden">
-          <p class="mb-4">Thanks for the feedback!</p>
-          <div class="flex justify-end">
-            <button
-              onclick="hideFeedbackModal()"
-              class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700"
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <div
+          id="feedbackSuccess"
+          class="mt-3 text-green-600 text-sm hidden"
+          data-i18n="supportPage.feedbackModal.successMessage"
+        ></div>
       </div>
     </div>
 
     <script>
       function showFeedbackModal() {
         document.getElementById("feedbackModal").classList.remove("hidden");
+        // Apply translations to select options since they don't get updated automatically
+        const currentLanguage = localStorage.getItem("language") || "en";
+        fetch(`/static/translations/${currentLanguage}.json`)
+          .then((response) => response.json())
+          .then((translations) => {
+            document
+              .querySelectorAll("#feedbackCategory option")
+              .forEach((option) => {
+                const key = option.getAttribute("data-i18n");
+                const translation = key
+                  .split(".")
+                  .reduce((obj, k) => obj && obj[k], translations);
+                if (translation) {
+                  option.textContent = translation;
+                }
+              });
+          });
       }
 
       function hideFeedbackModal() {
@@ -977,6 +1000,8 @@
         setTimeout(() => {
           document.getElementById("feedbackForm").classList.remove("hidden");
           document.getElementById("feedbackSuccess").classList.add("hidden");
+          // Reset success message to translation key
+          document.getElementById("feedbackSuccess").innerHTML = "";
         }, 100);
       }
 
@@ -1001,8 +1026,11 @@
 
           if (!message) {
             document.getElementById("feedbackSuccess").innerHTML = `
-          <p class="text-red-600">Please enter your feedback message</p>
-        `;
+            <p class="text-red-600">${
+              window.translations?.errors?.requiredFields ||
+              "Please enter your feedback message"
+            }</p>
+          `;
             document
               .getElementById("feedbackSuccess")
               .classList.remove("hidden");
@@ -1023,23 +1051,31 @@
             if (response.ok) {
               document.getElementById("feedbackForm").classList.add("hidden");
               document.getElementById("feedbackSuccess").innerHTML = `
-            <p class="mb-4">Thanks for the feedback!</p>
-            <div class="flex justify-end">
-              <button onclick="hideFeedbackModal()" class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700">
-                Close
-              </button>
-            </div>
-          `;
+              <p class="mb-4">${
+                window.translations?.supportPage?.feedbackModal
+                  ?.successMessage || "Thanks for the feedback!"
+              }</p>
+              <div class="flex justify-end">
+                <button onclick="hideFeedbackModal()" class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700">
+                  ${
+                    window.translations?.supportPage?.feedbackModal
+                      ?.cancelButton || "Close"
+                  }
+                </button>
+              </div>
+            `;
               document
                 .getElementById("feedbackSuccess")
                 .classList.remove("hidden");
               document.getElementById("feedbackMessage").value = "";
             } else {
               document.getElementById("feedbackSuccess").innerHTML = `
-            <p class="text-red-600">${
-              data.error || "Failed to submit feedback"
-            }</p>
-          `;
+              <p class="text-red-600">${
+                data.error ||
+                window.translations?.errors?.unexpectedError ||
+                "Failed to submit feedback"
+              }</p>
+            `;
               document
                 .getElementById("feedbackSuccess")
                 .classList.remove("hidden");
@@ -1047,8 +1083,11 @@
           } catch (error) {
             console.error("Error:", error);
             document.getElementById("feedbackSuccess").innerHTML = `
-          <p class="text-red-600">Failed to submit feedback</p>
-        `;
+            <p class="text-red-600">${
+              window.translations?.errors?.unexpectedError ||
+              "Failed to submit feedback"
+            }</p>
+          `;
             document
               .getElementById("feedbackSuccess")
               .classList.remove("hidden");
