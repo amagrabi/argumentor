@@ -842,9 +842,12 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       });
 
     // Display XP message
-    document.getElementById("xpMessage").textContent = data.relevance_too_low
+    const challengeXpMessage = document.createElement("p");
+    challengeXpMessage.classList.add("text-sm", "text-red-600", "mt-4");
+    challengeXpMessage.textContent = data.relevance_too_low
       ? translations.evaluation.relevanceWarning
       : "";
+    challengeEvalDiv.appendChild(challengeXpMessage);
 
     // Show achievement notifications if any were awarded
     if (data.achievements) {
@@ -877,7 +880,34 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
           }, 500);
         }
       }
+
+      // Update the achievement counter in the UI
+      const achievementCounterElement = document.querySelector(
+        ".text-lg.font-bold.mb-4 .text-gray-600.font-normal"
+      );
+      if (achievementCounterElement) {
+        try {
+          // Get the current text content
+          const counterText = achievementCounterElement.textContent.trim();
+          // Parse the current count and total count
+          const matches = counterText.match(/\((\d+)\/(\d+)\)/);
+          if (matches && matches.length >= 3) {
+            const currentEarnedCount =
+              parseInt(matches[1]) + data.achievements.length;
+            const totalCount = parseInt(matches[2]);
+            // Update the counter text
+            achievementCounterElement.textContent = `(${currentEarnedCount}/${totalCount})`;
+          }
+        } catch (parseError) {
+          console.error("Error updating achievement counter:", parseError);
+        }
+      }
     }
+
+    // After the evaluation is displayed, scroll to it
+    setTimeout(() => {
+      scrollToChallengeEvaluation();
+    }, 100); // Small delay to ensure the content is rendered
   } catch (error) {
     console.error("Error submitting answer:", error);
     document.getElementById("errorMessage").textContent =
@@ -1366,6 +1396,61 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       challengeBtn.innerHTML = "Submit";
       challengeBtn.disabled = false;
+
+      // Show achievement notifications if any were awarded
+      if (data.achievements) {
+        for (const achievement of data.achievements) {
+          showAchievementNotification(achievement);
+          // Update the achievement icon in the evaluation section
+          const achievementIcon = document.querySelector(
+            `[data-achievement-id="${achievement.id}"]`
+          );
+          if (achievementIcon) {
+            // Remove opacity from both the container and the image
+            achievementIcon.classList.remove("opacity-40");
+            const trophyImage = achievementIcon.querySelector("img");
+            if (trophyImage) {
+              trophyImage.classList.remove("opacity-30");
+            }
+            // Update border color
+            achievementIcon.classList.remove("border-gray-200");
+            achievementIcon.classList.add("border-gray-600");
+
+            // Force a repaint to ensure the transition applies
+            void achievementIcon.offsetWidth;
+
+            // Add a temporary highlight effect
+            achievementIcon.style.transform = "scale(1.1)";
+            achievementIcon.style.boxShadow = "0 0 10px rgba(79, 70, 229, 0.5)";
+            setTimeout(() => {
+              achievementIcon.style.transform = "";
+              achievementIcon.style.boxShadow = "";
+            }, 500);
+          }
+        }
+
+        // Update the achievement counter in the UI
+        const achievementCounterElement = document.querySelector(
+          ".text-lg.font-bold.mb-4 .text-gray-600.font-normal"
+        );
+        if (achievementCounterElement) {
+          try {
+            // Get the current text content
+            const counterText = achievementCounterElement.textContent.trim();
+            // Parse the current count and total count
+            const matches = counterText.match(/\((\d+)\/(\d+)\)/);
+            if (matches && matches.length >= 3) {
+              const currentEarnedCount =
+                parseInt(matches[1]) + data.achievements.length;
+              const totalCount = parseInt(matches[2]);
+              // Update the counter text
+              achievementCounterElement.textContent = `(${currentEarnedCount}/${totalCount})`;
+            }
+          } catch (parseError) {
+            console.error("Error updating achievement counter:", parseError);
+          }
+        }
+      }
 
       // After the evaluation is displayed, scroll to it
       setTimeout(() => {

@@ -219,10 +219,13 @@
           </div>
         </div>
 
-        <h2
-          class="text-xl font-bold mb-4"
-          data-i18n="profile.achievements"
-        ></h2>
+        <h2 class="text-xl font-bold mb-4">
+          <span data-i18n="profile.achievements">Achievements</span>
+          <span class="text-gray-600 font-normal">
+            ({{ earned_achievements|length }}/{{ all_achievements|length
+            }})</span
+          >
+        </h2>
         <div
           class="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:[grid-template-columns:repeat(20,minmax(0,1fr))] gap-x-2 gap-y-2 mb-8"
         >
