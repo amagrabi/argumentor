@@ -11,7 +11,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from config import get_settings
 from extensions import login_manager
-from models import Answer, User, db
+from models import Answer, User, UserAchievement, db
 from services.leveling import get_level_info
 
 logger = logging.getLogger(__name__)
@@ -66,14 +66,23 @@ def signup():
             tier="free",
         )
         db.session.add(user)
-        db.session.flush()
+        db.session.flush()  # This ensures user.uuid is available
 
         if anonymous_user:
+            # Transfer answers
             db.session.execute(
                 update(Answer)
                 .where(Answer.user_uuid == anonymous_user.uuid)
                 .values(user_uuid=user.uuid)
             )
+
+            # Transfer achievements using direct SQL update
+            db.session.execute(
+                update(UserAchievement)
+                .where(UserAchievement.user_uuid == anonymous_user.uuid)
+                .values(user_uuid=user.uuid)
+            )
+
             db.session.delete(anonymous_user)
 
         db.session.commit()
@@ -218,6 +227,11 @@ def google_auth():
             db.session.execute(
                 update(Answer)
                 .where(Answer.user_uuid == anonymous_user.uuid)
+                .values(user_uuid=user.uuid)
+            )
+            db.session.execute(
+                update(UserAchievement)
+                .where(UserAchievement.user_uuid == anonymous_user.uuid)
                 .values(user_uuid=user.uuid)
             )
             db.session.delete(anonymous_user)

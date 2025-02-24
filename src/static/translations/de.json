@@ -99,8 +99,10 @@
     "objectivity": "Objektivität",
     "creativity": "Kreativität",
     "challenge": "Challenge",
+    "level": "Level",
+    "achievements": "Achievements",
     "yourAnswers": "Deine Antworten",
-    "progressOverTime": "Fortschritt im Laufe der Zeit",
+    "progressOverTime": "Fortschritt",
     "rating": "Bewertung",
     "time": "Zeit",
     "claim": "These",
@@ -108,7 +110,135 @@
     "counterargument": "Gegenargumente",
     "challengeResponse": "Antwort",
     "feedbackDetails": "Details",
-    "dailyVoiceRecordings": "Tägliche Sprachaufnahmen"
+    "dailyVoiceRecordings": "Tägliche Sprachaufnahmen",
+    "achievementDescriptions": {
+      "first_argument": {
+        "name": "Erste Schritte",
+        "description": "Dein erstes Argument formuliert"
+      },
+      "all_categories": {
+        "name": "Vielseitig",
+        "description": "Eine Frage aus jeder Kategorie beantwortet"
+      },
+      "exceptional_rating": {
+        "name": "Exzellenz erreicht",
+        "description": "Eine außergewöhnliche Bewertung (über 8) erreicht"
+      },
+      "exceptional_all_categories": {
+        "name": "Meister aller Klassen",
+        "description": "Eine außergewöhnliche Bewertung in jeder Kategorie erreicht"
+      },
+      "max_length": {
+        "name": "Wortgewaltiger Visionär",
+        "description": "Ein sehr langes Argument (maximale Zeichenanzahl) eingereicht"
+      },
+      "min_length": {
+        "name": "Prägnanter Kommunikator",
+        "description": "Ein sehr kurzes, aber effektives Argument eingereicht"
+      },
+      "voice_answer": {
+        "name": "Stimme der Vernunft",
+        "description": "Eine Sprachantwort eingereicht"
+      },
+      "answers_10": {
+        "name": "Engagierter Debattierer",
+        "description": "Über 10 Fragen beantwortet"
+      },
+      "answers_25": {
+        "name": "Erfahrener Sprecher",
+        "description": "Über 25 Fragen beantwortet"
+      },
+      "answers_100": {
+        "name": "Argumentationsautorität",
+        "description": "Über 100 Fragen beantwortet"
+      },
+      "first_challenge": {
+        "name": "Herausforderung angenommen",
+        "description": "Deine erste Herausforderung beantwortet"
+      },
+      "challenges_10": {
+        "name": "Herausforderungschampion",
+        "description": "Über 10 Herausforderungen beantwortet"
+      },
+      "challenges_25": {
+        "name": "Herausforderungsmeister",
+        "description": "Über 25 Herausforderungen beantwortet"
+      },
+      "challenges_100": {
+        "name": "Herausforderungslegende",
+        "description": "Über 100 Herausforderungen beantwortet"
+      }
+    }
+  },
+  "achievements": {
+    "first_argument": {
+      "name": "Erste Schritte",
+      "description": "Reiche dein erstes Argument ein"
+    },
+    "voice_pioneer": {
+      "name": "Stimmenpionier",
+      "description": "Reiche deine erste Sprachantwort ein"
+    },
+    "category_explorer": {
+      "name": "Kategorien-Erkunder",
+      "description": "Beantworte Fragen aus allen Kategorien"
+    },
+    "exceptional_rating": {
+      "name": "Exzellenz erreicht",
+      "description": "Erhalte eine außergewöhnliche Bewertung (9+ Punkte)"
+    },
+    "master_of_all": {
+      "name": "Meister aller Kategorien",
+      "description": "Erhalte in allen Bewertungskategorien mindestens 9 Punkte"
+    },
+    "first_challenge": {
+      "name": "Herausforderung angenommen",
+      "description": "Beantworte deine erste Challenge"
+    },
+    "ten_challenges": {
+      "name": "Challenge-Enthusiast",
+      "description": "Vervollständige 10 Challenges"
+    },
+    "hundred_challenges": {
+      "name": "Challenge-Meister",
+      "description": "Vervollständige 100 Challenges"
+    },
+    "wordsmith": {
+      "name": "Wortgewalt",
+      "description": "Reiche ein langes Argument ein"
+    },
+    "concise_master": {
+      "name": "Prägnanz-Meister",
+      "description": "Reiche ein kurzes und präzises Argument ein"
+    },
+    "ten_answers": {
+      "name": "Einsteiger",
+      "description": "Reiche 10 Argumente ein"
+    },
+    "twenty_five_answers": {
+      "name": "Regelmäßiger Debattierer",
+      "description": "Reiche 25 Argumente ein"
+    },
+    "fifty_answers": {
+      "name": "Engagierter Beiträger",
+      "description": "Reiche 50 Argumente ein"
+    },
+    "hundred_answers": {
+      "name": "Zenturio",
+      "description": "Reiche 100 Argumente ein"
+    },
+    "voice_master": {
+      "name": "Stimmenmeister",
+      "description": "Reiche 10 Sprachantworten ein"
+    },
+    "great_rating": {
+      "name": "Großartige Bewertung",
+      "description": "Erhalte eine hervorragende Bewertung (7+ Punkte)"
+    },
+    "all_seven_categories": {
+      "name": "Ausgewogene Leistung",
+      "description": "Erhalte in allen Bewertungskategorien mindestens 7 Punkte"
+    }
   },
   "evaluation": {
     "title": "Bewertung",

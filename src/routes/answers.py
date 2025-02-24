@@ -7,6 +7,8 @@ from flask import Blueprint, jsonify, request, session
 from config import get_settings
 from extensions import db, limiter
 from models import Answer, User
+from services.achievement_service import check_and_award_achievements
+from services.evaluator import DummyEvaluator
 from services.leveling import get_level, get_level_info
 from services.question_service import get_questions
 from utils import get_daily_evaluation_count, get_eval_limit
@@ -33,8 +35,6 @@ def create_evaluator():
 
         return LLMEvaluator(CLIENT, system_instructions, RESPONSE_SCHEMA)
     else:
-        from services.evaluator import DummyEvaluator
-
         return DummyEvaluator()
 
 
@@ -198,6 +198,13 @@ def submit_answer():
         # Get mode from request payload
         input_mode = data.get("input_mode", "text")
 
+        # Use consistent property name without quotes to avoid issues
+        scores_dict = {**evaluation["scores"]}
+        scores_dict["Overall"] = avg_all
+
+        feedback_dict = {**evaluation["feedback"]}
+        feedback_dict["Overall"] = evaluation["overall_feedback"]
+
         new_answer = Answer(
             user_uuid=user_uuid,
             question_id=question_id,
@@ -205,14 +212,8 @@ def submit_answer():
             claim=claim,
             argument=argument,
             counterargument=counterargument if counterargument else None,
-            evaluation_scores={
-                **evaluation["scores"],
-                "Overall": avg_all,
-            },
-            evaluation_feedback={
-                **evaluation["feedback"],
-                "Overall": evaluation["overall_feedback"],
-            },
+            evaluation_scores=scores_dict,
+            evaluation_feedback=feedback_dict,
             xp_earned=xp_earned,
             challenge=evaluation.get("challenge"),
             challenge_evaluation_scores={},
@@ -230,6 +231,14 @@ def submit_answer():
         session["xp"] = total_xp
         db.session.commit()
 
+        # Check and award any new achievements
+        answer_data = {
+            "input_mode": input_mode,
+            "total_score": avg_all,
+            "evaluation_scores": evaluation["scores"],
+        }
+        newly_awarded = check_and_award_achievements(user, answer_data)
+
         old_level = get_level(old_xp)
         new_level = get_level(total_xp)
         leveled_up = old_level != new_level
@@ -240,7 +249,10 @@ def submit_answer():
         )
 
         response_data = {
-            "evaluation": evaluation,
+            "evaluation": {
+                **evaluation,
+                "total_score": avg_all,  # Ensure total_score is included at the root level
+            },
             "xp_gained": xp_earned,
             "total_xp": total_xp,
             "leveled_up": leveled_up,
@@ -249,6 +261,17 @@ def submit_answer():
             "answer_id": new_answer.id,
             "current_level": level_info["display_name"],
         }
+
+        # Add any newly awarded achievements to the response
+        if newly_awarded:
+            response_data["achievements"] = [
+                {
+                    "id": achievement.id,
+                    "name": achievement.name,
+                    "description": achievement.description,
+                }
+                for achievement in newly_awarded
+            ]
 
         return jsonify(response_data)
     except Exception as e:
@@ -271,6 +294,8 @@ def submit_challenge_response():
         data = request.json
         challenge_response = data.get("challenge_response", "").strip()
         answer_id = data.get("answer_id")
+
+        logger.debug(f"Challenge response received for answer_id: {answer_id}")
 
         if not challenge_response:
             return jsonify({"error": "Challenge response is required"}), 400
@@ -310,8 +335,15 @@ def submit_challenge_response():
                 )
             return jsonify({"error": error_message}), 429
 
-        evaluator = create_evaluator()
-        evaluation = evaluator.evaluate_challenge(answer, challenge_response)
+        try:
+            logger.debug("Creating evaluator and evaluating challenge response")
+            evaluator = create_evaluator()
+            evaluation = evaluator.evaluate_challenge(answer, challenge_response)
+            logger.debug(f"Evaluation result keys: {list(evaluation.keys())}")
+            logger.debug(f"Evaluation scores keys: {list(evaluation['scores'].keys())}")
+        except Exception as eval_error:
+            logger.error(f"Error during challenge evaluation: {str(eval_error)}")
+            return jsonify({"error": f"Evaluation error: {str(eval_error)}"}), 500
 
         scores = evaluation["scores"]
         all_keys = [
@@ -322,7 +354,14 @@ def submit_challenge_response():
             "Objectivity",
             "Creativity",
         ]
-        avg_all = sum(scores[key] for key in all_keys) / len(all_keys)
+        try:
+            logger.debug(f"Calculating average score from keys: {all_keys}")
+            avg_all = sum(scores[key] for key in all_keys) / len(all_keys)
+            logger.debug(f"Average score calculated: {avg_all}")
+        except Exception as avg_error:
+            logger.error(f"Error calculating average score: {str(avg_error)}")
+            return jsonify({"error": f"Score calculation error: {str(avg_error)}"}), 500
+
         # Only award XP if the overall average meets the threshold.
         xp_gained = (
             round(avg_all * 10) if avg_all >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP else 0
@@ -330,31 +369,76 @@ def submit_challenge_response():
         logger.info(f"Challenge average: {avg_all}, XP gained: {xp_gained}")
 
         # Update the answer with the new challenge response and XP.
-        answer.challenge_response = challenge_response
-        answer.challenge_evaluation_scores = {
-            **evaluation["scores"],
-            "Overall": avg_all,
-        }
-        answer.challenge_evaluation_feedback = {
-            **evaluation["feedback"],
-            "Overall": evaluation["overall_feedback"],
-        }
-        answer.challenge_xp_earned = xp_gained
+        try:
+            logger.debug("Updating answer with challenge response and scores")
+            answer.challenge_response = challenge_response
 
-        db.session.commit()
+            # Use consistent property name without quotes to avoid issues
+            scores_dict = {**evaluation["scores"]}
+            scores_dict["Overall"] = avg_all
 
-        user = User.query.filter_by(uuid=user_uuid).first()
-        new_total = recalc_user_xp(user)
-        user.xp = new_total
-        session["xp"] = new_total
-        db.session.commit()
+            feedback_dict = {**evaluation["feedback"]}
+            feedback_dict["Overall"] = evaluation["overall_feedback"]
 
-        leveled_up = get_level(recalc_user_xp(user) - xp_gained) != get_level(new_total)
-        level_info = get_level_info(new_total)
+            answer.challenge_evaluation_scores = scores_dict
+            answer.challenge_evaluation_feedback = feedback_dict
+            answer.challenge_xp_earned = xp_gained
 
-        return jsonify(
-            {
-                "evaluation": evaluation,
+            db.session.commit()
+            logger.debug("Answer successfully updated in database")
+        except Exception as db_error:
+            logger.error(f"Database error: {str(db_error)}")
+            return jsonify({"error": f"Database error: {str(db_error)}"}), 500
+
+        try:
+            logger.debug("Recalculating user XP")
+            user = User.query.filter_by(uuid=user_uuid).first()
+            new_total = recalc_user_xp(user)
+            user.xp = new_total
+            session["xp"] = new_total
+            db.session.commit()
+            logger.debug(f"User XP updated: {new_total}")
+        except Exception as xp_error:
+            logger.error(f"Error updating user XP: {str(xp_error)}")
+            return jsonify({"error": f"XP update error: {str(xp_error)}"}), 500
+
+        # Check and award any new achievements
+        try:
+            logger.debug("Checking for achievements")
+            challenge_answer_data = {
+                "input_mode": "text",  # Challenge responses are always text
+                "total_score": avg_all,  # Use the avg_all we calculated directly instead of trying to access it through scores
+                "evaluation_scores": evaluation["scores"],
+                "is_challenge": True,
+            }
+            newly_awarded = check_and_award_achievements(user, challenge_answer_data)
+            logger.debug(f"Newly awarded achievements: {newly_awarded}")
+        except Exception as achievement_error:
+            logger.error(f"Error checking achievements: {str(achievement_error)}")
+            return jsonify(
+                {"error": f"Achievement error: {str(achievement_error)}"}
+            ), 500
+
+        try:
+            logger.debug("Checking level information")
+            leveled_up = get_level(recalc_user_xp(user) - xp_gained) != get_level(
+                new_total
+            )
+            level_info = get_level_info(new_total)
+            logger.debug(f"Leveled up: {leveled_up}")
+        except Exception as level_error:
+            logger.error(f"Error checking level info: {str(level_error)}")
+            return jsonify({"error": f"Level info error: {str(level_error)}"}), 500
+
+        try:
+            logger.debug("Building response data")
+            # Make sure evaluation has consistent structure
+            eval_copy = dict(evaluation)
+            if "total_score" not in eval_copy:
+                eval_copy["total_score"] = avg_all
+
+            response_data = {
+                "evaluation": eval_copy,
                 "challenge_xp_earned": xp_gained,
                 "current_xp": new_total,
                 "current_level": level_info["display_name"],
@@ -363,8 +447,28 @@ def submit_challenge_response():
                 "relevance_too_low": scores["Relevance"]
                 < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP,
             }
-        )
+
+            # Add any newly awarded achievements to the response
+            if newly_awarded:
+                response_data["achievements"] = [
+                    {
+                        "id": achievement.id,
+                        "name": achievement.name,
+                        "description": achievement.description,
+                    }
+                    for achievement in newly_awarded
+                ]
+
+            logger.debug("Response prepared successfully, returning to client")
+            return jsonify(response_data)
+        except Exception as response_error:
+            logger.error(f"Error preparing response: {str(response_error)}")
+            return jsonify(
+                {"error": f"Response preparation error: {str(response_error)}"}
+            ), 500
+
     except Exception as e:
+        logger.error(f"Uncaught exception in challenge response: {str(e)}")
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
     finally:

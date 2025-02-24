@@ -124,9 +124,15 @@ function getDatasetsForMetrics(answers, selectedMetrics) {
       data = answers.map((a) => {
         if (
           a.challenge_evaluation_scores &&
-          a.challenge_evaluation_scores.Overall !== undefined
+          (a.challenge_evaluation_scores.Overall !== undefined ||
+            a.challenge_evaluation_scores["Overall"] !== undefined)
         ) {
-          return parseFloat(a.challenge_evaluation_scores.Overall.toFixed(1));
+          // Try to access with both direct property and bracket notation
+          const overallScore =
+            a.challenge_evaluation_scores.Overall !== undefined
+              ? a.challenge_evaluation_scores.Overall
+              : a.challenge_evaluation_scores["Overall"];
+          return parseFloat(overallScore.toFixed(1));
         } else {
           return null;
         }

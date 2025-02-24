@@ -34,12 +34,28 @@ class User(db.Model, UserMixin):
     )
     last_voice_transcription = db.Column(db.DateTime, nullable=True)
     daily_voice_count = db.Column(db.Integer, default=0, nullable=True)
+    achievements = db.relationship("UserAchievement", backref="user", lazy=True)
 
     def get_id(self):
         return str(self.uuid)
 
     def __repr__(self):
         return f"<User {self.uuid} {self.username}>"
+
+    def has_achievement(self, achievement_id: str) -> bool:
+        """Check if user has earned a specific achievement"""
+        return any(a.achievement_id == achievement_id for a in self.achievements)
+
+    def award_achievement(self, achievement_id: str) -> bool:
+        """Award an achievement to the user if they don't already have it"""
+        if not self.has_achievement(achievement_id):
+            achievement = UserAchievement(
+                user_uuid=self.uuid, achievement_id=achievement_id
+            )
+            db.session.add(achievement)
+            db.session.commit()
+            return True
+        return False
 
 
 class Answer(db.Model):
@@ -122,3 +138,16 @@ class Feedback(db.Model):
 
     def __repr__(self):
         return f"<Feedback {self.id}>"
+
+
+class UserAchievement(db.Model):
+    __tablename__ = "user_achievements"
+    id = db.Column(db.Integer, primary_key=True)
+    user_uuid = db.Column(db.String(36), db.ForeignKey("users.uuid"), nullable=False)
+    achievement_id = db.Column(
+        db.String(50), nullable=False
+    )  # References achievement ID from constants
+    earned_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<UserAchievement {self.achievement_id}>"

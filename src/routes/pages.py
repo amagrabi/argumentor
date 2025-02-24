@@ -15,6 +15,7 @@ from flask import (
 from flask_login import current_user
 
 from config import get_settings
+from constants.achievements import ACHIEVEMENTS
 from extensions import db, limiter
 from models import Answer, Feedback, User
 from services.leveling import get_level_info
@@ -58,26 +59,37 @@ def calculate_valid_xp_filter(answer):
 
 @pages_bp.route("/")
 def home():
-    # Use the authenticated user's ID if logged in
-    if current_user.is_authenticated:
-        user = current_user
-        session["user_id"] = current_user.uuid  # Sync session with logged-in user
-    else:
-        # The middleware (ensure_user_id) will have already created an anonymous user if needed
-        user = User.query.filter_by(uuid=session["user_id"]).first()
-        if not user:
-            # If user not found, create a new anonymous user
-            new_id = str(uuid.uuid4())
-            session["user_id"] = new_id
-            default_username = f"anonymous_{new_id[:8]}"
-            user = User(uuid=new_id, username=default_username)
-            db.session.add(user)
-            db.session.commit()
+    if "user_id" not in session:
+        session["user_id"] = str(uuid.uuid4())
 
-    xp = user.xp
-    level_info = get_level_info(xp)
+    user = User.query.filter_by(uuid=session["user_id"]).first()
+    if not user:
+        user = User(uuid=session["user_id"], tier="anonymous")
+        db.session.add(user)
+        db.session.commit()
 
-    return render_template("index.html", xp=xp, level_info=level_info)
+    level_info = get_level_info(user.xp)
+    daily_eval_count = get_daily_evaluation_count(user.uuid)
+    eval_limit = get_eval_limit(user.tier)
+    daily_voice_count = get_daily_voice_count(user.uuid)
+    voice_limit = get_voice_limit(user.tier)
+
+    # Get all achievements and user's earned achievements
+    all_achievements = ACHIEVEMENTS
+    earned_achievements = [
+        achievement.achievement_id for achievement in user.achievements
+    ]
+
+    return render_template(
+        "index.html",
+        level_info=level_info,
+        daily_eval_count=daily_eval_count,
+        eval_limit=eval_limit,
+        daily_voice_count=daily_voice_count,
+        voice_limit=voice_limit,
+        all_achievements=all_achievements,
+        earned_achievements=earned_achievements,
+    )
 
 
 @pages_bp.route("/how_it_works")
@@ -150,6 +162,12 @@ def profile():
     daily_voice_count = get_daily_voice_count(user.uuid)
     voice_limit = get_voice_limit(user.tier)
 
+    # Get all achievements and user's earned achievements
+    all_achievements = ACHIEVEMENTS
+    earned_achievements = [
+        achievement.achievement_id for achievement in user.achievements
+    ]
+
     # Query answers sorted by created_at descending and then by id descending to break ties
     answers = (
         Answer.query.filter_by(user_uuid=user.uuid)
@@ -171,6 +189,8 @@ def profile():
         eval_limit=eval_limit,
         daily_voice_count=daily_voice_count,
         voice_limit=voice_limit,
+        all_achievements=all_achievements,
+        earned_achievements=earned_achievements,
     )
 
 

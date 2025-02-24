@@ -603,6 +603,9 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
                     ".level-image-container"
                   );
                   if (levelImageContainer) {
+                    // Create and append particles for celebration effect
+                    createLevelUpParticles(levelImageContainer);
+
                     // Start glow effect
                     levelImageContainer.classList.add("level-up-glow");
 
@@ -625,7 +628,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
                           img.src = data.level_info.level_image;
                         }
                       });
-                    }, 400); // Reduced from 600ms to 400ms for smoother transition
+                    }, 600); // Changed from 750ms to 600ms (50% of 1.2s animation)
 
                     // Remove animations after they complete
                     setTimeout(() => {
@@ -633,7 +636,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
                         "level-image-transition"
                       );
                       levelImageContainer.classList.remove("level-up-glow");
-                    }, 1200); // Reduced from 2000ms to 1200ms to match new animation duration
+                    }, 1200); // Changed from 1500ms to 1200ms to match new animation duration
                   }
 
                   // Reset progress bar to 0 and then animate to new progress
@@ -648,7 +651,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
                     xpProgressBar.style.transition =
                       "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
                     xpProgressBar.style.width = targetWidth;
-                  }, 800); // Reduced from 1000ms to 800ms to better align with the rotation
+                  }, 600); // Reduced from 800ms to 600ms to better align with the faster rotation
                 }, 800);
               } else {
                 // Normal progress animation
@@ -799,6 +802,39 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     document.getElementById("xpMessage").textContent = data.relevance_too_low
       ? translations.evaluation.relevanceWarning
       : "";
+
+    // Show achievement notifications if any were awarded
+    if (data.achievements) {
+      for (const achievement of data.achievements) {
+        showAchievementNotification(achievement);
+        // Update the achievement icon in the evaluation section
+        const achievementIcon = document.querySelector(
+          `[data-achievement-id="${achievement.id}"]`
+        );
+        if (achievementIcon) {
+          // Remove opacity from both the container and the image
+          achievementIcon.classList.remove("opacity-40");
+          const trophyImage = achievementIcon.querySelector("img");
+          if (trophyImage) {
+            trophyImage.classList.remove("opacity-30");
+          }
+          // Update border color
+          achievementIcon.classList.remove("border-gray-200");
+          achievementIcon.classList.add("border-gray-600");
+
+          // Force a repaint to ensure the transition applies
+          void achievementIcon.offsetWidth;
+
+          // Add a temporary highlight effect
+          achievementIcon.style.transform = "scale(1.1)";
+          achievementIcon.style.boxShadow = "0 0 10px rgba(79, 70, 229, 0.5)";
+          setTimeout(() => {
+            achievementIcon.style.transform = "";
+            achievementIcon.style.boxShadow = "";
+          }, 500);
+        }
+      }
+    }
   } catch (error) {
     console.error("Error submitting answer:", error);
     document.getElementById("errorMessage").textContent =
@@ -995,9 +1031,24 @@ window.addEventListener("DOMContentLoaded", async () => {
       const challengeEvalDiv = document.getElementById(
         "challengeEvaluationResults"
       );
-      const totalScore = data.evaluation.total_score;
+
+      // Safely get values with fallbacks
+      const totalScore =
+        data.evaluation && data.evaluation.total_score !== undefined
+          ? data.evaluation.total_score
+          : data.evaluation && data.evaluation.scores
+          ? Object.values(data.evaluation.scores).reduce(
+              (sum, val) => sum + val,
+              0
+            ) / Object.values(data.evaluation.scores).length
+          : 0;
+
       const totalScorePercent = totalScore * 10;
       const totalScoreColor = scoreToColor(totalScore);
+      const overallFeedback =
+        data.evaluation && data.evaluation.overall_feedback
+          ? data.evaluation.overall_feedback
+          : "Evaluation complete.";
 
       let challengeHtml = `
         <p class="text-l font-bold mb-2">
@@ -1010,31 +1061,31 @@ window.addEventListener("DOMContentLoaded", async () => {
           <div id="challengeTotalScoreBar" class="rounded-full total-progress-bar"
                style="width: ${totalScorePercent}%; background-color: ${totalScoreColor};"></div>
         </div>
-        <p id="challengeOverallFeedback" class="text-md">${
-          data.evaluation.overall_feedback
-        }</p>
+        <p id="challengeOverallFeedback" class="text-md">${overallFeedback}</p>
         <div class="flex flex-wrap gap-2 mt-2">`;
 
       // Use the centralized evaluation categories from constants.js
-      EVALUATION_CATEGORIES.forEach((category) => {
-        if (typeof data.evaluation.scores[category] !== "undefined") {
-          const score = data.evaluation.scores[category];
-          const translationKey = EVALUATION_TRANSLATION_MAPPING[category];
-          // Lookup the translated category label; fallback to the original if missing
-          const translatedCategory =
-            (translations.evaluation.scores &&
-              translations.evaluation.scores[translationKey]) ||
-            category;
-          challengeHtml += `<div class="px-2 py-1 rounded-full text-xs"
-                                data-category="${category}"
-                                data-translation-key="evaluation.scores.${translationKey}"
-                                style="background-color: ${scoreToColor(
-                                  score
-                                )};">
-                                  ${translatedCategory}: ${score}/10
-                                </div>`;
-        }
-      });
+      if (data.evaluation && data.evaluation.scores) {
+        EVALUATION_CATEGORIES.forEach((category) => {
+          if (typeof data.evaluation.scores[category] !== "undefined") {
+            const score = data.evaluation.scores[category];
+            const translationKey = EVALUATION_TRANSLATION_MAPPING[category];
+            // Lookup the translated category label; fallback to the original if missing
+            const translatedCategory =
+              (translations.evaluation.scores &&
+                translations.evaluation.scores[translationKey]) ||
+              category;
+            challengeHtml += `<div class="px-2 py-1 rounded-full text-xs"
+                                  data-category="${category}"
+                                  data-translation-key="evaluation.scores.${translationKey}"
+                                  style="background-color: ${scoreToColor(
+                                    score
+                                  )};">
+                                    ${translatedCategory}: ${score}/10
+                                  </div>`;
+          }
+        });
+      }
 
       challengeHtml += `</div>`;
       challengeEvalDiv.innerHTML = challengeHtml;
@@ -1352,4 +1403,116 @@ async function switchLanguage(lang) {
 
   // Restore evaluation content after switching
   restoreEvaluationContent(evaluationContent);
+}
+
+function showAchievementNotification(achievement) {
+  // Create notification element
+  const notification = document.createElement("div");
+  notification.className =
+    "fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-500";
+  notification.style.zIndex = "9999";
+
+  // Add achievement content
+  notification.innerHTML = `
+    <div class="flex items-center gap-3">
+      <div class="achievement-icon w-12 h-12 flex items-center justify-center rounded-lg bg-gray-400">
+        <img src="/static/img/trophy.webp" class="w-8 h-8" alt="Trophy" />
+      </div>
+      <div>
+        <h3 class="font-bold">${achievement.name}</h3>
+        <p class="text-sm text-gray-300">${achievement.description}</p>
+      </div>
+    </div>
+  `;
+
+  // Add to document
+  document.body.appendChild(notification);
+
+  // Trigger animation
+  setTimeout(() => {
+    notification.classList.remove("translate-y-full", "opacity-0");
+  }, 100);
+
+  // Remove after delay
+  setTimeout(() => {
+    notification.classList.add("translate-y-full", "opacity-0");
+    setTimeout(() => {
+      notification.remove();
+    }, 500);
+  }, 5000);
+}
+
+function createLevelUpParticles(container) {
+  // Number of particles to create
+  const particleCount = 15;
+
+  // Get container position for absolute positioning
+  const rect = container.getBoundingClientRect();
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+
+  // Create particles
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement("div");
+    particle.className = "level-up-particle";
+
+    // Random position, size and delay
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 70 + Math.random() * 50;
+    const size = 5 + Math.random() * 10;
+    const duration = 0.8 + Math.random() * 1;
+    const delay = Math.random() * 0.3;
+
+    // Set particle style
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    particle.style.backgroundColor = i % 2 === 0 ? "#0da846" : "#ffd700";
+    particle.style.position = "absolute";
+    particle.style.borderRadius = "50%";
+    particle.style.zIndex = "5";
+    particle.style.opacity = "0";
+    particle.style.top = `${centerY}px`;
+    particle.style.left = `${centerX}px`;
+    particle.style.transform = "translate(-50%, -50%)";
+    particle.style.animation = `particleFly ${duration}s ease-out ${delay}s forwards`;
+
+    // Create and add keyframe animation dynamically
+    const styleSheet = document.styleSheets[0];
+    const keyframes = `
+      @keyframes particleFly {
+        0% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(0);
+        }
+        20% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(
+            calc(-50% + ${Math.cos(angle) * distance}px),
+            calc(-50% + ${Math.sin(angle) * distance}px)
+          ) scale(0.5);
+        }
+      }
+    `;
+
+    try {
+      styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+    } catch (e) {
+      // Fallback if dynamic rules fail
+      console.log("Failed to insert dynamic rule:", e);
+    }
+
+    // Add to container
+    container.appendChild(particle);
+
+    // Remove particle after animation
+    setTimeout(() => {
+      if (particle.parentNode === container) {
+        container.removeChild(particle);
+      }
+    }, (duration + delay) * 1000);
+  }
 }

@@ -274,7 +274,67 @@
     "counterargument": "Counterarguments",
     "challengeResponse": "Challenge Response",
     "feedbackDetails": "Details",
-    "dailyVoiceRecordings": "Daily Voice Recordings"
+    "dailyVoiceRecordings": "Daily Voice Recordings",
+    "level": "Level",
+    "achievements": "Achievements",
+    "achievementDescriptions": {
+      "first_argument": {
+        "name": "First Steps",
+        "description": "Constructed your first argument"
+      },
+      "all_categories": {
+        "name": "Well-Rounded",
+        "description": "Answered a question from every category"
+      },
+      "exceptional_rating": {
+        "name": "Excellence Achieved",
+        "description": "Achieved an exceptional rating (over 8)"
+      },
+      "exceptional_all_categories": {
+        "name": "Master of All",
+        "description": "Achieved an exceptional rating in every category"
+      },
+      "max_length": {
+        "name": "Verbose Visionary",
+        "description": "Submitted a very long argument (max character limit)"
+      },
+      "min_length": {
+        "name": "Concise Communicator",
+        "description": "Submitted a very short but effective argument"
+      },
+      "voice_answer": {
+        "name": "Voice of Reason",
+        "description": "Submitted a voice answer"
+      },
+      "answers_10": {
+        "name": "Dedicated Debater",
+        "description": "Answered over 10 questions"
+      },
+      "answers_25": {
+        "name": "Seasoned Speaker",
+        "description": "Answered over 25 questions"
+      },
+      "answers_100": {
+        "name": "Argument Authority",
+        "description": "Answered over 100 questions"
+      },
+      "first_challenge": {
+        "name": "Challenge Accepted",
+        "description": "Answered your first challenge"
+      },
+      "challenges_10": {
+        "name": "Challenge Champion",
+        "description": "Answered over 10 challenges"
+      },
+      "challenges_25": {
+        "name": "Challenge Master",
+        "description": "Answered over 25 challenges"
+      },
+      "challenges_100": {
+        "name": "Challenge Legend",
+        "description": "Answered over 100 challenges"
+      }
+    }
   },
   "howItWorksPage": {
     "title": "How It Works",

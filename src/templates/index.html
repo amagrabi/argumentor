@@ -772,9 +772,49 @@
               </div>
             </div>
           </div>
+
+          <!-- Achievements Section -->
+          <div class="mt-1 text-center">
+            <h5
+              class="text-lg font-bold mb-4"
+              data-i18n="profile.achievements"
+            ></h5>
+            <div class="flex justify-center w-full">
+              <div
+                class="inline-grid grid-cols-4 sm:grid-cols-6 md:grid-cols-10 lg:grid-cols-[repeat(17,minmax(0,40px))] justify-center justify-items-center gap-x-3 gap-y-3 mb-8 max-w-4xl mx-auto px-4"
+              >
+                {% for achievement in all_achievements %} {% set is_achieved =
+                achievement.id in earned_achievements %}
+                <div class="group relative">
+                  <div
+                    data-achievement-id="{{ achievement.id }}"
+                    class="achievement-icon w-10 h-10 flex items-center justify-center rounded-lg border-2 {{ 'border-gray-200' if not is_achieved else 'border-gray-600' }} bg-white {{ 'opacity-40' if not is_achieved else '' }} transition-all duration-300 hover:border-gray-400"
+                  >
+                    {% if achievement.icon == "trophy" %}
+                    <img
+                      src="{{ url_for('static', filename='img/trophy.webp') }}"
+                      class="w-6 h-6 {{ 'opacity-30' if not is_achieved else '' }}"
+                      alt="Trophy"
+                    />
+                    {% endif %}
+                  </div>
+                  <!-- Tooltip -->
+                  <div
+                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute z-10 w-48 -translate-x-1/4 translate-y-2 pointer-events-none bg-gray-800 text-white text-sm rounded-lg p-2 shadow-lg"
+                  >
+                    <p class="font-bold mb-1">{{ achievement.name }}</p>
+                    <p class="text-gray-200 text-xs">
+                      {{ achievement.description }}
+                    </p>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
         </div>
         <!-- Additional instructions/link to the profile page -->
-        <div class="mt-4 text-center">
+        <div class="mt-2 text-center">
           <p class="text-sm text-center">
             <span data-i18n="evaluation.checkProfile">Check your</span>
             <a

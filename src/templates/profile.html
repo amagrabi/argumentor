@@ -79,47 +79,6 @@
     </header>
 
     <main class="max-w-5xl mx-auto p-4">
-      <div id="xpInfo" class="mt-4 text-center profile-xp">
-        <div class="flex items-center justify-center">
-          <div class="level-image-wrapper">
-            {% set variant = "xp" %} {% set show_text = false %} {% include
-            'partials/level_indicator.html' %}
-            <div class="level-number-indicator">
-              {{ level_info.level_number }}
-            </div>
-          </div>
-          <div class="flex flex-col text-left">
-            <p class="text-sm text-gray-600 mb-0 move-down">
-              {{ current_user.username if current_user.is_authenticated else
-              'Anonymous' }}
-            </p>
-            <p class="text-base mb-0 move-down" id="currentLevel">
-              <strong>{{ level_info.display_name }}</strong>
-            </p>
-            <div class="xp-bar-wrapper mt-2">
-              <div class="xp-bar-container">
-                <div
-                  class="xp-progress-bar bg-green-500 h-full transition-all duration-500"
-                  style="width: {{ level_info.progress_percent }}%;"
-                ></div>
-              </div>
-              <p class="text-sm mt-1">
-                <span data-i18n="evaluation.progress">Progress:</span>
-                <span id="xpProgressText"
-                  >{{ level_info.xp_into_level }} / {{ level_info.xp_needed
-                  }}</span
-                >
-                XP
-              </p>
-              <p class="text-sm mt-1">
-                <span data-i18n="evaluation.nextLevel">Next Level:</span>
-                <span id="nextLevel">{{ level_info.next_level }}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {% if not current_user.is_authenticated %}
       <div
         class="mt-4 mb-4 max-w-full md:w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"
@@ -142,10 +101,10 @@
           <!-- Flex container for account info header -->
           <div class="flex justify-between items-start mb-1">
             <div>
-              <h3
-                class="text-lg font-semibold mb-2"
+              <h2
+                class="text-xl font-bold mb-4"
                 data-i18n="profile.accountInfo"
-              ></h3>
+              ></h2>
               <p class="text-base mb-2">
                 <span
                   class="text-gray-500 font-medium"
@@ -216,6 +175,80 @@
             ><span class="text-gray-500 font-medium">: </span>
             <strong>{{ xp }}</strong>
           </p>
+        </div>
+
+        <h2 class="text-xl font-bold mb-4" data-i18n="profile.level"></h2>
+        <div id="xpInfo" class="mt-8 mb-8 text-center profile-xp">
+          <div class="flex items-center justify-start">
+            <div class="level-image-wrapper">
+              {% set variant = "xp" %} {% set show_text = false %} {% include
+              'partials/level_indicator.html' %}
+              <div class="level-number-indicator">
+                {{ level_info.level_number }}
+              </div>
+            </div>
+            <div class="flex flex-col text-left">
+              <p class="text-sm text-gray-600 mb-0 move-down">
+                {{ current_user.username if current_user.is_authenticated else
+                'Anonymous' }}
+              </p>
+              <p class="text-base mb-0 move-down" id="currentLevel">
+                <strong>{{ level_info.display_name }}</strong>
+              </p>
+              <div class="xp-bar-wrapper mt-2">
+                <div class="xp-bar-container">
+                  <div
+                    class="xp-progress-bar bg-green-500 h-full transition-all duration-500"
+                    style="width: {{ level_info.progress_percent }}%;"
+                  ></div>
+                </div>
+                <p class="text-sm mt-1">
+                  <span data-i18n="evaluation.progress">Progress:</span>
+                  <span id="xpProgressText"
+                    >{{ level_info.xp_into_level }} / {{ level_info.xp_needed
+                    }}</span
+                  >
+                  XP
+                </p>
+                <p class="text-sm mt-1">
+                  <span data-i18n="evaluation.nextLevel">Next Level:</span>
+                  <span id="nextLevel">{{ level_info.next_level }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2
+          class="text-xl font-bold mb-4"
+          data-i18n="profile.achievements"
+        ></h2>
+        <div
+          class="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:[grid-template-columns:repeat(20,minmax(0,1fr))] gap-x-2 gap-y-2 mb-8"
+        >
+          {% for achievement in all_achievements %} {% set is_achieved =
+          achievement.id in earned_achievements %}
+          <div class="group relative">
+            <div
+              class="achievement-icon w-10 h-10 flex items-center justify-center rounded-lg border-2 {{ 'border-gray-200' if not is_achieved else 'border-gray-600' }} bg-white {{ 'opacity-40' if not is_achieved else '' }} transition-all duration-300 hover:border-gray-400"
+            >
+              {% if achievement.icon == "trophy" %}
+              <img
+                src="{{ url_for('static', filename='img/trophy.webp') }}"
+                class="w-6 h-6 {{ 'opacity-30' if not is_achieved else '' }}"
+                alt="Trophy"
+              />
+              {% endif %}
+            </div>
+            <!-- Tooltip -->
+            <div
+              class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute z-10 w-48 -translate-x-1/4 translate-y-2 pointer-events-none bg-gray-800 text-white text-sm rounded-lg p-2 shadow-lg"
+            >
+              <p class="font-bold mb-1">{{ achievement.name }}</p>
+              <p class="text-gray-200 text-xs">{{ achievement.description }}</p>
+            </div>
+          </div>
+          {% endfor %}
         </div>
 
         <div>
@@ -312,7 +345,7 @@
                     </span>
                   </p>
                   {% if answer.challenge and answer.challenge_evaluation_scores
-                  %}
+                  and answer.challenge_evaluation_scores.Overall is defined %}
                   <p>
                     Challenge Evaluation:
                     <span
