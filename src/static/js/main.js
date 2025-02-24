@@ -646,9 +646,6 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
                     ".level-image-container"
                   );
                   if (levelImageContainer) {
-                    // Create and append particles for celebration effect
-                    createLevelUpParticles(levelImageContainer);
-
                     // Start glow effect
                     levelImageContainer.classList.add("level-up-glow");
 
@@ -1787,79 +1784,4 @@ function showAchievementNotification(achievement) {
       notification.remove();
     }, 500);
   }, 5000);
-}
-
-function createLevelUpParticles(container) {
-  // Number of particles to create
-  const particleCount = 15;
-
-  // Get container position for absolute positioning
-  const rect = container.getBoundingClientRect();
-  const centerX = rect.width / 2;
-  const centerY = rect.height / 2;
-
-  // Create particles
-  for (let i = 0; i < particleCount; i++) {
-    const particle = document.createElement("div");
-    particle.className = "level-up-particle";
-
-    // Random position, size and delay
-    const angle = Math.random() * Math.PI * 2;
-    const distance = 70 + Math.random() * 50;
-    const size = 5 + Math.random() * 10;
-    const duration = 0.8 + Math.random() * 1;
-    const delay = Math.random() * 0.3;
-
-    // Set particle style
-    particle.style.width = `${size}px`;
-    particle.style.height = `${size}px`;
-    particle.style.backgroundColor = i % 2 === 0 ? "#0da846" : "#ffd700";
-    particle.style.position = "absolute";
-    particle.style.borderRadius = "50%";
-    particle.style.zIndex = "5";
-    particle.style.opacity = "0";
-    particle.style.top = `${centerY}px`;
-    particle.style.left = `${centerX}px`;
-    particle.style.transform = "translate(-50%, -50%)";
-    particle.style.animation = `particleFly ${duration}s ease-out ${delay}s forwards`;
-
-    // Create and add keyframe animation dynamically
-    const styleSheet = document.styleSheets[0];
-    const keyframes = `
-      @keyframes particleFly {
-        0% {
-          opacity: 1;
-          transform: translate(-50%, -50%) scale(0);
-        }
-        20% {
-          opacity: 1;
-          transform: translate(-50%, -50%) scale(1);
-        }
-        100% {
-          opacity: 0;
-          transform: translate(
-            calc(-50% + ${Math.cos(angle) * distance}px),
-            calc(-50% + ${Math.sin(angle) * distance}px)
-          ) scale(0.5);
-        }
-      }
-    `;
-
-    try {
-      styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
-    } catch (e) {
-      // Fallback if dynamic rules fail
-      console.log("Failed to insert dynamic rule:", e);
-    }
-
-    // Add to container
-    container.appendChild(particle);
-
-    // Remove particle after animation
-    setTimeout(() => {
-      if (particle.parentNode === container) {
-        container.removeChild(particle);
-      }
-    }, (duration + delay) * 1000);
-  }
 }

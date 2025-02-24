@@ -995,28 +995,6 @@ body.loading-translations [data-i18n]::after {
   text-shadow: 0 0 10px rgba(13, 168, 70, 0.3);
 }
 
-/* Level-up particle effects */
-.level-up-particle {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-@keyframes particleFly {
-  0% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(0);
-  }
-  20% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.5) translateX(100px);
-  }
-}
-
 /* Image enhancement during level-up */
 .level-image-container {
   transition: transform 0.3s ease;
