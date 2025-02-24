@@ -5,6 +5,7 @@ from random import choice
 from flask import current_app, session
 
 from config import get_settings
+from src.constants.categories import DEFAULT_CATEGORIES
 
 SETTINGS = get_settings()
 _questions_cache = None
@@ -26,18 +27,6 @@ def load_questions():
     with open(translations_path, "r", encoding="utf-8") as f:
         data = json.load(f)
         questions_data = data.get("questions", {})
-
-        DEFAULT_CATEGORIES = [
-            "Philosophy",
-            "AI & Future",
-            "Personal Growth & Relationships",
-            "Politics",
-            "Ethics",
-            "Thought Experiments",
-            "Business & Risk",
-            "Biases & Fallacies",
-            "Fun & Casual",
-        ]
 
         # Transform the data into the format expected by the application
         _questions_cache = {

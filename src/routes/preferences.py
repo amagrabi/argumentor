@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, request, session
 from flask_login import current_user
 
 from extensions import db
+from src.constants.categories import DEFAULT_CATEGORIES
 
 preferences_bp = Blueprint("preferences", __name__)
 
@@ -28,18 +29,6 @@ def update_categories():
 
 @preferences_bp.route("/get_categories", methods=["GET"])
 def get_categories():
-    DEFAULT_CATEGORIES = [
-        "Philosophy",
-        "AI & Future",
-        "Personal Growth & Relationships",
-        "Politics",
-        "Ethics",
-        "Thought Experiments",
-        "Business & Risk",
-        "Biases & Fallacies",
-        "Fun & Casual",
-    ]
-
     categories = []
     if current_user.is_authenticated and current_user.category_preferences:
         try:
