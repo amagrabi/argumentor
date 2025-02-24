@@ -557,9 +557,11 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       });
     }, 100);
 
-    // Update XP and level info as before...
-    document.getElementById("xpGained").innerHTML =
-      "<strong>" + data.xp_gained + "</strong>";
+    // Update XP and level info with animations
+    const xpGainedElement = document.getElementById("xpGained");
+    const xpGainedContent =
+      "<strong class='xp-gained-pop'>" + data.xp_gained + "</strong>";
+
     document.getElementById("currentLevel").innerHTML =
       "<strong>" + data.current_level + "</strong>";
     document.getElementById("xpProgressText").textContent =
@@ -567,21 +569,186 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     document.getElementById("nextLevel").textContent =
       data.level_info.next_level;
 
-    // Update XP bar based on evaluation results
-    const xpProgressBar = document.querySelector("#xpInfo .xp-progress-bar");
-    if (xpProgressBar) {
-      // Animate the width change
-      xpProgressBar.style.width = data.level_info.progress_percent + "%";
-    } else {
-      console.warn("XP progress bar not found. Skipping XP bar update.");
-    }
+    // Create intersection observer for XP animations
+    const xpAnimationObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const xpInfo = entry.target;
 
-    if (data.leveled_up) {
-      document.getElementById("levelUpMessage").textContent =
-        translations.evaluation.levelUp;
-    } else {
-      document.getElementById("levelUpMessage").textContent = "";
-    }
+            // Animate XP gained number
+            xpGainedElement.innerHTML = xpGainedContent;
+
+            // Clear any previous level up message if not leveling up
+            const levelUpMessage = document.getElementById("levelUpMessage");
+            levelUpMessage.textContent = data.leveled_up
+              ? translations.evaluation.levelUp
+              : "";
+
+            // Animate XP bar with smooth progress
+            const xpProgressBar = xpInfo.querySelector(".xp-progress-bar");
+            if (xpProgressBar) {
+              const currentWidth = xpProgressBar.style.width || "0%";
+              const targetWidth = data.level_info.progress_percent + "%";
+
+              if (data.leveled_up) {
+                // For level up, first animate to 100%, then show level transition, then animate to new progress
+                xpProgressBar.style.transition =
+                  "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
+                xpProgressBar.style.width = "100%";
+
+                // After reaching 100%, trigger level transition
+                setTimeout(() => {
+                  const levelImageContainer = xpInfo.querySelector(
+                    ".level-image-container"
+                  );
+                  if (levelImageContainer) {
+                    // Start glow effect
+                    levelImageContainer.classList.add("level-up-glow");
+
+                    // Start rotation with old image
+                    levelImageContainer.classList.add("level-image-transition");
+
+                    // Switch to new image halfway through the rotation
+                    setTimeout(() => {
+                      // Update the animating image
+                      const levelImage =
+                        levelImageContainer.querySelector(".level-image");
+                      levelImage.src = data.level_info.level_image;
+
+                      // Update all other level images (except header which was already updated)
+                      const allLevelImages = document.querySelectorAll(
+                        ".level-image:not(.level-indicator.header .level-image)"
+                      );
+                      allLevelImages.forEach((img) => {
+                        if (!levelImageContainer.contains(img)) {
+                          img.src = data.level_info.level_image;
+                        }
+                      });
+                    }, 400); // Reduced from 600ms to 400ms for smoother transition
+
+                    // Remove animations after they complete
+                    setTimeout(() => {
+                      levelImageContainer.classList.remove(
+                        "level-image-transition"
+                      );
+                      levelImageContainer.classList.remove("level-up-glow");
+                    }, 1200); // Reduced from 2000ms to 1200ms to match new animation duration
+                  }
+
+                  // Reset progress bar to 0 and then animate to new progress
+                  setTimeout(() => {
+                    xpProgressBar.style.transition = "none";
+                    xpProgressBar.style.width = "0%";
+
+                    // Force reflow
+                    void xpProgressBar.offsetWidth;
+
+                    // Animate to new progress
+                    xpProgressBar.style.transition =
+                      "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
+                    xpProgressBar.style.width = targetWidth;
+                  }, 800); // Reduced from 1000ms to 800ms to better align with the rotation
+                }, 800);
+              } else {
+                // Normal progress animation
+                xpProgressBar.style.transition =
+                  "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
+                xpProgressBar.style.width = targetWidth;
+              }
+
+              // Update non-image level info
+              updateLevelInfo(data.total_xp, data.level_info);
+            }
+
+            // Disconnect observer after triggering animations
+            xpAnimationObserver.disconnect();
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    // Create intersection observer for score animations
+    const scoreAnimationObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const scoresDivElement = entry.target;
+
+            // Animate progress bars
+            scoresDivElement
+              .querySelectorAll(".progress-fill")
+              .forEach((fill, index) => {
+                const delay = index * 100;
+                setTimeout(() => {
+                  const targetWidth = fill.getAttribute("data-score");
+                  const targetColor = fill.getAttribute("data-color");
+                  fill.style.backgroundColor = "#e53e3e";
+                  fill.style.width = "10%";
+                  void fill.offsetWidth; // Trigger reflow
+                  fill.style.width = targetWidth + "%";
+                  fill.style.backgroundColor = targetColor;
+                }, delay);
+              });
+
+            // Animate score numbers
+            scoresDivElement
+              .querySelectorAll(".score-value")
+              .forEach((scoreElement) => {
+                const finalScore = parseFloat(scoreElement.dataset.final);
+                const targetColor = scoreElement.dataset.color || "#16a34a";
+                const startColor = hexToRgb("#e53e3e");
+                const endColor = hexToRgb(targetColor);
+                let current = 1;
+                const updateScore = () => {
+                  if (current <= finalScore) {
+                    const factor = (current - 1) / 9;
+                    const interpolated = interpolateColor(
+                      startColor,
+                      endColor,
+                      factor
+                    );
+                    scoreElement.style.color = rgbToHex(
+                      interpolated.r,
+                      interpolated.g,
+                      interpolated.b
+                    );
+                    scoreElement.textContent = `${current}/10`;
+                    current++;
+                    requestAnimationFrame(updateScore);
+                  }
+                };
+                requestAnimationFrame(updateScore);
+              });
+
+            // Animate feedback text
+            scoresDivElement
+              .querySelectorAll(".feedback")
+              .forEach((paragraph, index) => {
+                const delay = index * 100;
+                setTimeout(() => {
+                  typeWriter(
+                    paragraph,
+                    paragraph.getAttribute("data-final"),
+                    15
+                  );
+                }, delay);
+              });
+
+            // Disconnect observer after triggering animations
+            scoreAnimationObserver.disconnect();
+          }
+        });
+      },
+      { threshold: 0.2 }
+    ); // Trigger when 20% of the element is visible
+
+    // Start observing the elements
+    const xpInfo = document.getElementById("xpInfo");
+    const scoresDivToObserve = document.getElementById("scores");
+    xpAnimationObserver.observe(xpInfo);
+    scoreAnimationObserver.observe(scoresDivToObserve);
 
     const evaluationResults = document.getElementById("evaluationResults");
     evaluationResults.classList.remove("hidden");
@@ -589,8 +756,22 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     evaluationResults.classList.add("fade-in");
     evaluationResults.scrollIntoView({ behavior: "smooth" });
 
-    // Update all level-related UI elements using updateXpIndicator
-    updateXpIndicator(data.total_xp, data.level_info);
+    // Only update non-image UI elements immediately
+    if (data.leveled_up) {
+      // For level up, only update the non-image elements
+      updateLevelInfo(data.total_xp, data.level_info);
+
+      // Update header/mini level image only (not the big one in evaluation)
+      const headerLevelImage = document.querySelector(
+        ".level-indicator.header .level-image"
+      );
+      if (headerLevelImage) {
+        headerLevelImage.src = data.level_info.level_image;
+      }
+    } else {
+      // For normal updates, update everything
+      updateXpIndicator(data.total_xp, data.level_info);
+    }
 
     // After a successful answer submission, store the answer ID for later use:
     if (data.answer_id) {
@@ -1062,7 +1243,8 @@ if (loginForm) {
   });
 }
 
-function updateXpIndicator(totalXp, levelInfo) {
+// Split updateXpIndicator into two functions
+function updateLevelInfo(totalXp, levelInfo) {
   // Update the mini XP progress bar
   const miniXpBarFill = document.getElementById("miniXpBarFill");
   if (miniXpBarFill) {
@@ -1075,7 +1257,7 @@ function updateXpIndicator(totalXp, levelInfo) {
     userLevelElem.textContent = levelInfo.display_name;
   }
 
-  // Update all level number indicators (both the small header one and the circular one on images)
+  // Update all level number indicators
   const levelNumberElems = document.querySelectorAll(
     "#levelNumber, .level-number-indicator"
   );
@@ -1084,6 +1266,10 @@ function updateXpIndicator(totalXp, levelInfo) {
       elem.textContent = levelInfo.level_number;
     }
   });
+}
+
+function updateXpIndicator(totalXp, levelInfo) {
+  updateLevelInfo(totalXp, levelInfo);
 
   // Update all level images on the page
   const levelImages = document.querySelectorAll(".level-image");

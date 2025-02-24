@@ -823,3 +823,135 @@ body.loading-translations [data-i18n]::after {
 #xpInfo .flex.flex-col p.move-down:first-child {
   font-size: 1rem !important;
 }
+
+/* XP Bar Animations */
+@keyframes fillProgress {
+  from {
+    width: var(--start-width);
+  }
+  to {
+    width: var(--end-width);
+  }
+}
+
+@keyframes levelUpGlow {
+  0% {
+    box-shadow: 0 0 20px rgba(13, 168, 70, 0.4), 0 0 40px rgba(13, 168, 70, 0.2);
+    transform: scale(1);
+  }
+  25% {
+    box-shadow: 0 0 40px rgba(13, 168, 70, 0.6), 0 0 80px rgba(13, 168, 70, 0.4);
+    transform: scale(1.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(13, 168, 70, 0.5), 0 0 60px rgba(13, 168, 70, 0.3);
+    transform: scale(1.05);
+  }
+  75% {
+    box-shadow: 0 0 40px rgba(13, 168, 70, 0.6), 0 0 80px rgba(13, 168, 70, 0.4);
+    transform: scale(1.1);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(13, 168, 70, 0.4), 0 0 40px rgba(13, 168, 70, 0.2);
+    transform: scale(1);
+  }
+}
+
+@keyframes levelImageTransition {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  45% {
+    transform: scale(1.1) rotate(170deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.1) rotate(180deg);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.1) rotate(190deg);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+    opacity: 1;
+  }
+}
+
+.level-up-glow {
+  animation: levelUpGlow 2s ease-in-out;
+  z-index: 1;
+  position: relative;
+}
+
+.level-up-glow::after {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(13, 168, 70, 0.3) 0%,
+    rgba(13, 168, 70, 0) 70%
+  );
+  z-index: -1;
+  animation: levelUpGlow 2s ease-in-out;
+}
+
+.level-image-transition {
+  animation: levelImageTransition 1.2s ease-in-out;
+}
+
+/* Remove particle animations */
+@keyframes xpNumberPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.xp-progress-bar {
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.xp-gained-pop {
+  display: inline-block;
+  animation: xpNumberPop 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Level Up Message Animation */
+@keyframes levelUpMessage {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+#levelUpMessage {
+  display: inline-block;
+  transform-origin: center;
+}
+
+#levelUpMessage:not(:empty) {
+  animation: levelUpMessage 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  color: #0da846;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(13, 168, 70, 0.3);
+}
