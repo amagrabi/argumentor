@@ -174,12 +174,15 @@ def profile():
     )
 
 
-@pages_bp.route("/submit_feedback", methods=["POST"])
+@pages_bp.route("/submit_feedback", methods=["GET", "POST"])
 @limiter.limit(
     SETTINGS.SUBMISSION_RATE_LIMITS,
     error_message="Too many submissions. Please wait before trying again.",
 )
 def submit_feedback():
+    if request.method == "GET":
+        return redirect(url_for("pages.support", show_feedback=True))
+
     try:
         if not request.is_json:
             return jsonify({"error": "Content-Type must be application/json"}), 400

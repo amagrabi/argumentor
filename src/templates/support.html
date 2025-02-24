@@ -469,6 +469,12 @@
 
         // Update document language attribute
         document.documentElement.lang = currentLanguage;
+
+        // Show feedback modal if show_feedback parameter is present
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("show_feedback")) {
+          showFeedbackModal();
+        }
       });
     </script>
   </body>
