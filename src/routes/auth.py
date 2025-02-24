@@ -123,48 +123,98 @@ def login():
     ).first()
 
     if user and check_password_hash(user.password_hash, password):
-        if "user_id" in session:
-            anonymous_user = User.query.filter_by(uuid=session["user_id"]).first()
-            if anonymous_user:
-                db.session.execute(
-                    update(Answer)
-                    .where(Answer.user_uuid == anonymous_user.uuid)
-                    .values(user_uuid=user.uuid)
-                )
-                user.xp += anonymous_user.xp
-                db.session.delete(anonymous_user)
-        if user.tier == "anonymous":
-            user.tier = "free"
-        db.session.commit()
-        login_user(user)
-        session["user_id"] = user.uuid
+        try:
+            # Start a transaction
+            if "user_id" in session:
+                anonymous_user = User.query.filter_by(uuid=session["user_id"]).first()
+                if anonymous_user:
+                    # Get all answers from the anonymous user
+                    anonymous_answers = Answer.query.filter_by(
+                        user_uuid=anonymous_user.uuid
+                    ).all()
 
-        # Update session language with the user's saved preference.
-        if hasattr(user, "preferred_language") and user.preferred_language in [
-            "en",
-            "de",
-        ]:
-            session["language"] = user.preferred_language
-        else:
-            session["language"] = "en"
-        session.modified = True
+                    # Get all question IDs for which the authenticated user already has answers
+                    existing_question_ids = set(
+                        answer.question_id
+                        for answer in Answer.query.filter_by(user_uuid=user.uuid).all()
+                        if answer.question_id is not None
+                    )
 
-        level_info = get_level_info(user.xp)
-        logger.info(f"User logged in: {login_identity}, id: {user.uuid}")
+                    # Transfer XP from anonymous user
+                    user.xp += anonymous_user.xp
 
-        return jsonify(
-            {
-                "message": "Logged in successfully",
-                "user": {
-                    "email": user.email,
-                    "username": user.username,
-                    "uuid": user.uuid,
-                    "xp": user.xp,
-                    "level_info": level_info,
-                    "preferred_language": user.preferred_language,
-                },
-            }
-        )
+                    # Transfer each answer individually, skipping those for questions the user already answered
+                    for answer in anonymous_answers:
+                        # Skip if the authenticated user already has an answer for this question
+                        if (
+                            answer.question_id
+                            and answer.question_id in existing_question_ids
+                        ):
+                            logger.info(
+                                f"Skipping transfer of answer {answer.id} for question {answer.question_id} as user {user.uuid} already has an answer for it"
+                            )
+                            continue
+
+                        # Update the user_uuid for this answer
+                        answer.user_uuid = user.uuid
+
+                    # Transfer achievements using direct SQL update
+                    db.session.execute(
+                        update(UserAchievement)
+                        .where(UserAchievement.user_uuid == anonymous_user.uuid)
+                        .values(user_uuid=user.uuid)
+                    )
+
+                    # Mark the anonymous user for deletion
+                    db.session.delete(anonymous_user)
+
+                    # Flush to ensure the updates are processed before the commit
+                    db.session.flush()
+
+            if user.tier == "anonymous":
+                user.tier = "free"
+
+            # Commit the transaction
+            db.session.commit()
+
+            # Log in the user after the transaction is committed
+            login_user(user)
+            session["user_id"] = user.uuid
+
+            # Update session language with the user's saved preference.
+            if hasattr(user, "preferred_language") and user.preferred_language in [
+                "en",
+                "de",
+            ]:
+                session["language"] = user.preferred_language
+            else:
+                session["language"] = "en"
+            session.modified = True
+
+            level_info = get_level_info(user.xp)
+            logger.info(f"User logged in: {login_identity}, id: {user.uuid}")
+
+            return jsonify(
+                {
+                    "message": "Logged in successfully",
+                    "user": {
+                        "email": user.email,
+                        "username": user.username,
+                        "uuid": user.uuid,
+                        "xp": user.xp,
+                        "level_info": level_info,
+                        "preferred_language": user.preferred_language,
+                    },
+                }
+            )
+        except Exception as e:
+            # Rollback the transaction in case of any error
+            db.session.rollback()
+            logger.error(f"Error during login for {login_identity}: {str(e)}")
+            return jsonify(
+                {"error": "A server error occurred during login. Please try again."}
+            ), 500
+
     logger.warning(f"Failed login attempt for login: {login_identity}")
     return jsonify({"error": "Invalid credentials"}), 401
 

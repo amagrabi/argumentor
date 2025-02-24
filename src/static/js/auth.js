@@ -80,13 +80,28 @@ function showLoginModal() {
       errorMessage.textContent = "";
       errorMessage.classList.add("hidden");
 
+      // Validate inputs before sending to server
+      if (!identity || !password) {
+        errorMessage.textContent =
+          "Please enter both username/email and password";
+        errorMessage.classList.remove("hidden");
+        return;
+      }
+
       const response = await fetch("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ login: identity, password: password }),
       });
 
-      const data = await response.json();
+      // Handle non-JSON responses
+      const contentType = response.headers.get("content-type");
+      let data;
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        data = { error: "Server error occurred" };
+      }
 
       if (!response.ok) {
         throw {
@@ -99,9 +114,57 @@ function showLoginModal() {
         localStorage.setItem("language", data.user.preferred_language);
       }
 
+      // Preserve current question and form data before reloading
+      const currentQuestion = sessionStorage.getItem("currentQuestion");
+      if (currentQuestion) {
+        localStorage.setItem("preservedQuestion", currentQuestion);
+      }
+
+      // Save form data
+      const claimInput = document.getElementById("claimInput");
+      const argumentInput = document.getElementById("argumentInput");
+      const counterargumentInput = document.getElementById(
+        "counterargumentInput"
+      );
+      const voiceTranscript = document.getElementById("voiceTranscript");
+      const challengeResponseInput = document.getElementById(
+        "challengeResponseInput"
+      );
+
+      if (claimInput)
+        localStorage.setItem("preservedClaimInput", claimInput.value);
+      if (argumentInput)
+        localStorage.setItem("preservedArgumentInput", argumentInput.value);
+      if (counterargumentInput)
+        localStorage.setItem(
+          "preservedCounterargumentInput",
+          counterargumentInput.value
+        );
+      if (voiceTranscript)
+        localStorage.setItem("preservedVoiceTranscript", voiceTranscript.value);
+      if (challengeResponseInput)
+        localStorage.setItem(
+          "preservedChallengeResponseInput",
+          challengeResponseInput.value
+        );
+
+      // Save evaluation content if the function exists in the global scope
+      if (typeof preserveEvaluationContent === "function") {
+        try {
+          const evaluationContent = preserveEvaluationContent();
+          localStorage.setItem(
+            "preservedEvaluationContent",
+            JSON.stringify(evaluationContent)
+          );
+        } catch (e) {
+          console.error("Error preserving evaluation content:", e);
+        }
+      }
+
       modal.remove();
       window.location.reload();
     } catch (error) {
+      console.error("Login error:", error);
       handleLoginError(error);
     }
   });
@@ -248,6 +311,107 @@ function switchToLogin() {
 
 // When someone wants to authenticate, call this to show the login modal by default.
 function showAuthModal() {
+  try {
+    // Save text field values to localStorage before showing login modal
+    const claimInput = document.getElementById("claimInput");
+    const argumentInput = document.getElementById("argumentInput");
+    const counterargumentInput = document.getElementById(
+      "counterargumentInput"
+    );
+    const voiceTranscript = document.getElementById("voiceTranscript");
+    const challengeResponseInput = document.getElementById(
+      "challengeResponseInput"
+    );
+
+    // Store text field values - only if they exist and have values
+    if (claimInput && claimInput.value)
+      localStorage.setItem("savedClaimInput", claimInput.value);
+
+    if (argumentInput && argumentInput.value)
+      localStorage.setItem("savedArgumentInput", argumentInput.value);
+
+    if (counterargumentInput && counterargumentInput.value)
+      localStorage.setItem(
+        "savedCounterargumentInput",
+        counterargumentInput.value
+      );
+
+    if (voiceTranscript && voiceTranscript.value)
+      localStorage.setItem("savedVoiceTranscript", voiceTranscript.value);
+
+    if (challengeResponseInput && challengeResponseInput.value)
+      localStorage.setItem(
+        "savedChallengeResponseInput",
+        challengeResponseInput.value
+      );
+
+    // Store current input mode
+    if (window.currentInputMode)
+      localStorage.setItem("savedInputMode", window.currentInputMode);
+
+    // Save evaluation section state
+    const evaluationResults = document.getElementById("evaluationResults");
+    if (evaluationResults && !evaluationResults.classList.contains("hidden")) {
+      // Save the visibility state of the evaluation section
+      localStorage.setItem("evaluationVisible", "true");
+
+      // Save the content of the evaluation sections
+      const overallEvaluation = document.getElementById("overallEvaluation");
+      if (overallEvaluation) {
+        localStorage.setItem(
+          "savedOverallEvaluation",
+          overallEvaluation.innerHTML
+        );
+      }
+
+      const scores = document.getElementById("scores");
+      if (scores) {
+        localStorage.setItem("savedScores", scores.innerHTML);
+      }
+
+      // Save challenge section state
+      const challengeSection = document.getElementById("challengeSection");
+      if (challengeSection) {
+        localStorage.setItem(
+          "challengeSectionVisible",
+          challengeSection.classList.contains("hidden") ? "false" : "true"
+        );
+
+        const challengeText = document.getElementById("challengeText");
+        if (challengeText) {
+          localStorage.setItem("savedChallengeText", challengeText.textContent);
+        }
+
+        const challengeEvaluationResults = document.getElementById(
+          "challengeEvaluationResults"
+        );
+        if (challengeEvaluationResults) {
+          localStorage.setItem(
+            "challengeEvaluationVisible",
+            challengeEvaluationResults.classList.contains("hidden")
+              ? "false"
+              : "true"
+          );
+          localStorage.setItem(
+            "savedChallengeEvaluation",
+            challengeEvaluationResults.innerHTML
+          );
+        }
+      }
+
+      // Save the last answer ID for challenge submission
+      if (sessionStorage.getItem("lastAnswerId")) {
+        localStorage.setItem(
+          "savedLastAnswerId",
+          sessionStorage.getItem("lastAnswerId")
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Error saving form data to localStorage:", error);
+    // Continue with login even if saving fails
+  }
+
   showLoginModal();
 }
 

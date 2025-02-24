@@ -196,6 +196,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function handleLogout() {
   try {
+    // Save current question and form data to localStorage before logout
+    if (currentQuestion) {
+      localStorage.setItem(
+        "preservedQuestion",
+        JSON.stringify(currentQuestion)
+      );
+    }
+
+    // Save form data
+    const claimInput = document.getElementById("claimInput");
+    const argumentInput = document.getElementById("argumentInput");
+    const counterargumentInput = document.getElementById(
+      "counterargumentInput"
+    );
+    const voiceTranscript = document.getElementById("voiceTranscript");
+    const challengeResponseInput = document.getElementById(
+      "challengeResponseInput"
+    );
+
+    if (claimInput)
+      localStorage.setItem("preservedClaimInput", claimInput.value);
+    if (argumentInput)
+      localStorage.setItem("preservedArgumentInput", argumentInput.value);
+    if (counterargumentInput)
+      localStorage.setItem(
+        "preservedCounterargumentInput",
+        counterargumentInput.value
+      );
+    if (voiceTranscript)
+      localStorage.setItem("preservedVoiceTranscript", voiceTranscript.value);
+    if (challengeResponseInput)
+      localStorage.setItem(
+        "preservedChallengeResponseInput",
+        challengeResponseInput.value
+      );
+
+    // Save evaluation content
+    const evaluationContent = preserveEvaluationContent();
+    localStorage.setItem(
+      "preservedEvaluationContent",
+      JSON.stringify(evaluationContent)
+    );
+
     const response = await fetch("/logout", { method: "POST" });
     if (response.ok) {
       window.location.reload();
@@ -848,8 +891,159 @@ document
   .getElementById("rerollButton")
   .addEventListener("click", () => getNewQuestion(false));
 
+// Function to restore saved text field values after login/signup
+function restoreSavedTextFieldValues() {
+  try {
+    // Get the saved text field values
+    const savedClaimInput = localStorage.getItem("savedClaimInput");
+    const savedArgumentInput = localStorage.getItem("savedArgumentInput");
+    const savedCounterargumentInput = localStorage.getItem(
+      "savedCounterargumentInput"
+    );
+    const savedVoiceTranscript = localStorage.getItem("savedVoiceTranscript");
+    const savedChallengeResponseInput = localStorage.getItem(
+      "savedChallengeResponseInput"
+    );
+    const savedInputMode = localStorage.getItem("savedInputMode");
+
+    // Restore text field values if they exist
+    const claimInput = document.getElementById("claimInput");
+    const argumentInput = document.getElementById("argumentInput");
+    const counterargumentInput = document.getElementById(
+      "counterargumentInput"
+    );
+    const voiceTranscript = document.getElementById("voiceTranscript");
+    const challengeResponseInput = document.getElementById(
+      "challengeResponseInput"
+    );
+
+    if (claimInput && savedClaimInput) claimInput.value = savedClaimInput;
+    if (argumentInput && savedArgumentInput)
+      argumentInput.value = savedArgumentInput;
+    if (counterargumentInput && savedCounterargumentInput)
+      counterargumentInput.value = savedCounterargumentInput;
+    if (voiceTranscript && savedVoiceTranscript)
+      voiceTranscript.value = savedVoiceTranscript;
+    if (challengeResponseInput && savedChallengeResponseInput)
+      challengeResponseInput.value = savedChallengeResponseInput;
+
+    // Restore input mode if it exists
+    if (savedInputMode) {
+      window.currentInputMode = savedInputMode;
+
+      // Switch to the correct input mode tab
+      if (savedInputMode === "voice") {
+        const voiceModeTab = document.getElementById("voiceModeTab");
+        const textModeTab = document.getElementById("textModeTab");
+        const voiceInputSection = document.getElementById("voiceInputSection");
+        const textInputSection = document.getElementById("textInputSection");
+
+        if (
+          voiceModeTab &&
+          textModeTab &&
+          voiceInputSection &&
+          textInputSection
+        ) {
+          voiceModeTab.classList.add("active");
+          textModeTab.classList.remove("active");
+          voiceInputSection.style.display = "block";
+          textInputSection.style.display = "none";
+        }
+      }
+    }
+
+    // Restore evaluation section state if it was visible
+    if (localStorage.getItem("evaluationVisible") === "true") {
+      const evaluationResults = document.getElementById("evaluationResults");
+      if (evaluationResults) {
+        // Restore the overall evaluation content
+        const overallEvaluation = document.getElementById("overallEvaluation");
+        const savedOverallEvaluation = localStorage.getItem(
+          "savedOverallEvaluation"
+        );
+        if (overallEvaluation && savedOverallEvaluation) {
+          overallEvaluation.innerHTML = savedOverallEvaluation;
+        }
+
+        // Restore the scores content
+        const scores = document.getElementById("scores");
+        const savedScores = localStorage.getItem("savedScores");
+        if (scores && savedScores) {
+          scores.innerHTML = savedScores;
+        }
+
+        // Make the evaluation section visible
+        evaluationResults.classList.remove("hidden");
+        evaluationResults.style.display = "block";
+
+        // Restore challenge section state
+        const challengeSection = document.getElementById("challengeSection");
+        if (
+          challengeSection &&
+          localStorage.getItem("challengeSectionVisible") === "true"
+        ) {
+          // Restore challenge text
+          const challengeText = document.getElementById("challengeText");
+          const savedChallengeText = localStorage.getItem("savedChallengeText");
+          if (challengeText && savedChallengeText) {
+            challengeText.textContent = savedChallengeText;
+          }
+
+          // Make the challenge section visible
+          challengeSection.classList.remove("hidden");
+
+          // Restore challenge evaluation results if they were visible
+          const challengeEvaluationResults = document.getElementById(
+            "challengeEvaluationResults"
+          );
+          if (
+            challengeEvaluationResults &&
+            localStorage.getItem("challengeEvaluationVisible") === "true"
+          ) {
+            const savedChallengeEvaluation = localStorage.getItem(
+              "savedChallengeEvaluation"
+            );
+            if (savedChallengeEvaluation) {
+              challengeEvaluationResults.innerHTML = savedChallengeEvaluation;
+              challengeEvaluationResults.classList.remove("hidden");
+            }
+          }
+        }
+
+        // Restore the last answer ID for challenge submission
+        const savedLastAnswerId = localStorage.getItem("savedLastAnswerId");
+        if (savedLastAnswerId) {
+          sessionStorage.setItem("lastAnswerId", savedLastAnswerId);
+        }
+      }
+    }
+
+    // Clear the saved values from localStorage
+    localStorage.removeItem("savedClaimInput");
+    localStorage.removeItem("savedArgumentInput");
+    localStorage.removeItem("savedCounterargumentInput");
+    localStorage.removeItem("savedVoiceTranscript");
+    localStorage.removeItem("savedChallengeResponseInput");
+    localStorage.removeItem("savedInputMode");
+    localStorage.removeItem("evaluationVisible");
+    localStorage.removeItem("savedOverallEvaluation");
+    localStorage.removeItem("savedScores");
+    localStorage.removeItem("challengeSectionVisible");
+    localStorage.removeItem("savedChallengeText");
+    localStorage.removeItem("challengeEvaluationVisible");
+    localStorage.removeItem("savedChallengeEvaluation");
+    localStorage.removeItem("savedLastAnswerId");
+  } catch (error) {
+    console.error("Error restoring form data from localStorage:", error);
+    // Continue even if restoration fails
+  }
+}
+
 // Update the DOMContentLoaded handler
 window.addEventListener("DOMContentLoaded", async () => {
+  // Restore saved text field values if they exist
+  restoreSavedTextFieldValues();
+
   const language = localStorage.getItem("language") || "en";
 
   // Update the server-side session language to match localStorage
@@ -963,12 +1157,83 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   // Load saved categories and handle stored question
   loadSavedCategories().then(() => {
-    const storedQuestion = sessionStorage.getItem("currentQuestion");
-    if (storedQuestion) {
-      currentQuestion = JSON.parse(storedQuestion);
+    // First check if we have preserved data from a login/logout
+    const preservedQuestion = localStorage.getItem("preservedQuestion");
+
+    if (preservedQuestion) {
+      // We have preserved data from login/logout
+      currentQuestion = JSON.parse(preservedQuestion);
       updateQuestionDisplay(currentQuestion);
+
+      // Remove from localStorage so it's not used again
+      localStorage.removeItem("preservedQuestion");
+
+      // Restore form data
+      const claimInput = document.getElementById("claimInput");
+      const argumentInput = document.getElementById("argumentInput");
+      const counterargumentInput = document.getElementById(
+        "counterargumentInput"
+      );
+      const voiceTranscript = document.getElementById("voiceTranscript");
+      const challengeResponseInput = document.getElementById(
+        "challengeResponseInput"
+      );
+
+      if (claimInput && localStorage.getItem("preservedClaimInput")) {
+        claimInput.value = localStorage.getItem("preservedClaimInput");
+        localStorage.removeItem("preservedClaimInput");
+      }
+
+      if (argumentInput && localStorage.getItem("preservedArgumentInput")) {
+        argumentInput.value = localStorage.getItem("preservedArgumentInput");
+        localStorage.removeItem("preservedArgumentInput");
+      }
+
+      if (
+        counterargumentInput &&
+        localStorage.getItem("preservedCounterargumentInput")
+      ) {
+        counterargumentInput.value = localStorage.getItem(
+          "preservedCounterargumentInput"
+        );
+        localStorage.removeItem("preservedCounterargumentInput");
+      }
+
+      if (voiceTranscript && localStorage.getItem("preservedVoiceTranscript")) {
+        voiceTranscript.value = localStorage.getItem(
+          "preservedVoiceTranscript"
+        );
+        localStorage.removeItem("preservedVoiceTranscript");
+      }
+
+      if (
+        challengeResponseInput &&
+        localStorage.getItem("preservedChallengeResponseInput")
+      ) {
+        challengeResponseInput.value = localStorage.getItem(
+          "preservedChallengeResponseInput"
+        );
+        localStorage.removeItem("preservedChallengeResponseInput");
+      }
+
+      // Restore evaluation content if it exists
+      const preservedEvaluationContent = localStorage.getItem(
+        "preservedEvaluationContent"
+      );
+      if (preservedEvaluationContent) {
+        const evaluationContent = JSON.parse(preservedEvaluationContent);
+        restoreEvaluationContent(evaluationContent);
+        localStorage.removeItem("preservedEvaluationContent");
+      }
     } else {
-      getNewQuestion();
+      // Normal flow - check sessionStorage, then get a new question if needed
+      const storedQuestion = sessionStorage.getItem("currentQuestion");
+      if (storedQuestion) {
+        currentQuestion = JSON.parse(storedQuestion);
+        updateQuestionDisplay(currentQuestion);
+      } else {
+        getNewQuestion();
+      }
     }
   });
 
@@ -1286,14 +1551,6 @@ document.getElementById("nextQuestion").addEventListener("click", async () => {
   }
 });
 
-const loginForm = document.getElementById("loginForm");
-if (loginForm) {
-  loginForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-    handleLogin();
-  });
-}
-
 // Split updateXpIndicator into two functions
 function updateLevelInfo(totalXp, levelInfo) {
   // Update the mini XP progress bar
@@ -1385,8 +1642,13 @@ function restoreEvaluationContent(content) {
   const overallEvaluation = document.getElementById("overallEvaluation");
   const scores = document.getElementById("scores");
 
-  if (!content.isHidden) {
-    evaluationResults.classList.remove("hidden");
+  if (evaluationResults && overallEvaluation && scores && content) {
+    // If the evaluation was not hidden, show it
+    if (!content.isHidden) {
+      evaluationResults.classList.remove("hidden");
+    }
+
+    // Restore the HTML content
     overallEvaluation.innerHTML = content.overallHtml;
     scores.innerHTML = content.scoresHtml;
   }
