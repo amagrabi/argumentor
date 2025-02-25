@@ -294,6 +294,9 @@ def submit_challenge_response():
         data = request.json
         challenge_response = data.get("challenge_response", "").strip()
         answer_id = data.get("answer_id")
+        input_mode = data.get(
+            "input_mode", "text"
+        )  # Get input mode from request or default to text
 
         logger.debug(f"Challenge response received for answer_id: {answer_id}")
 
@@ -406,10 +409,11 @@ def submit_challenge_response():
         try:
             logger.debug("Checking for achievements")
             challenge_answer_data = {
-                "input_mode": "text",  # Challenge responses are always text
+                "input_mode": input_mode,  # Use the input mode we defined above
                 "total_score": avg_all,  # Use the avg_all we calculated directly instead of trying to access it through scores
                 "evaluation_scores": evaluation["scores"],
                 "is_challenge": True,
+                "argument": challenge_response,  # Include the challenge response text
             }
             newly_awarded = check_and_award_achievements(user, challenge_answer_data)
             logger.debug(f"Newly awarded achievements: {newly_awarded}")

@@ -713,7 +713,7 @@ body.loading-translations [data-i18n]::after {
 .level-image-wrapper {
   position: relative;
   display: inline-block;
-  margin-right: 0px; /* Removed margin between image and text */
+  margin-right: 0px;
 }
 
 /* Circular level number indicator over the top of the level image */
@@ -791,37 +791,55 @@ body.loading-translations [data-i18n]::after {
 
 /* Adjust formatting of level indicators in the evaluation section */
 #evaluationResults .flex.flex-col p.text-sm,
-#evaluationResults .flex.flex-col p.text-base {
+#evaluationResults .flex.flex-col p.text-base,
+#challengeEvaluationResults .flex.flex-col p.text-sm,
+#challengeEvaluationResults .flex.flex-col p.text-base {
   margin-top: 0.1rem;
 }
 
-#evaluationResults .xp-bar-wrapper {
-  margin-top: 100px;
+#evaluationResults .xp-bar-wrapper,
+#challengeEvaluationResults .xp-bar-wrapper {
+  margin-top: 100px; /* Reduced from 140px to bring XP bar up in challenge section */
 }
 
-#evaluationResults .xp-bar-wrapper p.text-sm {
+#evaluationResults .xp-bar-wrapper p.text-sm,
+#challengeEvaluationResults .xp-bar-wrapper p.text-sm {
   margin-top: 0;
   margin-bottom: 0;
 }
 
-#xpInfo .move-down {
+/* Adjust username/level text positioning */
+#evaluationResults .move-down {
   position: relative;
-  top: 40px !important;
+  top: 80px !important; /* Keep main evaluation text lower */
+}
+
+#challengeEvaluationResults .move-down {
+  position: relative;
+  top: 40px !important; /* Move challenge section text up */
 }
 
 /* Increase font size for username and level text in evaluation section */
-#xpInfo .flex.flex-col p.move-down {
+#evaluationResults .flex.flex-col p.move-down,
+#challengeEvaluationResults .flex.flex-col p.move-down {
   font-size: 1.25rem !important;
+  margin-bottom: 5px !important;
 }
 
-/* Decrease font size for progress and next level text in evaluation section */
-#xpInfo .xp-bar-wrapper p {
-  font-size: 0.75rem !important;
+/* Ensure consistent spacing in both sections */
+#evaluationResults .flex.flex-col,
+#challengeEvaluationResults .flex.flex-col {
+  margin-top: 0;
+  padding-left: 20px;
 }
 
-/* Override username font-size in the evaluation section */
-#xpInfo .flex.flex-col p.move-down:first-child {
-  font-size: 1rem !important;
+/* Adjust XP bar container positioning */
+#evaluationResults .xp-bar-container,
+#challengeEvaluationResults .xp-bar-container {
+  position: relative;
+  z-index: 1;
+  left: -15px;
+  margin-top: -20px; /* Move XP bar up slightly */
 }
 
 /* XP Bar Animations */
@@ -1008,4 +1026,59 @@ body.loading-translations [data-i18n]::after {
 .level-image-transition {
   perspective: 800px;
   transform-style: preserve-3d;
+}
+
+/* Make sure challenge-xp variant has the same styling as xp variant */
+.level-indicator.challenge-xp .level-image-container {
+  width: 180px;
+  height: 180px;
+  border: 3px solid black;
+  margin-right: 0;
+  z-index: 2;
+}
+
+.level-indicator.challenge-xp .level-image {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.level-indicator.challenge-xp .level-text {
+  font-size: 1.25rem;
+  color: #1a202c; /* text-gray-900 */
+}
+
+/* Remove right margin from the level image in the challenge evaluation section */
+#challengeXpInfo .level-indicator.challenge-xp .level-image-container {
+  margin-right: 0;
+}
+
+/* Apply the same styling to challenge XP info as main XP info */
+#challengeXpInfo .flex.flex-col {
+  margin-top: 0;
+  padding-left: 20px;
+}
+
+/* Ensure the progress bar is behind the level image */
+#challengeXpInfo .xp-bar-container {
+  position: relative;
+  z-index: 1;
+  left: -15px;
+}
+
+/* Update text positions so they do not overlap the level image */
+#challengeXpInfo .flex.flex-col p.text-sm,
+#challengeXpInfo .flex.flex-col p.text-base {
+  position: relative;
+  left: 0;
+  margin-bottom: 0.25rem;
+}
+
+/* Ensure the level image is above the progress bar */
+#challengeXpInfo .level-image-wrapper {
+  position: relative;
+  z-index: 2;
+}
+
+/* Ensure the level number indicator is at the top */
+#challengeXpInfo .level-number-indicator {
+  z-index: 3;
 }
