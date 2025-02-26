@@ -91,14 +91,11 @@ let earned_achievements = [];
 
 // This function populates the earned_achievements array from storage or DOM
 function initializeAchievements() {
-  console.log("Initializing achievements...");
   // First try to load from sessionStorage
   const storedAchievements = sessionStorage.getItem("earned_achievements");
   if (storedAchievements) {
-    console.log("Found achievements in sessionStorage");
     earned_achievements = JSON.parse(storedAchievements);
   } else {
-    console.log("No achievements in sessionStorage, loading from DOM");
     // Fall back to DOM elements if no sessionStorage data
     earned_achievements = Array.from(
       document.querySelectorAll("[data-achievement-id]")
@@ -108,14 +105,12 @@ function initializeAchievements() {
 
     // Store in sessionStorage for future use
     if (earned_achievements.length > 0) {
-      console.log("Storing achievements from DOM in sessionStorage");
       sessionStorage.setItem(
         "earned_achievements",
         JSON.stringify(earned_achievements)
       );
     }
   }
-  console.log("Initialized achievements:", earned_achievements);
 }
 
 // Call initializeAchievements immediately
@@ -141,9 +136,6 @@ function updateAchievementsDisplay(newAchievements = []) {
       earned_achievements = JSON.parse(storedAchievements);
     }
   }
-
-  // Log the current achievements for debugging
-  console.log("Updating achievements display with:", earned_achievements);
 
   // Update all achievement containers on the page
   const containers = [
@@ -976,18 +968,12 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
         challengeTextElem.textContent = data.evaluation.challenge;
         challengeSection.classList.remove("hidden");
         challengeSection.style.display = "block"; // Explicitly set display to block
-        console.log(
-          "Challenge section revealed with text:",
-          data.evaluation.challenge
-        );
       } else {
         console.error("Challenge section or text element not found:", {
           challengeSection,
           challengeTextElem,
         });
       }
-    } else {
-      console.log("No challenge in evaluation data:", data.evaluation);
     }
 
     // Make sure the XP info is properly initialized and displayed
@@ -1562,7 +1548,6 @@ window.addEventListener("DOMContentLoaded", async () => {
       }
 
       const data = await response.json();
-      console.log("Challenge response data:", data);
 
       if (!response.ok) {
         challengeErrorMessage.innerHTML =
@@ -1579,10 +1564,8 @@ window.addEventListener("DOMContentLoaded", async () => {
       const challengeEvalDiv = document.getElementById(
         "challengeEvaluationResults"
       );
-      console.log("Challenge eval div:", challengeEvalDiv);
 
       if (!challengeEvalDiv) {
-        console.error("Challenge evaluation div not found, creating it");
         // Create the div if it doesn't exist
         const newChallengeEvalDiv = document.createElement("div");
         newChallengeEvalDiv.id = "challengeEvaluationResults";
@@ -1622,7 +1605,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         const challengeSection = document.getElementById("challengeSection");
         if (challengeSection) {
           challengeSection.appendChild(newChallengeEvalDiv);
-          console.log("Created and appended challenge evaluation div");
           // Update our reference to the newly created div
           challengeEvalDiv = newChallengeEvalDiv;
         } else {
@@ -1633,8 +1615,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
       } else if (!document.getElementById("challengeOverallEvaluation")) {
         // If the div exists but doesn't have the required structure, recreate it
-        console.log("Recreating missing challenge evaluation structure");
-
         // Clear the existing content of challengeEvalDiv
         challengeEvalDiv.innerHTML = `
           <h2 class="text-2xl font-bold mb-6" data-i18n="evaluation.title">
@@ -1663,8 +1643,6 @@ window.addEventListener("DOMContentLoaded", async () => {
           </div>
           <div id="challengeXpInfo" class="mt-4 text-center profile-xp"></div>
         `;
-
-        console.log("Recreated challenge structure");
       }
 
       // Safely get values with fallbacks
@@ -1677,7 +1655,6 @@ window.addEventListener("DOMContentLoaded", async () => {
               0
             ) / Object.values(data.evaluation.scores).length
           : 0;
-      console.log("Challenge total score:", totalScore);
 
       const totalScorePercent = totalScore * 10;
       const totalScoreColor = scoreToColor(totalScore);
@@ -1689,10 +1666,6 @@ window.addEventListener("DOMContentLoaded", async () => {
       // Update the overall evaluation section
       const challengeOverallEvaluation = document.getElementById(
         "challengeOverallEvaluation"
-      );
-      console.log(
-        "Challenge overall evaluation div:",
-        challengeOverallEvaluation
       );
 
       if (challengeOverallEvaluation) {
@@ -1723,8 +1696,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       // Update the scores section
       const challengeScores = document.getElementById("challengeScores");
-      console.log("Challenge scores div:", challengeScores);
-      console.log("Challenge evaluation scores:", data.evaluation?.scores);
 
       if (challengeScores && data.evaluation && data.evaluation.scores) {
         // Clear existing content first
@@ -1765,11 +1736,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         const challengeScoreAnimationObserver = new IntersectionObserver(
           (entries) => {
             if (entries[0].isIntersecting) {
-              console.log(
-                "Challenge scores are now visible, starting animations"
-              );
-
-              // Get all score items
               const scoreItems =
                 challengeScores.querySelectorAll(".score-item");
 
@@ -1843,11 +1809,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       // Update XP and level info
       // Get the challengeXpInfo element - if it doesn't exist, we need to create it
       let challengeXpInfo = document.getElementById("challengeXpInfo");
-      console.log("Challenge XP Info element:", challengeXpInfo);
-      console.log("Challenge evaluation div:", challengeEvalDiv);
-      console.log("Challenge response data:", data); // Add detailed logging
 
-      // If challengeXpInfo doesn't exist in the DOM, create it
       if (!challengeXpInfo && challengeEvalDiv) {
         console.log("Creating missing challengeXpInfo element");
         challengeXpInfo = document.createElement("div");
@@ -1856,12 +1818,10 @@ window.addEventListener("DOMContentLoaded", async () => {
         challengeEvalDiv.appendChild(challengeXpInfo);
       }
 
-      // Make sure the challengeXpInfo element is visible and has the correct styling
       if (challengeXpInfo) {
         challengeXpInfo.classList.remove("hidden");
         challengeXpInfo.style.display = "block";
         challengeXpInfo.className = "mt-4 text-center profile-xp"; // Ensure it has the same classes as the main XP info
-        console.log("Made challengeXpInfo visible:", challengeXpInfo);
       } else {
         console.error(
           "Challenge XP Info element not found after creation attempt"
@@ -1877,11 +1837,7 @@ window.addEventListener("DOMContentLoaded", async () => {
           data.challenge_xp_earned !== undefined
             ? data.challenge_xp_earned
             : data.xp_gained;
-        console.log("XP gained from challenge:", xpGained);
-        console.log("Level info:", data.level_info);
-        console.log("All achievements:", all_achievements);
-
-        // Get current username from the header or use 'Anonymous'
+        // Debug logs removed
         const current_user_username =
           document.getElementById("usernameElem")?.textContent.trim() ||
           "Anonymous";
@@ -2217,9 +2173,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         // Ensure it has the same styling as the main evaluation section
         challengeEvalDiv.className = "mt-8 bg-white p-8 fade-in";
 
-        console.log(
-          "Showing challenge evaluation results, hidden class removed"
-        );
         scrollToChallengeEvaluation();
       } else {
         console.error("Challenge evaluation div not found");

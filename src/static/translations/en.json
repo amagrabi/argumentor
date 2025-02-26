@@ -68,7 +68,7 @@
   },
   "challenge": {
     "title": "Challenge",
-    "responseLabel": "Your Response to the Challenge",
+    "responseLabel": "Your Response",
     "submit": "Submit",
     "analyzing": "Analyzing...",
     "charactersRemaining": "Characters remaining:",

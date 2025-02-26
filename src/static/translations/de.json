@@ -73,7 +73,7 @@
   },
   "challenge": {
     "title": "Challenge",
-    "responseLabel": "Deine Antwort auf die Challenge",
+    "responseLabel": "Deine Antwort",
     "submit": "Absenden",
     "analyzing": "Analysiere...",
     "charactersRemaining": "Verbleibende Zeichen:",
