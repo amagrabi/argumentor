@@ -18,7 +18,7 @@ from config import get_settings
 from constants.achievements import ACHIEVEMENTS
 from extensions import db, limiter
 from models import Answer, Feedback, User
-from services.leveling import get_level_info
+from services.level_service import get_level_info
 from services.question_service import load_questions
 from utils import (
     get_daily_evaluation_count,

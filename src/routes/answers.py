@@ -9,7 +9,7 @@ from extensions import db, limiter
 from models import Answer, User
 from services.achievement_service import check_and_award_achievements
 from services.evaluator import DummyEvaluator
-from services.leveling import get_level, get_level_info
+from services.level_service import get_level_info, get_level_name
 from services.question_service import get_questions
 from utils import get_daily_evaluation_count, get_eval_limit
 
@@ -239,8 +239,8 @@ def submit_answer():
         }
         newly_awarded = check_and_award_achievements(user, answer_data)
 
-        old_level = get_level(old_xp)
-        new_level = get_level(total_xp)
+        old_level = get_level_name(old_xp)
+        new_level = get_level_name(total_xp)
         leveled_up = old_level != new_level
         level_info = get_level_info(total_xp)
 
@@ -425,9 +425,9 @@ def submit_challenge_response():
 
         try:
             logger.debug("Checking level information")
-            leveled_up = get_level(recalc_user_xp(user) - xp_gained) != get_level(
-                new_total
-            )
+            leveled_up = get_level_name(
+                recalc_user_xp(user) - xp_gained
+            ) != get_level_name(new_total)
             level_info = get_level_info(new_total)
             logger.debug(f"Leveled up: {leveled_up}")
         except Exception as level_error:

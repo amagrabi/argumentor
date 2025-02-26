@@ -12,7 +12,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from config import get_settings
 from extensions import login_manager
 from models import Answer, User, UserAchievement, db
-from services.leveling import get_level_info
+from services.level_service import get_level_info
 
 logger = logging.getLogger(__name__)
 SETTINGS = get_settings()
