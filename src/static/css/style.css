@@ -811,12 +811,12 @@ body.loading-translations [data-i18n]::after {
 /* Adjust username/level text positioning */
 #evaluationResults .move-down {
   position: relative;
-  top: 80px !important; /* Keep main evaluation text lower */
+  top: 60px !important; /* Consistent spacing for both sections */
 }
 
 #challengeEvaluationResults .move-down {
   position: relative;
-  top: 40px !important; /* Move challenge section text up */
+  top: 60px !important; /* Consistent spacing for both sections */
 }
 
 /* Increase font size for username and level text in evaluation section */
@@ -960,8 +960,14 @@ body.loading-translations [data-i18n]::after {
   }
 }
 
-.level-image-transition {
-  animation: levelImageTransition 1.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+.level-image-transition,
+.level-indicator.xp .level-image-transition,
+.level-indicator.challenge-xp .level-image-transition,
+#xpInfo .level-image-transition,
+#challengeXpInfo .level-image-transition {
+  animation: levelImageTransition 1.2s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  perspective: 800px;
+  transform-style: preserve-3d;
 }
 
 /* Remove particle animations */
@@ -1023,10 +1029,7 @@ body.loading-translations [data-i18n]::after {
 }
 
 /* Add 3D-like effect during level transition */
-.level-image-transition {
-  perspective: 800px;
-  transform-style: preserve-3d;
-}
+/* This was overriding the animation, removing the duplicate class definition */
 
 /* Make sure challenge-xp variant has the same styling as xp variant */
 .level-indicator.challenge-xp .level-image-container {
@@ -1081,4 +1084,115 @@ body.loading-translations [data-i18n]::after {
 /* Ensure the level number indicator is at the top */
 #challengeXpInfo .level-number-indicator {
   z-index: 3;
+}
+
+/* Level Text Transition Animation */
+@keyframes levelTextTransition {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  50.1% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.level-text-transition {
+  animation: levelTextTransition 1.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Progress Number Animation */
+@keyframes countUp {
+  from {
+    opacity: 0.7;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.count-up-animation {
+  display: inline-block;
+  animation: countUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Ensure consistent level-up glow animation between main and challenge sections */
+#challengeXpInfo .level-up-glow::after {
+  /* Reduce the intensity of the glow effect for the challenge section */
+  background: radial-gradient(
+    circle,
+    rgba(13, 168, 70, 0.2) 0%,
+    rgba(13, 168, 70, 0.05) 50%,
+    rgba(13, 168, 70, 0) 70%
+  );
+  /* Use a less intense animation */
+  animation: pulse 1.6s ease-in-out;
+}
+
+/* Additional control for challenge glow intensity */
+.challenge-glow.level-up-glow {
+  animation: challengeLevelUpGlow 1.6s ease-in-out;
+}
+
+.challenge-glow.level-up-glow::after {
+  opacity: 0.5;
+  animation: challengePulse 1.6s ease-in-out;
+}
+
+/* Custom keyframes for challenge glow with reduced intensity */
+@keyframes challengeLevelUpGlow {
+  0% {
+    box-shadow: 0 0 10px rgba(13, 168, 70, 0.2), 0 0 20px rgba(13, 168, 70, 0.1);
+    transform: scale(1);
+  }
+  20% {
+    box-shadow: 0 0 15px rgba(13, 168, 70, 0.25),
+      0 0 30px rgba(13, 168, 70, 0.15), 0 0 45px rgba(13, 168, 70, 0.05);
+    transform: scale(1.04);
+  }
+  40% {
+    box-shadow: 0 0 20px rgba(13, 168, 70, 0.3), 0 0 40px rgba(13, 168, 70, 0.2),
+      0 0 60px rgba(13, 168, 70, 0.1);
+    transform: scale(1.06);
+  }
+  60% {
+    box-shadow: 0 0 25px rgba(13, 168, 70, 0.35),
+      0 0 50px rgba(13, 168, 70, 0.25), 0 0 75px rgba(13, 168, 70, 0.15);
+    transform: scale(1.08);
+  }
+  80% {
+    box-shadow: 0 0 20px rgba(13, 168, 70, 0.3), 0 0 40px rgba(13, 168, 70, 0.2),
+      0 0 60px rgba(13, 168, 70, 0.1);
+    transform: scale(1.06);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(13, 168, 70, 0.2), 0 0 20px rgba(13, 168, 70, 0.1);
+    transform: scale(1);
+  }
+}
+
+@keyframes challengePulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
 }

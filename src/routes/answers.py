@@ -9,7 +9,7 @@ from extensions import db, limiter
 from models import Answer, User
 from services.achievement_service import check_and_award_achievements
 from services.evaluator import DummyEvaluator
-from services.level_service import get_level_info, get_level_name
+from services.level_service import get_level_for_xp, get_level_info, get_level_name
 from services.question_service import get_questions
 from utils import get_daily_evaluation_count, get_eval_limit
 
@@ -244,6 +244,11 @@ def submit_answer():
         leveled_up = old_level != new_level
         level_info = get_level_info(total_xp)
 
+        # Add previous level image if user leveled up
+        if leveled_up:
+            previous_level = get_level_for_xp(old_xp)
+            level_info["previous_level_image"] = previous_level.image_path
+
         logger.info(
             f"Answer processed for user: {user_uuid} for question: {data.get('question_id')}"
         )
@@ -429,6 +434,12 @@ def submit_challenge_response():
                 recalc_user_xp(user) - xp_gained
             ) != get_level_name(new_total)
             level_info = get_level_info(new_total)
+
+            # Add previous level image if user leveled up
+            if leveled_up:
+                previous_level = get_level_for_xp(recalc_user_xp(user) - xp_gained)
+                level_info["previous_level_image"] = previous_level.image_path
+
             logger.debug(f"Leveled up: {leveled_up}")
         except Exception as level_error:
             logger.error(f"Error checking level info: {str(level_error)}")
