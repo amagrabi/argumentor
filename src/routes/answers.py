@@ -131,7 +131,9 @@ def submit_answer():
         ]
         avg_all = sum(scores[key] for key in all_keys) / len(all_keys)
         xp_earned = (
-            round(avg_all * 10) if avg_all >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP else 0
+            round(avg_all * 10)
+            if scores["Relevance"] >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
+            else 0
         )
         logger.debug(f"Raw main average: {avg_all}, XP earned: {xp_earned}")
 
@@ -372,7 +374,9 @@ def submit_challenge_response():
 
         # Only award XP if the overall average meets the threshold.
         xp_gained = (
-            round(avg_all * 10) if avg_all >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP else 0
+            round(avg_all * 10)
+            if scores["Relevance"] >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
+            else 0
         )
         logger.info(f"Challenge average: {avg_all}, XP gained: {xp_gained}")
 
