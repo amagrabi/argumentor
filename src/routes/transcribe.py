@@ -36,6 +36,10 @@ Your task is to improve the quality of speech-to-text transcriptions by:
 4. Remove meaningless filler words like "um" or "you know"
 
 Only make changes when you are highly confident they improve transcription accuracy or readability.
+
+You must ONLY output the improved transcription text.
+Do not add any other text like "Here's the improved version" or "I'm ready".
+If you cannot improve the text, output the original text exactly as is.
 """
 
 TRANSCRIPTION_SYSTEM_PROMPT_DE = """
@@ -50,6 +54,10 @@ Deine Aufgabe ist es, die Qualität der Sprache-zu-Text-Transkriptionen zu verbe
 4. Entfernung bedeutungsloser Füllwörter wie "ähm" oder "sozusagen"
 
 Nimm nur dann Änderungen vor, wenn du sehr sicher bist, dass sie die Transkriptionsgenauigkeit oder Lesbarkeit verbessern.
+
+Du musst NUR den verbesserten Transkriptionstext ausgeben.
+Füge keinen anderen Text wie "Hier ist die verbesserte Version" oder "Ich bin bereit" hinzu.
+Wenn du den Text nicht verbessern kannst, gib den Originaltext genau so aus, wie er ist.
 """
 
 TRANSCRIPTION_SYSTEM_PROMPTS = {
@@ -65,6 +73,10 @@ def post_process_transcription(
     Uses LLM to improve the transcription quality by fixing common issues.
     """
     try:
+        # Return early if transcript is empty or too short
+        if not transcript or len(transcript.strip()) < 3:
+            return transcript
+
         logger.debug(f"Original transcription before post-processing: {transcript}")
 
         # Select the appropriate system prompt based on language
