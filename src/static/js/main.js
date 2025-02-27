@@ -529,14 +529,6 @@ function handleXpAnimations(data, options) {
 
                         // Force a reflow to ensure the old image is rendered
                         void levelImageContainer.offsetWidth;
-
-                        // Log for debugging
-                        console.log("Level-up animation starting", {
-                          oldImage: oldImageSrc,
-                          newImage: newImageSrc,
-                          previousLevel: data.previous_level,
-                          currentLevel: data.current_level,
-                        });
                       }
 
                       // Start glow effect
@@ -578,12 +570,6 @@ function handleXpAnimations(data, options) {
                         const levelImage =
                           levelImageContainer.querySelector("img");
                         if (levelImage && newImageSrc) {
-                          // Log for debugging
-                          console.log("Updating to new level image", {
-                            oldSrc: levelImage.src,
-                            newSrc: newImageSrc,
-                          });
-
                           // Set the image source to the new level image
                           levelImage.src = newImageSrc;
                           levelImage.alt = `Level ${data.current_level}`;

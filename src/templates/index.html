@@ -930,33 +930,29 @@
           <!-- Challenge Voice Input Section -->
           <div id="challengeVoiceInputSection" style="display: none" class="mt-0">
             <div class="mb-6">
-              <div class="flex flex-col items-center">
-                <div class="flex flex-col items-center w-full mt-4">
-                  <div class="flex justify-center w-full">
-                    <button
-                      id="challengeRecordButton"
-                      class="w-14 h-14 bg-white border-2 border-gray-800 rounded-full flex items-center justify-center hover:bg-gray-50 transition-all duration-200"
+              <div class="flex justify-center items-center w-full">
+                <div class="flex flex-col items-center">
+                  <button
+                    id="challengeRecordButton"
+                    class="w-14 h-14 bg-white border-2 border-gray-800 rounded-full flex items-center justify-center hover:bg-gray-50 transition-all duration-200"
+                  >
+                    <svg
+                      class="w-8 h-8"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      <svg
-                        class="w-8 h-8"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-                        />
-                      </svg>
-                    </button>
-                  </div>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                      />
+                    </svg>
+                  </button>
 
                   <!-- Fixed height container for status and timer -->
-                  <div
-                    class="mt-2 text-center h-[3.5rem] flex flex-col justify-center w-full"
-                  >
+                  <div class="mt-2 text-center h-[3.5rem] flex flex-col justify-center">
                     <div
                       id="challengeRecordingStatus"
                       class="text-sm font-medium text-gray-600 min-h-[1.5rem]"

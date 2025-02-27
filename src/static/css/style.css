@@ -970,7 +970,6 @@ body.loading-translations [data-i18n]::after {
   transform-style: preserve-3d;
 }
 
-/* Remove particle animations */
 @keyframes xpNumberPop {
   0% {
     transform: scale(1);
@@ -1028,9 +1027,6 @@ body.loading-translations [data-i18n]::after {
   filter: drop-shadow(0 0 5px rgba(13, 168, 70, 0.7));
 }
 
-/* Add 3D-like effect during level transition */
-/* This was overriding the animation, removing the duplicate class definition */
-
 /* Make sure challenge-xp variant has the same styling as xp variant */
 .level-indicator.challenge-xp .level-image-container {
   width: 180px;
@@ -1046,7 +1042,7 @@ body.loading-translations [data-i18n]::after {
 
 .level-indicator.challenge-xp .level-text {
   font-size: 1.25rem;
-  color: #1a202c; /* text-gray-900 */
+  color: #1a202c;
 }
 
 /* Remove right margin from the level image in the challenge evaluation section */
@@ -1129,14 +1125,12 @@ body.loading-translations [data-i18n]::after {
 
 /* Ensure consistent level-up glow animation between main and challenge sections */
 #challengeXpInfo .level-up-glow::after {
-  /* Reduce the intensity of the glow effect for the challenge section */
   background: radial-gradient(
     circle,
     rgba(13, 168, 70, 0.2) 0%,
     rgba(13, 168, 70, 0.05) 50%,
     rgba(13, 168, 70, 0) 70%
   );
-  /* Use a less intense animation */
   animation: pulse 1.6s ease-in-out;
 }
 
