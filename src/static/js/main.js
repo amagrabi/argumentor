@@ -475,14 +475,20 @@ function handleXpAnimations(data, options) {
             const xpProgressBar =
               xpProgressBarElement || xpInfo.querySelector(".xp-progress-bar");
             if (xpProgressBar) {
-              const currentWidth = xpProgressBar.style.width || "0%";
-              const targetWidth = data.level_info.progress_percent + "%";
-
+              // Parse current width as number for comparison
+              const currentWidthStr = xpProgressBar.style.width || "0%";
+              const currentWidthNum = parseFloat(currentWidthStr);
+              const targetWidthNum = data.level_info.progress_percent;
+              const targetWidth = targetWidthNum + "%";
+              
               // Only animate if there's xp gained or it's initial load
+              // AND if the target width is greater than current width (prevent backward animation)
+              // Level-up is an exception which should animate regardless
               if (
-                data.xp_gained === undefined ||
-                data.xp_gained > 0 ||
-                (isChallenge && data.challenge_xp_earned > 0)
+                (data.xp_gained === undefined ||
+                 data.xp_gained > 0 ||
+                 (isChallenge && data.challenge_xp_earned > 0)) &&
+                (data.leveled_up || targetWidthNum >= currentWidthNum)
               ) {
                 if (data.leveled_up) {
                   // For level up, first animate to 100%, then show level transition, then animate to new progress
@@ -1058,6 +1064,13 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       var oldLevelText = "";
     }
 
+    // Get the current XP progress state before evaluation
+    const currentXpProgressBar = document.querySelector(".xp-progress-bar");
+    let currentProgressWidth = 0;
+    if (currentXpProgressBar) {
+      currentProgressWidth = parseFloat(currentXpProgressBar.style.width) || 0;
+    }
+
     // Use the shared function for XP animations
     const xpInfo = document.getElementById("xpInfo");
     const mainXpGainedElement = document.getElementById("xpGained");
@@ -1067,6 +1080,12 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     const mainXpProgressTextElement = document.getElementById("xpProgressText");
     const mainXpProgressBarElement = xpInfo.querySelector(".xp-progress-bar");
     const mainNextLevelElement = document.getElementById("nextLevel");
+
+    // Before running handleXpAnimations, set the progress bar to the current value
+    // to ensure we start the animation from the current state
+    if (mainXpProgressBarElement) {
+      mainXpProgressBarElement.style.width = `${currentProgressWidth}%`;
+    }
 
     handleXpAnimations(data, {
       xpInfoElement: xpInfo,
@@ -2661,6 +2680,12 @@ window.addEventListener("DOMContentLoaded", async () => {
   const challengeRecordingStatus = document.getElementById(
     "challengeRecordingStatus"
   );
+  // Get the current XP progress state for challenge section
+  const challengeXpProgressBar = document.querySelector(".challenge-xp .xp-progress-bar");
+  window.currentChallengeProgressWidth = 0;
+  if (challengeXpProgressBar) {
+    window.currentChallengeProgressWidth = parseFloat(challengeXpProgressBar.style.width) || 0;
+  }
   // Reuse existing variables instead of redeclaring
   challengeVoiceTranscript = document.getElementById(
     "challengeVoiceTranscript"
