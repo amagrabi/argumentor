@@ -375,7 +375,7 @@
           </div>
         </div>
 
-        <h2 class="text-xl font-bold mb-4">
+        <h2 class="text-xl font-bold mb-6 mt-2">
           <span data-i18n="profile.achievements">Achievements</span>
           <span class="text-gray-600 font-normal">
             ({{ earned_achievements|length }}/{{ all_achievements|length
@@ -383,7 +383,7 @@
           >
         </h2>
         <div
-          class="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:[grid-template-columns:repeat(20,minmax(0,1fr))] gap-x-2 gap-y-2 mb-8"
+          class="inline-grid grid-cols-10 sm:grid-cols-12 md:grid-cols-14 lg:grid-cols-[repeat(17,minmax(0,40px))] justify-center justify-items-center gap-x-3 gap-y-3 mb-8 max-w-4xl mx-auto px-4"
         >
           {% for achievement in all_achievements %} {% set is_achieved =
           achievement.id in earned_achievements %}

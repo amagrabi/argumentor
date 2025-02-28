@@ -2254,7 +2254,7 @@ window.addEventListener("DOMContentLoaded", async () => {
               </span>
             </h5>
             <div class="flex justify-center w-full">
-              <div class="inline-grid grid-cols-4 sm:grid-cols-6 md:grid-cols-10 lg:grid-cols-[repeat(20,minmax(0,40px))] justify-center justify-items-center gap-x-3 gap-y-3 mb-8 max-w-4xl mx-auto px-4">
+              <div class="inline-grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-[repeat(15,minmax(0,40px))] justify-center justify-items-center gap-x-3 gap-y-3 mb-8 max-w-4xl mx-auto px-4">
                 ${all_achievements
                   .map((achievement) => {
                     const isEarned =
