@@ -10,9 +10,20 @@ import {
 let earned_achievements = [];
 let all_achievements = [];
 
+// Track active notifications
+let activeNotifications = [];
+const NOTIFICATION_HEIGHT = 84; // Reduced from 100 to make it more compact
+const NOTIFICATION_GAP = 4; // Reduced from 8 to make it more compact
+
+// Track which achievements have already been shown as notifications
+let shownAchievementNotifications = new Set();
+
 // Initialize achievements from server or session storage
 export async function initializeAchievements(achievements) {
   all_achievements = achievements;
+
+  // Reset shown achievement notifications
+  resetShownAchievementNotifications();
 
   // Check if user is authenticated
   const isAuthenticated =
@@ -103,6 +114,14 @@ export async function updateAchievementsDisplay(newAchievements = []) {
         console.error("Error fetching updated achievements:", error);
       }
     }
+
+    // Show notifications for new achievements that haven't been shown yet
+    newAchievements.forEach((achievement) => {
+      if (!shownAchievementNotifications.has(achievement.id)) {
+        showAchievementNotification(achievement);
+        shownAchievementNotifications.add(achievement.id);
+      }
+    });
   }
 
   // Update all achievement containers on the page
@@ -251,8 +270,14 @@ export function showAchievementNotification(achievement) {
   // Create notification element
   const notification = document.createElement("div");
   notification.className =
-    "fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-500";
+    "fixed right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-500";
   notification.style.zIndex = "9999";
+
+  // Calculate position based on active notifications
+  const notificationIndex = activeNotifications.length;
+  const bottomOffset =
+    16 + (NOTIFICATION_HEIGHT + NOTIFICATION_GAP) * notificationIndex;
+  notification.style.bottom = `${bottomOffset}px`;
 
   // Add achievement content
   notification.innerHTML = `
@@ -267,8 +292,9 @@ export function showAchievementNotification(achievement) {
     </div>
   `;
 
-  // Add to document
+  // Add to document and track
   document.body.appendChild(notification);
+  activeNotifications.push(notification);
 
   // Initialize translations for the new elements
   const i18nElements = notification.querySelectorAll("[data-i18n]");
@@ -290,6 +316,16 @@ export function showAchievementNotification(achievement) {
   setTimeout(() => {
     notification.classList.add("translate-y-full", "opacity-0");
     setTimeout(() => {
+      // Remove from tracking and document
+      const index = activeNotifications.indexOf(notification);
+      if (index > -1) {
+        activeNotifications.splice(index, 1);
+        // Adjust positions of remaining notifications
+        activeNotifications.forEach((n, i) => {
+          const newBottom = 16 + (NOTIFICATION_HEIGHT + NOTIFICATION_GAP) * i;
+          n.style.bottom = `${newBottom}px`;
+        });
+      }
       notification.remove();
     }, 500);
   }, 5000);
@@ -384,4 +420,9 @@ export async function refreshAchievementDisplay() {
 
   // Update display regardless of authentication status
   await updateAchievementsDisplay();
+}
+
+// Function to reset the shown achievement notifications
+export function resetShownAchievementNotifications() {
+  shownAchievementNotifications.clear();
 }

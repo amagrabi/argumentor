@@ -26,6 +26,7 @@ import {
   restoreEvaluationContent,
   refreshAchievementDisplay,
   updateAchievementsDisplay,
+  resetShownAchievementNotifications,
 } from "./evaluation.js";
 import { initMainVoiceInput, initChallengeVoiceInput } from "./voice.js";
 
@@ -271,6 +272,9 @@ async function updateLocalAchievementsDisplay(newAchievements = []) {
 // 2. After fetching a new question, it stores that question in sessionStorage.
 async function getNewQuestion(shouldScroll = true) {
   try {
+    // Reset shown achievement notifications when getting a new question
+    resetShownAchievementNotifications();
+
     let query = "";
     if (selectedCategories.length > 0) {
       const encodedCategories = selectedCategories.map(encodeURIComponent);
@@ -1334,39 +1338,8 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
     // Show achievement notifications if any were awarded
     if (data.achievements) {
-      // First update our local achievement list and fetch from server
-      await updateLocalAchievementsDisplay(data.achievements);
-
-      // Then show notifications for each achievement
-      for (const achievement of data.achievements) {
-        showAchievementNotification(achievement);
-        // Update the achievement icon in the evaluation section
-        const achievementIcon = document.querySelector(
-          `[data-achievement-id="${achievement.id}"]`
-        );
-        if (achievementIcon) {
-          // Remove opacity from both the container and the image
-          achievementIcon.classList.remove("opacity-40");
-          const trophyImage = achievementIcon.querySelector("img");
-          if (trophyImage) {
-            trophyImage.classList.remove("opacity-30");
-          }
-          // Update border color
-          achievementIcon.classList.remove("border-gray-200");
-          achievementIcon.classList.add("border-gray-600");
-
-          // Force a repaint to ensure the transition applies
-          void achievementIcon.offsetWidth;
-
-          // Add a temporary highlight effect
-          achievementIcon.style.transform = "scale(1.1)";
-          achievementIcon.style.boxShadow = "0 0 10px rgba(79, 70, 229, 0.5)";
-          setTimeout(() => {
-            achievementIcon.style.transform = "";
-            achievementIcon.style.boxShadow = "";
-          }, 500);
-        }
-      }
+      // Update our local achievement list and fetch from server
+      await updateAchievementsDisplay(data.achievements);
 
       // Update the achievement counter in the UI
       const achievementCounterElement = document.querySelector(
@@ -1418,12 +1391,12 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       }
     }
 
-    // Show achievement notifications and update display
+    // Update achievements display
     if (data.achievements) {
-      data.achievements.forEach((achievement) => {
-        showAchievementNotification(achievement);
-      });
       await updateAchievementsDisplay(data.achievements);
+    } else {
+      // Even if no new achievements, refresh the display to ensure consistency
+      await refreshAchievementDisplay();
     }
   } catch (error) {
     console.error("Error submitting answer:", error);
@@ -1591,6 +1564,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   // Initialize the voice input modules
   initMainVoiceInput();
   initChallengeVoiceInput();
+
+  // Reset shown achievement notifications
+  resetShownAchievementNotifications();
 
   // Make sure we initialize with fresh achievements data
   await initializeAchievements(all_achievements);
@@ -2660,39 +2636,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       // Show achievement notifications if any were awarded
       if (data.achievements) {
-        for (const achievement of data.achievements) {
-          showAchievementNotification(achievement);
-        }
-      }
-
-      // Update challenge evaluation XP and warning
-      const challengeXpMessage = document.getElementById("challengeXpMessage");
-      const challengeXpGained = document.getElementById("challengeXpGained");
-
-      if (data.relevance_too_low) {
-        if (challengeXpMessage) {
-          challengeXpMessage.textContent =
-            translations.evaluation.relevanceWarning;
-          challengeXpMessage.classList.remove("hidden");
-        }
-        if (challengeXpGained) {
-          challengeXpGained.innerHTML = "<strong>0</strong>";
-        }
-      } else {
-        if (challengeXpMessage) {
-          challengeXpMessage.textContent = "";
-          challengeXpMessage.classList.add("hidden");
-        }
-        if (challengeXpGained) {
-          challengeXpGained.innerHTML = `<strong>${data.challenge_xp_earned}</strong>`;
-        }
-      }
-
-      // Show achievement notifications and update display
-      if (data.achievements) {
-        data.achievements.forEach((achievement) => {
-          showAchievementNotification(achievement);
-        });
+        // Update achievements display
         await updateAchievementsDisplay(data.achievements);
       } else {
         // Even if no new achievements, refresh the display to ensure consistency
