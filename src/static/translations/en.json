@@ -256,6 +256,7 @@
     "accountType": "Account Type",
     "dailyEvaluations": "Daily Evaluations",
     "currentLevel": "Current Level",
+    "levelProgression": "Level Progression",
     "totalXP": "Total XP",
     "progress": "Progress",
     "overall": "Overall",
@@ -265,6 +266,7 @@
     "depth": "Depth",
     "objectivity": "Objectivity",
     "creativity": "Creativity",
+    "challenge": "Challenge",
     "achievements": "Achievements",
     "achievementData": {
       "first_argument": {

@@ -1067,7 +1067,7 @@ body.loading-translations [data-i18n]::after {
 #challengeXpInfo .flex.flex-col p.text-sm,
 #challengeXpInfo .flex.flex-col p.text-base {
   position: relative;
-  left: 0;
+  left: -38px;
   margin-bottom: 0.25rem;
 }
 
@@ -1189,4 +1189,119 @@ body.loading-translations [data-i18n]::after {
     transform: scale(1);
     opacity: 0.3;
   }
+}
+
+#xpInfo.profile-xp .flex.flex-col p.text-sm,
+#xpInfo.profile-xp .flex.flex-col p.text-base {
+  position: relative;
+  left: -38px;
+  margin-bottom: 0;
+}
+
+/* Make username and level text bigger */
+#xpInfo.profile-xp .move-down {
+  font-size: 1.25rem !important;
+  position: relative;
+  top: 60px !important;
+}
+
+/* Make progress and next level text smaller */
+#xpInfo.profile-xp .xp-bar-wrapper p.text-sm {
+  font-size: 0.875rem !important; /* 14px */
+  margin-top: 4px;
+  margin-bottom: 4px;
+  position: relative;
+  left: 0;
+  padding-left: 38px;
+}
+
+/* Ensure proper spacing between progress and next level text */
+#xpInfo.profile-xp .xp-bar-wrapper p.text-sm + p.text-sm {
+  margin-top: 2px;
+}
+
+/* Adjust the XP bar wrapper positioning for profile page */
+#xpInfo.profile-xp .xp-bar-wrapper {
+  margin-top: 100px !important; /* Reduced from 100px to bring the XP bar closer to the username/level text */
+}
+
+/* Ensure XP bar container is properly positioned */
+#xpInfo.profile-xp .xp-bar-container {
+  position: relative;
+  z-index: 1;
+  left: -15px;
+  margin-top: -20px;
+}
+
+/* Main page specific alignments (non-profile) */
+#evaluationResults .flex.flex-col p.text-sm,
+#evaluationResults .flex.flex-col p.text-base,
+#challengeEvaluationResults .flex.flex-col p.text-sm,
+#challengeEvaluationResults .flex.flex-col p.text-base {
+  position: relative;
+  left: 0;
+  padding-left: 38px; /* Align with progress/next level text */
+}
+
+/* Update the level indicator spacing for profile page */
+#xpInfo.profile-xp .level-indicator.xp {
+  margin-bottom: 0.5rem;
+}
+
+/* Ensure consistent padding and margins */
+#xpInfo.profile-xp .flex.flex-col {
+  margin-top: 0;
+  padding-left: 20px;
+}
+
+/* Progress text alignment and spacing */
+#xpInfo.profile-xp p.text-sm {
+  text-align: left;
+  padding-left: 30px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+#challengeXpInfo .flex.flex-col p.text-sm,
+#challengeXpInfo .flex.flex-col p.text-base {
+  position: relative;
+  left: -38px; /* Match the main section's left offset */
+  margin-bottom: 0.25rem;
+}
+
+/* Ensure consistent level-up glow animation between main and challenge sections */
+#challengeXpInfo .level-up-glow::after {
+  background: radial-gradient(
+    circle,
+    rgba(13, 168, 70, 0.2) 0%,
+    rgba(13, 168, 70, 0.05) 50%,
+    rgba(13, 168, 70, 0) 70%
+  );
+  animation: pulse 1.6s ease-in-out;
+}
+
+/* Update challenge XP info section to match main section */
+#challengeXpInfo .flex.flex-col {
+  margin-top: 0;
+  padding-left: 20px;
+}
+
+#challengeXpInfo .move-down {
+  position: relative;
+  top: 60px !important;
+  font-size: 1.25rem !important;
+  margin-bottom: 5px !important;
+}
+
+#challengeXpInfo .xp-bar-wrapper {
+  margin-top: 100px;
+}
+
+#challengeXpInfo .xp-bar-wrapper p.text-sm {
+  text-align: left;
+  padding-left: 30px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  position: relative;
+  left: -38px;
 }

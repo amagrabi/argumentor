@@ -16,6 +16,7 @@ from flask_login import current_user
 
 from config import get_settings
 from constants.achievements import ACHIEVEMENTS
+from constants.levels import Level
 from extensions import db, limiter
 from models import Answer, Feedback, User
 from services.level_service import get_level_info
@@ -176,6 +177,20 @@ def profile():
     )
     answers_dict = [answer.to_dict() for answer in answers]
 
+    # Pre-compute level status flags
+    levels_with_status = []
+    for level in Level.all_levels:
+        level_dict = {
+            "id": level.id,
+            "name": level.name,
+            "display_name": level.display_name,
+            "image_path": level.image_path,
+            "is_unlocked": level.id <= level_info["level_number"],
+            "is_current": level.id == level_info["level_number"],
+            "is_completed": level.id < level_info["level_number"],
+        }
+        levels_with_status.append(level_dict)
+
     # Sync session XP with database.
     session["xp"] = user.xp
 
@@ -191,6 +206,7 @@ def profile():
         voice_limit=voice_limit,
         all_achievements=all_achievements,
         earned_achievements=earned_achievements,
+        all_levels=levels_with_status,
     )
 
 

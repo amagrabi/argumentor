@@ -177,7 +177,10 @@
           </p>
         </div>
 
-        <h2 class="text-xl font-bold mb-4" data-i18n="profile.level"></h2>
+        <h2
+          class="text-xl font-bold mb-4"
+          data-i18n="profile.currentLevel"
+        ></h2>
         <div id="xpInfo" class="mt-8 mb-8 text-center profile-xp">
           <div class="flex items-center justify-start">
             <div class="level-image-wrapper">
@@ -188,11 +191,11 @@
               </div>
             </div>
             <div class="flex flex-col text-left">
-              <p class="text-sm text-gray-600 mb-0 move-down">
+              <p class="text-md text-gray-600 mb-0 move-down">
                 {{ current_user.username if current_user.is_authenticated else
                 'Anonymous' }}
               </p>
-              <p class="text-base mb-0 move-down" id="currentLevel">
+              <p class="text-md mb-0 move-down" id="currentLevel">
                 <strong>{{ level_info.display_name }}</strong>
               </p>
               <div class="xp-bar-wrapper mt-2">
@@ -214,6 +217,159 @@
                   <span data-i18n="evaluation.nextLevel">Next Level:</span>
                   <span id="nextLevel">{{ level_info.next_level }}</span>
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Level Progression Section -->
+        <h2
+          class="text-xl font-bold mb-4"
+          data-i18n="profile.levelProgression"
+        ></h2>
+        <div class="mt-4">
+          <div class="flex flex-col items-center">
+            <!-- Level images with arrows in a scrollable container -->
+            <div class="w-full overflow-x-auto pb-4 pt-2">
+              <div class="flex items-center justify-start min-w-max px-4">
+                {% for level in all_levels %}
+                <div class="flex items-center">
+                  <!-- Level container -->
+                  <div
+                    class="flex flex-col items-center relative"
+                    style="width: 60px"
+                  >
+                    <!-- Level image and number container -->
+                    <div
+                      class="relative inline-block"
+                      style="margin-left: 12px"
+                    >
+                      <!-- Level number indicator -->
+                      <div
+                        class="absolute -top-1 left-1/2 -translate-x-[70%] -translate-y-[25%] z-10 bg-black rounded-full w-4 h-4 flex items-center justify-center text-[10px] text-white border border-white"
+                      >
+                        {{ level.id }}
+                      </div>
+                      <!-- Level image -->
+                      <div class="level-indicator header">
+                        <div
+                          class="level-image-container {% if level.is_unlocked %}cursor-pointer hover:scale-105 transition-transform{% endif %} {% if level.is_current %}ring-4 ring-black ring-opacity-50 rounded-full{% endif %}"
+                          {%
+                          if
+                          level.is_unlocked
+                          %}
+                          onclick="showLargeImage('{{ level.image_path }}', '{{ level.display_name }}')"
+                          {%
+                          endif
+                          %}
+                        >
+                          {% if level.is_unlocked %}
+                          <img
+                            src="{{ level.image_path }}"
+                            alt="{{ level.display_name }}"
+                            class="level-image {% if level.is_completed %}opacity-75{% endif %}"
+                          />
+                          {% else %}
+                          <div
+                            class="w-full h-full flex items-center justify-center bg-gray-200 rounded-full cursor-not-allowed"
+                            title="Level locked - Keep practicing to unlock!"
+                          >
+                            <span class="text-2xl text-gray-600">?</span>
+                          </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Level name -->
+                    <div
+                      class="h-12 flex flex-col items-center justify-start mt-1 w-full"
+                      style="margin-left: 4px"
+                    >
+                      <div
+                        class="text-xs text-gray-600 font-bold {% if not level.is_unlocked %}opacity-50{% endif %} text-center w-full"
+                      >
+                        Level {{ level.id }}
+                      </div>
+                      <div
+                        class="text-[10px] text-gray-600 {% if not level.is_unlocked %}opacity-50{% endif %} text-center w-full"
+                      >
+                        {{ level.name }}
+                      </div>
+                    </div>
+                  </div>
+                  {% if not loop.last %}
+                  <!-- Arrow -->
+                  <div
+                    class="flex-none mx-[0.375rem] flex items-center h-full relative"
+                    style="left: 0px"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-gray-400 -mt-12"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      />
+                    </svg>
+                  </div>
+                  {% endif %}
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Large Image Modal -->
+        <div
+          id="imageModal"
+          class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50 backdrop-blur-sm transition-all duration-300"
+        >
+          <div
+            class="bg-white p-6 rounded-xl max-w-xl w-full mx-4 shadow-2xl transform transition-all duration-300"
+          >
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <h3
+                  id="modalTitle"
+                  class="text-xl font-bold text-gray-800"
+                ></h3>
+              </div>
+              <button
+                onclick="closeModal()"
+                class="text-gray-500 hover:text-gray-700 transition-colors p-1 hover:bg-gray-100 rounded-full"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div class="relative">
+              <div
+                class="aspect-square w-96 mx-auto border-4 border-black rounded-2xl overflow-hidden shadow-xl"
+              >
+                <img
+                  id="modalImage"
+                  class="w-full h-full object-cover"
+                  src=""
+                  alt=""
+                />
               </div>
             </div>
           </div>
@@ -642,6 +798,51 @@
         // --- Initial update on page load ---
         const levelInfo = {{ level_info | tojson }};
         updateLevelAndXPBar(levelInfo);
+
+        // --- Modal Functions ---
+        window.showLargeImage = function(imagePath, title) {
+          const modal = document.getElementById('imageModal');
+          const modalImage = document.getElementById('modalImage');
+          const modalTitle = document.getElementById('modalTitle');
+          const modalContainer = modal.querySelector('.transform');
+
+          // Reset transform and opacity
+          modalContainer.style.transform = 'scale(0.95)';
+          modalContainer.style.opacity = '0';
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+
+          // Force a reflow
+          void modal.offsetWidth;
+
+          // Animate in
+          modalContainer.style.transform = 'scale(1)';
+          modalContainer.style.opacity = '1';
+
+          modalImage.src = imagePath;
+          modalTitle.textContent = title;
+        };
+
+        window.closeModal = function() {
+          const modal = document.getElementById('imageModal');
+          const modalContainer = modal.querySelector('.transform');
+
+          // Animate out
+          modalContainer.style.transform = 'scale(0.95)';
+          modalContainer.style.opacity = '0';
+
+          setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+          }, 200);
+        };
+
+        // Close modal when clicking outside the image
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeModal();
+          }
+        });
       });
     </script>
   </body>

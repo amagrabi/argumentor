@@ -348,11 +348,8 @@ def submit_challenge_response():
             return jsonify({"error": error_message}), 429
 
         try:
-            logger.debug("Creating evaluator and evaluating challenge response")
             evaluator = create_evaluator()
             evaluation = evaluator.evaluate_challenge(answer, challenge_response)
-            logger.debug(f"Evaluation result keys: {list(evaluation.keys())}")
-            logger.debug(f"Evaluation scores keys: {list(evaluation['scores'].keys())}")
         except Exception as eval_error:
             logger.error(f"Error during challenge evaluation: {str(eval_error)}")
             return jsonify({"error": f"Evaluation error: {str(eval_error)}"}), 500
@@ -405,7 +402,6 @@ def submit_challenge_response():
             return jsonify({"error": f"Database error: {str(db_error)}"}), 500
 
         try:
-            logger.debug("Recalculating user XP")
             user = User.query.filter_by(uuid=user_uuid).first()
             new_total = recalc_user_xp(user)
             user.xp = new_total
@@ -437,7 +433,6 @@ def submit_challenge_response():
             ), 500
 
         try:
-            logger.debug("Checking level information")
             leveled_up = get_level_name(
                 recalc_user_xp(user) - xp_gained
             ) != get_level_name(new_total)

@@ -89,6 +89,7 @@
     "accountType": "Kontotyp",
     "dailyEvaluations": "Tägliche Bewertungen",
     "currentLevel": "Aktuelles Level",
+    "levelProgression": "Level Progression",
     "totalXP": "Erfahrungspunkte",
     "progress": "Fortschritt",
     "overall": "Gesamt",
@@ -98,6 +99,7 @@
     "depth": "Tiefe",
     "objectivity": "Objektivität",
     "creativity": "Kreativität",
+    "challenge": "Challenge",
     "achievements": "Errungenschaften",
     "achievementData": {
       "first_argument": {
