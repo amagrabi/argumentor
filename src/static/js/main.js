@@ -17,6 +17,18 @@ import {
   setupCharCounter,
 } from "./helpers.js";
 import { translations } from "./translations.js";
+// Import new modular components
+import {
+  initializeAchievements,
+  showEvaluationSection,
+  showAchievementNotification,
+  preserveEvaluationContent,
+  restoreEvaluationContent,
+  refreshAchievementDisplay,
+  updateAchievementsDisplay,
+} from "./evaluation.js";
+import { handleXpAnimations, updateXpIndicator } from "./level.js";
+import { initMainVoiceInput, initChallengeVoiceInput } from "./voice.js";
 
 // Initialize mermaid
 mermaid.initialize({
@@ -89,14 +101,40 @@ const current_user_username =
 // Get initial earned achievements from sessionStorage or DOM
 let earned_achievements = [];
 
-// This function populates the earned_achievements array from storage or DOM
-function initializeAchievements() {
-  // First try to load from sessionStorage
+// This function is now imported from evaluation.js
+async function initLocalAchievements() {
+  // Check if user is authenticated
+  const isAuthenticated =
+    document.querySelector('meta[name="user-authenticated"]')?.content ===
+    "true";
+
+  if (isAuthenticated) {
+    try {
+      // Fetch achievements from server for authenticated users
+      const response = await fetch("/get_user_achievements");
+      const data = await response.json();
+
+      if (response.ok && data.earned_achievements) {
+        earned_achievements = data.earned_achievements;
+        // Update sessionStorage with server data
+        sessionStorage.setItem(
+          "earned_achievements",
+          JSON.stringify(earned_achievements)
+        );
+        return;
+      }
+    } catch (error) {
+      console.error("Error fetching user achievements:", error);
+      // Continue to fallback methods
+    }
+  }
+
+  // If server fetch failed or user is not authenticated, try sessionStorage
   const storedAchievements = sessionStorage.getItem("earned_achievements");
   if (storedAchievements) {
     earned_achievements = JSON.parse(storedAchievements);
   } else {
-    // Fall back to DOM elements if no sessionStorage data
+    // Last resort - fall back to DOM elements if no sessionStorage data
     earned_achievements = Array.from(
       document.querySelectorAll("[data-achievement-id]")
     )
@@ -113,11 +151,16 @@ function initializeAchievements() {
   }
 }
 
-// Call initializeAchievements immediately
-initializeAchievements();
+// Call the local initialization function
+initLocalAchievements();
 
-// Function to update achievements display in both main and challenge sections
-function updateAchievementsDisplay(newAchievements = []) {
+// This function has been moved to evaluation.js
+// Using local function name to avoid conflicts
+async function updateLocalAchievementsDisplay(newAchievements = []) {
+  const isAuthenticated =
+    document.querySelector('meta[name="user-authenticated"]')?.content ===
+    "true";
+
   // Add any new achievements to our earned list
   if (newAchievements.length > 0) {
     earned_achievements = [
@@ -129,11 +172,60 @@ function updateAchievementsDisplay(newAchievements = []) {
       "earned_achievements",
       JSON.stringify(earned_achievements)
     );
+
+    // For authenticated users, get the server's list after a brief delay
+    // to allow the server to process any new achievements
+    if (isAuthenticated) {
+      try {
+        // Short delay to ensure server processes any new achievements first
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        const response = await fetch("/get_user_achievements");
+        const data = await response.json();
+
+        if (response.ok && data.earned_achievements) {
+          earned_achievements = data.earned_achievements;
+          // Update sessionStorage with server data
+          sessionStorage.setItem(
+            "earned_achievements",
+            JSON.stringify(earned_achievements)
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching updated achievements:", error);
+      }
+    }
   } else {
-    // Always reload from sessionStorage to ensure consistency
-    const storedAchievements = sessionStorage.getItem("earned_achievements");
-    if (storedAchievements) {
-      earned_achievements = JSON.parse(storedAchievements);
+    // For authenticated users, always get the freshest data
+    if (isAuthenticated) {
+      try {
+        const response = await fetch("/get_user_achievements");
+        const data = await response.json();
+
+        if (response.ok && data.earned_achievements) {
+          earned_achievements = data.earned_achievements;
+          // Update sessionStorage with server data
+          sessionStorage.setItem(
+            "earned_achievements",
+            JSON.stringify(earned_achievements)
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching achievements:", error);
+        // Fall back to sessionStorage
+        const storedAchievements = sessionStorage.getItem(
+          "earned_achievements"
+        );
+        if (storedAchievements) {
+          earned_achievements = JSON.parse(storedAchievements);
+        }
+      }
+    } else {
+      // For non-authenticated users, rely on sessionStorage
+      const storedAchievements = sessionStorage.getItem("earned_achievements");
+      if (storedAchievements) {
+        earned_achievements = JSON.parse(storedAchievements);
+      }
     }
   }
 
@@ -371,8 +463,9 @@ setupCharCounter(
 );
 setupCharCounter("challengeResponseInput", "challengeCount", "challenge");
 
-// Shared function for handling XP animations
-function handleXpAnimations(data, options) {
+// This function has been moved to level.js
+// Using local function name to avoid conflicts
+function handleLocalXpAnimations(data, options) {
   const {
     xpInfoElement,
     xpGainedElement,
@@ -441,8 +534,8 @@ function handleXpAnimations(data, options) {
       xpProgressBarElement.style.width = data.level_info.progress_percent + "%";
     }
 
-    // Update non-image level info
-    updateLevelInfo(data.total_xp, data.level_info);
+    // Use local renamed function to avoid identifier conflict
+    updateLocalLevelInfo(data.total_xp, data.level_info);
 
     return null; // No need for observer
   }
@@ -678,6 +771,45 @@ function handleXpAnimations(data, options) {
                   xpProgressBar.style.transition =
                     "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
                   xpProgressBar.style.width = targetWidth;
+
+                  // Add XP number animation for regular XP gains
+                  if (xpProgressTextElement && data.level_info) {
+                    // Add animation class
+                    xpProgressTextElement.classList.add("count-up-animation");
+
+                    // Animate the numbers counting up
+                    const startXp =
+                      parseInt(
+                        xpProgressTextElement.textContent.split(" / ")[0]
+                      ) || 0;
+                    const endXp = parseInt(data.level_info.xp_into_level);
+                    const xpNeeded = data.level_info.xp_needed;
+                    const duration = 800; // match the progress bar animation duration
+                    const startTime = performance.now();
+
+                    const animateXpNumbers = function (timestamp) {
+                      const elapsed = timestamp - startTime;
+                      const progress = Math.min(elapsed / duration, 1);
+                      const currentXp = Math.floor(
+                        startXp + (endXp - startXp) * progress
+                      );
+
+                      xpProgressTextElement.textContent = `${currentXp} / ${xpNeeded}`;
+
+                      if (progress < 1) {
+                        requestAnimationFrame(animateXpNumbers);
+                      } else {
+                        // Animation complete, remove animation class
+                        setTimeout(function () {
+                          xpProgressTextElement.classList.remove(
+                            "count-up-animation"
+                          );
+                        }, 200);
+                      }
+                    };
+
+                    requestAnimationFrame(animateXpNumbers);
+                  }
                 }
               } else {
                 // No XP gained, just set the width without animation
@@ -685,8 +817,8 @@ function handleXpAnimations(data, options) {
                 xpProgressBar.style.width = targetWidth;
               }
 
-              // Update non-image level info
-              updateLevelInfo(data.total_xp, data.level_info);
+              // Use local renamed function to avoid identifier conflict
+              updateLocalLevelInfo(data.total_xp, data.level_info);
             }
 
             // Disconnect observer after triggering animations
@@ -1087,7 +1219,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       mainXpProgressBarElement.style.width = `${currentProgressWidth}%`;
     }
 
-    handleXpAnimations(data, {
+    handleLocalXpAnimations(data, {
       xpInfoElement: xpInfo,
       xpGainedElement: mainXpGainedElement,
       xpMessageElement: mainXpMessageElement,
@@ -1104,11 +1236,11 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     showEvaluationSection(document.getElementById("evaluationResults"), false);
 
     // Remove any previous scroll behavior
-    window.removeEventListener("scroll", scrollToChallengeEvaluation);
+    window.removeEventListener("scroll", localScrollToChallengeEvaluation);
 
     // Ensure we scroll to the start of the main evaluation section
     requestAnimationFrame(() => {
-      scrollToMainEvaluation();
+      localScrollToMainEvaluation();
     });
 
     // Make sure the XP info section is visible
@@ -1201,6 +1333,10 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
     // Show achievement notifications if any were awarded
     if (data.achievements) {
+      // First update our local achievement list and fetch from server
+      await updateLocalAchievementsDisplay(data.achievements);
+
+      // Then show notifications for each achievement
       for (const achievement of data.achievements) {
         showAchievementNotification(achievement);
         // Update the achievement icon in the evaluation section
@@ -1256,7 +1392,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
     // After the evaluation is displayed, scroll to it
     setTimeout(() => {
-      scrollToMainEvaluation();
+      localScrollToMainEvaluation();
     }, 100); // Small delay to ensure the content is rendered
 
     // Update main evaluation XP and warning
@@ -1286,7 +1422,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       data.achievements.forEach((achievement) => {
         showAchievementNotification(achievement);
       });
-      updateAchievementsDisplay(data.achievements);
+      await updateAchievementsDisplay(data.achievements);
     }
   } catch (error) {
     console.error("Error submitting answer:", error);
@@ -1451,6 +1587,15 @@ function restoreSavedTextFieldValues() {
 
 // Update the DOMContentLoaded handler
 window.addEventListener("DOMContentLoaded", async () => {
+  // Initialize the voice input modules
+  initMainVoiceInput();
+  initChallengeVoiceInput();
+
+  // Make sure we initialize with fresh achievements data
+  await initializeAchievements(all_achievements);
+
+  // Initialize achievements from evaluation.js
+  initializeAchievements(all_achievements);
   // Restore saved text field values if they exist
   restoreSavedTextFieldValues();
 
@@ -1724,7 +1869,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       }
 
       // Update only the global (header) XP/level indicator
-      updateXpIndicator(data.current_xp, data.level_info);
+      updateLocalXpIndicator(data.current_xp, data.level_info);
 
       // Update challenge evaluation feedback.
       const challengeEvalDiv = document.getElementById(
@@ -2498,7 +2643,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         // Ensure it has the same styling as the main evaluation section
         challengeEvalDiv.className = "mt-8 bg-white p-8 fade-in";
 
-        scrollToChallengeEvaluation();
+        localScrollToChallengeEvaluation();
       } else {
         console.error("Challenge evaluation div not found");
       }
@@ -2541,7 +2686,10 @@ window.addEventListener("DOMContentLoaded", async () => {
         data.achievements.forEach((achievement) => {
           showAchievementNotification(achievement);
         });
-        updateAchievementsDisplay(data.achievements);
+        await updateAchievementsDisplay(data.achievements);
+      } else {
+        // Even if no new achievements, refresh the display to ensure consistency
+        await refreshAchievementDisplay();
       }
 
       // Only proceed if we have the challenge XP info element
@@ -2587,7 +2735,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         }
 
         // Use the shared function for XP animations
-        handleXpAnimations(data, {
+        handleLocalXpAnimations(data, {
           xpInfoElement: challengeXpInfo,
           xpGainedElement: challengeXpGainedElement,
           xpMessageElement: challengeXpMessageElement,
@@ -3085,38 +3233,27 @@ document.getElementById("nextQuestion").addEventListener("click", async () => {
 });
 
 // Split updateXpIndicator into two functions
-function updateLevelInfo(totalXp, levelInfo) {
-  // Update the mini XP progress bar
-  const miniXpBarFill = document.getElementById("miniXpBarFill");
-  if (miniXpBarFill) {
-    miniXpBarFill.style.width = levelInfo.progress_percent + "%";
-  }
-
-  // Update the level display element
-  const userLevelElem = document.getElementById("userLevelElem");
-  if (userLevelElem) {
-    userLevelElem.textContent = levelInfo.display_name;
-  }
-
-  // Update all level number indicators
-  const levelNumberElems = document.querySelectorAll(
-    "#levelNumber, .level-number-indicator"
-  );
-  levelNumberElems.forEach((elem) => {
-    if (elem) {
-      elem.textContent = levelInfo.level_number;
-    }
+// Renamed to avoid identifier collision with imported function
+function updateLocalLevelInfo(totalXp, levelInfo) {
+  // Use dynamic import to access the module function
+  import("./level.js").then((levelModule) => {
+    levelModule.updateLevelInfo(totalXp, levelInfo);
   });
 }
 
-function updateXpIndicator(totalXp, levelInfo) {
-  updateLevelInfo(totalXp, levelInfo);
+// Renamed to avoid identifier collision with imported function
+function updateLocalXpIndicator(totalXp, levelInfo) {
+  // Update the local level info
+  updateLocalLevelInfo(totalXp, levelInfo);
 
-  // Update all level images on the page
-  const levelImages = document.querySelectorAll(".level-image");
-  levelImages.forEach((img) => {
-    img.src = levelInfo.level_image;
-    img.alt = levelInfo.level_label;
+  // Then update level images using dynamic import
+  import("./level.js").then((levelModule) => {
+    // Just update the images since we already updated the level info
+    const levelImages = document.querySelectorAll(".level-image");
+    levelImages.forEach((img) => {
+      img.src = levelInfo.level_image;
+      img.alt = levelInfo.level_label;
+    });
   });
 }
 
@@ -3144,37 +3281,24 @@ async function loadSavedCategories() {
   }
 }
 
-// Existing function for scrolling to challenge evaluation
-function scrollToChallengeEvaluation() {
-  const challengeEval = document.getElementById("challengeEvaluationResults");
-  if (challengeEval) {
-    challengeEval.scrollIntoView({ behavior: "smooth" });
-    refreshAchievementDisplay();
-  }
+// These functions have been moved to evaluation.js
+// Here we create local wrappers to use the imported functions
+function localScrollToChallengeEvaluation() {
+  import("./evaluation.js").then((evalModule) => {
+    evalModule.scrollToChallengeEvaluation();
+  });
 }
 
-// NEW: Function for scrolling to main evaluation section
-function scrollToMainEvaluation() {
-  const evaluationResults = document.getElementById("evaluationResults");
-  if (evaluationResults) {
-    // Get the header height to offset the scroll position
-    const header = document.querySelector("header");
-    const headerHeight = header ? header.offsetHeight : 0;
+function localScrollToMainEvaluation() {
+  import("./evaluation.js").then((evalModule) => {
+    evalModule.scrollToMainEvaluation();
+  });
+}
 
-    const yOffset = -headerHeight - 20; // Additional 20px buffer
-    const y =
-      evaluationResults.getBoundingClientRect().top +
-      window.pageYOffset +
-      yOffset;
-
-    window.scrollTo({
-      top: y,
-      behavior: "smooth",
-    });
-
-    // Refresh achievement display after scrolling
-    refreshAchievementDisplay();
-  }
+function localRefreshAchievementDisplay() {
+  import("./evaluation.js").then((evalModule) => {
+    evalModule.refreshAchievementDisplay();
+  });
 }
 
 // Updated callback for main answer submission
@@ -3200,17 +3324,17 @@ function handleMainAnswerSubmission(data) {
   }
 
   // Scroll to main evaluation section after submission
-  scrollToMainEvaluation();
+  localScrollToMainEvaluation();
 
   // Show achievement notifications and update display
   if (data.achievements) {
     data.achievements.forEach((achievement) => {
       showAchievementNotification(achievement);
     });
-    updateAchievementsDisplay(data.achievements);
+    updateLocalAchievementsDisplay(data.achievements);
   } else {
     // Even if no new achievements, refresh the display to ensure consistency
-    refreshAchievementDisplay();
+    localRefreshAchievementDisplay();
   }
 }
 
@@ -3233,7 +3357,7 @@ function handleChallengeSubmission(data) {
 
   if (challengeXpInfo) {
     // Handle XP animations with the challenge flag
-    handleXpAnimations(data, {
+    handleLocalXpAnimations(data, {
       xpInfoElement: challengeXpInfo,
       xpGainedElement: challengeXpGained,
       xpMessageElement: challengeXpMessageElement,
@@ -3259,41 +3383,14 @@ function handleChallengeSubmission(data) {
     data.achievements.forEach((achievement) => {
       showAchievementNotification(achievement);
     });
-    updateAchievementsDisplay(data.achievements);
+    updateLocalAchievementsDisplay(data.achievements);
   } else {
     // Even if no new achievements, refresh the display to ensure consistency
-    refreshAchievementDisplay();
+    localRefreshAchievementDisplay();
   }
 }
 
-function preserveEvaluationContent() {
-  const evaluationResults = document.getElementById("evaluationResults");
-  const overallEvaluation = document.getElementById("overallEvaluation");
-  const scores = document.getElementById("scores");
-
-  return {
-    isHidden: evaluationResults.classList.contains("hidden"),
-    overallHtml: overallEvaluation.innerHTML,
-    scoresHtml: scores.innerHTML,
-  };
-}
-
-function restoreEvaluationContent(content) {
-  const evaluationResults = document.getElementById("evaluationResults");
-  const overallEvaluation = document.getElementById("overallEvaluation");
-  const scores = document.getElementById("scores");
-
-  if (evaluationResults && overallEvaluation && scores && content) {
-    // If the evaluation was not hidden, show it
-    if (!content.isHidden) {
-      evaluationResults.classList.remove("hidden");
-    }
-
-    // Restore the HTML content
-    overallEvaluation.innerHTML = content.overallHtml;
-    scores.innerHTML = content.scoresHtml;
-  }
-}
+// These functions have been moved to evaluation.js
 
 async function switchLanguage(lang) {
   // Store evaluation content before switching
@@ -3308,87 +3405,13 @@ async function switchLanguage(lang) {
   restoreEvaluationContent(evaluationContent);
 }
 
-function showAchievementNotification(achievement) {
-  // Create notification element
-  const notification = document.createElement("div");
-  notification.className =
-    "fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-500";
-  notification.style.zIndex = "9999";
+// This functionality has been moved to evaluation.js
 
-  // Add achievement content
-  notification.innerHTML = `
-    <div class="flex items-center gap-3">
-      <div class="achievement-icon w-12 h-12 flex items-center justify-center rounded-lg bg-gray-400">
-        <img src="/static/img/trophy.webp" class="w-8 h-8" alt="Trophy" />
-      </div>
-      <div>
-        <h3 class="font-bold">${achievement.name}</h3>
-        <p class="text-sm text-gray-300">${achievement.description}</p>
-      </div>
-    </div>
-  `;
-
-  // Add to document
-  document.body.appendChild(notification);
-
-  // Trigger animation
-  setTimeout(() => {
-    notification.classList.remove("translate-y-full", "opacity-0");
-  }, 100);
-
-  // Remove after delay
-  setTimeout(() => {
-    notification.classList.add("translate-y-full", "opacity-0");
-    setTimeout(() => {
-      notification.remove();
-    }, 500);
-  }, 5000);
-}
-
-// Call updateAchievementsDisplay initially to ensure consistent state
-document.addEventListener("DOMContentLoaded", () => {
-  // Reinitialize achievements to ensure we have the latest data
-  initializeAchievements();
-
-  // Update display after a short delay to ensure DOM is fully rendered
-  setTimeout(() => {
-    updateAchievementsDisplay();
-  }, 100);
+// Event listener for achievement updates
+document.addEventListener("refreshAchievements", () => {
+  updateLocalAchievementsDisplay(all_achievements);
 });
 
-// Function to ensure achievements are refreshed when showing evaluation results
-function refreshAchievementDisplay() {
-  // This ensures we always update achievement displays when showing evaluation results
-  setTimeout(() => {
-    updateAchievementsDisplay();
-  }, 50);
-}
+// This function has been moved to evaluation.js
 
-// Function to show evaluation section
-function showEvaluationSection(evalDiv, isChallenge = false) {
-  if (!evalDiv) {
-    console.error(
-      isChallenge
-        ? "Challenge evaluation div not found"
-        : "Evaluation div not found"
-    );
-    return;
-  }
-
-  // Make sure the evaluation section is visible
-  evalDiv.classList.remove("hidden");
-  evalDiv.style.display = "block";
-  evalDiv.classList.add("fade-in");
-
-  // Ensure it has the same styling
-  evalDiv.className = "mt-8 bg-white p-8 fade-in";
-
-  // Scroll to the appropriate section
-  requestAnimationFrame(() => {
-    if (isChallenge) {
-      scrollToChallengeEvaluation();
-    } else {
-      scrollToMainEvaluation();
-    }
-  });
-}
+// This function has been moved to evaluation.js

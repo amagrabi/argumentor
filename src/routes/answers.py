@@ -239,7 +239,7 @@ def submit_answer():
             "total_score": avg_all,
             "evaluation_scores": evaluation["scores"],
         }
-        newly_awarded = check_and_award_achievements(user, answer_data)
+        newly_awarded = check_and_award_achievements(user, answer_data, session)
 
         old_level = get_level_name(old_xp)
         new_level = get_level_name(total_xp)
@@ -424,7 +424,9 @@ def submit_challenge_response():
                 "is_challenge": True,
                 "argument": challenge_response,  # Include the challenge response text
             }
-            newly_awarded = check_and_award_achievements(user, challenge_answer_data)
+            newly_awarded = check_and_award_achievements(
+                user, challenge_answer_data, session
+            )
             logger.debug(f"Newly awarded achievements: {newly_awarded}")
         except Exception as achievement_error:
             logger.error(f"Error checking achievements: {str(achievement_error)}")

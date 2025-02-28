@@ -18,115 +18,141 @@ def get_question_category(question_id):
     return None
 
 
-def check_and_award_achievements(user: User, answer_data: dict) -> List[Achievement]:
-    """Check for and award any newly earned achievements"""
+def check_and_award_achievements(
+    user: User, answer_data: dict, session=None
+) -> List[Achievement]:
+    """Check for and award any newly earned achievements
+
+    Args:
+        user: The user to check achievements for
+        answer_data: Data about the answer submission
+        session: Optional Flask session object for anonymous users
+
+    Returns:
+        List of newly awarded achievements
+    """
     if not user:
         return []
 
     newly_awarded = []
 
-    # Check each achievement condition
-    if not user.has_achievement("first_argument"):
-        user.award_achievement("first_argument")
-        newly_awarded.append(ACHIEVEMENTS_BY_ID["first_argument"])
+    # For tracking achievements for anonymous users
+    session_achievements = []
+    if session and "earned_achievements" in session:
+        session_achievements = session.get("earned_achievements", [])
 
-    if answer_data.get("input_mode") == "voice" and not user.has_achievement(
-        "voice_pioneer"
-    ):
-        user.award_achievement("voice_pioneer")
-        newly_awarded.append(ACHIEVEMENTS_BY_ID["voice_pioneer"])
+    # Check each achievement condition
+    def award_achievement(achievement_id):
+        """Helper to award achievement to user and track in session"""
+        # Award to user if authenticated
+        if user.is_authenticated:
+            if not user.has_achievement(achievement_id):
+                user.award_achievement(achievement_id)
+                newly_awarded.append(ACHIEVEMENTS_BY_ID[achievement_id])
+        # Track in session for anonymous users
+        elif session is not None:
+            if achievement_id not in session_achievements:
+                session_achievements.append(achievement_id)
+                newly_awarded.append(ACHIEVEMENTS_BY_ID[achievement_id])
+
+    # First argument achievement
+    if not user.is_authenticated or not user.has_achievement("first_argument"):
+        award_achievement("first_argument")
+
+    # Voice pioneer
+    has_voice_pioneer = user.is_authenticated and user.has_achievement("voice_pioneer")
+    if answer_data.get("input_mode") == "voice" and not has_voice_pioneer:
+        award_achievement("voice_pioneer")
 
     # Check for exceptional rating
     total_score = answer_data.get("total_score", 0)
-    if total_score >= 9 and not user.has_achievement("exceptional_rating"):
-        user.award_achievement("exceptional_rating")
-        newly_awarded.append(ACHIEVEMENTS_BY_ID["exceptional_rating"])
+    has_exceptional = user.is_authenticated and user.has_achievement(
+        "exceptional_rating"
+    )
+    if total_score >= 9 and not has_exceptional:
+        award_achievement("exceptional_rating")
 
     # Check for master of all categories
     scores = answer_data.get("evaluation_scores", {})
-    if all(score >= 9 for score in scores.values()) and not user.has_achievement(
-        "master_of_all"
-    ):
-        user.award_achievement("master_of_all")
-        newly_awarded.append(ACHIEVEMENTS_BY_ID["master_of_all"])
+    has_master = user.is_authenticated and user.has_achievement("master_of_all")
+    if all(score >= 9 for score in scores.values()) and not has_master:
+        award_achievement("master_of_all")
 
     # Check for wordsmith (long argument)
     argument = answer_data.get("argument", "")
-    if (
-        len(argument) > 900
-        and total_score >= 7.5
-        and not user.has_achievement("wordsmith")
-    ):
-        user.award_achievement("wordsmith")
-        newly_awarded.append(ACHIEVEMENTS_BY_ID["wordsmith"])
+    has_wordsmith = user.is_authenticated and user.has_achievement("wordsmith")
+    if len(argument) > 900 and total_score >= 7.5 and not has_wordsmith:
+        award_achievement("wordsmith")
 
     # Check for concise master
-    if (
-        len(argument) < 200
-        and total_score >= 7.5
-        and not user.has_achievement("concise_master")
-    ):
-        user.award_achievement("concise_master")
-        newly_awarded.append(ACHIEVEMENTS_BY_ID["concise_master"])
+    has_concise = user.is_authenticated and user.has_achievement("concise_master")
+    if len(argument) < 200 and total_score >= 7.5 and not has_concise:
+        award_achievement("concise_master")
 
-    # Count total answers and award milestones
-    MIN_SCORE = 4
-    answer_count = sum(
-        1 for a in user.answers if getattr(a, "total_score", 0) >= MIN_SCORE
-    )
-    if answer_count >= 10 and not user.has_achievement("ten_answers"):
-        user.award_achievement("ten_answers")
-        newly_awarded.append(ACHIEVEMENTS_BY_ID["ten_answers"])
+    # Count total answers and award milestones - only for authenticated users
+    if user.is_authenticated:
+        MIN_SCORE = 4
+        answer_count = sum(
+            1 for a in user.answers if getattr(a, "total_score", 0) >= MIN_SCORE
+        )
+        if answer_count >= 10 and not user.has_achievement("ten_answers"):
+            award_achievement("ten_answers")
 
-    if answer_count >= 25 and not user.has_achievement("twenty_five_answers"):
-        user.award_achievement("twenty_five_answers")
-        newly_awarded.append(ACHIEVEMENTS_BY_ID["twenty_five_answers"])
+        if answer_count >= 25 and not user.has_achievement("twenty_five_answers"):
+            award_achievement("twenty_five_answers")
 
-    if answer_count >= 50 and not user.has_achievement("fifty_answers"):
-        user.award_achievement("fifty_answers")
-        newly_awarded.append(ACHIEVEMENTS_BY_ID["fifty_answers"])
+        if answer_count >= 50 and not user.has_achievement("fifty_answers"):
+            award_achievement("fifty_answers")
 
-    if answer_count >= 100 and not user.has_achievement("hundred_answers"):
-        user.award_achievement("hundred_answers")
-        newly_awarded.append(ACHIEVEMENTS_BY_ID["hundred_answers"])
+        if answer_count >= 100 and not user.has_achievement("hundred_answers"):
+            award_achievement("hundred_answers")
+    else:
+        MIN_SCORE = 4
 
-    # Count voice answers
-    voice_answers = sum(1 for a in user.answers if a.input_mode == "voice")
-    if voice_answers >= 10 and not user.has_achievement("voice_master"):
-        user.award_achievement("voice_master")
-        newly_awarded.append(ACHIEVEMENTS_BY_ID["voice_master"])
+    # Count voice answers - only for authenticated users
+    if user.is_authenticated:
+        voice_answers = sum(1 for a in user.answers if a.input_mode == "voice")
+        if voice_answers >= 10 and not user.has_achievement("voice_master"):
+            award_achievement("voice_master")
 
-    # Check for category explorer achievement
-    answered_categories = {
-        get_question_category(a.question_id)
-        for a in user.answers
-        if a.question_id and get_question_category(a.question_id)
-    }
-    if len(answered_categories) >= 9 and not user.has_achievement(
-        "category_explorer"
-    ):  # All 9 categories
-        user.award_achievement("category_explorer")
-        newly_awarded.append(ACHIEVEMENTS_BY_ID["category_explorer"])
+        # Check for category explorer achievement - only for authenticated users
+        answered_categories = {
+            get_question_category(a.question_id)
+            for a in user.answers
+            if a.question_id and get_question_category(a.question_id)
+        }
+        if len(answered_categories) >= 9 and not user.has_achievement(
+            "category_explorer"
+        ):  # All 9 categories
+            award_achievement("category_explorer")
 
     # Check for challenge achievements
     if answer_data.get("is_challenge") and total_score >= MIN_SCORE:
-        if not user.has_achievement("first_challenge"):
-            user.award_achievement("first_challenge")
-            newly_awarded.append(ACHIEVEMENTS_BY_ID["first_challenge"])
-
-        challenge_count = sum(
-            1
-            for a in user.answers
-            if a.challenge_response and getattr(a, "total_score", 0) >= MIN_SCORE
+        has_challenge = user.is_authenticated and user.has_achievement(
+            "first_challenge"
         )
+        if not has_challenge:
+            award_achievement("first_challenge")
 
-        if challenge_count >= 10 and not user.has_achievement("ten_challenges"):
-            user.award_achievement("ten_challenges")
-            newly_awarded.append(ACHIEVEMENTS_BY_ID["ten_challenges"])
+        # Only check these for authenticated users
+        if user.is_authenticated:
+            challenge_count = sum(
+                1
+                for a in user.answers
+                if a.challenge_response and getattr(a, "total_score", 0) >= MIN_SCORE
+            )
 
-        if challenge_count >= 100 and not user.has_achievement("hundred_challenges"):
-            user.award_achievement("hundred_challenges")
-            newly_awarded.append(ACHIEVEMENTS_BY_ID["hundred_challenges"])
+            if challenge_count >= 10 and not user.has_achievement("ten_challenges"):
+                award_achievement("ten_challenges")
+
+            if challenge_count >= 100 and not user.has_achievement(
+                "hundred_challenges"
+            ):
+                award_achievement("hundred_challenges")
+
+    # Update the session with achievements for non-authenticated users
+    if session is not None and not user.is_authenticated and session_achievements:
+        session["earned_achievements"] = session_achievements
 
     return newly_awarded
 

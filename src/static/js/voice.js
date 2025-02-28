@@ -1,18 +1,8 @@
-import { CHAR_LIMITS, VOICE_LIMITS, DEFAULT_LANGUAGE } from "./constants.js";
+// Voice module - Handles all voice input and recording functionality
+import { VOICE_LIMITS } from "./constants.js";
 import { translations } from "./translations.js";
 
-// HTML elements for voice recording
-const textModeTab = document.getElementById("textModeTab");
-const voiceModeTab = document.getElementById("voiceModeTab");
-const textInputSection = document.getElementById("textInputSection");
-const voiceInputSection = document.getElementById("voiceInputSection");
-const recordButton = document.getElementById("recordButton");
-const recordingTimer = document.getElementById("recordingTimer");
-const timerDisplay = document.getElementById("timerDisplay");
-const recordingStatus = document.getElementById("recordingStatus");
-const transcriptField = document.getElementById("voiceTranscript"); // Textarea to display transcript
-const voiceCount = document.getElementById("voiceCount");
-
+// Global variables for voice recording
 let mediaRecorder;
 let audioChunks = [];
 let recordingTimeout;
@@ -20,40 +10,216 @@ let isRecording = false;
 let timerInterval;
 let startTime;
 
-// Use the constant instead of hardcoded value
-const MAX_VOICE_LENGTH = CHAR_LIMITS.VOICE;
-
-// Function to format time as MM:SS
-function formatTime(ms) {
+// Format time as MM:SS
+export function formatTime(ms) {
   const seconds = Math.floor(ms / 1000);
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 }
 
-// Function to format max recording time as MM:SS
-function formatMaxRecordingTime() {
-  const ms = VOICE_LIMITS.MAX_RECORDING_TIME;
-  return formatTime(ms);
+// Format max recording time as MM:SS
+export function formatMaxRecordingTime() {
+  return formatTime(VOICE_LIMITS.MAX_RECORDING_TIME);
+}
+
+// Initialize voice input for main section
+export function initMainVoiceInput() {
+  const voiceTranscript = document.getElementById("voiceTranscript");
+  const voiceCount = document.getElementById("voiceCount");
+
+  if (voiceTranscript && voiceCount) {
+    voiceTranscript.setAttribute(
+      "maxlength",
+      VOICE_LIMITS.MAX_CHARS.toString()
+    );
+    voiceCount.textContent = VOICE_LIMITS.MAX_CHARS.toString();
+
+    // Update remaining character count as user edits voice transcript
+    voiceTranscript.addEventListener("input", () => {
+      const remaining = VOICE_LIMITS.MAX_CHARS - voiceTranscript.value.length;
+      voiceCount.textContent = remaining.toString();
+      // Clear error message on input
+      document.getElementById("errorMessage").textContent = "";
+    });
+  }
+
+  // Setup recording button
+  const recordButton = document.getElementById("recordButton");
+  const recordingTimer = document.getElementById("recordingTimer");
+  const timerDisplay = document.getElementById("timerDisplay");
+  const recordingStatus = document.getElementById("recordingStatus");
+
+  if (recordButton) {
+    recordButton.addEventListener("click", () =>
+      toggleRecording({
+        recordButton,
+        recordingTimer,
+        timerDisplay,
+        recordingStatus,
+        transcriptElement: voiceTranscript,
+        countElement: voiceCount,
+        errorMessageElement: "errorMessage",
+      })
+    );
+  }
+
+  // Setup input mode tabs
+  const textModeTab = document.getElementById("textModeTab");
+  const voiceModeTab = document.getElementById("voiceModeTab");
+  const textInputSection = document.getElementById("textInputSection");
+  const voiceInputSection = document.getElementById("voiceInputSection");
+
+  if (textModeTab && voiceModeTab) {
+    textModeTab.addEventListener("click", () => {
+      textModeTab.classList.add("active", "text-gray-800");
+      textModeTab.classList.remove("text-gray-500");
+      voiceModeTab.classList.remove("active", "text-gray-800");
+      voiceModeTab.classList.add("text-gray-500");
+      textInputSection.style.display = "block";
+      voiceInputSection.style.display = "none";
+      window.currentInputMode = "text";
+    });
+
+    voiceModeTab.addEventListener("click", () => {
+      voiceModeTab.classList.add("active", "text-gray-800");
+      voiceModeTab.classList.remove("text-gray-500");
+      textModeTab.classList.remove("active", "text-gray-800");
+      textModeTab.classList.add("text-gray-500");
+      voiceInputSection.style.display = "block";
+      textInputSection.style.display = "none";
+      window.currentInputMode = "voice";
+    });
+  }
+}
+
+// Initialize voice input for challenge section
+export function initChallengeVoiceInput() {
+  const challengeVoiceTranscript = document.getElementById(
+    "challengeVoiceTranscript"
+  );
+  const challengeVoiceCount = document.getElementById("challengeVoiceCount");
+
+  if (challengeVoiceTranscript && challengeVoiceCount) {
+    challengeVoiceTranscript.setAttribute(
+      "maxlength",
+      VOICE_LIMITS.MAX_CHARS.toString()
+    );
+    challengeVoiceCount.textContent = VOICE_LIMITS.MAX_CHARS.toString();
+
+    // Update remaining character count as user edits challenge voice transcript
+    challengeVoiceTranscript.addEventListener("input", () => {
+      const remaining =
+        VOICE_LIMITS.MAX_CHARS - challengeVoiceTranscript.value.length;
+      challengeVoiceCount.textContent = remaining.toString();
+      // Clear error message on input
+      document.getElementById("challengeErrorMessage").textContent = "";
+    });
+  }
+
+  // Setup challenge recording button
+  const challengeRecordButton = document.getElementById(
+    "challengeRecordButton"
+  );
+  const challengeRecordingTimer = document.getElementById(
+    "challengeRecordingTimer"
+  );
+  const challengeTimerDisplay = document.getElementById(
+    "challengeTimerDisplay"
+  );
+  const challengeRecordingStatus = document.getElementById(
+    "challengeRecordingStatus"
+  );
+
+  if (challengeRecordButton) {
+    challengeRecordButton.addEventListener("click", () =>
+      toggleRecording({
+        recordButton: challengeRecordButton,
+        recordingTimer: challengeRecordingTimer,
+        timerDisplay: challengeTimerDisplay,
+        recordingStatus: challengeRecordingStatus,
+        transcriptElement: challengeVoiceTranscript,
+        countElement: challengeVoiceCount,
+        errorMessageElement: "challengeErrorMessage",
+        isChallenge: true,
+      })
+    );
+  }
+
+  // Setup challenge input mode tabs
+  const challengeTextModeTab = document.getElementById("challengeTextModeTab");
+  const challengeVoiceModeTab = document.getElementById(
+    "challengeVoiceModeTab"
+  );
+  const challengeTextInputSection = document.getElementById(
+    "challengeTextInputSection"
+  );
+  const challengeVoiceInputSection = document.getElementById(
+    "challengeVoiceInputSection"
+  );
+
+  if (challengeTextModeTab && challengeVoiceModeTab) {
+    challengeTextModeTab.addEventListener("click", () => {
+      challengeTextModeTab.classList.add("active", "text-gray-800");
+      challengeTextModeTab.classList.remove("text-gray-500");
+      challengeVoiceModeTab.classList.remove("active", "text-gray-800");
+      challengeVoiceModeTab.classList.add("text-gray-500");
+      challengeTextInputSection.style.display = "block";
+      challengeVoiceInputSection.style.display = "none";
+      window.challengeInputMode = "text";
+    });
+
+    challengeVoiceModeTab.addEventListener("click", () => {
+      challengeVoiceModeTab.classList.add("active", "text-gray-800");
+      challengeVoiceModeTab.classList.remove("text-gray-500");
+      challengeTextModeTab.classList.remove("active", "text-gray-800");
+      challengeTextModeTab.classList.add("text-gray-500");
+      challengeVoiceInputSection.style.display = "block";
+      challengeTextInputSection.style.display = "none";
+      window.challengeInputMode = "voice";
+    });
+  }
+}
+
+// Function to toggle recording state
+function toggleRecording(options) {
+  const {
+    recordButton,
+    recordingTimer,
+    timerDisplay,
+    recordingStatus,
+    transcriptElement,
+    countElement,
+    errorMessageElement,
+    isChallenge = false,
+  } = options;
+
+  if (!isRecording) {
+    startRecording(options);
+  } else {
+    stopRecording(options);
+  }
 }
 
 // Function to update timer display
-function updateTimer() {
+function updateTimer(timerDisplay) {
   const elapsed = Date.now() - startTime;
   timerDisplay.textContent = formatTime(elapsed);
 }
 
-// Function to toggle recording state
-function toggleRecording() {
-  if (!isRecording) {
-    startRecording();
-  } else {
-    stopRecording();
-  }
-}
+// Function to start recording
+async function startRecording(options) {
+  const {
+    recordButton,
+    recordingTimer,
+    timerDisplay,
+    recordingStatus,
+    transcriptElement,
+    countElement,
+    errorMessageElement,
+    isChallenge = false,
+  } = options;
 
-// Update the recording functions
-async function startRecording() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorder = new MediaRecorder(stream, {
@@ -73,7 +239,7 @@ async function startRecording() {
       translations?.main?.voiceInput?.status?.recording || "Recording...";
     recordingTimer.classList.remove("hidden");
     startTime = Date.now();
-    timerInterval = setInterval(updateTimer, 1000);
+    timerInterval = setInterval(() => updateTimer(timerDisplay), 1000);
 
     audioChunks = [];
     mediaRecorder.addEventListener("dataavailable", (event) => {
@@ -82,7 +248,7 @@ async function startRecording() {
 
     mediaRecorder.addEventListener("stop", async () => {
       // Immediately update the UI to reflect that recording has stopped.
-      stopRecording();
+      stopRecording(options);
 
       // Now update the status to indicate that transcription is starting.
       recordingStatus.innerHTML =
@@ -147,19 +313,19 @@ async function startRecording() {
           : translations?.main?.voiceInput?.status?.transcriptionComplete ||
             "Transcription complete. You may edit the text.";
 
-        transcriptField.value = transcript;
-        voiceCount.textContent = (
+        transcriptElement.value = transcript;
+        countElement.textContent = (
           VOICE_LIMITS.MAX_CHARS - transcript.length
         ).toString();
 
         // If the transcript exceeds the character limit, highlight it.
         if (transcript.length > VOICE_LIMITS.MAX_CHARS) {
-          transcriptField.classList.add("border-red-500");
+          transcriptElement.classList.add("border-red-500");
           recordingStatus.innerHTML =
             translations?.main?.voiceInput?.status?.tooLong ||
             "Transcription exceeds character limit. Please edit before submitting.";
         } else {
-          transcriptField.classList.remove("border-red-500");
+          transcriptElement.classList.remove("border-red-500");
         }
       } catch (error) {
         if (error.name === "AbortError") {
@@ -187,8 +353,9 @@ async function startRecording() {
     }, VOICE_LIMITS.MAX_RECORDING_TIME);
 
     // Update max recording time display
-    document.getElementById("maxRecordingTime").textContent =
-      formatMaxRecordingTime();
+    document.getElementById(
+      isChallenge ? "challengeMaxRecordingTime" : "maxRecordingTime"
+    ).textContent = formatMaxRecordingTime();
   } catch (error) {
     console.error("Error accessing microphone:", error);
     recordingStatus.innerHTML =
@@ -197,50 +364,34 @@ async function startRecording() {
   }
 }
 
-function stopRecording() {
+// Function to stop recording
+function stopRecording(options) {
+  const { recordButton, recordingTimer } = options || {};
+
   // If the recorder is still active, stop it.
   if (mediaRecorder && mediaRecorder.state !== "inactive") {
     mediaRecorder.stop();
   }
+
   // Always perform the UI reset.
   isRecording = false;
   clearInterval(timerInterval);
-  recordingTimer.classList.add("hidden");
-  recordButton.classList.remove("bg-red-50", "border-red-500", "text-red-500");
-  recordButton.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
-  </svg>`;
+
+  if (recordingTimer) {
+    recordingTimer.classList.add("hidden");
+  }
+
+  if (recordButton) {
+    recordButton.classList.remove(
+      "bg-red-50",
+      "border-red-500",
+      "text-red-500"
+    );
+    recordButton.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+    </svg>`;
+  }
+
+  clearTimeout(recordingTimeout);
 }
-
-// Update remaining character count as user edits
-transcriptField.addEventListener("input", () => {
-  const remaining = MAX_VOICE_LENGTH - transcriptField.value.length;
-  voiceCount.textContent = remaining.toString();
-  // Clear error message on input
-  document.getElementById("errorMessage").textContent = "";
-});
-
-// Update the tab switching logic
-textModeTab.addEventListener("click", () => {
-  textModeTab.classList.add("active", "text-gray-800");
-  textModeTab.classList.remove("text-gray-500");
-  voiceModeTab.classList.remove("active", "text-gray-800");
-  voiceModeTab.classList.add("text-gray-500");
-  textInputSection.style.display = "block";
-  voiceInputSection.style.display = "none";
-  window.currentInputMode = "text";
-});
-
-voiceModeTab.addEventListener("click", () => {
-  voiceModeTab.classList.add("active", "text-gray-800");
-  voiceModeTab.classList.remove("text-gray-500");
-  textModeTab.classList.remove("active", "text-gray-800");
-  textModeTab.classList.add("text-gray-500");
-  voiceInputSection.style.display = "block";
-  textInputSection.style.display = "none";
-  window.currentInputMode = "voice";
-});
-
-// Update the record button click handler
-recordButton.addEventListener("click", toggleRecording);

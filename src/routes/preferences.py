@@ -5,6 +5,7 @@ from flask_login import current_user
 
 from extensions import db
 from src.constants.categories import DEFAULT_CATEGORIES
+from models import UserAchievement
 
 preferences_bp = Blueprint("preferences", __name__)
 
@@ -39,3 +40,24 @@ def get_categories():
         categories = session.get("selected_categories", DEFAULT_CATEGORIES)
 
     return jsonify({"categories": categories})
+
+
+@preferences_bp.route("/get_user_achievements", methods=["GET"])
+def get_user_achievements():
+    """Return the user's earned achievements."""
+    try:
+        if current_user.is_authenticated:
+            # Query user's achievements from database
+            user_achievements = UserAchievement.query.filter_by(
+                user_id=current_user.id
+            ).all()
+
+            # Extract achievement IDs
+            earned_achievement_ids = [ua.achievement_id for ua in user_achievements]
+        else:
+            # For non-authenticated users, use session-stored achievements
+            earned_achievement_ids = session.get("earned_achievements", [])
+
+        return jsonify({"earned_achievements": earned_achievement_ids})
+    except Exception as e:
+        return jsonify({"error": str(e), "earned_achievements": []}), 500
