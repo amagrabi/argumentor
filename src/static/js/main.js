@@ -17,7 +17,6 @@ import {
   setupCharCounter,
 } from "./helpers.js";
 import { translations } from "./translations.js";
-// Import new modular components
 import {
   initializeAchievements,
   showEvaluationSection,
@@ -27,7 +26,6 @@ import {
   refreshAchievementDisplay,
   updateAchievementsDisplay,
 } from "./evaluation.js";
-import { handleXpAnimations, updateXpIndicator } from "./level.js";
 import { initMainVoiceInput, initChallengeVoiceInput } from "./voice.js";
 
 // Initialize mermaid
@@ -2933,7 +2931,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         const questionText = currentQuestion ? currentQuestion.description : "";
 
         try {
-          // Set longer timeout for fetch
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes
 
@@ -3236,8 +3233,6 @@ document.getElementById("nextQuestion").addEventListener("click", async () => {
   }
 });
 
-// Split updateXpIndicator into two functions
-// Renamed to avoid identifier collision with imported function
 function updateLocalLevelInfo(totalXp, levelInfo) {
   // Use dynamic import to access the module function
   import("./level.js").then((levelModule) => {
@@ -3245,7 +3240,6 @@ function updateLocalLevelInfo(totalXp, levelInfo) {
   });
 }
 
-// Renamed to avoid identifier collision with imported function
 function updateLocalXpIndicator(totalXp, levelInfo) {
   // Update the local level info
   updateLocalLevelInfo(totalXp, levelInfo);
@@ -3285,8 +3279,7 @@ async function loadSavedCategories() {
   }
 }
 
-// These functions have been moved to evaluation.js
-// Here we create local wrappers to use the imported functions
+// Local wrappers to use imported functions
 function localScrollToChallengeEvaluation() {
   import("./evaluation.js").then((evalModule) => {
     evalModule.scrollToChallengeEvaluation();
@@ -3299,123 +3292,7 @@ function localScrollToMainEvaluation() {
   });
 }
 
-function localRefreshAchievementDisplay() {
-  import("./evaluation.js").then((evalModule) => {
-    evalModule.refreshAchievementDisplay();
-  });
-}
-
-// Updated callback for main answer submission
-function handleMainAnswerSubmission(data) {
-  // Assuming xpInfoErrorMessage is the container for error message in main evaluation
-  const xpMessageElement = document.getElementById("xpMessage");
-  // Assuming xpValue displays the Experience Gained in the main evaluation
-  const xpGainedElement = document.getElementById("xpGained");
-
-  if (data.relevance_too_low) {
-    if (xpMessageElement) {
-      xpMessageElement.textContent = translations.evaluation.relevanceWarning;
-      xpMessageElement.classList.remove("hidden");
-    }
-    if (xpGainedElement) {
-      xpGainedElement.innerHTML = "<strong>0</strong>";
-    }
-  } else {
-    if (xpMessageElement) {
-      xpMessageElement.textContent = "";
-      xpMessageElement.classList.add("hidden");
-    }
-  }
-
-  // Scroll to main evaluation section after submission
-  localScrollToMainEvaluation();
-
-  // Show achievement notifications and update display
-  if (data.achievements) {
-    data.achievements.forEach((achievement) => {
-      showAchievementNotification(achievement);
-    });
-    updateLocalAchievementsDisplay(data.achievements);
-  } else {
-    // Even if no new achievements, refresh the display to ensure consistency
-    localRefreshAchievementDisplay();
-  }
-}
-
-// Updated callback for challenge submission
-function handleChallengeSubmission(data) {
-  // Assuming challengeXpMessage is the container for error message in challenge evaluation
-  const challengeXpMessageElement =
-    document.getElementById("challengeXpMessage");
-  // Assuming challengeXpGained displays the Experience Gained in the challenge evaluation
-  let challengeXpInfo = document.getElementById("challengeXpInfo");
-  const challengeXpGained = document.getElementById("challengeXpGained");
-  const isChallenge = true; // This is the challenge context
-
-  if (data.relevance_too_low) {
-    challengeXpMessageElement.textContent =
-      translations.evaluation.relevanceWarning;
-  } else {
-    challengeXpMessageElement.textContent = "";
-  }
-
-  if (challengeXpInfo) {
-    // Handle XP animations with the challenge flag
-    handleLocalXpAnimations(data, {
-      xpInfoElement: challengeXpInfo,
-      xpGainedElement: challengeXpGained,
-      xpMessageElement: challengeXpMessageElement,
-      levelUpMessageElement: document.getElementById("challengeLevelUpMessage"),
-      currentLevelElement: document.getElementById("challengeCurrentLevel"),
-      xpProgressTextElement: document.getElementById("challengeXpProgressText"),
-      xpProgressBarElement: document.getElementById("challengeXpProgressBar"),
-      nextLevelElement: document.getElementById("challengeNextLevel"),
-      oldLevelText: document.getElementById("challengeOldLevelText"),
-      isChallenge: isChallenge,
-    });
-    // ... existing code ...
-  }
-
-  // Force displayed XP to 0 if response is below relevance threshold
-  const challengeXpValue = document.getElementById("challengeXpValue");
-  if (data.relevance_too_low && challengeXpValue) {
-    challengeXpValue.textContent = "0 XP";
-  }
-
-  // Show achievement notifications and update display
-  if (data.achievements) {
-    data.achievements.forEach((achievement) => {
-      showAchievementNotification(achievement);
-    });
-    updateLocalAchievementsDisplay(data.achievements);
-  } else {
-    // Even if no new achievements, refresh the display to ensure consistency
-    localRefreshAchievementDisplay();
-  }
-}
-
-// These functions have been moved to evaluation.js
-
-async function switchLanguage(lang) {
-  // Store evaluation content before switching
-  const evaluationContent = preserveEvaluationContent();
-
-  currentLanguage = lang;
-  await loadTranslations();
-  translatePage();
-  updateLanguageIndicator();
-
-  // Restore evaluation content after switching
-  restoreEvaluationContent(evaluationContent);
-}
-
-// This functionality has been moved to evaluation.js
-
 // Event listener for achievement updates
 document.addEventListener("refreshAchievements", () => {
   updateLocalAchievementsDisplay(all_achievements);
 });
-
-// This function has been moved to evaluation.js
-
-// This function has been moved to evaluation.js
