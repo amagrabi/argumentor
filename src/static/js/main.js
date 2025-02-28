@@ -9,6 +9,7 @@ import {
   DEFAULT_LANGUAGE,
   CHAR_LIMITS,
   VOICE_LIMITS,
+  TIMING,
 } from "./constants.js";
 import {
   typeWriter,
@@ -935,8 +936,10 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     // Calculate remaining time only for successful responses
     if (response.ok) {
       const elapsed = Date.now() - startTime;
-      if (elapsed < 2000) {
-        await new Promise((resolve) => setTimeout(resolve, 2000 - elapsed));
+      if (elapsed < TIMING.EVALUATION_DELAY) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, TIMING.EVALUATION_DELAY - elapsed)
+        );
       }
     }
 
@@ -1851,8 +1854,10 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       if (response.ok) {
         const elapsed = Date.now() - startTime;
-        if (elapsed < 3000) {
-          await new Promise((resolve) => setTimeout(resolve, 3000 - elapsed));
+        if (elapsed < TIMING.EVALUATION_DELAY) {
+          await new Promise((resolve) =>
+            setTimeout(resolve, TIMING.EVALUATION_DELAY - elapsed)
+          );
         }
       }
 

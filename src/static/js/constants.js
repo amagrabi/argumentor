@@ -98,3 +98,8 @@ export const VOICE_LIMITS = {
   MAX_RECORDING_TIME: 120000, // 60000=1 minute
   MAX_CHARS: 2000,
 };
+
+// Timing constants
+export const TIMING = {
+  EVALUATION_DELAY: 2000, // 2 seconds minimum delay before showing evaluation results
+};
