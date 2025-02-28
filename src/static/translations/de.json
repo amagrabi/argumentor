@@ -98,9 +98,85 @@
     "depth": "Tiefe",
     "objectivity": "Objektivität",
     "creativity": "Kreativität",
-    "challenge": "Challenge",
-    "level": "Level",
-    "achievements": "Achievements",
+    "achievements": "Errungenschaften",
+    "achievementData": {
+      "first_argument": {
+        "name": "Erste Schritte",
+        "description": "Dein erstes Argument formuliert"
+      },
+      "voice_pioneer": {
+        "name": "Sprachpionier",
+        "description": "Reiche deine erste Sprachantwort ein"
+      },
+      "first_challenge": {
+        "name": "Challenge Accepted",
+        "description": "Bewältige deine erste Challenge"
+      },
+      "great_rating": {
+        "name": "Aufstrebendes Talent",
+        "description": "Erhalte eine starke Bewertung (7+ Punkte)"
+      },
+      "exceptional_rating": {
+        "name": "Geistesblitz",
+        "description": "Erhalte eine exzellente Bewertung (9+ Punkte)"
+      },
+      "category_explorer": {
+        "name": "Kategorie-Entdecker",
+        "description": "Beantworte eine Frage aus jeder Kategorie"
+      },
+      "concise_master": {
+        "name": "Weniger ist Mehr",
+        "description": "Reiche ein prägnantes Argument ein"
+      },
+      "wordsmith": {
+        "name": "Wortschmied",
+        "description": "Reiche ein detailliertes Argument ein"
+      },
+      "ten_answers": {
+        "name": "Stetiger Fortschritt",
+        "description": "Reiche 10 Argumente ein"
+      },
+      "voice_master": {
+        "name": "Labertasche",
+        "description": "Reiche 10 Sprachantworten ein"
+      },
+      "ten_challenges": {
+        "name": "Solider Verteidiger",
+        "description": "Bewältige 10 Challenges"
+      },
+      "daily_streak": {
+        "name": "Streber",
+        "description": "Reiche an 5 aufeinanderfolgenden Tagen Argumente ein"
+      },
+      "all_seven_categories": {
+        "name": "Ausgewogenes Talent",
+        "description": "Erhalte eine 7+ Bewertung in jeder Kategorie"
+      },
+      "master_of_all": {
+        "name": "Meister aller Klassen",
+        "description": "Erhalte eine 9+ Bewertung in jeder Kategorie"
+      },
+      "domain_expert": {
+        "name": "Fachexperte",
+        "description": "Erhalte fünf 8+ Bewertungen in der gleichen Kategorie"
+      },
+      "twenty_five_answers": {
+        "name": "Aufstrebender Debattierer",
+        "description": "Reiche 25 Argumente ein"
+      },
+      "fifty_answers": {
+        "name": "Experten-Debattierer",
+        "description": "Reiche 50 Argumente ein"
+      },
+      "hundred_answers": {
+        "name": "Meister-Debattierer",
+        "description": "Reiche 100 Argumente ein"
+      },
+      "hundred_challenges": {
+        "name": "Jahrhundert-Löser",
+        "description": "Löse 100 Herausforderungen"
+      }
+    },
     "yourAnswers": "Deine Antworten",
     "progressOverTime": "Fortschritt",
     "rating": "Bewertung",
@@ -179,65 +255,73 @@
       "name": "Stimmenpionier",
       "description": "Reiche deine erste Sprachantwort ein"
     },
-    "category_explorer": {
-      "name": "Kategorien-Erkunder",
-      "description": "Beantworte Fragen aus allen Kategorien"
-    },
-    "exceptional_rating": {
-      "name": "Exzellenz erreicht",
-      "description": "Erhalte eine außergewöhnliche Bewertung (9+ Punkte)"
-    },
-    "master_of_all": {
-      "name": "Meister aller Kategorien",
-      "description": "Erhalte in allen Bewertungskategorien mindestens 9 Punkte"
-    },
     "first_challenge": {
       "name": "Herausforderung angenommen",
-      "description": "Beantworte deine erste Challenge"
+      "description": "Bewältige deine erste Challenge"
     },
-    "ten_challenges": {
-      "name": "Challenge-Enthusiast",
-      "description": "Vervollständige 10 Challenges"
+    "great_rating": {
+      "name": "Aufsteigender Stern",
+      "description": "Erhalte eine großartige Bewertung (7+ Punkte)"
     },
-    "hundred_challenges": {
-      "name": "Challenge-Meister",
-      "description": "Vervollständige 100 Challenges"
+    "exceptional_rating": {
+      "name": "Sternstunde",
+      "description": "Erhalte eine außergewöhnliche Bewertung (9+ Punkte)"
     },
-    "wordsmith": {
-      "name": "Wortgewalt",
-      "description": "Reiche ein langes Argument ein"
+    "category_explorer": {
+      "name": "Kategorien-Entdecker",
+      "description": "Beantworte eine Frage aus jeder Kategorie"
     },
     "concise_master": {
-      "name": "Prägnanz-Meister",
-      "description": "Reiche ein kurzes und präzises Argument ein"
+      "name": "Weniger ist mehr",
+      "description": "Reiche ein prägnantes Argument ein"
+    },
+    "wordsmith": {
+      "name": "Wortschmied",
+      "description": "Reiche ein ausführliches Argument ein"
     },
     "ten_answers": {
-      "name": "Einsteiger",
+      "name": "Stetiger Fortschritt",
       "description": "Reiche 10 Argumente ein"
-    },
-    "twenty_five_answers": {
-      "name": "Regelmäßiger Debattierer",
-      "description": "Reiche 25 Argumente ein"
-    },
-    "fifty_answers": {
-      "name": "Engagierter Beiträger",
-      "description": "Reiche 50 Argumente ein"
-    },
-    "hundred_answers": {
-      "name": "Zenturio",
-      "description": "Reiche 100 Argumente ein"
     },
     "voice_master": {
       "name": "Stimmenmeister",
       "description": "Reiche 10 Sprachantworten ein"
     },
-    "great_rating": {
-      "name": "Großartige Bewertung",
-      "description": "Erhalte eine hervorragende Bewertung (7+ Punkte)"
+    "ten_challenges": {
+      "name": "Challenge-Entdecker",
+      "description": "Bewältige 10 Challenges"
+    },
+    "daily_streak": {
+      "name": "Täglicher Gelehrter",
+      "description": "Reiche an 5 aufeinanderfolgenden Tagen Argumente ein"
     },
     "all_seven_categories": {
-      "name": "Ausgewogene Leistung",
-      "description": "Erhalte in allen Bewertungskategorien mindestens 7 Punkte"
+      "name": "Ausgewogene Größe",
+      "description": "Erhalte in jeder Kategorie eine 7+ Bewertung"
+    },
+    "master_of_all": {
+      "name": "Meister aller Klassen",
+      "description": "Erhalte in jeder Kategorie eine 9+ Bewertung"
+    },
+    "domain_expert": {
+      "name": "Bereichsexperte",
+      "description": "Erhalte fünf 8+ Bewertungen in der gleichen Kategorie"
+    },
+    "twenty_five_answers": {
+      "name": "Aufstrebender Debattierer",
+      "description": "Reiche 25 Argumente ein"
+    },
+    "fifty_answers": {
+      "name": "Erfahrener Debattierer",
+      "description": "Reiche 50 Argumente ein"
+    },
+    "hundred_answers": {
+      "name": "Meister-Debattierer",
+      "description": "Reiche 100 Argumente ein"
+    },
+    "hundred_challenges": {
+      "name": "Jahrhundert-Löser",
+      "description": "Löse 100 Herausforderungen"
     }
   },
   "evaluation": {

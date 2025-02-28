@@ -261,14 +261,25 @@ export function showAchievementNotification(achievement) {
         <img src="/static/img/trophy.webp" class="w-8 h-8" alt="Trophy" />
       </div>
       <div>
-        <h3 class="font-bold">${achievement.name}</h3>
-        <p class="text-sm text-gray-300">${achievement.description}</p>
+        <h3 class="font-bold" data-i18n="${achievement.name_key}"></h3>
+        <p class="text-sm text-gray-300" data-i18n="${achievement.description_key}"></p>
       </div>
     </div>
   `;
 
   // Add to document
   document.body.appendChild(notification);
+
+  // Initialize translations for the new elements
+  const i18nElements = notification.querySelectorAll("[data-i18n]");
+  i18nElements.forEach((element) => {
+    const key = element.getAttribute("data-i18n");
+    // Split the key by dots and traverse the translations object
+    const value = key
+      .split(".")
+      .reduce((obj, k) => obj && obj[k], translations);
+    element.textContent = value || key;
+  });
 
   // Trigger animation
   setTimeout(() => {

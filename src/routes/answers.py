@@ -276,6 +276,8 @@ def submit_answer():
                     "id": achievement.id,
                     "name": achievement.name,
                     "description": achievement.description,
+                    "name_key": achievement.name_key,
+                    "description_key": achievement.description_key,
                 }
                 for achievement in newly_awarded
             ]
@@ -476,6 +478,8 @@ def submit_challenge_response():
                         "id": achievement.id,
                         "name": achievement.name,
                         "description": achievement.description,
+                        "name_key": achievement.name_key,
+                        "description_key": achievement.description_key,
                     }
                     for achievement in newly_awarded
                 ]

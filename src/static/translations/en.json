@@ -250,7 +250,7 @@
   "profile": {
     "title": "Your Profile",
     "goBack": "Go Back",
-    "accountInfo": "Account Info",
+    "accountInfo": "Account Information",
     "username": "Username",
     "email": "Email",
     "accountType": "Account Type",
@@ -260,12 +260,94 @@
     "progress": "Progress",
     "overall": "Overall",
     "relevance": "Relevance",
-    "logic": "Logic",
+    "logic": "Logical Structure",
     "clarity": "Clarity",
     "depth": "Depth",
     "objectivity": "Objectivity",
     "creativity": "Creativity",
-    "challenge": "Challenge",
+    "achievements": "Achievements",
+    "achievementData": {
+      "first_argument": {
+        "name": "First Steps",
+        "description": "Submit your first argument"
+      },
+      "voice_pioneer": {
+        "name": "Voice Pioneer",
+        "description": "Submit your first voice answer"
+      },
+      "first_challenge": {
+        "name": "Challenge Accepted",
+        "description": "Complete your first challenge"
+      },
+      "great_rating": {
+        "name": "Rising Star",
+        "description": "Receive a great rating (7+ score)"
+      },
+      "exceptional_rating": {
+        "name": "Stellar Performance",
+        "description": "Receive an exceptional rating (9+ score)"
+      },
+      "category_explorer": {
+        "name": "Category Explorer",
+        "description": "Answer a question from each category"
+      },
+      "concise_master": {
+        "name": "Less Is More",
+        "description": "Submit a concise argument"
+      },
+      "wordsmith": {
+        "name": "TLDR",
+        "description": "Submit a detailed argument"
+      },
+      "ten_answers": {
+        "name": "Steady Progress",
+        "description": "Submit 10 arguments"
+      },
+      "voice_master": {
+        "name": "Voice Master",
+        "description": "Submit 10 voice answers"
+      },
+      "ten_challenges": {
+        "name": "Challenge Explorer",
+        "description": "Complete 10 challenges"
+      },
+      "daily_streak": {
+        "name": "Daily Scholar",
+        "description": "Submit arguments for 5 consecutive days"
+      },
+      "all_seven_categories": {
+        "name": "Balanced Greatness",
+        "description": "Receive a 7+ rating in each category"
+      },
+      "master_of_all": {
+        "name": "Master of All",
+        "description": "Receive a 9+ rating in each category"
+      },
+      "domain_expert": {
+        "name": "Domain Expert",
+        "description": "Receive five 8+ scores in the same category"
+      },
+      "twenty_five_answers": {
+        "name": "Rising Debater",
+        "description": "Submit 25 arguments"
+      },
+      "fifty_answers": {
+        "name": "Expert Debater",
+        "description": "Submit 50 arguments"
+      },
+      "hundred_answers": {
+        "name": "Master Debater",
+        "description": "Submit 100 arguments"
+      },
+      "hundred_challenges": {
+        "name": "Century Solver",
+        "description": "Complete 100 challenges"
+      },
+      "domain_expert": {
+        "name": "Domain Expert",
+        "description": "Receive five 8+ scores in the same category"
+      }
+    },
     "yourAnswers": "Your Answers",
     "progressOverTime": "Progress Over Time",
     "rating": "Rating",
@@ -276,66 +358,7 @@
     "challengeResponse": "Challenge Response",
     "feedbackDetails": "Details",
     "dailyVoiceRecordings": "Daily Voice Recordings",
-    "level": "Level",
-    "achievements": "Achievements",
-    "achievementDescriptions": {
-      "first_argument": {
-        "name": "First Steps",
-        "description": "Constructed your first argument"
-      },
-      "all_categories": {
-        "name": "Well-Rounded",
-        "description": "Answered a question from every category"
-      },
-      "exceptional_rating": {
-        "name": "Excellence Achieved",
-        "description": "Achieved an exceptional rating (over 8)"
-      },
-      "exceptional_all_categories": {
-        "name": "Master of All",
-        "description": "Achieved an exceptional rating in every category"
-      },
-      "max_length": {
-        "name": "Verbose Visionary",
-        "description": "Submitted a very long argument (max character limit)"
-      },
-      "min_length": {
-        "name": "Concise Communicator",
-        "description": "Submitted a very short but effective argument"
-      },
-      "voice_answer": {
-        "name": "Voice of Reason",
-        "description": "Submitted a voice answer"
-      },
-      "answers_10": {
-        "name": "Dedicated Debater",
-        "description": "Answered over 10 questions"
-      },
-      "answers_25": {
-        "name": "Seasoned Speaker",
-        "description": "Answered over 25 questions"
-      },
-      "answers_100": {
-        "name": "Argument Authority",
-        "description": "Answered over 100 questions"
-      },
-      "first_challenge": {
-        "name": "Challenge Accepted",
-        "description": "Answered your first challenge"
-      },
-      "challenges_10": {
-        "name": "Challenge Champion",
-        "description": "Answered over 10 challenges"
-      },
-      "challenges_25": {
-        "name": "Challenge Master",
-        "description": "Answered over 25 challenges"
-      },
-      "challenges_100": {
-        "name": "Challenge Legend",
-        "description": "Answered over 100 challenges"
-      }
-    }
+    "level": "Level"
   },
   "howItWorksPage": {
     "title": "How It Works",

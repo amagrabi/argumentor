@@ -142,12 +142,13 @@ class Feedback(db.Model):
 
 class UserAchievement(db.Model):
     __tablename__ = "user_achievements"
+
     id = db.Column(db.Integer, primary_key=True)
     user_uuid = db.Column(db.String(36), db.ForeignKey("users.uuid"), nullable=False)
     achievement_id = db.Column(
         db.String(50), nullable=False
     )  # References achievement ID from constants
-    earned_at = db.Column(db.DateTime, default=datetime.utcnow)
+    earned_at = db.Column(db.DateTime, default=datetime.now(UTC))
 
     def __repr__(self):
         return f"<UserAchievement {self.achievement_id}>"

@@ -247,8 +247,15 @@
             <div
               class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute z-10 w-48 -translate-x-1/4 translate-y-2 pointer-events-none bg-gray-800 text-white text-sm rounded-lg p-2 shadow-lg"
             >
-              <p class="font-bold mb-1">{{ achievement.name }}</p>
-              <p class="text-gray-200 text-xs">{{ achievement.description }}</p>
+              <p class="font-bold mb-1" data-i18n="{{ achievement.name_key }}">
+                {{ achievement.name }}
+              </p>
+              <p
+                class="text-gray-200 text-xs"
+                data-i18n="{{ achievement.description_key }}"
+              >
+                {{ achievement.description }}
+              </p>
             </div>
           </div>
           {% endfor %}

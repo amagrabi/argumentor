@@ -2251,7 +2251,7 @@ window.addEventListener("DOMContentLoaded", async () => {
               </span>
             </h5>
             <div class="flex justify-center w-full">
-              <div class="inline-grid grid-cols-4 sm:grid-cols-6 md:grid-cols-10 lg:grid-cols-[repeat(17,minmax(0,40px))] justify-center justify-items-center gap-x-3 gap-y-3 mb-8 max-w-4xl mx-auto px-4">
+              <div class="inline-grid grid-cols-4 sm:grid-cols-6 md:grid-cols-10 lg:grid-cols-[repeat(20,minmax(0,40px))] justify-center justify-items-center gap-x-3 gap-y-3 mb-8 max-w-4xl mx-auto px-4">
                 ${all_achievements
                   .map((achievement) => {
                     const isEarned =
@@ -2273,9 +2273,13 @@ window.addEventListener("DOMContentLoaded", async () => {
                       </div>
                       <!-- Tooltip -->
                       <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute z-10 w-48 -translate-x-1/4 translate-y-2 pointer-events-none bg-gray-800 text-white text-sm rounded-lg p-2 shadow-lg">
-                        <p class="font-bold mb-1">${achievement.name}</p>
+                        <p class="font-bold mb-1">${
+                          translations.profile.achievementData[achievement.id]
+                            .name
+                        }</p>
                         <p class="text-gray-200 text-xs">${
-                          achievement.description
+                          translations.profile.achievementData[achievement.id]
+                            .description
                         }</p>
                       </div>
                     </div>

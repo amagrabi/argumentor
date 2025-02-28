@@ -72,11 +72,48 @@ def check_and_award_achievements(
     if total_score >= 9 and not has_exceptional:
         award_achievement("exceptional_rating")
 
+    # Check for great rating (7+ score)
+    has_great = user.is_authenticated and user.has_achievement("great_rating")
+    if total_score >= 7 and not has_great:
+        award_achievement("great_rating")
+
     # Check for master of all categories
     scores = answer_data.get("evaluation_scores", {})
     has_master = user.is_authenticated and user.has_achievement("master_of_all")
     if all(score >= 9 for score in scores.values()) and not has_master:
         award_achievement("master_of_all")
+
+    # Check for all seven categories with 7+ rating - only for authenticated users
+    if user.is_authenticated and not user.has_achievement("all_seven_categories"):
+        # Get all answers with their categories and scores
+        category_high_scores = {}
+        for answer in user.answers:
+            if not answer.question_id:
+                continue
+
+            category = get_question_category(answer.question_id)
+            if not category:
+                continue
+
+            score = (
+                (sum(answer.evaluation_scores.values()) / len(answer.evaluation_scores))
+                if answer.evaluation_scores
+                else 0
+            )
+            if score >= 7:  # 7+ score threshold
+                category_high_scores[category] = True
+
+            # Check if challenge response also meets criteria
+            if answer.challenge_response and answer.challenge_evaluation_scores:
+                challenge_score = sum(
+                    answer.challenge_evaluation_scores.values()
+                ) / len(answer.challenge_evaluation_scores)
+                if challenge_score >= 7:
+                    category_high_scores[category] = True
+
+        # Check if all categories have at least one 7+ score
+        if len(category_high_scores) >= 9:  # All 9 categories
+            award_achievement("all_seven_categories")
 
     # Check for wordsmith (long argument)
     argument = answer_data.get("argument", "")
@@ -149,6 +186,67 @@ def check_and_award_achievements(
                 "hundred_challenges"
             ):
                 award_achievement("hundred_challenges")
+
+    # Check for daily streak achievement - only for authenticated users
+    if user.is_authenticated and not user.has_achievement("daily_streak"):
+        from datetime import UTC, datetime, timedelta
+
+        # Get all answers from the last 5 days
+        five_days_ago = datetime.now(UTC) - timedelta(days=5)
+        recent_answers = [
+            a
+            for a in user.answers
+            if a.created_at
+            and a.created_at.replace(tzinfo=UTC) >= five_days_ago
+            and getattr(a, "total_score", 0) >= MIN_SCORE
+        ]
+
+        # Group answers by date
+        answer_dates = {a.created_at.replace(tzinfo=UTC).date() for a in recent_answers}
+
+        # Check if we have answers for 5 consecutive days
+        today = datetime.now(UTC).date()
+        has_streak = True
+        for i in range(5):
+            check_date = today - timedelta(days=i)
+            if check_date not in answer_dates:
+                has_streak = False
+                break
+
+        if has_streak:
+            award_achievement("daily_streak")
+
+    # Check for domain expert achievement - only for authenticated users
+    if user.is_authenticated and not user.has_achievement("domain_expert"):
+        # Get all answers with their categories
+        category_scores = {}
+        for answer in user.answers:
+            if not answer.question_id:
+                continue
+
+            category = get_question_category(answer.question_id)
+            if not category:
+                continue
+
+            score = (
+                (sum(answer.evaluation_scores.values()) / len(answer.evaluation_scores))
+                if answer.evaluation_scores
+                else 0
+            )
+            if score >= 8:  # 8+ score threshold
+                category_scores[category] = category_scores.get(category, 0) + 1
+
+            # Check if challenge response also meets criteria
+            if answer.challenge_response and answer.challenge_evaluation_scores:
+                challenge_score = sum(
+                    answer.challenge_evaluation_scores.values()
+                ) / len(answer.challenge_evaluation_scores)
+                if challenge_score >= 8:
+                    category_scores[category] = category_scores.get(category, 0) + 1
+
+        # Check if any category has 5 or more high scores
+        if any(count >= 5 for count in category_scores.values()):
+            award_achievement("domain_expert")
 
     # Update the session with achievements for non-authenticated users
     if session is not None and not user.is_authenticated and session_achievements:
