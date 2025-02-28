@@ -164,15 +164,16 @@ def check_and_award_achievements(
             award_achievement("category_explorer")
 
     # Check for challenge achievements
-    if answer_data.get("is_challenge") and total_score >= MIN_SCORE:
+    if answer_data.get("is_challenge"):
+        # First challenge achievement - no score requirement
         has_challenge = user.is_authenticated and user.has_achievement(
             "first_challenge"
         )
         if not has_challenge:
             award_achievement("first_challenge")
 
-        # Only check these for authenticated users
-        if user.is_authenticated:
+        # Other challenge achievements - require minimum score
+        if total_score >= MIN_SCORE and user.is_authenticated:
             challenge_count = sum(
                 1
                 for a in user.answers
