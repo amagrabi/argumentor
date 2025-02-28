@@ -125,6 +125,41 @@ export function handleXpAnimations(data, options) {
                     "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
                   xpProgressBar.style.width = "100%";
 
+                  // Animate the XP progress text during the first part of the level up animation
+                  if (xpProgressTextElement) {
+                    // Add animation class
+                    xpProgressTextElement.classList.add("count-up-animation");
+
+                    // Animate the numbers counting up to max XP
+                    const startXp =
+                      parseInt(
+                        xpProgressTextElement.textContent.split(" / ")[0]
+                      ) || 0;
+                    const endXp = parseInt(data.level_info.xp_needed);
+                    const xpNeeded = data.level_info.xp_needed;
+                    const duration = 800; // match the progress bar animation duration
+                    const startTime = performance.now();
+
+                    const animateXpNumbers = function (timestamp) {
+                      const elapsed = timestamp - startTime;
+                      const progress = Math.min(elapsed / duration, 1);
+                      const currentXp = Math.floor(
+                        startXp + (endXp - startXp) * progress
+                      );
+
+                      xpProgressTextElement.textContent = `${currentXp} / ${xpNeeded}`;
+
+                      if (progress < 1) {
+                        requestAnimationFrame(animateXpNumbers);
+                      } else {
+                        // Animation complete, but don't remove the animation class yet
+                        // as we'll continue with the second part of the animation
+                      }
+                    };
+
+                    requestAnimationFrame(animateXpNumbers);
+                  }
+
                   // After reaching 100%, trigger level transition
                   setTimeout(function () {
                     const levelImageContainer = xpInfo.querySelector(
@@ -358,6 +393,45 @@ export function handleXpAnimations(data, options) {
                   xpProgressBar.style.transition =
                     "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
                   xpProgressBar.style.width = targetWidth;
+
+                  // Add XP number animation for regular XP gains
+                  if (xpProgressTextElement && data.level_info) {
+                    // Add animation class
+                    xpProgressTextElement.classList.add("count-up-animation");
+
+                    // Animate the numbers counting up
+                    const startXp =
+                      parseInt(
+                        xpProgressTextElement.textContent.split(" / ")[0]
+                      ) || 0;
+                    const endXp = parseInt(data.level_info.xp_into_level);
+                    const xpNeeded = data.level_info.xp_needed;
+                    const duration = 800; // match the progress bar animation duration
+                    const startTime = performance.now();
+
+                    const animateXpNumbers = function (timestamp) {
+                      const elapsed = timestamp - startTime;
+                      const progress = Math.min(elapsed / duration, 1);
+                      const currentXp = Math.floor(
+                        startXp + (endXp - startXp) * progress
+                      );
+
+                      xpProgressTextElement.textContent = `${currentXp} / ${xpNeeded}`;
+
+                      if (progress < 1) {
+                        requestAnimationFrame(animateXpNumbers);
+                      } else {
+                        // Animation complete, remove animation class
+                        setTimeout(function () {
+                          xpProgressTextElement.classList.remove(
+                            "count-up-animation"
+                          );
+                        }, 200);
+                      }
+                    };
+
+                    requestAnimationFrame(animateXpNumbers);
+                  }
                 }
               } else {
                 // No XP gained, just set the width without animation
@@ -409,6 +483,156 @@ export function updateLevelInfo(totalXp, levelInfo) {
       elem.textContent = levelInfo.level_number;
     }
   });
+
+  // Set up animation for XP progress text when it becomes visible
+  const xpProgressTextElement = document.getElementById("xpProgressText");
+  if (xpProgressTextElement) {
+    // Store the current and target values as data attributes
+    const currentText = xpProgressTextElement.textContent;
+    const currentXp = parseInt(currentText.split(" / ")[0]) || 0;
+    const targetXp = parseInt(levelInfo.xp_into_level);
+
+    // Only set up animation if the XP has changed and increased
+    if (targetXp > currentXp) {
+      // Store the values as data attributes for the observer to use
+      xpProgressTextElement.dataset.currentXp = currentXp;
+      xpProgressTextElement.dataset.targetXp = targetXp;
+      xpProgressTextElement.dataset.xpNeeded = levelInfo.xp_needed;
+
+      // Create an intersection observer to trigger animation when visible
+      const xpTextObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              const element = entry.target;
+              const startXp = parseInt(element.dataset.currentXp);
+              const endXp = parseInt(element.dataset.targetXp);
+              const xpNeeded = element.dataset.xpNeeded;
+
+              // Add animation class
+              element.classList.add("count-up-animation");
+
+              // Animate the numbers counting up
+              const duration = 800; // match the progress bar animation duration
+              const startTime = performance.now();
+
+              const animateXpNumbers = function (timestamp) {
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const displayXp = Math.floor(
+                  startXp + (endXp - startXp) * progress
+                );
+
+                element.textContent = `${displayXp} / ${xpNeeded}`;
+
+                if (progress < 1) {
+                  requestAnimationFrame(animateXpNumbers);
+                } else {
+                  // Animation complete, remove animation class
+                  setTimeout(function () {
+                    element.classList.remove("count-up-animation");
+                  }, 200);
+
+                  // Clean up data attributes
+                  delete element.dataset.currentXp;
+                  delete element.dataset.targetXp;
+                  delete element.dataset.xpNeeded;
+                }
+              };
+
+              requestAnimationFrame(animateXpNumbers);
+
+              // Disconnect observer after triggering animation
+              xpTextObserver.disconnect();
+            }
+          });
+        },
+        { threshold: 0.5 } // Element must be at least 50% visible
+      );
+
+      // Start observing
+      xpTextObserver.observe(xpProgressTextElement);
+    } else {
+      // Just update the text without animation if XP hasn't increased
+      xpProgressTextElement.textContent = `${levelInfo.xp_into_level} / ${levelInfo.xp_needed}`;
+    }
+  }
+
+  // Set up animation for challenge XP progress text when it becomes visible
+  const challengeXpProgressTextElement = document.getElementById(
+    "challengeXpProgressText"
+  );
+  if (challengeXpProgressTextElement) {
+    // Store the current and target values as data attributes
+    const currentText = challengeXpProgressTextElement.textContent;
+    const currentXp = parseInt(currentText.split(" / ")[0]) || 0;
+    const targetXp = parseInt(levelInfo.xp_into_level);
+
+    // Only set up animation if the XP has changed and increased
+    if (targetXp > currentXp) {
+      // Store the values as data attributes for the observer to use
+      challengeXpProgressTextElement.dataset.currentXp = currentXp;
+      challengeXpProgressTextElement.dataset.targetXp = targetXp;
+      challengeXpProgressTextElement.dataset.xpNeeded = levelInfo.xp_needed;
+
+      // Create an intersection observer to trigger animation when visible
+      const challengeXpTextObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              const element = entry.target;
+              const startXp = parseInt(element.dataset.currentXp);
+              const endXp = parseInt(element.dataset.targetXp);
+              const xpNeeded = element.dataset.xpNeeded;
+
+              // Add animation class
+              element.classList.add("count-up-animation");
+
+              // Animate the numbers counting up
+              const duration = 800; // match the progress bar animation duration
+              const startTime = performance.now();
+
+              const animateChallengeXpNumbers = function (timestamp) {
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const displayXp = Math.floor(
+                  startXp + (endXp - startXp) * progress
+                );
+
+                element.textContent = `${displayXp} / ${xpNeeded}`;
+
+                if (progress < 1) {
+                  requestAnimationFrame(animateChallengeXpNumbers);
+                } else {
+                  // Animation complete, remove animation class
+                  setTimeout(function () {
+                    element.classList.remove("count-up-animation");
+                  }, 200);
+
+                  // Clean up data attributes
+                  delete element.dataset.currentXp;
+                  delete element.dataset.targetXp;
+                  delete element.dataset.xpNeeded;
+                }
+              };
+
+              requestAnimationFrame(animateChallengeXpNumbers);
+
+              // Disconnect observer after triggering animation
+              challengeXpTextObserver.disconnect();
+            }
+          });
+        },
+        { threshold: 0.5 } // Element must be at least 50% visible
+      );
+
+      // Start observing
+      challengeXpTextObserver.observe(challengeXpProgressTextElement);
+    } else {
+      // Just update the text without animation if XP hasn't increased
+      challengeXpProgressTextElement.textContent = `${levelInfo.xp_into_level} / ${levelInfo.xp_needed}`;
+    }
+  }
 }
 
 export function updateXpIndicator(totalXp, levelInfo) {
