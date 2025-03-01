@@ -861,7 +861,7 @@ function handleLocalXpAnimations(data, options) {
 
             // Disconnect observer after triggering animations
             xpAnimationObserver.disconnect();
-          }, 100); // 100ms delay
+          }, 100); // 100ms delay between each animation
         }
       });
     },
@@ -2465,81 +2465,45 @@ window.addEventListener("DOMContentLoaded", async () => {
 
                   // Animate if there's xp gained
                   if (data.challenge_xp_earned > 0) {
+                    // Calculate target width before animations
+                    const targetWidth = `${data.level_info.progress_percent}%`;
+
                     // If leveled up, handle level image transition
                     if (data.leveled_up) {
+                      // Get the level indicator container and image immediately
+                      const levelImageContainer = challengeXpInfo.querySelector(
+                        ".level-image-container"
+                      );
+                      const levelImage = levelImageContainer
+                        ? levelImageContainer.querySelector("img")
+                        : null;
+                      const oldImageSrc = data.level_info.previous_level_image;
+                      const newImageSrc = data.level_info.level_image;
+
+                      // Set the old image immediately before any animations start
+                      if (levelImage && oldImageSrc && newImageSrc) {
+                        levelImage.src = oldImageSrc;
+                        levelImage.alt = `Level ${data.previous_level}`;
+                        void levelImageContainer.offsetWidth;
+                      }
+
                       // First animate to 100%
                       xpProgressBar.style.transition =
                         "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
                       xpProgressBar.style.width = "100%";
 
-                      // Animate the XP progress text during the first part of the level up animation
-                      const challengeXpProgressTextElement =
-                        document.getElementById("challengeXpProgressText");
-                      if (challengeXpProgressTextElement) {
-                        // Add animation class
-                        challengeXpProgressTextElement.classList.add(
-                          "count-up-animation"
-                        );
-
-                        // Animate the numbers counting up to max XP
-                        const startXp =
-                          parseInt(
-                            challengeXpProgressTextElement.textContent.split(
-                              " / "
-                            )[0]
-                          ) || 0;
-                        const endXp = parseInt(data.level_info.xp_needed);
-                        const xpNeeded = data.level_info.xp_needed;
-                        const duration = 800; // match the progress bar animation duration
-                        const startTime = performance.now();
-
-                        const animateChallengeXpNumbers = function (timestamp) {
-                          const elapsed = timestamp - startTime;
-                          const progress = Math.min(elapsed / duration, 1);
-                          const currentXp = Math.floor(
-                            startXp + (endXp - startXp) * progress
-                          );
-
-                          challengeXpProgressTextElement.textContent = `${currentXp} / ${xpNeeded}`;
-
-                          if (progress < 1) {
-                            requestAnimationFrame(animateChallengeXpNumbers);
-                          } else {
-                            // Animation complete, but don't remove the animation class yet
-                            // as we'll continue with the second part of the animation
-                          }
-                        };
-
-                        requestAnimationFrame(animateChallengeXpNumbers);
-                      }
-
                       // After reaching 100%, trigger level transition
                       setTimeout(function () {
-                        // Get the level indicator container
-                        const levelImageContainer =
-                          challengeXpInfo.querySelector(
-                            ".level-image-container"
-                          );
+                        if (levelImageContainer && levelImage) {
+                          // Get the level text element for challenge
+                          const challengeLevelTextElement =
+                            document.getElementById("challengeCurrentLevel");
 
-                        // Get the level text element for challenge
-                        const challengeLevelTextElement =
-                          document.getElementById("challengeCurrentLevel");
-
-                        // Store the original level text
-                        const originalChallengeLevelText =
-                          challengeLevelTextElement
-                            ? challengeLevelTextElement.innerHTML
-                            : "";
-
-                        if (levelImageContainer) {
-                          // Get the level image element
-                          const levelImage =
-                            levelImageContainer.querySelector("img");
-
-                          // Store both old and new image sources
-                          const oldImageSrc =
-                            data.level_info.previous_level_image;
-                          const newImageSrc = data.level_info.level_image;
+                          // Store the original level text
+                          const originalChallengeLevelText =
+                            challengeLevelTextElement
+                              ? challengeLevelTextElement.innerHTML
+                              : "";
 
                           if (!oldImageSrc || !newImageSrc) {
                             console.error(
@@ -2550,38 +2514,27 @@ window.addEventListener("DOMContentLoaded", async () => {
                                 data,
                               }
                             );
+                            return;
                           }
 
-                          // Create a clone of the image for the animation
-                          if (levelImage && oldImageSrc && newImageSrc) {
-                            // Force the old image to be displayed first
+                          // Double check we're still showing the old image
+                          if (levelImage.src !== oldImageSrc) {
                             levelImage.src = oldImageSrc;
                             levelImage.alt = `Level ${data.previous_level}`;
-
-                            // Force a reflow to ensure the old image is rendered
                             void levelImageContainer.offsetWidth;
                           }
 
-                          // Start glow effect
-                          levelImageContainer.classList.add("level-up-glow");
-
-                          // For challenge section, add a special class to control the glow intensity
-                          if (isChallenge) {
-                            levelImageContainer.classList.add("challenge-glow");
-                          }
-
-                          // Start rotation with old image
+                          // Start glow effect and rotation
                           levelImageContainer.classList.add(
+                            "level-up-glow",
+                            "challenge-glow",
                             "level-image-transition"
                           );
 
                           // Start level text transition if it exists
                           if (challengeLevelTextElement) {
-                            // Set the text content to the original level text before starting the animation
                             challengeLevelTextElement.innerHTML =
                               originalChallengeLevelText;
-
-                            // Start the animation
                             challengeLevelTextElement.classList.add(
                               "level-text-transition"
                             );
@@ -2591,8 +2544,8 @@ window.addEventListener("DOMContentLoaded", async () => {
                               challengeLevelTextElement.innerHTML = `<strong>${data.level_info.display_name}</strong>`;
                             }, 600);
 
-                            // Remove animation class after completion
-                            setTimeout(function () {
+                            // Remove text animation class after completion
+                            setTimeout(() => {
                               challengeLevelTextElement.classList.remove(
                                 "level-text-transition"
                               );
@@ -2600,91 +2553,47 @@ window.addEventListener("DOMContentLoaded", async () => {
                           }
 
                           // Update the image halfway through the animation
-                          setTimeout(function () {
-                            const levelImage =
-                              levelImageContainer.querySelector("img");
-                            if (levelImage && newImageSrc) {
-                              // Set the image source to the new level image
-                              levelImage.src = newImageSrc;
-                              levelImage.alt = `Level ${data.current_level}`;
-
-                              // Force a reflow to ensure the new image is rendered
-                              void levelImageContainer.offsetWidth;
-
-                              // Also update all other level images on the page
-                              if (!isChallenge) {
-                                const otherLevelImages =
-                                  document.querySelectorAll(
-                                    ".level-image:not(.level-indicator.challenge-xp .level-image)"
-                                  );
-                                otherLevelImages.forEach((img) => {
-                                  if (img !== levelImage) {
-                                    img.src = newImageSrc;
-                                    img.alt = `Level ${data.current_level}`;
-                                  }
-                                });
-                              } else {
-                                // For challenge, only update challenge-related images
-                                const challengeLevelImages =
-                                  document.querySelectorAll(
-                                    ".level-indicator.challenge-xp .level-image"
-                                  );
-                                challengeLevelImages.forEach((img) => {
-                                  if (img !== levelImage) {
-                                    img.src = newImageSrc;
-                                    img.alt = `Level ${data.current_level}`;
-                                  }
-                                });
-                              }
-                            }
+                          setTimeout(() => {
+                            levelImage.src = newImageSrc;
+                            levelImage.alt = `Level ${data.current_level}`;
+                            void levelImageContainer.offsetWidth;
                           }, 600);
 
-                          // Remove glow and rotation classes after animation completes
-                          setTimeout(function () {
+                          // Clean up animations and handle progress bar
+                          setTimeout(() => {
+                            // Remove all animation classes
                             levelImageContainer.classList.remove(
-                              "level-up-glow"
-                            );
-                            levelImageContainer.classList.remove(
+                              "level-up-glow",
+                              "challenge-glow",
                               "level-image-transition"
                             );
 
-                            // Also remove the challenge-glow class
-                            levelImageContainer.classList.remove(
-                              "challenge-glow"
-                            );
-
-                            // Reset progress bar to 0 and then animate to new progress
+                            // Reset and animate progress bar to new position
                             xpProgressBar.style.transition = "none";
                             xpProgressBar.style.width = "0%";
-
-                            // Force a reflow
                             void xpProgressBar.offsetWidth;
-
-                            // Animate to the new progress
                             xpProgressBar.style.transition =
                               "width 0.8s cubic-bezier(0.4, 0, 0.2, 1)";
                             xpProgressBar.style.width = targetWidth;
 
                             // Animate the XP progress text
+                            const challengeXpProgressTextElement =
+                              document.getElementById(
+                                "challengeXpProgressText"
+                              );
                             if (challengeXpProgressTextElement) {
-                              // Add animation class
                               challengeXpProgressTextElement.classList.add(
                                 "count-up-animation"
                               );
-
-                              // Animate the numbers counting up
                               const startXp = 0;
                               const endXp = parseInt(
                                 data.level_info.xp_into_level
                               );
                               const xpNeeded = data.level_info.xp_needed;
-                              const duration = 800; // match the progress bar animation duration
+                              const duration = 800;
                               const startTime = performance.now();
-                              const isChallenge = true; // This is in the challenge context
 
-                              const animateChallengeXpNumbers = function (
-                                timestamp
-                              ) {
+                              const animateChallengeXpNumbers = (timestamp) => {
                                 const elapsed = timestamp - startTime;
                                 const progress = Math.min(
                                   elapsed / duration,
@@ -2693,7 +2602,6 @@ window.addEventListener("DOMContentLoaded", async () => {
                                 const currentXp = Math.floor(
                                   startXp + (endXp - startXp) * progress
                                 );
-
                                 challengeXpProgressTextElement.textContent = `${currentXp} / ${xpNeeded}`;
 
                                 if (progress < 1) {
@@ -2701,8 +2609,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                                     animateChallengeXpNumbers
                                   );
                                 } else {
-                                  // Animation complete, remove animation class
-                                  setTimeout(function () {
+                                  setTimeout(() => {
                                     challengeXpProgressTextElement.classList.remove(
                                       "count-up-animation"
                                     );
@@ -2712,24 +2619,15 @@ window.addEventListener("DOMContentLoaded", async () => {
 
                               requestAnimationFrame(animateChallengeXpNumbers);
                             }
-                          }, 600); // Reduced from 800ms to 600ms to better align with the faster rotation
+                          }, 1200);
                         }
                       }, 800);
                     } else {
-                      // Normal progress animation (no level up)
-                      xpProgressBar.style.width =
-                        data.level_info.progress_percent + "%";
+                      // No level up, just animate progress bar
+                      xpProgressBar.style.width = targetWidth;
                     }
-                  } else {
-                    // No XP gained, just set the width without animation
-                    xpProgressBar.style.transition = "none";
-                    xpProgressBar.style.width =
-                      data.level_info.progress_percent + "%";
                   }
                 }
-
-                // Disconnect observer after triggering animations
-                challengeXpAnimationObserver.disconnect();
               }, 100);
             }
           },
