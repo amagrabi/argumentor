@@ -285,11 +285,19 @@ async function startRecording(options) {
 
         clearTimeout(timeoutId);
 
-        // If response status is 500 and it's from the transcription endpoint, assume no text was detected
-        if (response.status === 500) {
+        // Handle different response status codes
+        if (response.status === 204) {
+          // No text detected (204 No Content)
           recordingStatus.innerHTML =
             translations?.main?.voiceInput?.status?.noTextDetected ||
             "Could not identify any text from the recording. Please try again.";
+          recordButton.disabled = false;
+          return;
+        } else if (response.status === 500) {
+          // Server error (500 Internal Server Error)
+          recordingStatus.innerHTML =
+            translations?.main?.voiceInput?.status?.transcriptionError ||
+            "Error during transcription. Please try again later.";
           recordButton.disabled = false;
           return;
         }

@@ -322,7 +322,12 @@ def transcribe_voice():
         # Return early if transcription failed
         if not transcript:
             logger.error("Initial transcription failed")
-            return jsonify({"error": "Error during transcription"}), 500
+            return jsonify(
+                {
+                    "error": "No text could be identified in the recording",
+                    "status": "no_text",
+                }
+            ), 204
 
         logger.debug("Initial transcription successful, starting post-processing")
         # Post-process the transcription with LLM, including the question context
