@@ -66,6 +66,8 @@ def submit_answer():
         claim = data.get("claim", "").strip()
         argument = data.get("argument", "").strip()
         counterargument = (data.get("counterargument", "") or "").strip()
+        voice_answer = data.get("voice_answer", "").strip()
+        input_mode = data.get("input_mode", "text")
 
         if not claim or not argument:
             return jsonify({"error": "Both claim and argument are required"}), 400
@@ -74,6 +76,11 @@ def submit_answer():
             len(claim) > SETTINGS.MAX_CLAIM
             or len(argument) > SETTINGS.MAX_ARGUMENT
             or (counterargument and len(counterargument) > SETTINGS.MAX_COUNTERARGUMENT)
+            or (
+                input_mode == "voice"
+                and voice_answer
+                and len(voice_answer) > SETTINGS.MAX_VOICE_ANSWER
+            )
         ):
             return jsonify({"error": "Character limit exceeded"}), 400
 
@@ -306,12 +313,17 @@ def submit_challenge_response():
         input_mode = data.get(
             "input_mode", "text"
         )  # Get input mode from request or default to text
+        voice_answer = data.get("voice_answer", "").strip()
 
         logger.debug(f"Challenge response received for answer_id: {answer_id}")
 
         if not challenge_response:
             return jsonify({"error": "Challenge response is required"}), 400
-        if len(challenge_response) > SETTINGS.MAX_ARGUMENT:
+        if len(challenge_response) > SETTINGS.MAX_CHALLENGE_RESPONSE or (
+            input_mode == "voice"
+            and voice_answer
+            and len(voice_answer) > SETTINGS.MAX_VOICE_ANSWER
+        ):
             return jsonify({"error": "Character limit exceeded"}), 400
 
         answer = Answer.query.filter_by(id=answer_id).first()

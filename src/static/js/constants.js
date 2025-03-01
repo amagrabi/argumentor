@@ -33,8 +33,8 @@ export const CATEGORY_ICONS = {
 export const CHAR_LIMITS = {
   CLAIM: 200,
   ARGUMENT: 1000,
-  COUNTERARGUMENT: 500,
-  CHALLENGE: 1000,
+  COUNTERARGUMENT: 800,
+  CHALLENGE: 2000,
   VOICE: 2000,
 };
 
@@ -93,10 +93,9 @@ export const EVALUATION_TRANSLATION_MAPPING = {
   Creativity: "creativity",
 };
 
-// Add this with the other constants
+// Voice recording settings
 export const VOICE_LIMITS = {
   MAX_RECORDING_TIME: 120000, // 60000=1 minute
-  MAX_CHARS: 2000,
 };
 
 // Timing constants

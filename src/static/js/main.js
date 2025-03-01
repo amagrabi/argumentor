@@ -881,7 +881,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
   const startTime = Date.now();
   const errorMessage = document.getElementById("errorMessage");
   const submitBtn = document.getElementById("submitAnswer");
-  let claim, argument, counterargument;
+  let claim, argument, counterargument, voice_answer;
 
   // Determine the current input mode (voice or text)
   const inputMode = window.currentInputMode;
@@ -897,19 +897,21 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       return;
     }
 
-    if (voiceResponse.length > VOICE_LIMITS.MAX_CHARS) {
-      const defaultError = `Please reduce your response to ${VOICE_LIMITS.MAX_CHARS} characters or less.`;
+    if (voiceResponse.length > CHAR_LIMITS.VOICE) {
+      const defaultError = `Please reduce your response to ${CHAR_LIMITS.VOICE} characters or less.`;
       errorMessage.textContent = translations?.errors?.tooLong || defaultError;
       errorMessage.classList.remove("hidden");
       return;
     }
 
     // For voice mode, split the response into claim and argument portions
-    const maxClaimLength = CHAR_LIMITS.CLAIM;
-    const maxArgumentLength = CHAR_LIMITS.ARGUMENT;
+    const maxLength = CHAR_LIMITS.CHALLENGE;
 
-    claim = voiceResponse.substring(0, maxClaimLength);
-    argument = voiceResponse.substring(0, maxArgumentLength);
+    // For voice input, we need to handle the claim differently
+    // Set claim and argument to placeholders and keep the full response in voice_answer
+    claim = voiceResponse.substring(0, 100) + "..."; // Just a placeholder
+    argument = "See voice answer"; // Just a placeholder
+    voice_answer = voiceResponse; // Send the full voice response separately
     counterargument =
       document.getElementById("counterargumentInput").value.trim() || "";
   } else {
@@ -927,6 +929,17 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       errorMessage.classList.remove("hidden");
       return;
     }
+
+    // Check character limits for text mode
+    if (
+      claim.length > CHAR_LIMITS.CHALLENGE ||
+      argument.length > CHAR_LIMITS.CHALLENGE
+    ) {
+      const defaultError = `Please ensure each field is ${CHAR_LIMITS.CHALLENGE} characters or less.`;
+      errorMessage.textContent = translations?.errors?.tooLong || defaultError;
+      errorMessage.classList.remove("hidden");
+      return;
+    }
   }
 
   const payload = {
@@ -936,6 +949,11 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     input_mode: inputMode,
     question_id: currentQuestion?.id,
   };
+
+  // Include voice_answer in the payload when using voice input
+  if (inputMode === "voice" && voice_answer) {
+    payload.voice_answer = voice_answer;
+  }
 
   if (currentQuestion?.id) {
     payload.question_id = currentQuestion.id;
@@ -1822,22 +1840,44 @@ window.addEventListener("DOMContentLoaded", async () => {
     // Determine the current input mode (voice or text)
     const inputMode = window.challengeInputMode || "text";
     let challengeResponse;
+    let voice_answer;
 
     if (inputMode === "voice") {
-      challengeResponse = document
+      voice_answer = document
         .getElementById("challengeVoiceTranscript")
         .value.trim();
+      // For voice input, use a placeholder for challenge_response
+      // The actual voice content will be sent in voice_answer
+      challengeResponse = voice_answer.substring(0, 100) + "..."; // Just a placeholder
     } else {
       challengeResponse = document
         .getElementById("challengeResponseInput")
         .value.trim();
     }
 
-    if (!challengeResponse) {
+    if (
+      (!challengeResponse && inputMode === "text") ||
+      (!voice_answer && inputMode === "voice")
+    ) {
       challengeErrorMessage.textContent =
         "Please provide a response to the challenge.";
       return;
     }
+
+    // Add character limit validation
+    if (
+      (inputMode === "text" &&
+        challengeResponse.length > CHAR_LIMITS.CHALLENGE) ||
+      (inputMode === "voice" &&
+        voice_answer &&
+        voice_answer.length > CHAR_LIMITS.VOICE)
+    ) {
+      challengeErrorMessage.textContent = `Please ensure your response is ${
+        inputMode === "voice" ? CHAR_LIMITS.VOICE : CHAR_LIMITS.CHALLENGE
+      } characters or less.`;
+      return;
+    }
+
     const answerId = sessionStorage.getItem("lastAnswerId");
     if (!answerId) {
       challengeErrorMessage.textContent = "No associated answer found.";
@@ -1851,16 +1891,23 @@ window.addEventListener("DOMContentLoaded", async () => {
     challengeErrorMessage.textContent = "";
 
     try {
+      const payload = {
+        answer_id: answerId,
+        challenge_response: challengeResponse,
+        input_mode: inputMode,
+      };
+
+      // Include voice_answer in the payload when using voice input
+      if (inputMode === "voice" && voice_answer) {
+        payload.voice_answer = voice_answer;
+      }
+
       const response = await fetch("/submit_challenge_response", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          answer_id: answerId,
-          challenge_response: challengeResponse,
-          input_mode: inputMode,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -3001,11 +3048,11 @@ window.addEventListener("DOMContentLoaded", async () => {
 
           challengeVoiceTranscript.value = transcript;
           challengeVoiceCount.textContent = (
-            VOICE_LIMITS.MAX_CHARS - transcript.length
+            CHAR_LIMITS.VOICE - transcript.length
           ).toString();
 
           // If the transcript exceeds the character limit, highlight it.
-          if (transcript.length > VOICE_LIMITS.MAX_CHARS) {
+          if (transcript.length > CHAR_LIMITS.VOICE) {
             challengeVoiceTranscript.classList.add("border-red-500");
             challengeRecordingStatus.innerHTML =
               translations?.main?.voiceInput?.status?.tooLong ||
@@ -3076,7 +3123,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   if (challengeVoiceTranscript) {
     challengeVoiceTranscript.addEventListener("input", () => {
       const remaining =
-        VOICE_LIMITS.MAX_CHARS - challengeVoiceTranscript.value.length;
+        CHAR_LIMITS.VOICE - challengeVoiceTranscript.value.length;
       challengeVoiceCount.textContent = remaining.toString();
       // Clear error message on input
       document.getElementById("challengeErrorMessage").textContent = "";

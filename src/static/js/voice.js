@@ -1,5 +1,5 @@
 // Voice module - Handles all voice input and recording functionality
-import { VOICE_LIMITS } from "./constants.js";
+import { VOICE_LIMITS, CHAR_LIMITS } from "./constants.js";
 import { translations } from "./translations.js";
 
 // Global variables for voice recording
@@ -29,15 +29,12 @@ export function initMainVoiceInput() {
   const voiceCount = document.getElementById("voiceCount");
 
   if (voiceTranscript && voiceCount) {
-    voiceTranscript.setAttribute(
-      "maxlength",
-      VOICE_LIMITS.MAX_CHARS.toString()
-    );
-    voiceCount.textContent = VOICE_LIMITS.MAX_CHARS.toString();
+    voiceTranscript.setAttribute("maxlength", CHAR_LIMITS.VOICE.toString());
+    voiceCount.textContent = CHAR_LIMITS.VOICE.toString();
 
     // Update remaining character count as user edits voice transcript
     voiceTranscript.addEventListener("input", () => {
-      const remaining = VOICE_LIMITS.MAX_CHARS - voiceTranscript.value.length;
+      const remaining = CHAR_LIMITS.VOICE - voiceTranscript.value.length;
       voiceCount.textContent = remaining.toString();
       // Clear error message on input
       document.getElementById("errorMessage").textContent = "";
@@ -103,14 +100,14 @@ export function initChallengeVoiceInput() {
   if (challengeVoiceTranscript && challengeVoiceCount) {
     challengeVoiceTranscript.setAttribute(
       "maxlength",
-      VOICE_LIMITS.MAX_CHARS.toString()
+      CHAR_LIMITS.VOICE.toString()
     );
-    challengeVoiceCount.textContent = VOICE_LIMITS.MAX_CHARS.toString();
+    challengeVoiceCount.textContent = CHAR_LIMITS.VOICE.toString();
 
     // Update remaining character count as user edits challenge voice transcript
     challengeVoiceTranscript.addEventListener("input", () => {
       const remaining =
-        VOICE_LIMITS.MAX_CHARS - challengeVoiceTranscript.value.length;
+        CHAR_LIMITS.VOICE - challengeVoiceTranscript.value.length;
       challengeVoiceCount.textContent = remaining.toString();
       // Clear error message on input
       document.getElementById("challengeErrorMessage").textContent = "";
@@ -315,11 +312,11 @@ async function startRecording(options) {
 
         transcriptElement.value = transcript;
         countElement.textContent = (
-          VOICE_LIMITS.MAX_CHARS - transcript.length
+          CHAR_LIMITS.VOICE - transcript.length
         ).toString();
 
         // If the transcript exceeds the character limit, highlight it.
-        if (transcript.length > VOICE_LIMITS.MAX_CHARS) {
+        if (transcript.length > CHAR_LIMITS.VOICE) {
           transcriptElement.classList.add("border-red-500");
           recordingStatus.innerHTML =
             translations?.main?.voiceInput?.status?.tooLong ||
