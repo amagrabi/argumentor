@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "ArguMentor - Sharpen Your Reasoning Skills",
-    "description": "Test your reasoning skills. Construct arguments to challenging questions. Improve with AI-driven feedback."
+    "description": "Sharpen your reasoning skills with challenging questions and improve with AI-driven feedback."
   },
   "header": {
     "login": "Login",
@@ -11,7 +11,7 @@
   "settings": {
     "title": "Settings",
     "filterCategories": "Filter Categories",
-    "filterDescription": "Uncheck categories below to avoid getting questions for them. By default, all are enabled.",
+    "filterDescription": "Uncheck any categories you want to skip. All are enabled by default.",
     "done": "Done"
   },
   "categories": {
@@ -50,15 +50,15 @@
     "voiceInput": {
       "status": {
         "initial": "Record up to 2 minutes. You can still edit the text afterwards.",
-        "tooLong": "Transcription exceeds character limit. Please edit before submitting.",
+        "tooLong": "Your transcription is too long. Please shorten it before submitting.",
         "transcriptionTimeout": "Transcription timed out. Please try a shorter recording.",
         "recording": "Recording...",
         "transcribing": "Transcribing...",
         "postProcessing": "Post-processing...",
         "transcriptionComplete": "Transcription complete. You may edit the text.",
         "transcriptionImproved": "Transcription complete. You may edit the text.",
-        "transcriptionError": "Error during transcription.",
-        "microphoneError": "Error accessing microphone.",
+        "transcriptionError": "There was an error during transcription.",
+        "microphoneError": "Couldn't access the microphone.",
         "noTextDetected": "Could not identify any text from the recording. Please try again."
       }
     }
@@ -147,95 +147,92 @@
   },
   "questions": {
     "Philosophy": {
-      "freewill": "Does free will exist if all decisions are ultimately influenced by biological or physical factors?",
-      "altruism": "Is an action still altruistic if you gain personal satisfaction from it?",
-      "moral-vs-logic": "Is it more ethical to follow moral intuition or logical reasoning when they conflict?",
-      "consciousness": "Is consciousness a uniquely human trait, or could other animals also possess it?",
-      "simulation": "Are we living in a simulation?",
-      "truth": "Is the concept of 'truth' primarily shaped by individual perspectives and cultural contexts, or are there objective truths that exist independently of human interpretation?",
-      "human-nature": "Is 'human nature' a fixed set of characteristics, or is human behavior primarily a product of learning and societal influences?",
-      "objective-morality": "Does objective morality exist, or is morality purely a social construct?",
-      "self-meaning": "Must humans create their own meaning to avoid existential despair?",
+      "freewill": "Can free will truly exist if our decisions are shaped by biology and physics?",
+      "altruism": "Can an action be considered altruistic if it brings you personal satisfaction?",
+      "moral-vs-logic": "When moral intuition and logical reasoning are in conflict, which should you follow?",
+      "consciousness": "Is consciousness exclusive to humans, or could other animals experience it too?",
+      "simulation": "Could our reality be a simulation?",
+      "truth": "Is 'truth' shaped by personal and cultural views, or do objective truths exist beyond our interpretations?",
+      "human-nature": "Is 'human nature' a constant set of traits, or is it molded by our environment?",
+      "objective-morality": "Is morality objective, or is it just a social construct?",
+      "self-meaning": "Do humans need to create their own meaning to escape existential despair?",
       "religion-society": "Is religion good for society?"
     },
     "AI & Future": {
-      "ai-future": "Is a future with AI surpassing human intelligence an existential threat or the next stage of human evolution?",
-      "ai-decisions": "Should AI be permitted to autonomously make life-or-death decisions (e.g., in automated warfare) if it reduces human casualties?",
+      "ai-future": "Is AI surpassing human intelligence a threat to our existence or the next step in evolution?",
+      "ai-decisions": "Should AI be allowed to make life-or-death decisions on its own if it means fewer human casualties?",
       "ai-creative": "Can an AI be creative?",
-      "ai-replication": "If an AI can convincingly replicate a deceased loved one's personality, is it ethical to interact with that AI as if it were the real person?",
-      "ai-research": "Should AI research be conducted transparently and openly, or should it be tightly regulated to avoid potential risks?",
-      "ai-rights": "If AI becomes sentient, should it be granted legal personhood and rights similar to humans?",
+      "ai-replication": "Is it ethical to interact with an AI that mimics a deceased loved one's personality as if they were real?",
+      "ai-research": "Should AI research be open and transparent, or should it be strictly regulated to prevent risks?",
+      "ai-rights": "If an AI becomes sentient, should it have legal rights and personhood like humans?",
       "genetic": "Should human genetic modification be allowed to eliminate hereditary diseases?",
-      "ai-emotions": "Could an AI ever genuinely experience emotions?",
-      "crypto-impact": "Is cryptocurrency's environmental impact justified by its financial innovation potential?"
+      "ai-emotions": "Could an AI ever truly experience emotions?",
+      "crypto-impact": "Does the financial innovation of cryptocurrency justify its environmental impact?"
     },
     "Personal Growth & Relationships": {
       "follow-passion": "Should you follow your passion, even if it means less financial security?",
       "generalist-specialist": "Is it better to be a generalist with broad skills or a specialist with deep expertise?",
-      "honesty": "In personal relationships, is prioritizing honesty always ethically superior to protecting a partner's feelings, even if it involves withholding difficult truths?",
+      "honesty": "Is being honest always the best policy in relationships, even if it might hurt your partner's feelings?",
       "address-issues": "In personal relationships, is it better to address small issues immediately or let minor things slide?",
       "experiences": "What is more important, experiences or possessions?",
       "liked-respected": "Is it more important to be liked or respected?"
     },
     "Politics": {
       "mandatory-vote": "Should voting be mandatory in democracies?",
-      "gender-quota": "Is imposing a quota requiring 50% women in company leadership an effective way to promote gender equality?",
+      "gender-quota": "Does setting a 50% female leadership quota effectively promote gender equality?",
       "data-privacy": "Should governments have the authority to access personal data to improve national security or is data privacy more important?",
       "referendum": "In a democracy, should major policy decisions be determined by popular vote in referendums, or is it better to rely on elected representatives?",
-      "media-regulation": "Should social media platforms regulate content to prevent misinformation, or should they maintain absolute freedom of expression?",
-      "climate-pay": "Should developed nations pay proportionally more for climate change mitigation given their historical emissions?",
-      "capitalism": "Is capitalism the optimal system for maximizing long-term human wellbeing, or do alternative models offer better prospects?",
-      "voting-age": "Should the legal voting age be set to 16?",
+      "media-regulation": "Should social media platforms control content to stop misinformation, or uphold total free speech?",
+      "climate-pay": "Should developed nations pay proportionally more for climate change mitigation due to their past emissions?",
+      "capitalism": "Is capitalism the best system for long-term human wellbeing, or are there better alternatives?",
+      "voting-age": "Should the legal voting age be lowered to 16?",
       "media-spread": "Should social media platforms be regulated to prevent the spread of misinformation?",
       "basic-income": "Should governments implement universal basic income?",
       "economic-growth": "Should governments prioritize economic growth even if it leads to increased social inequality?",
-      "education-funding": "In higher education, should funding be primarily directed towards STEM fields due to their economic impact, or should humanities and arts receive equal or greater support for their cultural and societal value?",
+      "education-funding": "In higher education, should funding be primarily directed towards STEM fields due to their economic impact, or should humanities and arts receive the same support for their cultural value?",
       "nuclear": "Should governments invest in nuclear power as a future energy source, or do the risks outweigh its potential benefits?",
-      "immigration": "Should nations restrict immigration to preserve social cohesion, or embrace cultural diversity as a strength?",
-      "central-government": "Is a strong central government more effective than decentralized governance in tackling major crises?"
+      "immigration": "Should countries limit immigration for social cohesion, or see cultural diversity as a strength?",
+      "central-government": "Are strong central governments better at handling major crises than decentralized ones?"
     },
     "Ethics": {
       "meat-ethics": "Is consuming meat ethically defensible?",
-      "abortion-autonomy": "Should access to abortion be restricted to protect potential fetal rights, or is bodily autonomy more important?",
-      "animal-research": "Is it morally permissible to use animals for scientific research if it could lead to significant medical breakthroughs for humans?",
+      "abortion-autonomy": "Should access to abortion be limited to protect fetal rights, or is bodily autonomy more important?",
+      "animal-research": "Is it ethical to use animals in research for potential medical breakthroughs?",
       "trolley": "Would you pull a lever to divert a runaway trolley to kill one person instead of five?",
       "break-law": "Is it ever justifiable to break the law for the greater good?",
       "whistleblowers": "Should whistleblowers who expose corporate or government misconduct be fully protected, even if they violate confidentiality agreements?",
-      "personality-sentencing": "Should personality traits be considered in criminal sentencing?",
+      "personality-sentencing": "Is it fair to consider personality traits in determining criminal sentences?",
       "user-data": "Should companies be allowed to collect user data extensively if it leads to a more personalized service?"
     },
     "Thought Experiments": {
       "controlled-emotions": "Imagine a world where emotions could be precisely controlled with technology. Would this be a utopia or dystopia?",
       "teleportation-vs-time": "Which breakthrough would have a more profound impact on society: teleportation or time travel?",
       "perfect-happiness": "If a machine could give you perfect happiness but it's just an illusion, is it a good idea you plug in?",
-      "sacrifice": "Would you sacrifice 1% of the population randomly to prevent human extinction?",
-      "million-dollar": "You're given a button that grants you $1 million, but it causes an unknown person to die. Do you press it?",
-      "theseus": "Consider a car that has had every single part replaced over time. Is it still the 'same' car?",
+      "sacrifice": "Is it justifiable to randomly sacrifice 1% of the population to avert human extinction?",
+      "million-dollar": "Would you press a button for $1 million if it meant an unknown person would die?",
+      "theseus": "If every part of a car is replaced over time, does it remain the 'same' car?",
       "magic-wish": "You find a magic lamp that grants a wish but will erase one of your fondest memories as a cost. Would you make a wish?",
       "digital-immortality": "If you could upload your consciousness into a digital form, is it a form of immortality or a loss of your true self?",
-      "global-issue": "If you had to choose one global issue to solve (e.g., world hunger, climate change, or nuclear disarmament), which would it be and why?"
+      "global-issue": "What is the most important global issue to solve?"
     },
     "Business & Risk": {
-      "rapid-scaling": "Should companies prioritize rapid scaling over profitability in competitive markets?",
-      "layoffs": "Should corporations embrace structured layoffs for long-term growth, or is this practice a sign of systemic mismanagement?",
-      "market-dominance": "When considering mergers and acquisitions, is prioritizing rapid market dominance a sound strategy, even if it means potentially overlooking cultural clashes and integration difficulties?",
+      "rapid-scaling": "In competitive markets, should companies focus on rapid growth or profitability?",
+      "layoffs": "Are structured layoffs a strategy for long-term growth or a sign of poor management?",
+      "market-dominance": "Is aiming for rapid market dominance in mergers worth the risk of cultural clashes and integration issues?",
       "supply-chain": "Should companies be held responsible for the environmental impact of their entire supply chain?",
-      "financial-survival": "In times of economic uncertainty, should businesses prioritize immediate financial survival by cutting R&D, or maintain investment in innovation for future growth?",
-      "automation": "Is it ethical for companies to automate jobs if it increases efficiency but leads to significant unemployment?",
+      "financial-survival": "During economic uncertainty, should businesses cut R&D for survival or keep investing in innovation?",
       "dividends": "Is it ethical to lay off employees to maintain shareholder dividends during a crisis?",
-      "patent-protection": "Should companies prioritize patent protection over open collaboration in fast-moving tech fields?",
+      "patent-protection": "In fast-paced tech fields, should companies focus on patent protection or open collaboration?",
       "lock-in": "Are business practices that create 'customer lock-in' ethically justifiable if they ensure business stability, or do they unfairly restrict consumer freedom?",
-      "shareholder-welfare": "Should companies prioritize shareholder dividends over employee welfare?"
+      "shareholder-welfare": "Should companies focus more on shareholder dividends or employee welfare?"
     },
     "Biases & Fallacies": {
-      "cancer-drug": "A new cancer drug shows a 90% survival rate in trials, but some experts doubt its effectiveness. Should it be approved?",
-      "coffee-study": "A study finds that people who drink coffee live longer. Should the World Health Organization therefore publish a recommendation to drink coffee?",
-      "authority": "Does an appeal to authority necessarily guarantee the truth of a claim?",
-      "anecdote": "Is it a logical fallacy to draw a general conclusion from a single anecdote?",
+      "cancer-drug": "Should a cancer drug with a 90% trial survival rate be approved if some experts question its effectiveness?",
+      "coffee-study": "Should the WHO recommend coffee consumption based on a study linking it to longer life?",
+      "authority": "Is an appeal to authority a reliable way to validate a claim?",
       "slippery-slope": "Is 'slippery slope' argument always a fallacy, or can it sometimes be a valid way to foresee potential negative consequences of an action?",
-      "bandwagon": "In decision-making, is relying on the bandwagon effect a justifiable strategy when evidence is scarce, or is it a flawed approach that should be avoided at all costs?",
+      "bandwagon": "Is 'following the bandwagon' justifiable when evidence is scarce, or should it be avoided?",
       "majority-view": "When conflicting studies arise, should we trust the majority view or give weight to outlier findings?",
-      "evidence-weight": "How much weight should anecdotal evidence, like personal success stories, carry when making important decisions, compared to statistical data and systematic research?",
       "argument-source": "In debates, is it ever legitimate to consider the source or personal interests of the person making an argument, or should the focus always be exclusively on the logical merits of the argument itself?"
     },
     "Fun & Casual": {
@@ -369,7 +366,7 @@
     "goBack": "Go Back",
     "section1": {
       "title": "Choose Question",
-      "description": "Tackle thought-provoking questions from various categories."
+      "description": "Tackle thought-provoking questions from different categories."
     },
     "section2": {
       "title": "Craft Argument",
@@ -390,8 +387,8 @@
     },
     "challengeSection": {
       "title": "Challenge Feature",
-      "description": "In addition to submitting your primary argument, you have the option to engage with a challenge. This challenge is designed to help you improve your argument and identify any logical inconsistencies, unclear points, or unaddressed counterarguments.",
-      "additionalInfo": "Responding to the challenge will prompt a secondary evaluation and may earn additional XP. The challenge feature is optional, you can also move on to another question."
+      "description": "After your main argument, you have the option to dive deeper with a challenge. It is designed to help you improve your argument and identify any logical inconsistencies, unclear points, or unaddressed counterarguments.",
+      "additionalInfo": "Take on the challenge for extra feedback and XP. It's optional, so feel free to skip to another question if you like."
     }
   },
   "evaluationCriteria": {
@@ -500,7 +497,7 @@
   "howToImprovePage": {
     "title": "How to Improve",
     "overviewTitle": "Overview",
-    "overview": "Identify biases in your thinking and avoid common logical fallacies to build stronger, more persuasive arguments. Being aware of these pitfalls can help you refine your approach to problem-solving and decision-making.",
+    "overview": "Spot biases and dodge common logical fallacies to make your arguments stronger and more convincing. Knowing these pitfalls helps you sharpen your problem-solving and decision-making skills.",
     "cognitiveBiasesTitle": "Cognitive Biases",
     "logicalFallaciesTitle": "Logical Fallacies",
     "exampleTitle": "Example",
@@ -621,12 +618,12 @@
     },
     "feedback": {
       "title": "💭 Share Feedback",
-      "description": "Share your experience, suggestions, or ideas to make the platform better.",
+      "description": "Share your experience or ideas to make the platform better.",
       "button": "Give Feedback"
     },
     "share": {
       "title": "🌟 Spread the Word",
-      "description": "Help grow the platform and tell your friends, colleagues, and enemies about it.",
+      "description": "Help grow the platform and tell your friends about it.",
       "button": "Share"
     },
     "roadmap": {
@@ -637,13 +634,9 @@
           "title": "Competitive Mode",
           "description": "Challenge your friends and compete in reasoning battles."
         },
-        "multipleLanguages": {
-          "title": "More Languages",
-          "description": "Offer support for new languages."
-        },
         "moreQuestions": {
           "title": "Custom Questions",
-          "description": "Add more questions and allow custom questions."
+          "description": "Add more questions and support the option to create your own."
         },
         "betterAnalytics": {
           "title": "Better Analytics",
@@ -653,17 +646,21 @@
           "title": "Enhance Feedback",
           "description": "Improve the quality of the automated feedback."
         },
-        "darkMode": {
-          "title": "Dark Mode",
-          "description": "For sinister reasoning sessions at night."
-        },
-        "leaderboard": {
-          "title": "Leaderboard",
-          "description": "Compare performance with others."
-        },
         "argumentHighlights": {
           "title": "Argument Highlights",
           "description": "Learn from an overview of the best submitted arguments."
+        },
+        "multipleLanguages": {
+          "title": "More Languages",
+          "description": "Offer support for new languages."
+        },
+        "leaderboard": {
+          "title": "Leaderboard",
+          "description": "Compare your performance with others."
+        },
+        "darkMode": {
+          "title": "Dark Mode",
+          "description": "For sinister reasoning sessions at night."
         }
       }
     },

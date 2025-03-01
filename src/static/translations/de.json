@@ -465,7 +465,6 @@
       "market-dominance": "Ist es bei Fusionen und Übernahmen sinnvoll, rasche Marktdominanz anzustreben, auch wenn kulturelle Konflikte und Integrationsprobleme übersehen werden könnten?",
       "supply-chain": "Sollten Unternehmen für die Umweltauswirkungen ihrer gesamten Lieferkette verantwortlich gemacht werden?",
       "financial-survival": "Sollten Unternehmen in wirtschaftlich unsicheren Zeiten eher das direkte finanzielle Überleben sichern – zum Beispiel durch Kürzungen bei F&E – oder in Innovation für künftiges Wachstum investieren?",
-      "automation": "Ist es ethisch vertretbar, Arbeitsplätze zu automatisieren, wenn dies zu höherer Effizienz führt, aber signifikante Arbeitslosigkeit verursacht?",
       "dividends": "Ist es unter Krisenbedingungen ethisch vertretbar, Mitarbeiter zu entlassen, um die Dividenden der Aktionäre aufrechtzuerhalten?",
       "patent-protection": "Sollten Unternehmen den Patentschutz vor offener Zusammenarbeit priorisieren, insbesondere in schnell entwickelnden Technologiefeldern?",
       "lock-in": "Sind Geschäftspraktiken, die zu starker Kundenbindung führen, ethisch gerechtfertigt, wenn sie der Unternehmensstabilität dienen, oder schränken sie die Freiheit der Verbraucher ein?",
@@ -475,11 +474,9 @@
       "cancer-drug": "Ein neues Krebstherapeutikum zeigt in Studien eine Überlebensrate von 90%, aber einige Experten zweifeln an seiner Wirksamkeit. Sollte es zugelassen werden?",
       "coffee-study": "Eine Studie zeigt, dass Kaffeetrinker länger leben. Sollte die WHO daher eine Empfehlung zum Kaffeekonsum aussprechen?",
       "authority": "Garantiert ein Verweis auf eine Autorität zwangsläufig die Richtigkeit einer Aussage?",
-      "anecdote": "Ist es ein logischer Fehlschluss, aus einer einzigen Anekdote eine allgemeine Schlussfolgerung zu ziehen?",
       "slippery-slope": "Ist das Schneeballargument immer ein Fehlschluss, oder kann es manchmal eine valide Methode sein, um potenzielle negative Folgen abzuschätzen?",
       "bandwagon": "Ist es eine vertretbare Strategie, einfach der Mehrheit zu folgen, wenn man sich unsicher ist und nur wenige Informationen zur Verfügung hat?",
       "majority-view": "Sollten wir bei widersprüchlichen Studien der Mehrheitsmeinung Glauben schenken, oder abweichenden Ergebnissen mehr Gewicht beigemessen werden?",
-      "evidence-weight": "Welches Gewicht sollte anekdotischer Evidenz im Vergleich zu statistischen Daten und systematischer Forschung eingeräumt werden?",
       "argument-source": "Ist es in Debatten legitim, die Quelle oder persönlichen Interessen des Sprechers zu berücksichtigen, oder sollte der Fokus ausschließlich auf der Logik des Arguments liegen?"
     },
     "Fun & Casual": {
@@ -785,10 +782,6 @@
           "title": "Kompetitiver Modus",
           "description": "Fordere deine Freunde heraus und messe dich in Streitgesprächen."
         },
-        "multipleLanguages": {
-          "title": "Neue Sprachen",
-          "description": "Unterstützung für weitere Sprachen."
-        },
         "moreQuestions": {
           "title": "Individuelle Fragen",
           "description": "Erlaube nutzerdefinierte Fragen und erweitere den Fragenkatalog."
@@ -801,17 +794,21 @@
           "title": "Verbessertes Feedback",
           "description": "Verbessere die Qualität des automatisierten Feedbacks."
         },
-        "darkMode": {
-          "title": "Dark Mode",
-          "description": "Für düstere Streitgespräche in der Nacht."
+        "argumentHighlights": {
+          "title": "Argument Highlights",
+          "description": "Verschaffe dir einen Überblick über die besten eingereichten Argumente."
+        },
+        "multipleLanguages": {
+          "title": "Neue Sprachen",
+          "description": "Unterstützung für weitere Sprachen."
         },
         "leaderboard": {
           "title": "Bestenliste",
           "description": "Vergleiche deine Leistung mit anderen."
         },
-        "argumentHighlights": {
-          "title": "Argument Highlights",
-          "description": "Verschaffe dir einen Überblick über die besten eingereichten Argumente."
+        "darkMode": {
+          "title": "Dark Mode",
+          "description": "Für düstere Streitgespräche in der Nacht."
         }
       }
     },
