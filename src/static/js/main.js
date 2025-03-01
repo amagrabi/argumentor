@@ -33,31 +33,11 @@ import { initMainVoiceInput, initChallengeVoiceInput } from "./voice.js";
 // Initialize mermaid
 mermaid.initialize({
   startOnLoad: true,
-  theme: "base",
+  theme: "default",
   flowchart: {
-    curve: "basis",
-    padding: window.innerWidth < 768 ? 20 : 50,
-    nodeSpacing: window.innerWidth < 768 ? 50 : 80,
-    rankSpacing: window.innerWidth < 768 ? 80 : 100,
+    curve: "linear",
     htmlLabels: true,
-    defaultRenderer: "elk",
     wrap: true,
-    maxTextSize: window.innerWidth < 768 ? 120 : 200,
-    nodeMaxWidth: window.innerWidth < 768 ? 180 : 250,
-    rankDir: window.innerWidth < 768 ? "TB" : "TD",
-  },
-  themeVariables: {
-    fontFamily: "system-ui, -apple-system, sans-serif",
-    fontSize: window.innerWidth < 768 ? "14px" : "14px",
-    primaryColor: "#4F46E5",
-    primaryTextColor: "#1F2937",
-    lineColor: "#9CA3AF",
-    edgeLabelBackground: "#FFFFFF",
-    clusterBkg: "#F3F4F6",
-    clusterBorder: "#E5E7EB",
-    nodeBorder: "#4F46E5",
-    mainBkg: "#FFFFFF",
-    nodeTextColor: "#1F2937",
   },
 });
 
@@ -1094,72 +1074,114 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
         </div>
       `;
 
+      // Check if screen is mobile
+      const isMobile = window.innerWidth < 768;
+      // Use shorter line length on mobile
+      const maxLineLength = isMobile ? 20 : 40;
+      // Adjust words per line based on screen size
+      const wordsPerLine = isMobile ? 3 : 4;
+
       const graph = `graph TD;
         %% Node styling
-        classDef premise fill:#F8FAFC,stroke:#1F2937,stroke-width:2px,rx:8,ry:8;
-        classDef conclusion fill:#EEF2FF,stroke:#1F2937,stroke-width:2px,rx:8,ry:8;
-
-        %% Edge styling
-        linkStyle default stroke:#9CA3AF,stroke-width:2px;
+        classDef default fill:#f1f1f9,stroke:#666666,stroke-width:1px,rx:8,ry:8;
+        classDef premise fill:#f1f1f9,stroke:#666666,stroke-width:1px,rx:8,ry:8;
+        classDef conclusion fill:#f1f1f9,stroke:#666666,stroke-width:1.5px,rx:8,ry:8;
 
         %% Define nodes
         ${structure.nodes
-          .map(
-            (node) =>
-              `${safeIds[node.id]}[${node.text
-                .split(" ")
-                .reduce(
-                  (lines, word) => {
-                    const currentLine = lines[lines.length - 1];
-                    if (currentLine.length + word.length < 40) {
-                      lines[lines.length - 1] =
-                        currentLine + (currentLine ? " " : "") + word;
-                    } else {
-                      lines.push(word);
-                    }
-                    return lines;
-                  },
-                  [""]
-                )
-                .join("<br>")}]:::${node.type}`
-          )
-          .join("\n        ")}
+          .map((node) => {
+            let displayText = node.text;
+            // Split into words and add line breaks every few words
+            const words = displayText.split(" ");
+            let formattedText = "";
+
+            for (let i = 0; i < words.length; i++) {
+              formattedText += words[i];
+              if (i < words.length - 1) {
+                if ((i + 1) % wordsPerLine === 0) {
+                  formattedText += "<br/>";
+                } else {
+                  formattedText += " ";
+                }
+              }
+            }
+            return `${safeIds[node.id]}["${formattedText}"]:::${node.type}`;
+          })
+          .join("\n          ")}
 
         %% Define edges
         ${structure.edges
           .map((edge) => `${safeIds[edge.from]} --> ${safeIds[edge.to]}`)
-          .join("\n        ")}`;
+          .join("\n          ")}`;
 
+      // Initialize mermaid with updated config
       mermaid.initialize({
         startOnLoad: true,
         theme: "default",
         flowchart: {
           curve: "basis",
-          padding: 10,
-          nodeSpacing: 30,
-          rankSpacing: 40,
           htmlLabels: true,
           wrap: true,
-          defaultRenderer: "elk",
+          nodeSpacing: isMobile ? 20 : 40,
+          rankSpacing: isMobile ? 40 : 50,
+          defaultRenderer: "dagre",
         },
         themeVariables: {
-          fontFamily: "system-ui, -apple-system, sans-serif",
-          fontSize: "14px",
-          primaryColor: "#1F2937",
-          primaryTextColor: "#1F2937",
-          lineColor: "#9CA3AF",
-          mainBkg: "#F8FAFC",
-          nodeBorder: "#1F2937",
-          nodeTextColor: "#1F2937",
-          edgeLabelBackground: "#FFFFFF",
+          nodeBorder: "#666666",
+          mainBkg: "#f5f5f5",
+          nodeTextColor: "#333333",
+          lineColor: "#666666",
+          fontSize: isMobile ? "14px" : "13px",
+          fontFamily:
+            "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          edgeLabelBackground: "#f5f5f5",
+          arrowheadColor: "#666666",
         },
       });
 
+      // Render graph
       mermaid
         .render("argumentGraph", graph)
         .then((result) => {
-          document.getElementById("argumentStructureViz").innerHTML =
-            result.svg;
+          const vizContainer = document.getElementById("argumentStructureViz");
+          vizContainer.innerHTML = result.svg;
+
+          // Add resize handler to re-render diagram when screen size changes
+          // (like when rotating a mobile device)
+          let resizeTimeout;
+          const originalWidth = window.innerWidth;
+
+          const handleResize = () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+              // Only re-render if width changed significantly (orientation change)
+              const widthDiff = Math.abs(originalWidth - window.innerWidth);
+              if (widthDiff > 100) {
+                // Remove old event listener to avoid memory leaks
+                window.removeEventListener("resize", handleResize);
+
+                // Force re-render by refreshing the section
+                if (
+                  vizContainer &&
+                  vizContainer.closest(".argument-structure-box")
+                ) {
+                  const parent = vizContainer.closest(
+                    ".argument-structure-box"
+                  );
+                  if (parent && parent.parentElement) {
+                    parent.style.opacity = "0.5";
+                    setTimeout(() => {
+                      parent.style.opacity = "1";
+                      // This will trigger the browser to re-render the SVG
+                      vizContainer.innerHTML = vizContainer.innerHTML;
+                    }, 200);
+                  }
+                }
+              }
+            }, 500);
+          };
+
+          window.addEventListener("resize", handleResize);
         })
         .catch((error) => {
           console.error("Failed to render argument structure:", error);
@@ -2312,7 +2334,7 @@ window.addEventListener("DOMContentLoaded", async () => {
               </span>
             </h5>
             <div class="flex justify-center w-full">
-              <div class="inline-grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-[repeat(15,minmax(0,40px))] justify-center justify-items-center gap-x-3 gap-y-3 mb-8 max-w-4xl mx-auto px-4">
+              <div class="inline-grid grid-cols-10 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-[repeat(15,minmax(0,40px))] justify-center justify-items-center gap-x-3 gap-y-3 mb-8 max-w-4xl mx-auto px-4">
                 ${all_achievements
                   .map((achievement) => {
                     const isEarned =

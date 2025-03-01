@@ -270,8 +270,19 @@ export function showAchievementNotification(achievement) {
   // Create notification element
   const notification = document.createElement("div");
   notification.className =
-    "fixed right-4 bg-gray-800 text-white p-4 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-500";
+    "fixed bg-gray-800 text-white p-4 rounded-lg shadow-lg transform translate-y-full opacity-0 transition-all duration-500";
   notification.style.zIndex = "9999";
+
+  // Add responsive positioning
+  const isMobile = window.innerWidth < 640; // Check if screen is small (mobile)
+  if (isMobile) {
+    notification.style.left = "16px";
+    notification.style.right = "16px";
+    notification.style.maxWidth = "calc(100vw - 32px)"; // Account for left/right margins
+  } else {
+    notification.style.right = "16px";
+    notification.style.maxWidth = "320px"; // Limit width on larger screens
+  }
 
   // Calculate position based on active notifications
   const notificationIndex = activeNotifications.length;
@@ -282,12 +293,22 @@ export function showAchievementNotification(achievement) {
   // Add achievement content
   notification.innerHTML = `
     <div class="flex items-center gap-3">
-      <div class="achievement-icon w-12 h-12 flex items-center justify-center rounded-lg bg-gray-400">
-        <img src="/static/img/trophy.webp" class="w-8 h-8" alt="Trophy" />
+      <div class="achievement-icon ${
+        isMobile ? "w-10 h-10" : "w-12 h-12"
+      } flex items-center justify-center rounded-lg bg-gray-400">
+        <img src="/static/img/trophy.webp" class="${
+          isMobile ? "w-6 h-6" : "w-8 h-8"
+        }" alt="Trophy" />
       </div>
-      <div>
-        <h3 class="font-bold" data-i18n="${achievement.name_key}"></h3>
-        <p class="text-sm text-gray-300" data-i18n="${achievement.description_key}"></p>
+      <div class="flex-1 min-w-0">
+        <h3 class="font-bold ${
+          isMobile ? "text-sm" : ""
+        } truncate" data-i18n="${achievement.name_key}"></h3>
+        <p class="${
+          isMobile ? "text-xs" : "text-sm"
+        } text-gray-300 truncate" data-i18n="${
+    achievement.description_key
+  }"></p>
       </div>
     </div>
   `;

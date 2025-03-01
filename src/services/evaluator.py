@@ -6,7 +6,7 @@ from typing import Dict
 from google.genai import types
 
 from config import get_settings
-from data.argument_structures import ARGUMENT_STRUCTURE_SHORT
+from data.argument_structures import ARGUMENT_STRUCTURE_LONG
 from services.base_evaluator import BaseEvaluator
 
 SETTINGS = get_settings()
@@ -47,7 +47,7 @@ class DummyEvaluator(BaseEvaluator):
 
         challenge_text = "While your argument is persuasive, consider addressing potential counterarguments and clarifying any ambiguous points."
 
-        argument_structure = ARGUMENT_STRUCTURE_SHORT  # ARGUMENT_STRUCTURE_LONG
+        argument_structure = ARGUMENT_STRUCTURE_LONG  # ARGUMENT_STRUCTURE_SHORT   ARGUMENT_STRUCTURE_LONG
 
         return {
             "scores": scores,

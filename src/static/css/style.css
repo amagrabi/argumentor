@@ -184,49 +184,48 @@ textarea:focus {
   }
 
   .chart-container {
-    margin-bottom: 2rem;
-    height: auto !important;
-    min-height: 200px;
+    max-height: 50vh;
   }
 
-  .argument-structure-box {
-    padding: 0.75rem;
-    overflow: visible;
-    width: 100%;
+  .chart-wrapper {
+    max-height: 300px;
+    padding: 0.5rem;
   }
 
-  .argument-structure-box #argumentStructureViz {
-    min-height: fit-content;
-    width: 100%;
-    overflow: visible;
+  .chart-container {
+    height: 200px;
   }
 
-  .argument-structure-box .node rect {
-    padding: 1.25rem !important;
-    width: 160px !important;
+  /* Adjust button spacing on mobile */
+  .chart-wrapper .flex.flex-wrap {
+    gap: 0.25rem !important;
   }
 
-  .argument-structure-box .node-text {
-    font-size: 15px !important;
-    line-height: 1.5 !important;
-    max-width: 160px !important;
+  .chart-wrapper button {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
   }
 
-  .argument-structure-box svg {
+  .mermaid .node > foreignObject > div {
+    word-break: break-word !important;
+    font-size: 12px !important;
+    padding: 10px !important;
+    min-width: 180px !important;
+    max-width: 180px !important;
+    line-height: 1.4 !important;
+  }
+
+  .mermaid .node rect {
+    width: auto !important;
+    max-width: 180px !important;
+    min-height: auto !important;
+  }
+
+  .argument-structure-box #argumentStructureViz svg {
+    transform: scale(0.98) !important;
+    transform-origin: center !important;
     width: 100% !important;
-    height: auto !important;
-    min-height: auto;
-  }
-
-  /* Reduce heading size on mobile */
-  .argument-structure-box h3 {
-    font-size: 1rem !important;
-    margin-bottom: 0.75rem !important;
-  }
-
-  .mermaid .node .label {
-    font-size: 12px;
-    padding: 4px !important;
+    max-width: 100% !important;
   }
 }
 
@@ -279,17 +278,16 @@ textarea:focus {
   white-space: nowrap;
 }
 
-/* Update the XP bar container to be responsive */
 .xp-bar-container {
   position: relative;
   height: 0.9rem;
   background-color: #e5e7eb;
   border-radius: 0 9999px 9999px 0;
   overflow: hidden;
-  width: 600px; /* Increased from 450px */
+  width: 600px;
   border: 0px solid black;
   border-left: none;
-  margin-left: -30px; /* Adjusted from -40px to reduce overlap with profile image */
+  margin-left: -30px;
   z-index: 1;
 }
 
@@ -299,7 +297,7 @@ textarea:focus {
   padding-left: 20px;
   display: flex;
   flex-direction: column;
-  gap: 4px; /* Reduced from 8px */
+  gap: 4px;
 }
 
 /* Align all text elements consistently */
@@ -308,18 +306,18 @@ textarea:focus {
 #xpInfo p.text-sm {
   position: relative;
   padding-left: 30px;
-  margin: 2px 0; /* Reduced vertical spacing */
+  margin: 2px 0;
 }
 
 /* Remove previous spacing adjustments */
 #xpInfo .flex.flex-col p.text-sm {
-  margin-bottom: 8px; /* Reduced from 28px */
+  margin-bottom: 8px;
 }
 
 /* Remove the negative top positioning */
 #currentLevel {
   position: relative;
-  top: 0; /* Changed from -30px to 0 */
+  top: 0;
   z-index: 2;
   margin-bottom: 4px;
 }
@@ -328,8 +326,8 @@ textarea:focus {
 @media (max-width: 768px) {
   .xp-bar-container {
     width: calc(100% + 40px);
-    max-width: 350px; /* Increased from 300px */
-    margin-left: -30px; /* Adjusted from -40px */
+    max-width: 350px;
+    margin-left: -30px;
   }
 
   #xpInfo .flex.flex-col {
@@ -374,8 +372,8 @@ textarea:focus {
 /* Mini XP bar specific styles */
 .mini-xp-bar {
   height: 0.3rem !important;
-  width: 180px !important; /* Increased from 170px */
-  margin-left: -20px !important; /* Adjusted to reduce overlap with profile image while maintaining connection */
+  width: 180px !important;
+  margin-left: -20px !important;
 }
 
 /* Add these styles */
@@ -462,180 +460,105 @@ textarea:focus {
   font-size: 0.875rem;
 }
 
-/* Add after line 98 */
+/* Mermaid Graph Styles - Elegant Implementation */
 .argument-structure-box {
-  min-height: fit-content;
-  overflow: visible;
-  max-height: none;
-  padding: 1rem;
-  margin: 1rem 0;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  width: 100%;
+  overflow: auto;
+  background: linear-gradient(to bottom, #ffffff, #fafafa);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .argument-structure-box #argumentStructureViz {
-  min-height: fit-content;
-  height: auto;
-  width: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  overflow: visible;
-}
-
-/* Mermaid specific styles */
-.mermaid {
-  overflow: visible !important;
-}
-
-.mermaid .node rect,
-.mermaid .node circle,
-.mermaid .node ellipse,
-.mermaid .node polygon,
-.mermaid .node path {
-  fill: #f8fafc !important;
-  stroke: #1f2937 !important;
-  stroke-width: 2px !important;
-  rx: 8px !important;
-  ry: 8px !important;
-}
-
-.mermaid .node.premise rect {
-  fill: #f8fafc !important;
-}
-
-.mermaid .node.conclusion rect {
-  fill: #eef2ff !important;
-}
-
-.mermaid .node .label {
-  color: #1f2937;
-  font-family: system-ui, -apple-system, sans-serif;
-  font-size: 14px;
-  padding: 8px !important;
-}
-
-.mermaid .edgePath .path {
-  stroke: #9ca3af !important;
-  stroke-width: 2px !important;
-}
-
-.mermaid .edgeLabel {
-  background-color: #ffffff !important;
-  padding: 4px !important;
-}
-
-.mermaid .flowchart-link {
-  stroke: #9ca3af !important;
-  stroke-width: 2px !important;
-}
-
-body.loading-translations [data-i18n] {
-  visibility: hidden;
-}
-
-/* Optional loading indicator */
-body.loading-translations [data-i18n]::after {
-  visibility: visible;
-  content: "";
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  vertical-align: middle;
-  background-color: transparent;
-}
-
-/* Hide all translatable content initially */
-[data-i18n] {
-  opacity: 0;
-  transition: opacity 0.2s ease-in;
-}
-
-/* Show content when translations are loaded */
-.translations-loaded [data-i18n] {
-  opacity: 1;
-}
-
-/* Add these styles */
-.chart-wrapper {
-  position: relative;
-  width: 100%;
-  max-height: 400px;
-}
-
-.chart-container {
-  position: relative;
-  height: 250px;
+  padding: 1rem 0;
 }
 
 @media (max-width: 768px) {
-  .chart-wrapper {
-    max-height: 300px;
-    padding: 0.5rem;
-  }
-
-  .chart-container {
-    height: 200px;
-  }
-
-  /* Adjust button spacing on mobile */
-  .chart-wrapper .flex.flex-wrap {
-    gap: 0.25rem !important;
-  }
-
-  .chart-wrapper button {
-    padding: 0.25rem 0.75rem;
-    font-size: 0.75rem;
-  }
-
   .argument-structure-box {
     padding: 0.75rem;
-    overflow: visible;
+    margin: 1rem 0;
     width: 100%;
+    max-width: 100%;
   }
 
   .argument-structure-box #argumentStructureViz {
-    min-height: fit-content;
+    padding: 0.5rem 0;
     width: 100%;
-    overflow: visible;
+    overflow-x: visible;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  .argument-structure-box .node rect,
   .mermaid .node > foreignObject > div {
+    word-break: break-word !important;
+    font-size: 12px !important;
+    padding: 10px !important;
     min-width: 180px !important;
     max-width: 180px !important;
+    line-height: 1.4 !important;
   }
 
-  .argument-structure-box .node-text {
-    font-size: 12px !important;
-    max-width: 180px !important;
-    padding: 4px !important;
+  .mermaid .node rect {
+    width: auto !important;
+    max-width: 180px !important; /* Match the foreignObject width */
+    min-height: auto !important;
+  }
+
+  .argument-structure-box #argumentStructureViz svg {
+    transform: scale(0.98) !important;
+    transform-origin: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 }
 
-.mermaid .node > foreignObject > div {
-  white-space: normal !important;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
-  padding: 8px !important;
-  width: 100% !important;
-  text-align: center !important;
-  min-width: 250px !important;
-}
-
+/* Basic node styles */
 .mermaid .node rect {
-  fill: #f8fafc !important;
-  stroke: #1f2937 !important;
-  stroke-width: 2px !important;
-  rx: 8px !important;
-  ry: 8px !important;
+  fill: #f3f4f6;
+  stroke: #4b5563;
+  stroke-width: 1px;
+  width: 150px !important;
+  rx: 5px;
+  ry: 5px;
 }
 
-.mermaid .edgeLabel {
-  background-color: white !important;
+.mermaid .node foreignObject {
+  width: 150px !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
-.mermaid .edgePath {
-  stroke: #9ca3af !important;
-  stroke-width: 2px !important;
+.mermaid .node foreignObject div {
+  padding: 8px;
+  text-align: center;
+  font-family: "Inter", -apple-system, sans-serif;
+  font-size: 12px;
+  line-height: 1.3;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.mermaid .edgePath .path {
+  stroke: #4b5563;
+  stroke-width: 1.5px;
+}
+
+@media (max-width: 768px) {
+  .mermaid .node rect,
+  .mermaid .node foreignObject {
+    width: 120px !important;
+  }
+
+  .mermaid .node foreignObject div {
+    padding: 6px;
+    font-size: 10px;
+  }
 }
 
 /* Level Indicator Styles */
@@ -655,8 +578,8 @@ body.loading-translations [data-i18n]::after {
   margin-right: 8px;
   flex: 0 0 auto;
   position: relative;
-  width: 50px; /* Default size */
-  height: 50px; /* Default size */
+  width: 50px;
+  height: 50px;
 }
 
 .level-image {
@@ -678,15 +601,14 @@ body.loading-translations [data-i18n]::after {
 }
 
 .level-indicator.header .level-image {
-  transform: translate(-50%, -50%) scale(1); /* Slightly larger scale for header since it's already small */
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .level-indicator.header .level-text {
   font-size: 10px;
-  color: #4a5568; /* text-gray-700 */
+  color: #4a5568;
 }
 
-/* XP variant: larger image and level text */
 .level-indicator.xp .level-image-container {
   width: 180px;
   height: 180px;
@@ -701,7 +623,7 @@ body.loading-translations [data-i18n]::after {
 
 .level-indicator.xp .level-text {
   font-size: 1.25rem;
-  color: #1a202c; /* text-gray-900 */
+  color: #1a202c;
 }
 
 /* Remove right margin from the level image in the evaluation section */
@@ -1371,4 +1293,299 @@ body.loading-translations [data-i18n]::after {
 #voiceInputSection .mt-4,
 #challengeVoiceInputSection .mt-4 {
   margin-top: 1rem;
+}
+
+/* Mobile adjustments for question selection, level indicators, achievements, and login */
+@media (max-width: 768px) {
+  /* 1. Smaller font for the question list on mobile */
+  #questionList .question-item {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.25rem;
+    padding: 0.5rem;
+  }
+
+  #questionList h4 {
+    font-size: 1rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* 1. NEW: Make question selection window narrower on mobile */
+  #questionSelectionOverlay .bg-white {
+    width: 90% !important;
+    max-width: 340px !important;
+  }
+
+  /* 2. NEW: Smaller font for active question on main page */
+  #questionText {
+    font-size: 1rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /* 1. NEW: Smaller voice button status texts */
+  #recordingStatus,
+  #challengeRecordingStatus,
+  #voiceInputSection p,
+  #challengeVoiceInputSection p {
+    font-size: 0.75rem !important;
+    line-height: 1.2 !important;
+  }
+
+  /* 3. Smaller level/XP updates for mobile - MORE SPECIFIC SELECTORS */
+  /* Main XP area */
+  .level-indicator.xp .level-image-container,
+  .level-indicator.challenge-xp .level-image-container,
+  #xpInfo .level-indicator.xp .level-image-container,
+  #challengeXpInfo .level-indicator.challenge-xp .level-image-container,
+  #xpInfo.profile-xp .level-indicator.xp .level-image-container {
+    width: 100px !important;
+    height: 100px !important;
+    border: 2px solid black !important;
+  }
+
+  /* Level number indicator - UPDATED for both main and header indicator */
+  .level-number-indicator {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 16px !important;
+    top: -15px !important;
+    border: 2px solid white !important;
+  }
+
+  /* NEW: Smaller header level indicator */
+  .level-indicator.header .level-number-indicator {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 12px !important;
+    top: -10px !important;
+    border: 1px solid white !important;
+  }
+
+  /* NEW: Even smaller top navigation level indicator */
+  #header .level-number-indicator,
+  .flex.items-center.space-x-4 .level-number-indicator,
+  nav .level-number-indicator {
+    width: 16px !important;
+    height: 16px !important;
+    font-size: 10px !important;
+    top: -8px !important;
+    border: 1px solid white !important;
+    line-height: 1 !important;
+  }
+
+  /* Also reduce the size of navigation level image */
+  #header .level-image-container,
+  .flex.items-center.space-x-4 .level-image-container,
+  nav .level-image-container {
+    width: 36px !important;
+    height: 36px !important;
+    border-width: 1px !important;
+  }
+
+  /* NEW: Hide entire top middle level indicator on mobile */
+  #header .level-indicator:not(.profile-button),
+  .brand-container .level-indicator,
+  .brand-wrapper .level-indicator {
+    display: none !important;
+  }
+
+  /* 2. UPDATED: Smaller username/level text font size for mobile */
+  #xpInfo .move-down,
+  #challengeXpInfo .move-down,
+  #evaluationResults .move-down,
+  #challengeEvaluationResults .move-down,
+  #xpInfo.profile-xp .move-down {
+    font-size: 0.875rem !important; /* Reduced from 1rem */
+    top: 40px !important;
+  }
+
+  /* 3. UPDATED: Better text handling for progress/next level text */
+  #xpInfo .xp-bar-wrapper p.text-sm,
+  #challengeXpInfo .xp-bar-wrapper p.text-sm,
+  #evaluationResults .xp-bar-wrapper p.text-sm,
+  #challengeEvaluationResults .xp-bar-wrapper p.text-sm,
+  #xpInfo.profile-xp .xp-bar-wrapper p.text-sm {
+    font-size: 0.7rem !important;
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+    max-width: 280px !important; /* Match the XP bar width */
+    white-space: nowrap !important; /* Prevent line breaks */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important; /* Show ... if text is too long */
+  }
+
+  /* XP bar wrapper positioning */
+  #xpInfo .xp-bar-wrapper,
+  #challengeXpInfo .xp-bar-wrapper,
+  #evaluationResults .xp-bar-wrapper,
+  #challengeEvaluationResults .xp-bar-wrapper,
+  #xpInfo.profile-xp .xp-bar-wrapper {
+    margin-top: 60px !important;
+  }
+
+  /* XP bar container */
+  .xp-bar-container:not(.mini-xp-bar) {
+    max-width: 280px !important;
+    height: 0.7rem !important;
+  }
+
+  /* 2. NEW: Improved argument structure boxes for mobile */
+  .mermaid .node > foreignObject > div {
+    word-break: break-word !important;
+    font-size: 12px !important; /* Increased from 8px */
+    padding: 10px !important; /* Increased padding for better readability */
+    min-width: 180px !important; /* Wider boxes to fit more text */
+    max-width: 180px !important; /* Wider boxes to fit more text */
+    line-height: 1.4 !important; /* Better line spacing */
+  }
+
+  .mermaid .node rect {
+    width: auto !important;
+    max-width: 180px !important; /* Match the foreignObject width */
+    min-height: auto !important;
+  }
+
+  .argument-structure-box #argumentStructureViz svg {
+    transform: scale(0.98) !important; /* Make diagram fill more space */
+    transform-origin: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* 2. UPDATED: Even smaller achievement icons for mobile */
+  .achievement-icon {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+    margin: 0.075rem !important;
+    padding: 0.1rem !important;
+  }
+
+  /* 1. UPDATED: Even smaller trophy icons inside achievement containers */
+  .achievement-icon svg,
+  .achievement-icon img,
+  .achievement-icon i {
+    width: 0.85rem !important;
+    height: 0.85rem !important;
+    max-width: 0.85rem !important;
+    max-height: 0.85rem !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Fix for font awesome icons specifically */
+  .achievement-icon .fa,
+  .achievement-icon .fas,
+  .achievement-icon .far {
+    font-size: 0.85rem !important;
+    line-height: 0.85rem !important;
+  }
+
+  /* 3. NEW: Fewer achievement icons per row */
+  .achievements-container {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 0.25rem !important;
+    justify-items: center !important;
+  }
+
+  /* 5. NEW: Smaller achievement popups on mobile */
+  .achievement-notification {
+    max-width: 60% !important;
+    width: 180px !important;
+    padding: 0.25rem !important;
+    bottom: 0.25rem !important;
+    right: 50% !important;
+    transform: translateX(50%) !important;
+    font-size: 0.625rem !important;
+    border-radius: 0.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .achievement-notification .achievement-icon {
+    width: 1rem !important;
+    height: 1rem !important;
+    margin-right: 0.25rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .achievement-notification .achievement-icon svg,
+  .achievement-notification .achievement-icon img,
+  .achievement-notification .achievement-icon i {
+    width: 0.75rem !important;
+    height: 0.75rem !important;
+    max-width: 0.75rem !important;
+    max-height: 0.75rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .achievement-notification h3 {
+    font-size: 0.625rem !important;
+    margin-bottom: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .achievement-notification p {
+    font-size: 0.5rem !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .achievement-notification .content {
+    flex-grow: 1 !important;
+    min-width: 0 !important;
+  }
+
+  /* 4. Fix cramped challenge section */
+  #challengeSection .bg-white {
+    padding: 0.75rem;
+  }
+
+  #challengeSection .text-lg {
+    font-size: 1rem;
+  }
+
+  #challengeSection .text-base {
+    font-size: 0.875rem;
+  }
+
+  /* 4. NEW: Narrower login window on mobile */
+  .fixed.inset-0 .bg-white.rounded-lg {
+    max-width: 85% !important;
+    width: 280px !important;
+    padding: 0.75rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  .fixed.inset-0 .bg-white.rounded-lg input,
+  .fixed.inset-0 .bg-white.rounded-lg button {
+    font-size: 0.9rem !important;
+    padding: 0.4rem 0.6rem !important;
+  }
+
+  /* Additional mermaid styles for mobile screens */
+  .mermaid .node > foreignObject > div {
+    font-size: 12px !important;
+    min-width: 180px !important;
+    max-width: 180px !important;
+    line-height: 1.4 !important;
+    padding: 10px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .argument-structure-box {
+    padding: 0.75rem;
+    margin: 1rem 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .argument-structure-box #argumentStructureViz {
+    padding: 0.5rem 0;
+    width: 100%;
+    overflow-x: visible;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
