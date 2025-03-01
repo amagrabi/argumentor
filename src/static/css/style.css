@@ -1305,3 +1305,70 @@ body.loading-translations [data-i18n]::after {
   position: relative;
   left: -38px;
 }
+
+/* Voice button centering fix */
+.voice-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+/* Voice button positioning for both main and challenge sections */
+#recordButton,
+#challengeRecordButton {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+/* Override for challenge voice button to centralize it */
+#challengeRecordButton {
+  margin-left: -20px;
+}
+
+/* Status and timer container positioning */
+#recordingStatus,
+#challengeRecordingStatus {
+  text-align: center;
+  width: 100%;
+  min-height: 24px;
+  margin-bottom: 4px; /* Reduced from 8px */
+  font-size: 0.875rem; /* 14px - consistent with other UI text */
+}
+
+#recordingTimer,
+#challengeRecordingTimer {
+  text-align: center;
+  width: 100%;
+  min-height: 20px;
+  font-family: system-ui, -apple-system, sans-serif; /* Match the UI font */
+  font-size: 0.875rem; /* 14px - consistent with other UI text */
+}
+
+/* Challenge-specific adjustments */
+#challengeRecordingStatus,
+#challengeRecordingTimer {
+  transform: translateX(-20px);
+}
+
+/* Ensure parent containers don't interfere with centering */
+#voiceInputSection,
+#challengeVoiceInputSection {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+/* Adjust spacing for the recorded answer section */
+#voiceInputSection .space-y-4,
+#challengeVoiceInputSection .space-y-4 {
+  margin-top: 20px;
+}
+
+/* Adjust spacing for the submit button area */
+#voiceInputSection .mt-4,
+#challengeVoiceInputSection .mt-4 {
+  margin-top: 1rem;
+}

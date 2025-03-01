@@ -49,6 +49,7 @@
     },
     "voiceInput": {
       "status": {
+        "initial": "Record up to 2 minutes. You can still edit the text afterwards.",
         "tooLong": "Transcription exceeds character limit. Please edit before submitting.",
         "transcriptionTimeout": "Transcription timed out. Please try a shorter recording.",
         "recording": "Recording...",

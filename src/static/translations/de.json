@@ -59,6 +59,7 @@
       "transcriptPlaceholder": "Deine transkribierte Antwort erscheint hier...",
       "charactersRemaining": "Verbleibende Zeichen:",
       "status": {
+        "initial": "Sprich bis zu 2 Minuten. Du kannst den Text danach noch bearbeiten.",
         "recording": "Aufnahme läuft...",
         "transcribing": "Transkribiere...",
         "postProcessing": "Nachbearbeitung...",

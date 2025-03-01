@@ -47,6 +47,13 @@ export function initMainVoiceInput() {
   const timerDisplay = document.getElementById("timerDisplay");
   const recordingStatus = document.getElementById("recordingStatus");
 
+  // Set initial status message
+  if (recordingStatus) {
+    recordingStatus.textContent =
+      translations?.main?.voiceInput?.status?.initial ||
+      "Record up to 2 minutes. You can edit the text afterwards.";
+  }
+
   if (recordButton) {
     recordButton.addEventListener("click", () =>
       toggleRecording({
@@ -127,6 +134,13 @@ export function initChallengeVoiceInput() {
   const challengeRecordingStatus = document.getElementById(
     "challengeRecordingStatus"
   );
+
+  // Set initial status message
+  if (challengeRecordingStatus) {
+    challengeRecordingStatus.textContent =
+      translations?.main?.voiceInput?.status?.initial ||
+      "Record up to 2 minutes. You can edit the text afterwards.";
+  }
 
   if (challengeRecordButton) {
     challengeRecordButton.addEventListener("click", () =>
