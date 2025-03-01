@@ -3021,6 +3021,15 @@ window.addEventListener("DOMContentLoaded", async () => {
 
           clearTimeout(timeoutId);
 
+          // If response status is 500 and it's from the transcription endpoint, assume no text was detected
+          if (response.status === 500) {
+            challengeRecordingStatus.innerHTML =
+              translations?.main?.voiceInput?.status?.noTextDetected ||
+              "Could not identify any text from the recording. Please try again.";
+            challengeRecordButton.disabled = false;
+            return;
+          }
+
           const data = await response.json();
 
           if (!response.ok) {
@@ -3038,6 +3047,15 @@ window.addEventListener("DOMContentLoaded", async () => {
               "Post-processing...") + '<span class="spinner"></span>';
 
           let transcript = data.transcript || "";
+
+          // Check if the transcript is empty or only contains whitespace
+          if (!transcript.trim()) {
+            challengeRecordingStatus.innerHTML =
+              translations?.main?.voiceInput?.status?.noTextDetected ||
+              "Could not identify any text from the recording. Please try again.";
+            challengeRecordButton.disabled = false;
+            return;
+          }
 
           // Update status based on whether the transcription was improved
           challengeRecordingStatus.innerHTML = data.was_improved

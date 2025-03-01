@@ -57,7 +57,8 @@
         "transcriptionComplete": "Transcription complete. You may edit the text.",
         "transcriptionImproved": "Transcription complete. You may edit the text.",
         "transcriptionError": "Error during transcription.",
-        "microphoneError": "Error accessing microphone."
+        "microphoneError": "Error accessing microphone.",
+        "noTextDetected": "Could not identify any text from the recording. Please try again."
       }
     }
   },

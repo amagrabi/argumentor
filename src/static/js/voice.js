@@ -285,6 +285,15 @@ async function startRecording(options) {
 
         clearTimeout(timeoutId);
 
+        // If response status is 500 and it's from the transcription endpoint, assume no text was detected
+        if (response.status === 500) {
+          recordingStatus.innerHTML =
+            translations?.main?.voiceInput?.status?.noTextDetected ||
+            "Could not identify any text from the recording. Please try again.";
+          recordButton.disabled = false;
+          return;
+        }
+
         const data = await response.json();
 
         if (!response.ok) {
@@ -302,6 +311,15 @@ async function startRecording(options) {
             "Post-processing...") + '<span class="spinner"></span>';
 
         let transcript = data.transcript || "";
+
+        // Check if the transcript is empty or only contains whitespace
+        if (!transcript.trim()) {
+          recordingStatus.innerHTML =
+            translations?.main?.voiceInput?.status?.noTextDetected ||
+            "Could not identify any text from the recording. Please try again.";
+          recordButton.disabled = false;
+          return;
+        }
 
         // Update status based on whether the transcription was improved
         recordingStatus.innerHTML = data.was_improved
