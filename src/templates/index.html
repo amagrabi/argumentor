@@ -62,6 +62,17 @@
       })();
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            screens: {
+              'xs': '290px',
+            },
+          },
+        },
+      }
+    </script>
     <!-- Link to custom CSS -->
     <link
       rel="stylesheet"
@@ -83,25 +94,23 @@
   <body class="bg-white min-h-screen">
     <div class="max-w-5xl mx-auto px-4 py-6">
       <!-- Header -->
-      <header
-        class="flex flex-col sm:flex-row justify-between items-center mb-4"
-      >
+      <header class="flex flex-col xs:flex-row justify-between items-center mb-2 xs:mb-4">
         <!-- Left side with logo -->
-        <div class="flex items-center justify-center sm:justify-start w-auto">
+        <div class="flex items-center justify-start w-auto mb-1 xs:mb-0">
           <img
             width="60"
             height="60"
             src="{{ url_for('static', filename='img/logo.png') }}"
             alt="ArguMentor"
-            class="mt-3"
+            class="mt-1 sm:mt-1 sm:w-[60px] w-[28px] xs:w-[32px]"
           />
-          <h1 class="text-xl md:text-2xl font-bold" style="margin-left: 6px">
+          <h1 class="text-xs xs:text-sm sm:text-2xl font-bold" style="margin-left: 4px; margin-top: 0px">
             ArguMentor
           </h1>
         </div>
 
         <!-- Center section with level indicator -->
-        <div class="flex-1 flex justify-center items-center mt-2 sm:mt-1">
+        <div class="flex-1 flex justify-center items-center mt-1 xs:mt-2 sm:mt-1">
           <a href="/profile" class="no-underline">
             <div id="userInfo" class="flex items-center space-x-0">
               <!-- Level image wrapper -->
@@ -140,11 +149,11 @@
         </div>
 
         <!-- Right side with buttons -->
-        <div class="flex items-center justify-end space-x-0.5 mt-2 sm:mt-0">
+        <div class="flex items-center justify-end space-x-0.5 sm:space-x-2 mt-1 xs:mt-0">
           {% if current_user.is_authenticated %}
           <button
             id="logoutButton"
-            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm"
+            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm h-6 sm:h-8"
             data-i18n="header.logout"
           >
             Logout
@@ -153,7 +162,7 @@
           <button
             id="loginButton"
             onclick="showAuthModal()"
-            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm"
+            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm h-6 sm:h-8"
             data-i18n="header.login"
           >
             Login
@@ -162,10 +171,10 @@
           <a
             id="profileButton"
             href="/profile"
-            class="profile-button bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center"
+            class="profile-button bg-gray-100 hover:bg-gray-200 text-gray-700 w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center"
           >
             <img
-              class="w-[22px] h-[22px] object-contain"
+              class="w-3.5 h-3.5 sm:w-5 sm:h-5 object-contain"
               src="https://img.icons8.com/windows/32/gender-neutral-user.png"
               alt="Profile"
             />
@@ -173,13 +182,13 @@
           <div class="relative" id="languageContainer">
             <button
               id="languageSelector"
-              class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center"
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center"
               aria-label="Change Language"
               aria-expanded="false"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-[22px] h-[22px]"
+                class="w-3.5 h-3.5 sm:w-5 sm:h-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -214,12 +223,11 @@
           </div>
           <button
             id="settingsButton"
-            class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-2 rounded-full flex items-center justify-center"
+            class="bg-gray-100 hover:bg-gray-200 text-gray-700 w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center"
           >
-            <!-- Settings SVG -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="w-[22px] h-[22px]"
+              class="w-3.5 h-3.5 sm:w-5 sm:h-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -342,85 +350,53 @@
 
       <!-- Slogan -->
       <div class="mb-4 space-y-2 md:space-y-6">
-        <p
-          class="text-lg md:text-lg text-sm text-black mb-6 text-center"
-          data-i18n="main.slogan"
-        ></p>
-        <!-- Updated Educational Cards Grid for mobile -->
-        <div class="grid grid-cols-3 gap-1 md:gap-6 px-2 md:px-14">
+        <p class="text-xs md:text-lg text-black mb-6 text-center" data-i18n="main.slogan"></p>
+
+        <!-- Simple Links (visible on mobile and tablet) -->
+        <div class="flex justify-center md:hidden">
+          <div class="inline-flex items-center divide-x divide-gray-300">
+            <a href="/how_it_works" class="text-gray-600 hover:text-gray-800 text-xs px-3 py-1 transition-colors">
+              <span data-i18n="main.howItWorks"></span>
+            </a>
+            <a href="/how_to_improve" class="text-gray-600 hover:text-gray-800 text-xs px-3 py-1 transition-colors">
+              <span data-i18n="main.howToImprove"></span>
+            </a>
+            <a href="/support" class="text-gray-600 hover:text-gray-800 text-xs px-3 py-1 transition-colors">
+              <span data-i18n="main.howToSupport"></span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Desktop Cards (visible on larger screens) -->
+        <div class="hidden md:grid md:grid-cols-3 gap-6 px-14">
           <!-- Platform Guide Card -->
           <div class="educational-card bg-white rounded-xl overflow-hidden">
-            <div
-              class="card-header bg-gray-800 text-white pl-2 pr-1 py-0.5 md:px-3 md:py-2"
-            >
-              <h3
-                class="font-semibold text-[0.6rem] md:text-xs"
-                data-i18n="main.howItWorks"
-              ></h3>
+            <div class="card-header bg-gray-800 text-white pl-2 pr-1 py-0.5 md:px-3 md:py-2">
+              <h3 class="font-semibold text-[0.6rem] md:text-xs whitespace-normal break-words" data-i18n="main.howItWorks"></h3>
             </div>
-            <div
-              class="card-content p-1 md:p-2 justify-start md:justify-between"
-            >
-              <p
-                class="text-[0.5rem] md:text-[0.7rem] text-gray-600 leading-tight"
-                data-i18n="cards.platformGuideDescription"
-              ></p>
-              <a
-                class="text-[0.5rem] md:text-[0.7rem] text-gray-800 font-medium hover:text-gray-600 transition-colors"
-                href="/how_it_works"
-                data-i18n="cards.platformGuideLearnMore"
-              >
-              </a>
+            <div class="card-content p-1 md:p-2 flex flex-col h-full">
+              <p class="text-[0.5rem] md:text-[0.7rem] text-gray-600 leading-tight break-words" data-i18n="cards.platformGuideDescription"></p>
+              <a class="text-[0.5rem] md:text-[0.7rem] text-gray-800 font-medium hover:text-gray-600 transition-colors mt-auto" href="/how_it_works" data-i18n="cards.platformGuideLearnMore"></a>
             </div>
           </div>
           <!-- Reasoning Tips Card -->
           <div class="educational-card bg-white rounded-xl overflow-hidden">
-            <div
-              class="card-header bg-gray-800 text-white pl-2 pr-1 py-0.5 md:px-3 md:py-2"
-            >
-              <h3
-                class="font-semibold text-[0.6rem] md:text-xs"
-                data-i18n="main.howToImprove"
-              ></h3>
+            <div class="card-header bg-gray-800 text-white pl-2 pr-1 py-0.5 md:px-3 md:py-2">
+              <h3 class="font-semibold text-[0.6rem] md:text-xs whitespace-normal break-words" data-i18n="main.howToImprove"></h3>
             </div>
-            <div
-              class="card-content p-1 md:p-2 justify-start md:justify-between"
-            >
-              <p
-                class="text-[0.5rem] md:text-[0.7rem] text-gray-600 leading-tight"
-                data-i18n="cards.reasoningTipsDescription"
-              ></p>
-              <a
-                class="text-[0.5rem] md:text-[0.7rem] text-gray-800 font-medium hover:text-gray-600 transition-colors"
-                href="/how_to_improve"
-                data-i18n="cards.reasoningTipsLearnMore"
-              >
-              </a>
+            <div class="card-content p-1 md:p-2 flex flex-col h-full">
+              <p class="text-[0.5rem] md:text-[0.7rem] text-gray-600 leading-tight break-words" data-i18n="cards.reasoningTipsDescription"></p>
+              <a class="text-[0.5rem] md:text-[0.7rem] text-gray-800 font-medium hover:text-gray-600 transition-colors mt-auto" href="/how_to_improve" data-i18n="cards.reasoningTipsLearnMore"></a>
             </div>
           </div>
           <!-- How to Support Card -->
           <div class="educational-card bg-white rounded-xl overflow-hidden">
-            <div
-              class="card-header bg-gray-800 text-white pl-2 pr-1 py-0.5 md:px-3 md:py-2"
-            >
-              <h3
-                class="font-semibold text-[0.6rem] md:text-xs"
-                data-i18n="main.howToSupport"
-              ></h3>
+            <div class="card-header bg-gray-800 text-white pl-2 pr-1 py-0.5 md:px-3 md:py-2">
+              <h3 class="font-semibold text-[0.6rem] md:text-xs whitespace-normal break-words" data-i18n="main.howToSupport"></h3>
             </div>
-            <div
-              class="card-content p-1 md:p-2 justify-start md:justify-between"
-            >
-              <p
-                class="text-[0.5rem] md:text-[0.7rem] text-gray-600 leading-tight"
-                data-i18n="cards.howToSupportDescription"
-              ></p>
-              <a
-                class="text-[0.5rem] md:text-[0.7rem] text-gray-800 font-medium hover:text-gray-600 transition-colors"
-                href="/support"
-                data-i18n="cards.howToSupportLearnMore"
-              >
-              </a>
+            <div class="card-content p-1 md:p-2 flex flex-col h-full">
+              <p class="text-[0.5rem] md:text-[0.7rem] text-gray-600 leading-tight break-words" data-i18n="cards.howToSupportDescription"></p>
+              <a class="text-[0.5rem] md:text-[0.7rem] text-gray-800 font-medium hover:text-gray-600 transition-colors mt-auto" href="/support" data-i18n="cards.howToSupportLearnMore"></a>
             </div>
           </div>
         </div>
@@ -431,10 +407,7 @@
         <!-- Question Section -->
         <!-- Category badge above the question -->
         <div class="mb-2">
-          <span
-            id="categoryBadge"
-            class="bg-gray-700 text-white px-4 py-2 rounded-full text-sm category-badge"
-          ></span>
+          <span id="categoryBadge" class="bg-gray-700 text-white px-3 py-1.5 rounded-full text-xs md:text-sm break-words max-w-full inline-block category-badge"></span>
         </div>
         <div class="flex flex-col md:flex-row items-start min-h-[120px] mb-0">
           <h2

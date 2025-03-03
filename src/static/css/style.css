@@ -1,6 +1,4 @@
 .profile-button {
-  min-width: 36px;
-  min-height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,40 +74,44 @@ textarea:focus {
 /* Educational Cards */
 .educational-card {
   border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  min-height: 120px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  height: 100%; /* Ensure all cards are same height */
+  height: 100%;
+  transition: all 0.2s ease-in-out;
+}
+
+.educational-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .card-header {
   border-bottom: 1px solid #e5e7eb;
-  padding: 0.5rem 0.75rem;
   background-color: #2e3746;
   color: white;
-  min-height: 32px; /* Consistent header height */
   display: flex;
   align-items: center;
 }
 
 .card-content {
-  padding: 0.75rem;
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 80px;
   position: relative;
+  padding: 0.5rem;
 }
 
 .card-content p {
-  margin-bottom: 2rem; /* Space for links */
+  margin-bottom: 1rem;
 }
 
 .card-content a {
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
+  margin-top: auto;
+  padding-bottom: 0.5rem;
+  padding-right: 0.5rem;
+  text-align: left;
 }
 
 /* Special handling for support card links */
@@ -120,10 +122,38 @@ textarea:focus {
   margin: 0;
 }
 
-/* Remove previous card animation styles */
-.educational-card:hover {
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  transition: box-shadow 0.2s ease-in-out;
+/* Mobile Responsive Adjustments */
+@media (max-width: 639px) {
+  .educational-card {
+    max-height: none;
+  }
+
+  .card-header {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .card-content {
+    padding: 0.75rem;
+  }
+
+  .card-content p {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .card-content a {
+    font-size: 0.875rem;
+    padding-bottom: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Add xs breakpoint for grid */
+@media (min-width: 475px) {
+  .xs\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 /* Responsive grid adjustments */
@@ -232,6 +262,80 @@ textarea:focus {
   #userInfo {
     display: none !important;
   }
+
+  /* XP bar container - Wider and better positioned */
+  #xpInfo .xp-bar-container:not(.mini-xp-bar),
+  #challengeXpInfo .xp-bar-container:not(.mini-xp-bar),
+  #evaluationResults .xp-bar-container:not(.mini-xp-bar),
+  #challengeEvaluationResults .xp-bar-container:not(.mini-xp-bar) {
+    max-width: 400px !important;
+    height: 0.6rem !important;
+    margin-left: -15px !important;
+    width: calc(100% - 0px) !important;
+  }
+
+  /* Progress and next level text - Adjusted positioning and width */
+  #xpInfo .xp-bar-wrapper p.text-sm,
+  #challengeXpInfo .xp-bar-wrapper p.text-sm,
+  #evaluationResults .xp-bar-wrapper p.text-sm,
+  #challengeEvaluationResults .xp-bar-wrapper p.text-sm,
+  #xpInfo.profile-xp .xp-bar-wrapper p.text-sm {
+    font-size: 0.625rem !important;
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+    padding-left: 35px !important;
+    padding-right: 8px !important;
+    max-width: 400px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* Username and level text - Adjusted positioning and width */
+  #xpInfo .flex.flex-col p.text-sm.move-down,
+  #xpInfo .flex.flex-col p.text-base.move-down,
+  #challengeXpInfo .flex.flex-col p.text-sm.move-down,
+  #challengeXpInfo .flex.flex-col p.text-base.move-down,
+  #evaluationResults .flex.flex-col p.move-down,
+  #challengeEvaluationResults .flex.flex-col p.move-down,
+  #xpInfo.profile-xp .flex.flex-col p.move-down {
+    font-size: 0.75rem !important;
+    top: 15px !important;
+    margin-bottom: 0 !important;
+    padding-left: 35px !important;
+    padding-right: 8px !important;
+    max-width: 400px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* Container adjustments for better spacing */
+  #xpInfo .flex.flex-col,
+  #challengeXpInfo .flex.flex-col,
+  #evaluationResults .flex.flex-col,
+  #challengeEvaluationResults .flex.flex-col {
+    padding-left: 10px !important;
+    width: 100% !important;
+    max-width: 400px !important;
+  }
+
+  /* XP bar wrapper positioning */
+  #xpInfo .xp-bar-wrapper,
+  #challengeXpInfo .xp-bar-wrapper,
+  #evaluationResults .xp-bar-wrapper,
+  #challengeEvaluationResults .xp-bar-wrapper,
+  #xpInfo.profile-xp .xp-bar-wrapper {
+    margin-top: 35px !important;
+    width: 100% !important;
+    max-width: 400px !important;
+    padding-left: 0px !important;
+  }
+
+  /* Profile page specific username/level text positioning for mobile only */
+  #xpInfo.profile-xp .move-down {
+    left: -35px !important;
+  }
 }
 
 @media (min-width: 768px) {
@@ -330,25 +434,25 @@ textarea:focus {
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .xp-bar-container {
-    width: calc(100% + 40px);
-    max-width: 350px;
-    margin-left: -30px;
+    width: calc(100% - 20px) !important;
+    max-width: 280px !important;
+    margin-left: -15px !important;
   }
 
   #xpInfo .flex.flex-col {
-    padding-left: 3px;
+    padding-left: 12px !important;
   }
 
   #xpInfo .flex.flex-col p.text-sm,
   #xpInfo .flex.flex-col p.text-base,
   #xpInfo p.text-sm {
-    padding-left: 3px;
+    padding-left: 20px !important;
   }
 
   /* Existing mobile styles */
   .xp-bar-container.mini-xp-bar {
-    margin-left: -20px;
-    width: 200px !important;
+    margin-left: -15px !important;
+    width: 160px !important;
   }
 }
 
@@ -706,14 +810,14 @@ textarea:focus {
 
 @media (max-width: 768px) {
   .xp-bar-container.mini-xp-bar {
-    margin-left: -20px; /* Keep consistent with desktop */
-    width: 200px !important; /* Slightly smaller on mobile but still larger than original */
+    margin-left: -15px !important;
+    width: 160px !important;
   }
 }
 
 #xpInfo p.text-sm {
   text-align: left;
-  padding-left: 30px;
+  padding-left: 20px;
   margin-top: 8px;
   margin-bottom: 4px;
 }
@@ -1135,7 +1239,7 @@ textarea:focus {
 #xpInfo.profile-xp .move-down {
   font-size: 1.25rem !important;
   position: relative;
-  top: 60px !important;
+  top: 60px !important; /* Reverted back to original value */
 }
 
 /* Make progress and next level text smaller */
@@ -1349,80 +1453,78 @@ textarea:focus {
   #xpInfo .level-indicator.xp .level-image-container,
   #challengeXpInfo .level-indicator.challenge-xp .level-image-container,
   #xpInfo.profile-xp .level-indicator.xp .level-image-container {
-    width: 100px !important;
-    height: 100px !important;
+    width: 90px !important;
+    height: 90px !important;
     border: 2px solid black !important;
   }
 
-  /* Level number indicator - UPDATED for both main and header indicator */
-  .level-number-indicator {
-    width: 30px !important;
-    height: 30px !important;
-    font-size: 16px !important;
-    top: -15px !important;
+  /* Level number indicator - MORE SPECIFIC */
+  #xpInfo .level-number-indicator,
+  #challengeXpInfo .level-number-indicator,
+  #evaluationResults .level-number-indicator,
+  #challengeEvaluationResults .level-number-indicator {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 14px !important;
+    top: -12px !important;
     border: 2px solid white !important;
   }
 
-  /* NEW: Smaller header level indicator */
-  .level-indicator.header .level-number-indicator {
-    width: 20px !important;
-    height: 20px !important;
-    font-size: 12px !important;
-    top: -10px !important;
-    border: 1px solid white !important;
+  /* Username and level text - Adjusted positioning and width */
+  #xpInfo .flex.flex-col p.text-sm.move-down,
+  #xpInfo .flex.flex-col p.text-base.move-down,
+  #challengeXpInfo .flex.flex-col p.text-sm.move-down,
+  #challengeXpInfo .flex.flex-col p.text-base.move-down,
+  #evaluationResults .flex.flex-col p.move-down,
+  #challengeEvaluationResults .flex.flex-col p.move-down,
+  #xpInfo.profile-xp .flex.flex-col p.move-down {
+    font-size: 0.75rem !important;
+    top: 15px !important;
+    margin-bottom: 0 !important;
+    padding-left: 35px !important;
+    padding-right: 8px !important;
+    max-width: 400px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 
-  /* NEW: Even smaller top navigation level indicator */
-  #header .level-number-indicator,
-  .flex.items-center.space-x-4 .level-number-indicator,
-  nav .level-number-indicator {
-    width: 16px !important;
-    height: 16px !important;
-    font-size: 10px !important;
-    top: -8px !important;
-    border: 1px solid white !important;
-    line-height: 1 !important;
-  }
-
-  /* Also reduce the size of navigation level image */
-  #header .level-image-container,
-  .flex.items-center.space-x-4 .level-image-container,
-  nav .level-image-container {
-    width: 36px !important;
-    height: 36px !important;
-    border-width: 1px !important;
-  }
-
-  /* NEW: Hide entire top middle level indicator on mobile */
-  #header .level-indicator:not(.profile-button),
-  .brand-container .level-indicator,
-  .brand-wrapper .level-indicator {
-    display: none !important;
-  }
-
-  /* 2. UPDATED: Smaller username/level text font size for mobile */
-  #xpInfo .move-down,
-  #challengeXpInfo .move-down,
-  #evaluationResults .move-down,
-  #challengeEvaluationResults .move-down,
-  #xpInfo.profile-xp .move-down {
-    font-size: 0.875rem !important; /* Reduced from 1rem */
-    top: 40px !important;
-  }
-
-  /* 3. UPDATED: Better text handling for progress/next level text */
+  /* Progress and next level text - Adjusted positioning and width */
   #xpInfo .xp-bar-wrapper p.text-sm,
   #challengeXpInfo .xp-bar-wrapper p.text-sm,
   #evaluationResults .xp-bar-wrapper p.text-sm,
   #challengeEvaluationResults .xp-bar-wrapper p.text-sm,
   #xpInfo.profile-xp .xp-bar-wrapper p.text-sm {
-    font-size: 0.7rem !important;
+    font-size: 0.625rem !important;
     margin-top: 2px !important;
     margin-bottom: 2px !important;
-    max-width: 280px !important; /* Match the XP bar width */
-    white-space: nowrap !important; /* Prevent line breaks */
+    padding-left: 35px !important;
+    padding-right: 8px !important;
+    max-width: 400px !important;
+    white-space: nowrap !important;
     overflow: hidden !important;
-    text-overflow: ellipsis !important; /* Show ... if text is too long */
+    text-overflow: ellipsis !important;
+  }
+
+  /* Container adjustments for better spacing */
+  #xpInfo .flex.flex-col,
+  #challengeXpInfo .flex.flex-col,
+  #evaluationResults .flex.flex-col,
+  #challengeEvaluationResults .flex.flex-col {
+    padding-left: 10px !important;
+    width: 100% !important;
+    max-width: 400px !important;
+  }
+
+  /* XP bar container - Wider and better positioned */
+  #xpInfo .xp-bar-container:not(.mini-xp-bar),
+  #challengeXpInfo .xp-bar-container:not(.mini-xp-bar),
+  #evaluationResults .xp-bar-container:not(.mini-xp-bar),
+  #challengeEvaluationResults .xp-bar-container:not(.mini-xp-bar) {
+    max-width: 400px !important;
+    height: 0.6rem !important;
+    margin-left: -15px !important;
+    width: calc(100% - 0px) !important;
   }
 
   /* XP bar wrapper positioning */
@@ -1431,7 +1533,10 @@ textarea:focus {
   #evaluationResults .xp-bar-wrapper,
   #challengeEvaluationResults .xp-bar-wrapper,
   #xpInfo.profile-xp .xp-bar-wrapper {
-    margin-top: 60px !important;
+    margin-top: 35px !important;
+    width: 100% !important;
+    max-width: 400px !important;
+    padding-left: 0px !important;
   }
 
   /* XP bar container */
@@ -1443,21 +1548,21 @@ textarea:focus {
   /* 2. NEW: Improved argument structure boxes for mobile */
   .mermaid .node > foreignObject > div {
     word-break: break-word !important;
-    font-size: 12px !important; /* Increased from 8px */
-    padding: 10px !important; /* Increased padding for better readability */
-    min-width: 180px !important; /* Wider boxes to fit more text */
-    max-width: 180px !important; /* Wider boxes to fit more text */
-    line-height: 1.4 !important; /* Better line spacing */
+    font-size: 12px !important;
+    padding: 10px !important;
+    min-width: 180px !important;
+    max-width: 180px !important;
+    line-height: 1.4 !important;
   }
 
   .mermaid .node rect {
     width: auto !important;
-    max-width: 180px !important; /* Match the foreignObject width */
+    max-width: 180px !important;
     min-height: auto !important;
   }
 
   .argument-structure-box #argumentStructureViz svg {
-    transform: scale(0.98) !important; /* Make diagram fill more space */
+    transform: scale(0.98) !important;
     transform-origin: center !important;
     width: 100% !important;
     max-width: 100% !important;

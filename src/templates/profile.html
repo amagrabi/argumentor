@@ -40,16 +40,6 @@
       src="{{ url_for('static', filename='js/profile.js') }}"
     ></script>
     <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
-    <style>
-      /* Only on the profile page, reset the top offset on the move-down elements */
-      #xpInfo.profile-xp .move-down {
-        top: 10px !important;
-      }
-      /* Lower the XP bar, progress text, and next level text on the profile page */
-      #xpInfo.profile-xp .xp-bar-wrapper {
-        margin-top: 60px !important;
-      }
-    </style>
   </head>
   {% macro score_color(score) -%} {% set score_float = score|float|round(1,
   'common') %} {% if score_float >= 9.95 %} text-emerald-600 bg-emerald-50 {%
