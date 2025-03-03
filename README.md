@@ -32,6 +32,12 @@ Install dependencies in editable mode:
 uv pip install -e .
 ```
 
+Install JavaScript dependencies:
+
+```sh
+npm install
+```
+
 Install PostGreSQL:
 
 ```sh

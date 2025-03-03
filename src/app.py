@@ -117,6 +117,7 @@ def create_app():
             "https://www.googletagmanager.com",
             "'unsafe-inline'",
             "https://fedcm.googleapis.com",
+            "https://unpkg.com",
         ],
         "style-src": [
             "'self'",
