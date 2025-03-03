@@ -45,6 +45,12 @@ brew services start postgresql
 psql -U postgres -c "CREATE DATABASE argumentor;"
 ```
 
+Apply all existing db migrations:
+
+```sh
+flask db upgrade
+```
+
 Start app:
 
 ```sh
