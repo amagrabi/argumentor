@@ -227,6 +227,11 @@ textarea:focus {
     width: 100% !important;
     max-width: 100% !important;
   }
+
+  /* Hide the user info section at the top of the main page on mobile */
+  #userInfo {
+    display: none !important;
+  }
 }
 
 @media (min-width: 768px) {
@@ -338,6 +343,12 @@ textarea:focus {
   #xpInfo .flex.flex-col p.text-base,
   #xpInfo p.text-sm {
     padding-left: 3px;
+  }
+
+  /* Existing mobile styles */
+  .xp-bar-container.mini-xp-bar {
+    margin-left: -20px;
+    width: 200px !important;
   }
 }
 
