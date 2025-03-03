@@ -144,111 +144,8 @@
         <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
           <div class="space-y-4">
             <p data-i18n="supportPage.roadmap.intro"></p>
-            <ul class="space-y-3">
-              <li class="flex items-start">
-                <span class="text-green-500 mr-2">⭐</span>
-                <div>
-                  <span
-                    class="font-medium"
-                    data-i18n="supportPage.roadmap.features.competitiveMode.title"
-                  ></span>
-                  <p
-                    class="text-gray-600 text-sm"
-                    data-i18n="supportPage.roadmap.features.competitiveMode.description"
-                  ></p>
-                </div>
-              </li>
-              <li class="flex items-start">
-                <span class="text-green-500 mr-2">⭐</span>
-                <div>
-                  <span
-                    class="font-medium"
-                    data-i18n="supportPage.roadmap.features.multipleLanguages.title"
-                  ></span>
-                  <p
-                    class="text-gray-600 text-sm"
-                    data-i18n="supportPage.roadmap.features.multipleLanguages.description"
-                  ></p>
-                </div>
-              </li>
-              <li class="flex items-start">
-                <span class="text-green-500 mr-2">⭐</span>
-                <div>
-                  <span
-                    class="font-medium"
-                    data-i18n="supportPage.roadmap.features.moreQuestions.title"
-                  ></span>
-                  <p
-                    class="text-gray-600 text-sm"
-                    data-i18n="supportPage.roadmap.features.moreQuestions.description"
-                  ></p>
-                </div>
-              </li>
-              <li class="flex items-start">
-                <span class="text-green-500 mr-2">⭐</span>
-                <div>
-                  <span
-                    class="font-medium"
-                    data-i18n="supportPage.roadmap.features.betterAnalytics.title"
-                  ></span>
-                  <p
-                    class="text-gray-600 text-sm"
-                    data-i18n="supportPage.roadmap.features.betterAnalytics.description"
-                  ></p>
-                </div>
-              </li>
-              <li class="flex items-start">
-                <span class="text-green-500 mr-2">⭐</span>
-                <div>
-                  <span
-                    class="font-medium"
-                    data-i18n="supportPage.roadmap.features.enhanceFeedback.title"
-                  ></span>
-                  <p
-                    class="text-gray-600 text-sm"
-                    data-i18n="supportPage.roadmap.features.enhanceFeedback.description"
-                  ></p>
-                </div>
-              </li>
-              <li class="flex items-start">
-                <span class="text-green-500 mr-2">⭐</span>
-                <div>
-                  <span
-                    class="font-medium"
-                    data-i18n="supportPage.roadmap.features.darkMode.title"
-                  ></span>
-                  <p
-                    class="text-gray-600 text-sm"
-                    data-i18n="supportPage.roadmap.features.darkMode.description"
-                  ></p>
-                </div>
-              </li>
-              <li class="flex items-start">
-                <span class="text-green-500 mr-2">⭐</span>
-                <div>
-                  <span
-                    class="font-medium"
-                    data-i18n="supportPage.roadmap.features.leaderboard.title"
-                  ></span>
-                  <p
-                    class="text-gray-600 text-sm"
-                    data-i18n="supportPage.roadmap.features.leaderboard.description"
-                  ></p>
-                </div>
-              </li>
-              <li class="flex items-start">
-                <span class="text-green-500 mr-2">⭐</span>
-                <div>
-                  <span
-                    class="font-medium"
-                    data-i18n="supportPage.roadmap.features.argumentHighlights.title"
-                  ></span>
-                  <p
-                    class="text-gray-600 text-sm"
-                    data-i18n="supportPage.roadmap.features.argumentHighlights.description"
-                  ></p>
-                </div>
-              </li>
+            <ul id="roadmapFeaturesList" class="space-y-3">
+              <!-- Features will be populated dynamically -->
             </ul>
           </div>
         </div>
@@ -467,6 +364,30 @@
           if (translation) {
             element.innerHTML = translation;
           }
+        });
+
+        // Populate roadmap features list
+        const featuresList = document.getElementById("roadmapFeaturesList");
+        const features = translations.supportPage.roadmap.features;
+
+        // Convert features object to array while maintaining order
+        const featuresArray = Object.entries(features).map(([key, value]) => ({
+          key,
+          ...value,
+        }));
+
+        // Create HTML for each feature
+        featuresArray.forEach((feature) => {
+          const li = document.createElement("li");
+          li.className = "flex items-start";
+          li.innerHTML = `
+            <span class="text-green-500 mr-2">⭐</span>
+            <div>
+              <span class="font-medium">${feature.title}</span>
+              <p class="text-gray-600 text-sm">${feature.description}</p>
+            </div>
+          `;
+          featuresList.appendChild(li);
         });
 
         // Update document language attribute
