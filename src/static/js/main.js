@@ -2390,11 +2390,9 @@ window.addEventListener("DOMContentLoaded", async () => {
             !current_user_authenticated
               ? `
           <div class="mt-4 mb-4 max-w-full md:w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm">
-            <span data-i18n="evaluation.notLoggedIn">To save your progress and unlock all features,</span>
+            <span>${translations.evaluation.notLoggedIn}</span>
             <a href="#" onclick="showAuthModal()" class="text-gray-800 underline hover:text-gray-600">
-              <span data-i18n="evaluation.here">sign in here</span>
-            </a>
-            <span data-i18n="evaluation.loginSuffix">.</span>
+              <span>${translations.evaluation.here}</span></a><span>${translations.evaluation.loginSuffix}</span>
           </div>
           `
               : ""

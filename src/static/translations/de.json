@@ -335,7 +335,7 @@
     "checkProfile": "Besuche deine",
     "profilePage": "Profilseite",
     "reviewProgress": "um deine beantworteten Fragen zu analysieren und deinen Fortschritt zu verfolgen.",
-    "notLoggedIn": "Du bist derzeit nicht angemeldet. Um deinen Fortschritt und deine eingereichten Antworten nicht zu verlieren, melde dich",
+    "notLoggedIn": "Du bist derzeit nicht angemeldet. Um deinen Fortschritt und deine bisherigen Antworten nicht zu verlieren, melde dich",
     "here": "hier",
     "loginSuffix": " an.",
     "levelUp": "Level aufgestiegen!",
@@ -363,7 +363,7 @@
     "password": "Passwort",
     "forgotPassword": "Passwort vergessen?",
     "continueWithGoogle": "Mit Google fortfahren",
-    "notLoggedIn": "Du bist derzeit nicht angemeldet. Um deinen Fortschritt und deine eingereichten Antworten nicht zu verlieren, melde dich an",
+    "notLoggedIn": "Du bist derzeit nicht angemeldet. Um deinen Fortschritt und deine bisherigen Antworten nicht zu verlieren, melde dich an",
     "errors": {
       "invalidCredentials": "Ungültige Anmeldedaten",
       "userNotFound": "Benutzer nicht gefunden",
@@ -513,7 +513,7 @@
     "overview": "Diese Plattform hilft dir, deine Argumentations- und Entscheidungsfähigkeiten zu verbessern.",
     "profileSection": {
       "title": "Profilseite",
-      "description": "Dein Profil bietet eine Übersicht über deinen Fortschritt. Besuche deine <a href='/profile' class='text-gray-800 underline hover:text-gray-600'>Profilseite</a>, um dein Level, deinen Fortschritt im Zeitverlauf und alle deine eingereichten Antworten zu sehen.",
+      "description": "Dein Profil bietet eine Übersicht über deinen Fortschritt. Besuche deine <a href='/profile' class='text-gray-800 underline hover:text-gray-600'>Profilseite</a>, um dein Level, deinen Fortschritt im Zeitverlauf und alle deine bisherigen Antworten zu sehen.",
       "detailedFeedback": "Detailliertes Feedback zu jeder deiner Antworten gibt dir Einblicke in deine Stärken und Bereiche, die du verbessern kannst."
     },
     "challengeSection": {

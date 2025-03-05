@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ session.get('language', 'en') }}">
+<html lang="en">
   <head>
     <!-- Google tag (gtag.js) -->
     <script
@@ -17,7 +17,7 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ page_content.title or "How to Improve" }}</title>
+    <title data-i18n="howToImprove.title">How to Improve - ArguMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     {% include 'partials/favicons.html' %}
   </head>
@@ -27,11 +27,16 @@
       <div
         class="max-w-5xl mx-auto flex flex-wrap justify-between items-start gap-2"
       >
-        <h1 class="text-white text-3xl font-bold">{{ page_content.title }}</h1>
+        <h1
+          class="text-white text-3xl font-bold"
+          data-i18n="howToImprove.title"
+        >
+          How to Improve
+        </h1>
         <a
           href="/"
           class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors mt-1"
-          data-i18n="profile.goBack"
+          data-i18n="howToImprove.goBack"
         >
           Go Back
         </a>
@@ -42,162 +47,69 @@
     <main class="max-w-5xl mx-auto p-4">
       <!-- Introduction Section -->
       <section class="mb-8">
-        <h2 class="text-2xl font-bold mb-4">
-          {{ page_content.overviewTitle or "Overview" }}
-        </h2>
-        <p class="mb-4">{{ page_content.overview }}</p>
-      </section>
-
-      <!-- Build Your Argument Section -->
-      <section class="mb-8">
-        <h3
-          class="text-xl font-semibold mb-2"
-          data-i18n="howToImprovePage.argumentStepsTitle"
+        <h2
+          class="text-2xl font-bold mb-4"
+          data-i18n="howToImprove.overviewTitle"
         >
-          Build Your Argument Step-by-Step
-        </h3>
-        <ol class="list-decimal pl-6 mb-4 space-y-2">
-          <li>
-            <strong data-i18n="howToImprovePage.argumentStep1Title"
-              >State:</strong
-            >
-            <span data-i18n="howToImprovePage.argumentStep1Content">
-              Clearly articulate your main claim. Ask yourself, "What exactly am
-              I trying to prove?" Keep your statement concise and debatable.
-            </span>
-          </li>
-          <li>
-            <strong data-i18n="howToImprovePage.argumentStep2Title"
-              >Explain:</strong
-            >
-            <span data-i18n="howToImprovePage.argumentStep2Content">
-              Detail your thought process by outlining the rationale behind your
-              claim. Describe the assumptions and logical steps that lead you to
-              your conclusion.
-            </span>
-          </li>
-          <li>
-            <strong data-i18n="howToImprovePage.argumentStep3Title"
-              >Evidence:</strong
-            >
-            <span data-i18n="howToImprovePage.argumentStep3Content">
-              Back up your reasoning with solid data, reputable sources, or
-              concrete examples. Look for statistics, case studies, or expert
-              opinions that lend credibility to your argument.
-            </span>
-          </li>
-          <li>
-            <strong data-i18n="howToImprovePage.argumentStep4Title"
-              >Conclusion:</strong
-            >
-            <span data-i18n="howToImprovePage.argumentStep4Content">
-              Summarize your argument by tying your evidence back to your claim.
-              Reiterate how your data supports your position and address any
-              potential counterarguments.
-            </span>
-          </li>
-        </ol>
-        <p class="mb-4" data-i18n="howToImprovePage.argumentStepsExplanation">
-          Breaking your argument into these steps makes it easier to identify
-          gaps in your reasoning and refine each part systematically.
-        </p>
-        <p class="mb-4" data-i18n="howToImprovePage.argumentStepsAdditional">
-          Always seek out credible information and avoid relying solely on
-          assumptions. Validate your data and be open to updating your views
-          when confronted with new evidence. This not only strengthens your
-          argument but also enhances its persuasiveness.
-        </p>
-      </section>
-
-      <!-- Recognizing Cognitive Biases Section -->
-      <section class="mb-8">
-        <h3
-          class="text-xl font-semibold mb-2"
-          data-i18n="howToImprovePage.biasesSectionTitle"
-        >
-          Understanding Cognitive Biases and Logical Fallacies
-        </h3>
-        <p class="mb-4" data-i18n="howToImprovePage.biasesSectionContent">
-          Our reasoning can be impaired by two common pitfalls. Cognitive biases
-          are systematic errors in thinking caused by mental shortcuts, while
-          logical fallacies are common flaws in reasoning that weaken the
-          arguments' validity. Being aware of these sources of reasoning errors
-          can help you build clearer, more objective arguments.
-        </p>
-      </section>
-
-      <!-- Cognitive Biases List Section -->
-      <section class="mb-8">
-        <h2 class="text-2xl font-bold mb-4">
-          {{ page_content.cognitiveBiasesTitle }}
+          Overview
         </h2>
-        <div class="grid gap-4 md:grid-cols-2">
-          {% for bias in page_content.cognitive_biases %}
-          <div class="bg-white p-4 rounded-lg border border-gray-200">
-            <h3 class="font-bold text-lg mb-2">{{ bias.name }}</h3>
-            <p class="text-gray-600">{{ bias.description }}</p>
-            <p class="text-gray-400 text-sm italic">
-              {{ page_content.exampleTitle }}: {{ bias.example }}
-            </p>
-          </div>
-          {% endfor %}
+        <p class="mb-4" data-i18n="howToImprove.overview"></p>
+      </section>
+
+      <!-- Dimension Sections -->
+      {% for dimension in dimensions %}
+      <section class="mb-8">
+        <h2
+          class="text-2xl font-bold mb-4"
+          data-i18n="howToImprove.dimensions.{{ dimension.key }}.title"
+        >
+          {{ dimension.title }}
+        </h2>
+        <p
+          class="mb-4"
+          data-i18n="howToImprove.dimensions.{{ dimension.key }}.description"
+        >
+          {{ dimension.description }}
+        </p>
+        <div class="ml-6">
+          <h3
+            class="text-lg font-semibold mb-2"
+            data-i18n="howToImprove.dimensions.{{ dimension.key }}.tipsTitle"
+          >
+            Tips to Improve:
+          </h3>
+          <ul class="list-disc ml-6 space-y-2">
+            {% for tip in dimension.tips %}
+            <li
+              data-i18n="howToImprove.dimensions.{{ dimension.key }}.tips.{{ loop.index0 }}"
+            >
+              {{ tip }}
+            </li>
+            {% endfor %}
+          </ul>
         </div>
       </section>
-
-      <!-- Logical Fallacies List Section -->
-      <section class="mb-8">
-        <h2 class="text-2xl font-bold mb-4">
-          {{ page_content.logicalFallaciesTitle }}
-        </h2>
-        <div class="grid gap-4 md:grid-cols-2">
-          {% for fallacy in page_content.logical_fallacies %}
-          <div class="bg-white p-4 rounded-lg border border-gray-200">
-            <h3 class="font-bold text-lg mb-2">{{ fallacy.name }}</h3>
-            <p class="text-gray-600 mb-2">{{ fallacy.description }}</p>
-            <p class="text-gray-400 text-sm italic">
-              {{ page_content.exampleTitle }}: {{ fallacy.example }}
-            </p>
-          </div>
-          {% endfor %}
-        </div>
-      </section>
+      {% endfor %}
 
       <!-- Bottom Go Back Button -->
       <div class="text-center my-4">
         <a
           href="/"
           class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors"
-          data-i18n="profile.goBack"
+          data-i18n="howToImprove.goBack"
         >
           Go Back
         </a>
       </div>
     </main>
 
+    <!-- Critical Scripts -->
+    <script type="module" src="/static/js/translationManager.js"></script>
+
     <script>
-      document.addEventListener("DOMContentLoaded", async () => {
-        // Get stored language preference
-        const currentLanguage = localStorage.getItem("language") || "en";
-
-        // Load translations
-        const response = await fetch(
-          `/static/translations/${currentLanguage}.json`
-        );
-        const translations = await response.json();
-
-        // Apply translations
-        document.querySelectorAll("[data-i18n]").forEach((element) => {
-          const key = element.getAttribute("data-i18n");
-          const translation = key
-            .split(".")
-            .reduce((obj, k) => obj && obj[k], translations);
-          if (translation) {
-            element.innerHTML = translation;
-          }
-        });
-
-        // Update document language
-        document.documentElement.lang = currentLanguage;
+      document.addEventListener("DOMContentLoaded", () => {
+        // Apply translations using the translation manager
+        window.translationManager?.applyTranslations();
       });
     </script>
   </body>

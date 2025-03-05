@@ -61,6 +61,8 @@
         }
       })();
     </script>
+    <!-- Critical Scripts - Load immediately -->
+    <script type="module" src="/static/js/translationManager.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -73,13 +75,39 @@
         },
       }
     </script>
+
     <!-- Link to custom CSS -->
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}"
-    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
     {% include 'partials/favicons.html' %}
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+    <!-- Non-critical scripts - Load deferred -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js" defer></script>
+    <script src="/static/js/vendors/date-fns.umd.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.1/dist/purify.min.js" defer></script>
+
+    <!-- Add achievements data before module scripts -->
+    <script id="all-achievements-data" type="application/json">
+      {{ all_achievements | tojson | safe }}
+    </script>
+
+    <!-- Core JavaScript Modules -->
+    <script type="module" src="/static/js/constants.js"></script>
+    <script type="module" src="/static/js/helpers.js"></script>
+    <script type="module" src="/static/js/voice.js" defer></script>
+    <script type="module" src="/static/js/main.js"></script>
+
+    <!-- Initialize translations -->
+    <script type="module">
+      // Wait for DOM to be ready
+      document.addEventListener('DOMContentLoaded', () => {
+        // Apply initial translations
+        window.translationManager?.applyTranslations();
+      });
+    </script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -1322,27 +1350,5 @@
         </a>
       </div>
     </footer>
-
-    <!-- Load scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <script src="/static/js/vendors/date-fns.umd.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.1/dist/purify.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/i18next@21.6.10/dist/umd/i18next.min.js"></script>
-    <script src="/static/js/vendors/i18nextHttpBackend.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@6.1.3/dist/umd/i18nextBrowserLanguageDetector.min.js"></script>
-
-    <!-- Add achievements data before module scripts -->
-    <script id="all-achievements-data" type="application/json">
-      {{ all_achievements | tojson | safe }}
-    </script>
-
-    <!-- JavaScript Modules -->
-    <script type="module" src="/static/js/constants.js"></script>
-    <script type="module" src="/static/js/helpers.js"></script>
-    <script type="module" src="/static/js/voice.js"></script>
-    <script type="module" src="/static/js/main.js"></script>
   </body>
 </html>

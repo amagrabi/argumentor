@@ -1,5 +1,6 @@
 import { updateQuestionDisplay } from "./helpers.js";
 import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE } from "./constants.js";
+import { translationManager } from "./translationManager.js";
 
 let currentLanguage = localStorage.getItem("language") || DEFAULT_LANGUAGE;
 localStorage.setItem("language", currentLanguage);
@@ -96,38 +97,18 @@ function updateLanguageIndicator() {
   if (checkDe) checkDe.style.opacity = currentLanguage === "de" ? "1" : "0";
 }
 
-async function changeLanguage(lang) {
-  currentLanguage = lang;
+export async function changeLanguage(lang) {
+  // Update localStorage
   localStorage.setItem("language", lang);
 
-  // Update server-side session language
-  await fetch("/set_language", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ language: lang }),
-  });
+  // Dispatch language change event
+  window.dispatchEvent(
+    new CustomEvent("languageChanged", {
+      detail: { language: lang },
+    })
+  );
 
-  // Load new translations
-  await loadTranslations();
-
-  // Update current question if it exists
-  const currentQuestion = JSON.parse(sessionStorage.getItem("currentQuestion"));
-  if (currentQuestion && currentQuestion.id && currentQuestion.category) {
-    const translatedQuestion =
-      translations?.questions?.[currentQuestion.category]?.[currentQuestion.id];
-    if (translatedQuestion) {
-      currentQuestion.description = translatedQuestion;
-      updateQuestionDisplay(currentQuestion);
-      sessionStorage.setItem(
-        "currentQuestion",
-        JSON.stringify(currentQuestion)
-      );
-    }
-  }
-
-  // Force page reload to ensure all other translations are applied
+  // Force page reload to ensure all components are updated
   window.location.reload();
 }
 
@@ -192,8 +173,6 @@ function setLanguage(lang) {
 // Make sure it's globally accessible
 window.setLanguage = setLanguage;
 
-export { changeLanguage };
-
 function updateEvaluationTranslations() {
   // Update overall evaluation title
   const overallEvalDiv = document.getElementById("overallEvaluation");
@@ -250,3 +229,6 @@ function updateEvaluationTranslations() {
     });
   }
 }
+
+// Export translations for backward compatibility
+export { translationManager };

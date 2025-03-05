@@ -247,7 +247,7 @@
                           if
                           level.is_unlocked
                           %}
-                          onclick="showLargeImage('{{ level.image_path }}', '{{ level.display_name }}')"
+                          onclick="showModal('{{ level.image_path }}', '{{ level.display_name }}')"
                           {%
                           endif
                           %}
@@ -733,107 +733,64 @@
     </main>
 
     <script>
-      document.addEventListener("DOMContentLoaded", async () => {
-        // Get stored language preference
-        const currentLanguage = localStorage.getItem("language") || "en";
+      document.addEventListener("DOMContentLoaded", () => {
+        // Apply translations using the translation manager
+        window.translationManager?.applyTranslations();
 
-        // Load translations
-        const response = await fetch(
-          `/static/translations/${currentLanguage}.json`
-        );
-        const translations = await response.json();
+        // Modal functionality
+        window.showModal = function (imagePath, title) {
+          const modal = document.getElementById("imageModal");
+          const modalContainer = modal.querySelector(".transform");
+          const modalImage = document.getElementById("modalImage");
+          const modalTitle = document.getElementById("modalTitle");
 
-        // Apply translations
-        document.querySelectorAll("[data-i18n]").forEach((element) => {
-          const key = element.getAttribute("data-i18n");
-          const translation = key
-            .split(".")
-            .reduce((obj, k) => obj && obj[k], translations);
-          if (translation) {
-            element.textContent = translation;
-          }
-        });
-
-        // Update document language
-        document.documentElement.lang = currentLanguage;
-
-        // --- XP and Level Update Logic (from main.js) ---
-        function updateLevelAndXPBar(levelInfo) {
-          // Update XP bar
-          const xpProgressBar = document.querySelector(".xp-progress-bar");
-          if (xpProgressBar) {
-            xpProgressBar.style.width = levelInfo.progress_percent + "%";
-          }
-
-          // Update the level display element
-          const currentLevelElem = document.getElementById("currentLevel");
-          if (currentLevelElem) {
-            currentLevelElem.innerHTML = "<strong>" + levelInfo.display_name + "</strong>";
-          }
-
-          // Update the level number indicator
-          const levelNumberElem = document.querySelector(".level-number-indicator");
-          if (levelNumberElem) {
-            levelNumberElem.textContent = levelInfo.level_number;
-          }
-
-          // Update the level image
-          const levelImage = document.querySelector(".level-image");
-          if (levelImage) {
-            levelImage.src = levelInfo.level_image;
-            levelImage.alt = levelInfo.level_label;
-          }
-        }
-
-        // --- Initial update on page load ---
-        const levelInfo = {{ level_info | tojson }};
-        updateLevelAndXPBar(levelInfo);
-
-        // --- Modal Functions ---
-        window.showLargeImage = function(imagePath, title) {
-          const modal = document.getElementById('imageModal');
-          const modalImage = document.getElementById('modalImage');
-          const modalTitle = document.getElementById('modalTitle');
-          const modalContainer = modal.querySelector('.transform');
-
-          // Reset transform and opacity
-          modalContainer.style.transform = 'scale(0.95)';
-          modalContainer.style.opacity = '0';
-          modal.classList.remove('hidden');
-          modal.classList.add('flex');
+          modalContainer.style.transform = "scale(0.95)";
+          modalContainer.style.opacity = "0";
+          modal.classList.remove("hidden");
+          modal.classList.add("flex");
 
           // Force a reflow
           void modal.offsetWidth;
 
           // Animate in
-          modalContainer.style.transform = 'scale(1)';
-          modalContainer.style.opacity = '1';
+          modalContainer.style.transform = "scale(1)";
+          modalContainer.style.opacity = "1";
 
           modalImage.src = imagePath;
           modalTitle.textContent = title;
         };
 
-        window.closeModal = function() {
-          const modal = document.getElementById('imageModal');
-          const modalContainer = modal.querySelector('.transform');
+        window.closeModal = function () {
+          const modal = document.getElementById("imageModal");
+          const modalContainer = modal.querySelector(".transform");
 
           // Animate out
-          modalContainer.style.transform = 'scale(0.95)';
-          modalContainer.style.opacity = '0';
+          modalContainer.style.transform = "scale(0.95)";
+          modalContainer.style.opacity = "0";
 
           setTimeout(() => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
           }, 200);
         };
 
         // Close modal when clicking outside the image
-        document.getElementById('imageModal').addEventListener('click', function(e) {
-          if (e.target === this) {
-            closeModal();
-          }
-        });
+        document
+          .getElementById("imageModal")
+          .addEventListener("click", function (e) {
+            if (e.target === this) {
+              closeModal();
+            }
+          });
       });
     </script>
+
+    <!-- Critical Scripts -->
+    <script type="module" src="/static/js/translationManager.js"></script>
+    <script type="module" src="/static/js/profile.js" defer></script>
+    <script src="/static/js/auth.js" defer></script>
+
+    <!-- Non-critical scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   </body>
 </html>

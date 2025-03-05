@@ -235,6 +235,9 @@
       </div>
     </div>
 
+    <!-- Critical Scripts -->
+    <script type="module" src="/static/js/translationManager.js"></script>
+
     <script>
       function shareArguMentor() {
         const shareText = "Test your reasoning skills";
@@ -345,53 +348,40 @@
           }
         });
 
-      document.addEventListener("DOMContentLoaded", async () => {
-        // Get stored language preference (default to "en")
-        const currentLanguage = localStorage.getItem("language") || "en";
+      document.addEventListener("DOMContentLoaded", () => {
+        // Apply translations using the translation manager
+        window.translationManager?.applyTranslations();
 
-        // Load translations from the appropriate JSON file
-        const response = await fetch(
-          `/static/translations/${currentLanguage}.json`
-        );
-        const translations = await response.json();
-
-        // Find all elements with the data-i18n attribute
-        document.querySelectorAll("[data-i18n]").forEach((element) => {
-          const key = element.getAttribute("data-i18n");
-          const translation = key
-            .split(".")
-            .reduce((obj, k) => obj && obj[k], translations);
-          if (translation) {
-            element.innerHTML = translation;
-          }
-        });
-
-        // Populate roadmap features list
+        // Populate roadmap features list after translations are loaded
         const featuresList = document.getElementById("roadmapFeaturesList");
-        const features = translations.supportPage.roadmap.features;
+        if (
+          featuresList &&
+          window.translations?.supportPage?.roadmap?.features
+        ) {
+          const features = window.translations.supportPage.roadmap.features;
 
-        // Convert features object to array while maintaining order
-        const featuresArray = Object.entries(features).map(([key, value]) => ({
-          key,
-          ...value,
-        }));
+          // Convert features object to array while maintaining order
+          const featuresArray = Object.entries(features).map(
+            ([key, value]) => ({
+              key,
+              ...value,
+            })
+          );
 
-        // Create HTML for each feature
-        featuresArray.forEach((feature) => {
-          const li = document.createElement("li");
-          li.className = "flex items-start";
-          li.innerHTML = `
-            <span class="text-green-500 mr-2">⭐</span>
-            <div>
-              <span class="font-medium">${feature.title}</span>
-              <p class="text-gray-600 text-sm">${feature.description}</p>
-            </div>
-          `;
-          featuresList.appendChild(li);
-        });
-
-        // Update document language attribute
-        document.documentElement.lang = currentLanguage;
+          // Create HTML for each feature
+          featuresArray.forEach((feature) => {
+            const li = document.createElement("li");
+            li.className = "flex items-start";
+            li.innerHTML = `
+              <span class="text-green-500 mr-2">⭐</span>
+              <div>
+                <span class="font-medium">${feature.title}</span>
+                <p class="text-gray-600 text-sm">${feature.description}</p>
+              </div>
+            `;
+            featuresList.appendChild(li);
+          });
+        }
 
         // Show feedback modal if show_feedback parameter is present
         const urlParams = new URLSearchParams(window.location.search);
