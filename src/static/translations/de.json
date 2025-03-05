@@ -109,7 +109,7 @@
         "description": "Dein erstes Argument formuliert"
       },
       "voice_pioneer": {
-        "name": "Sprachpionier",
+        "name": "Stimme der Vernunft",
         "description": "Reiche deine erste Sprachantwort ein"
       },
       "first_challenge": {
@@ -117,7 +117,7 @@
         "description": "Bewältige deine erste Challenge"
       },
       "great_rating": {
-        "name": "Aufstrebendes Talent",
+        "name": "Vielversprechend",
         "description": "Erhalte eine starke Bewertung (7+ Punkte)"
       },
       "exceptional_rating": {
@@ -125,7 +125,7 @@
         "description": "Erhalte eine exzellente Bewertung (9+ Punkte)"
       },
       "category_explorer": {
-        "name": "Kategorie-Entdecker",
+        "name": "Themenwanderer",
         "description": "Beantworte eine Frage aus jeder Kategorie"
       },
       "concise_master": {
@@ -141,19 +141,19 @@
         "description": "Reiche 10 Argumente ein"
       },
       "voice_master": {
-        "name": "Labertasche",
+        "name": "Schwadronierer",
         "description": "Reiche 10 Sprachantworten ein"
       },
       "ten_challenges": {
-        "name": "Solider Verteidiger",
+        "name": "Solide Verteidigung",
         "description": "Bewältige 10 Challenges"
       },
       "daily_streak": {
-        "name": "Streber",
+        "name": "Disziplinierter Denker",
         "description": "Reiche an 5 aufeinanderfolgenden Tagen Argumente ein"
       },
       "all_seven_categories": {
-        "name": "Ausgewogenes Talent",
+        "name": "Allrounder",
         "description": "Erhalte eine 7+ Bewertung in jeder Kategorie"
       },
       "master_of_all": {
@@ -161,7 +161,7 @@
         "description": "Erhalte eine 9+ Bewertung in jeder Kategorie"
       },
       "domain_expert": {
-        "name": "Fachexperte",
+        "name": "Spezialist",
         "description": "Erhalte fünf 8+ Bewertungen in der gleichen Kategorie"
       },
       "twenty_five_answers": {
@@ -169,7 +169,7 @@
         "description": "Reiche 25 Argumente ein"
       },
       "fifty_answers": {
-        "name": "Experten-Debattierer",
+        "name": "Debatten-Veteran",
         "description": "Reiche 50 Argumente ein"
       },
       "hundred_answers": {
@@ -177,7 +177,7 @@
         "description": "Reiche 100 Argumente ein"
       },
       "hundred_challenges": {
-        "name": "Jahrhundert-Löser",
+        "name": "Mastermind",
         "description": "Löse 100 Herausforderungen"
       }
     },
