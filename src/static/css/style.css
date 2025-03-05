@@ -336,6 +336,27 @@ textarea:focus {
   #xpInfo.profile-xp .move-down {
     left: -35px !important;
   }
+
+  /* Mobile adjustments for challenge section */
+  #challengeSection {
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  #challengeSection .bg-white {
+    padding: 1rem;
+  }
+
+  #challengeSection .text-lg {
+    font-size: 1rem;
+  }
+
+  #challengeSection .text-base {
+    font-size: 0.875rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -1649,19 +1670,6 @@ textarea:focus {
   .achievement-notification .content {
     flex-grow: 1 !important;
     min-width: 0 !important;
-  }
-
-  /* 4. Fix cramped challenge section */
-  #challengeSection .bg-white {
-    padding: 0.75rem;
-  }
-
-  #challengeSection .text-lg {
-    font-size: 1rem;
-  }
-
-  #challengeSection .text-base {
-    font-size: 0.875rem;
   }
 
   /* 4. NEW: Narrower login window on mobile */
