@@ -11,7 +11,7 @@ ArguMentor is a platform to train reasoning and decision-making skills. Users ca
 ### Option 1: Docker
 
 ```sh
-docker compose --build
+docker compose build
 docker compose up
 ```
 
