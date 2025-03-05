@@ -137,40 +137,119 @@
             >
             {% endif %}
           </div>
-          <div class="text-base mb-3">
-            <span
-              class="text-gray-500 font-medium"
-              data-i18n="profile.dailyEvaluations"
-            ></span
-            ><span class="text-gray-500 font-medium">: </span>
-            <span class="ml-1 px-2 py-1 bg-gray-100 text-gray-800 rounded-full">
-              {{ daily_eval_count }} / {{ eval_limit }}
-            </span>
+
+          <!-- Usage Limits Section -->
+          <div class="mb-4">
+            <h3
+              class="text-gray-500 font-medium mb-2"
+              data-i18n="profile.usageLimits"
+            ></h3>
+            <div class="grid grid-cols-2 gap-3">
+              <!-- Evaluations Card -->
+              <div class="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                <div class="flex items-center mb-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-gray-800 mr-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <span class="font-medium" data-i18n="profile.evaluations"
+                    >Evaluations</span
+                  >
+                </div>
+                <div class="flex justify-between items-center">
+                  <div>
+                    <div
+                      class="text-sm text-gray-600"
+                      data-i18n="profile.daily"
+                    >
+                      Daily
+                    </div>
+                    <div class="font-medium">
+                      {{ daily_eval_count }} / {{ eval_limit }}
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      class="text-sm text-gray-600"
+                      data-i18n="profile.monthly"
+                    >
+                      Monthly
+                    </div>
+                    <div class="font-medium">
+                      {{ monthly_eval_count }} / {{ monthly_eval_limit }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Voice Recordings Card -->
+              <div class="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                <div class="flex items-center mb-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-gray-800 mr-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <span class="font-medium" data-i18n="profile.voiceRecordings"
+                    >Voice Recordings</span
+                  >
+                </div>
+                <div class="flex justify-between items-center">
+                  <div>
+                    <div
+                      class="text-sm text-gray-600"
+                      data-i18n="profile.daily"
+                    >
+                      Daily
+                    </div>
+                    <div class="font-medium">
+                      {{ daily_voice_count }} / {{ voice_limit }}
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      class="text-sm text-gray-600"
+                      data-i18n="profile.monthly"
+                    >
+                      Monthly
+                    </div>
+                    <div class="font-medium">
+                      {{ monthly_voice_count }} / {{ monthly_voice_limit }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="text-base mb-3">
-            <span
-              class="text-gray-500 font-medium"
-              data-i18n="profile.dailyVoiceRecordings"
-            ></span>
-            <span class="text-gray-500 font-medium">: </span>
-            <span class="ml-1 px-2 py-1 bg-gray-100 text-gray-800 rounded-full">
-              {{ daily_voice_count }} / {{ voice_limit }}
-            </span>
-          </div>
-          <p class="text-base mb-2">
-            <span
-              class="text-gray-500 font-medium"
-              data-i18n="profile.totalXP"
-            ></span
-            ><span class="text-gray-500 font-medium">: </span>
-            <strong>{{ xp }}</strong>
-          </p>
         </div>
 
         <h2
           class="text-xl font-bold mb-4"
           data-i18n="profile.currentLevel"
         ></h2>
+        <p class="text-base mb-4">
+          <span
+            class="text-gray-500 font-medium"
+            data-i18n="profile.totalXP"
+          ></span
+          ><span class="text-gray-500 font-medium">: </span>
+          <strong>{{ xp }}</strong>
+        </p>
         <div id="xpInfo" class="mt-8 mb-8 text-center profile-xp">
           <div class="flex items-center justify-start">
             <div class="level-image-wrapper">

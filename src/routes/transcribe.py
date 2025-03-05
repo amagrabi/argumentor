@@ -10,7 +10,12 @@ from google.cloud import speech, storage
 from config import get_settings
 from extensions import db, google_credentials
 from models import User
-from utils import get_daily_voice_count, get_voice_limit
+from utils import (
+    get_daily_voice_count,
+    get_monthly_voice_count,
+    get_monthly_voice_limit,
+    get_voice_limit,
+)
 
 logger = logging.getLogger(__name__)
 transcribe_bp = Blueprint("transcribe", __name__)
@@ -259,6 +264,60 @@ def transcribe_audio(audio_content, file_mime):
         return clean_transcript
 
 
+@transcribe_bp.route("/check_voice_limits", methods=["GET"])
+def check_voice_limits():
+    """
+    Check if the user has reached their daily or monthly voice recording limits
+    before they start recording.
+    """
+    user_uuid = session.get("user_id")
+    if not user_uuid:
+        return jsonify({"error": "User not identified."}), 400
+
+    # Check daily voice recording count
+    user = User.query.filter_by(uuid=user_uuid).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 400
+
+    daily_count = get_daily_voice_count(user_uuid)
+    voice_limit = get_voice_limit(user.tier)
+
+    if daily_count >= voice_limit:
+        error_message = f"Daily voice recording limit reached ({voice_limit}). "
+        if user.tier == "anonymous":
+            error_message += (
+                'Log in for higher limits <a href="#" class="underline" '
+                'onclick="showAuthModal(); return false;">here</a>.'
+            )
+        else:
+            error_message += (
+                'If you need a higher limit, let me know in the <a href="#" class="underline" '
+                'onclick="showFeedbackModal(); return false;">feedback</a>.'
+            )
+        return jsonify({"error": error_message, "limit_reached": True}), 200
+
+    # Check monthly voice recording count
+    monthly_count = get_monthly_voice_count(user_uuid)
+    monthly_limit = get_monthly_voice_limit(user.tier)
+
+    if monthly_count >= monthly_limit:
+        error_message = f"Monthly voice recording limit reached ({monthly_limit}). "
+        if user.tier == "anonymous":
+            error_message += (
+                'Log in for higher limits <a href="#" class="underline" '
+                'onclick="showAuthModal(); return false;">here</a>.'
+            )
+        else:
+            error_message += (
+                'If you need a higher limit, let me know in the <a href="#" class="underline" '
+                'onclick="showFeedbackModal(); return false;">feedback</a>.'
+            )
+        return jsonify({"error": error_message, "limit_reached": True}), 200
+
+    # If no limits are reached, return success
+    return jsonify({"limit_reached": False}), 200
+
+
 @transcribe_bp.route("/transcribe_voice", methods=["POST"])
 def transcribe_voice():
     logger.debug("Starting voice transcription request")
@@ -288,6 +347,24 @@ def transcribe_voice():
             )
         return jsonify({"error": error_message}), 429
 
+    # Check monthly voice recording count
+    monthly_count = get_monthly_voice_count(user_uuid)
+    monthly_limit = get_monthly_voice_limit(user.tier)
+
+    if monthly_count >= monthly_limit:
+        error_message = f"Monthly voice recording limit reached ({monthly_limit}). "
+        if user.tier == "anonymous":
+            error_message += (
+                'Log in for higher limits <a href="#" class="underline" '
+                'onclick="showAuthModal(); return false;">here</a>.'
+            )
+        else:
+            error_message += (
+                'If you need a higher limit, let me know in the <a href="#" class="underline" '
+                'onclick="showFeedbackModal(); return false;">feedback</a>.'
+            )
+        return jsonify({"error": error_message}), 429
+
     # Get the audio file from the request
     if "file" not in request.files:
         return jsonify({"error": "No audio file provided"}), 400
@@ -300,14 +377,25 @@ def transcribe_voice():
         logger.debug("Processing voice transcription")
         # Update voice transcription count
         today_start = datetime.combine(datetime.now(UTC).date(), time.min)
-        if (
-            not user.last_voice_transcription
-            or user.last_voice_transcription < today_start
-        ):
+        today_start = today_start.replace(tzinfo=UTC)
+
+        # Ensure the datetime is timezone-aware before comparison
+        last_transcription = user.last_voice_transcription
+        if last_transcription and last_transcription.tzinfo is None:
+            last_transcription = last_transcription.replace(tzinfo=UTC)
+
+        if not last_transcription or last_transcription < today_start:
             user.daily_voice_count = 1
         else:
             user.daily_voice_count += 1
         user.last_voice_transcription = datetime.now(UTC)
+
+        # Update monthly voice count
+        user.monthly_voice_count = (user.monthly_voice_count or 0) + 1
+        user.last_monthly_voice_reset = user.last_monthly_voice_reset or datetime.now(
+            UTC
+        )
+
         db.session.commit()
 
         # Get the current language and question

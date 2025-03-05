@@ -2858,9 +2858,32 @@ window.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Function to toggle challenge recording state
-  function toggleChallengeRecording() {
+  async function toggleChallengeRecording() {
     if (!isChallengeRecording) {
-      startChallengeRecording();
+      // Check voice limits before starting recording
+      try {
+        const response = await fetch("/check_voice_limits");
+        const data = await response.json();
+
+        if (data.limit_reached) {
+          // Display error message if limit is reached
+          const errorElement = document.getElementById("challengeErrorMessage");
+          if (errorElement) {
+            errorElement.innerHTML = data.error;
+          }
+          challengeRecordingStatus.textContent =
+            translations?.main?.voiceInput?.status?.limitReached ||
+            "Recording limit reached.";
+          return;
+        }
+
+        // If no limits reached, start recording
+        startChallengeRecording();
+      } catch (error) {
+        console.error("Error checking voice limits:", error);
+        // If there's an error checking limits, allow recording anyway
+        startChallengeRecording();
+      }
     } else {
       stopChallengeRecording();
     }

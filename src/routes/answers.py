@@ -11,7 +11,12 @@ from services.achievement_service import check_and_award_achievements
 from services.evaluator import DummyEvaluator
 from services.level_service import get_level_for_xp, get_level_info, get_level_name
 from services.question_service import get_questions
-from utils import get_daily_evaluation_count, get_eval_limit
+from utils import (
+    get_daily_evaluation_count,
+    get_eval_limit,
+    get_monthly_eval_limit,
+    get_monthly_evaluation_count,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -111,6 +116,24 @@ def submit_answer():
 
         if daily_count >= eval_limit:
             error_message = f"Daily evaluation limit reached ({eval_limit}). "
+            if user.tier == "anonymous":
+                error_message += (
+                    'Log in for higher limits <a href="#" class="underline" '
+                    'onclick="showAuthModal(); return false;">here</a>.'
+                )
+            else:
+                error_message += (
+                    'If you need a higher limit, let me know in the <a href="#" class="underline" '
+                    'onclick="showFeedbackModal(); return false;">feedback</a>.'
+                )
+            return jsonify({"error": error_message}), 429
+
+        # Check monthly evaluation count
+        monthly_count = get_monthly_evaluation_count(user_uuid)
+        monthly_limit = get_monthly_eval_limit(user.tier)
+
+        if monthly_count >= monthly_limit:
+            error_message = f"Monthly evaluation limit reached ({monthly_limit}). "
             if user.tier == "anonymous":
                 error_message += (
                     'Log in for higher limits <a href="#" class="underline" '
@@ -238,6 +261,11 @@ def submit_answer():
         total_xp = recalc_user_xp(user)
         user.xp = total_xp
         session["xp"] = total_xp
+
+        # Increment monthly evaluation count
+        user.monthly_eval_count = (user.monthly_eval_count or 0) + 1
+        user.last_monthly_eval_reset = user.last_monthly_eval_reset or datetime.now(UTC)
+
         db.session.commit()
 
         # Check and award any new achievements
@@ -359,6 +387,24 @@ def submit_challenge_response():
                 )
             return jsonify({"error": error_message}), 429
 
+        # Check monthly evaluation count
+        monthly_count = get_monthly_evaluation_count(user_uuid)
+        monthly_limit = get_monthly_eval_limit(user.tier)
+
+        if monthly_count >= monthly_limit:
+            error_message = f"Monthly evaluation limit reached ({monthly_limit}). "
+            if user.tier == "anonymous":
+                error_message += (
+                    'Log in for higher limits <a href="#" class="underline" '
+                    'onclick="showAuthModal(); return false;">here</a>.'
+                )
+            else:
+                error_message += (
+                    'If you need a higher limit, let me know in the <a href="#" class="underline" '
+                    'onclick="showFeedbackModal(); return false;">feedback</a>.'
+                )
+            return jsonify({"error": error_message}), 429
+
         try:
             evaluator = create_evaluator()
             evaluation = evaluator.evaluate_challenge(answer, challenge_response)
@@ -391,38 +437,21 @@ def submit_challenge_response():
         )
         logger.info(f"Challenge average: {avg_all}, XP gained: {xp_gained}")
 
-        # Update the answer with the new challenge response and XP.
-        try:
-            logger.debug("Updating answer with challenge response and scores")
-            answer.challenge_response = challenge_response
+        # Update the answer with the challenge response and evaluation
+        answer.challenge_response = challenge_response
+        answer.challenge_evaluation_scores = scores
+        answer.challenge_evaluation_feedback = evaluation["feedback"]
+        answer.challenge_xp_earned = xp_gained
+        answer.challenge_response_created_at = datetime.now(UTC)
 
-            # Use consistent property name without quotes to avoid issues
-            scores_dict = {**evaluation["scores"]}
-            scores_dict["Overall"] = avg_all
+        # Update user's XP
+        user.xp += xp_gained
 
-            feedback_dict = {**evaluation["feedback"]}
-            feedback_dict["Overall"] = evaluation["overall_feedback"]
+        # Increment monthly evaluation count
+        user.monthly_eval_count = (user.monthly_eval_count or 0) + 1
+        user.last_monthly_eval_reset = user.last_monthly_eval_reset or datetime.now(UTC)
 
-            answer.challenge_evaluation_scores = scores_dict
-            answer.challenge_evaluation_feedback = feedback_dict
-            answer.challenge_xp_earned = xp_gained
-
-            db.session.commit()
-            logger.debug("Answer successfully updated in database")
-        except Exception as db_error:
-            logger.error(f"Database error: {str(db_error)}")
-            return jsonify({"error": f"Database error: {str(db_error)}"}), 500
-
-        try:
-            user = User.query.filter_by(uuid=user_uuid).first()
-            new_total = recalc_user_xp(user)
-            user.xp = new_total
-            session["xp"] = new_total
-            db.session.commit()
-            logger.debug(f"User XP updated: {new_total}")
-        except Exception as xp_error:
-            logger.error(f"Error updating user XP: {str(xp_error)}")
-            return jsonify({"error": f"XP update error: {str(xp_error)}"}), 500
+        db.session.commit()
 
         # Check and award any new achievements
         try:
@@ -447,8 +476,8 @@ def submit_challenge_response():
         try:
             leveled_up = get_level_name(
                 recalc_user_xp(user) - xp_gained
-            ) != get_level_name(new_total)
-            level_info = get_level_info(new_total)
+            ) != get_level_name(user.xp)
+            level_info = get_level_info(user.xp)
 
             # Add previous level image if user leveled up
             if leveled_up:
@@ -470,7 +499,7 @@ def submit_challenge_response():
             response_data = {
                 "evaluation": eval_copy,
                 "challenge_xp_earned": xp_gained,
-                "current_xp": new_total,
+                "current_xp": user.xp,
                 "current_level": level_info["display_name"],
                 "leveled_up": leveled_up,
                 "level_info": level_info,

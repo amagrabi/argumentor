@@ -34,6 +34,13 @@ class User(db.Model, UserMixin):
     )
     last_voice_transcription = db.Column(db.DateTime, nullable=True)
     daily_voice_count = db.Column(db.Integer, default=0, nullable=True)
+
+    # Monthly tracking fields
+    monthly_eval_count = db.Column(db.Integer, default=0, nullable=True)
+    monthly_voice_count = db.Column(db.Integer, default=0, nullable=True)
+    last_monthly_eval_reset = db.Column(db.DateTime, nullable=True)
+    last_monthly_voice_reset = db.Column(db.DateTime, nullable=True)
+
     achievements = db.relationship("UserAchievement", backref="user", lazy=True)
 
     def get_id(self):

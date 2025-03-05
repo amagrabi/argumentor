@@ -58,9 +58,13 @@
         "transcriptionComplete": "Transcription complete. You may edit the text.",
         "transcriptionImproved": "Transcription complete. You may edit the text.",
         "transcriptionError": "There was an error during transcription.",
-        "microphoneError": "Couldn't access the microphone.",
-        "noTextDetected": "Could not identify any text from the recording. Please try again."
-      }
+        "microphoneError": "Error accessing microphone.",
+        "noTextDetected": "Could not identify any text from the recording. Please try again.",
+        "limitReached": "Recording limit reached."
+      },
+      "recordedAnswer": "Your Recorded Answer",
+      "transcriptPlaceholder": "Your transcribed speech will appear here...",
+      "charactersRemaining": "Characters remaining:"
     }
   },
   "questionSelection": {
@@ -254,6 +258,7 @@
     "email": "Email",
     "accountType": "Account Type",
     "dailyEvaluations": "Daily Evaluations",
+    "monthlyEvaluations": "Monthly Evaluations",
     "currentLevel": "Current Level",
     "levelProgression": "Level Progression",
     "totalXP": "Total XP",
@@ -267,6 +272,14 @@
     "creativity": "Creativity",
     "challenge": "Challenge",
     "achievements": "Achievements",
+    "usageLimits": "Usage Limits:",
+    "evaluations": "Evaluations",
+    "voiceRecordings": "Voice Recordings",
+    "daily": "Daily",
+    "monthly": "Monthly",
+    "dailyVoiceRecordings": "Daily Voice Recordings",
+    "monthlyVoiceRecordings": "Monthly Voice Recordings",
+    "level": "Level",
     "achievementData": {
       "first_argument": {
         "name": "First Steps",
@@ -357,9 +370,7 @@
     "argument": "Argument",
     "counterargument": "Counterarguments",
     "challengeResponse": "Challenge Response",
-    "feedbackDetails": "Details",
-    "dailyVoiceRecordings": "Daily Voice Recordings",
-    "level": "Level"
+    "feedbackDetails": "Details"
   },
   "howItWorksPage": {
     "title": "How It Works",

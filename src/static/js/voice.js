@@ -193,7 +193,7 @@ export function initChallengeVoiceInput() {
 }
 
 // Function to toggle recording state
-function toggleRecording(options) {
+async function toggleRecording(options) {
   const {
     recordButton,
     recordingTimer,
@@ -206,7 +206,30 @@ function toggleRecording(options) {
   } = options;
 
   if (!isRecording) {
-    startRecording(options);
+    // Check voice limits before starting recording
+    try {
+      const response = await fetch("/check_voice_limits");
+      const data = await response.json();
+
+      if (data.limit_reached) {
+        // Display error message if limit is reached
+        const errorElement = document.getElementById(errorMessageElement);
+        if (errorElement) {
+          errorElement.innerHTML = data.error;
+        }
+        recordingStatus.textContent =
+          translations?.main?.voiceInput?.status?.limitReached ||
+          "Recording limit reached.";
+        return;
+      }
+
+      // If no limits reached, start recording
+      startRecording(options);
+    } catch (error) {
+      console.error("Error checking voice limits:", error);
+      // If there's an error checking limits, allow recording anyway
+      startRecording(options);
+    }
   } else {
     stopRecording(options);
   }

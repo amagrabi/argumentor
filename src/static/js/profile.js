@@ -41,6 +41,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Initialize chart with default metric(s): start with 'overall'
   initializeChart(answers, ["overall"]);
 
+  // Add resize event listener to update chart on window resize
+  let resizeTimeout;
+  window.addEventListener("resize", function () {
+    // Debounce the resize event
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(function () {
+      // Destroy the old chart
+      if (progressChart) {
+        progressChart.destroy();
+      }
+      // Reinitialize with current active metrics
+      const activeMetrics = Object.keys(buttons).filter((key) =>
+        buttons[key].classList.contains("button-active")
+      );
+      initializeChart(answers, activeMetrics);
+    }, 250);
+  });
+
   const buttons = {
     overall: document.getElementById("showOverall"),
     relevance: document.getElementById("showRelevance"),
@@ -160,9 +178,26 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
     // Create reversed copy of answers array to maintain original data
     const reversedAnswers = [...answers].reverse();
 
-    const labels = reversedAnswers.map((a) =>
-      new Date(a.created_at).toLocaleDateString()
-    );
+    // Format dates in a more compact way for mobile
+    const labels = reversedAnswers.map((a) => {
+      const date = new Date(a.created_at);
+      // Use shorter date format on mobile
+      if (window.innerWidth < 768) {
+        // Format as MM/DD without year to save space
+        return `${(date.getMonth() + 1).toString().padStart(2, "0")}/${date
+          .getDate()
+          .toString()
+          .padStart(2, "0")}`;
+      } else {
+        // For desktop, use a more readable format
+        const options = { month: "short", day: "numeric" };
+        if (date.getFullYear() !== new Date().getFullYear()) {
+          // Add year only if it's not the current year
+          options.year = "numeric";
+        }
+        return date.toLocaleDateString(undefined, options);
+      }
+    });
 
     progressChart = new Chart(ctx, {
       type: "line",
@@ -173,6 +208,14 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: {
+            left: 10,
+            right: 15,
+            top: 10,
+            bottom: window.innerWidth < 768 ? 25 : 15, // More bottom padding on mobile
+          },
+        },
         scales: {
           x: {
             title: {
@@ -186,13 +229,14 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
               display: false,
             },
             ticks: {
-              maxRotation: 45,
-              minRotation: 45,
+              maxRotation: window.innerWidth < 768 ? 30 : 45, // Less rotation on mobile
+              minRotation: window.innerWidth < 768 ? 30 : 45,
               font: {
                 size: window.innerWidth < 768 ? 8 : 12,
               },
               autoSkip: true,
-              maxTicksLimit: window.innerWidth < 768 ? 6 : 12,
+              maxTicksLimit: window.innerWidth < 768 ? 4 : 12, // Fewer labels on mobile
+              padding: window.innerWidth < 768 ? 8 : 5, // More padding on mobile
             },
           },
           y: {

@@ -55,11 +55,8 @@
       "speak": "Sprache"
     },
     "voiceInput": {
-      "recordedAnswer": "Deine aufgenommene Antwort",
-      "transcriptPlaceholder": "Deine transkribierte Antwort erscheint hier...",
-      "charactersRemaining": "Verbleibende Zeichen:",
       "status": {
-        "initial": "Sprich bis zu 2 Minuten. Du kannst den Text danach noch bearbeiten.",
+        "initial": "Nimm bis zu 2 Minuten auf. Du kannst den Text danach noch bearbeiten.",
         "recording": "Aufnahme läuft...",
         "transcribing": "Transkribiere...",
         "postProcessing": "Nachbearbeitung...",
@@ -69,8 +66,12 @@
         "microphoneError": "Fehler beim Zugriff auf das Mikrofon.",
         "tooLong": "Die Transkription überschreitet das Zeichenlimit. Bitte bearbeite sie vor dem Abschicken.",
         "transcriptionTimeout": "Transkription überschreitet das Zeitlimit. Bitte versuche es erneut mit einer kürzeren Aufnahme.",
-        "noTextDetected": "Es konnte kein Text aus der Aufnahme erkannt werden. Bitte versuche es erneut."
-      }
+        "noTextDetected": "Es konnte kein Text aus der Aufnahme erkannt werden. Bitte versuche es erneut.",
+        "limitReached": "Aufnahmelimit erreicht."
+      },
+      "recordedAnswer": "Deine aufgenommene Antwort",
+      "transcriptPlaceholder": "Deine transkribierte Sprache erscheint hier...",
+      "charactersRemaining": "Verbleibende Zeichen:"
     }
   },
   "challenge": {
@@ -90,8 +91,9 @@
     "email": "Email",
     "accountType": "Kontotyp",
     "dailyEvaluations": "Tägliche Bewertungen",
+    "monthlyEvaluations": "Monatliche Bewertungen",
     "currentLevel": "Aktuelles Level",
-    "levelProgression": "Level Progression",
+    "levelProgression": "Level-Fortschritt",
     "totalXP": "Erfahrungspunkte",
     "progress": "Fortschritt",
     "overall": "Gesamt",
@@ -103,6 +105,14 @@
     "creativity": "Kreativität",
     "challenge": "Challenge",
     "achievements": "Errungenschaften",
+    "usageLimits": "Nutzungslimits:",
+    "evaluations": "Bewertungen",
+    "voiceRecordings": "Sprachaufnahmen",
+    "daily": "Täglich",
+    "monthly": "Monatlich",
+    "dailyVoiceRecordings": "Tägliche Sprachaufnahmen",
+    "monthlyVoiceRecordings": "Monatliche Sprachaufnahmen",
+    "level": "Level",
     "achievementData": {
       "first_argument": {
         "name": "Erste Schritte",
@@ -190,7 +200,6 @@
     "counterargument": "Gegenargumente",
     "challengeResponse": "Antwort",
     "feedbackDetails": "Details",
-    "dailyVoiceRecordings": "Tägliche Sprachaufnahmen",
     "achievementDescriptions": {
       "first_argument": {
         "name": "Erste Schritte",

@@ -188,10 +188,6 @@ textarea:focus {
     padding: 0.5rem;
   }
 
-  .card-content p {
-    margin-bottom: 1.5rem;
-  }
-
   #rerollButton,
   #selectQuestionButton {
     font-size: 0.7rem; /* Smaller text */
@@ -214,19 +210,35 @@ textarea:focus {
   }
 
   .chart-container {
-    max-height: 50vh;
+    max-height: 70vh;
+    height: 350px;
+    min-height: 250px;
+    padding: 10px 5px 30px 5px; /* Increased bottom padding for x-axis labels */
+    width: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px; /* Add some bottom margin */
   }
 
   .chart-wrapper {
-    max-height: 300px;
-    padding: 0.5rem;
+    max-height: 400px;
+    padding: 1rem 0.75rem 1.5rem 0.75rem; /* Increased bottom padding */
+    margin-bottom: 1.5rem;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden; /* Prevent overflow */
   }
 
-  .chart-container {
-    height: 200px;
+  /* Ensure the canvas doesn't overflow */
+  #progressChart {
+    max-width: 100%;
+    max-height: 100%;
+    margin-bottom: 10px; /* Add space for labels */
   }
 
-  /* Adjust button spacing on mobile */
   .chart-wrapper .flex.flex-wrap {
     gap: 0.25rem !important;
   }
@@ -362,6 +374,17 @@ textarea:focus {
 @media (min-width: 768px) {
   .max-w-full {
     max-width: 100%;
+  }
+
+  .chart-container {
+    height: 400px; /* Taller chart for desktop */
+    min-height: 300px; /* Ensure minimum height on desktop */
+    padding: 15px 10px; /* More padding on desktop */
+  }
+
+  .chart-wrapper {
+    max-height: 450px;
+    padding: 1.5rem; /* More padding on desktop */
   }
 }
 
@@ -641,7 +664,7 @@ textarea:focus {
 
   .mermaid .node rect {
     width: auto !important;
-    max-width: 180px !important; /* Match the foreignObject width */
+    max-width: 180px !important;
     min-height: auto !important;
   }
 
@@ -1711,5 +1734,55 @@ textarea:focus {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+}
+
+#progressChart {
+  max-height: 70vh;
+}
+
+/* Global chart styles */
+.chart-container {
+  max-height: 70vh;
+  height: 400px;
+  min-height: 300px;
+  padding: 10px 10px 20px 10px; /* Extra padding at bottom for labels */
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chart-wrapper {
+  max-height: 450px;
+  padding: 1.5rem 1.5rem 2rem 1.5rem; /* Extra padding at bottom */
+  margin-bottom: 1.5rem;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* Prevent overflow */
+}
+
+#progressChart {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Mobile-specific chart adjustments */
+@media (max-width: 768px) {
+  .chart-container {
+    height: 350px;
+    min-height: 250px;
+    padding: 10px 5px 30px 5px; /* More bottom padding on mobile */
+  }
+
+  .chart-wrapper {
+    max-height: 400px;
+    padding: 1rem 0.75rem 1.5rem 0.75rem;
+  }
+
+  #progressChart {
+    margin-bottom: 10px;
   }
 }
