@@ -1774,7 +1774,7 @@ textarea:focus {
   .chart-container {
     height: 350px;
     min-height: 250px;
-    padding: 10px 5px 30px 5px; /* More bottom padding on mobile */
+    padding: 10px 15px 30px 15px; /* Increased left and right padding for y-axis labels */
   }
 
   .chart-wrapper {
@@ -1784,5 +1784,7 @@ textarea:focus {
 
   #progressChart {
     margin-bottom: 10px;
+    /* Add some margin on the left for y-axis labels */
+    margin-left: 5px;
   }
 }

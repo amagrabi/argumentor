@@ -199,6 +199,27 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
       }
     });
 
+    // Calculate appropriate y-axis settings based on data
+    const allValues = [];
+    reversedAnswers.forEach((answer) => {
+      if (answer.evaluation_scores) {
+        Object.values(answer.evaluation_scores).forEach((score) => {
+          if (typeof score === "number") allValues.push(score);
+        });
+      }
+      if (
+        answer.challenge_evaluation_scores &&
+        answer.challenge_evaluation_scores.Overall
+      ) {
+        allValues.push(answer.challenge_evaluation_scores.Overall);
+      }
+    });
+
+    // Find the max value in the data, with a minimum of 10
+    const dataMax = Math.max(10, ...allValues);
+    // Round up to nearest whole number
+    const yAxisMax = Math.ceil(dataMax);
+
     progressChart = new Chart(ctx, {
       type: "line",
       data: {
@@ -242,15 +263,14 @@ function initializeChart(answers, defaultMetrics = ["overall"]) {
           y: {
             beginAtZero: true,
             min: 0,
-            max: 10.5,
+            max: yAxisMax,
             ticks: {
-              stepSize: window.innerWidth < 768 ? 2 : 1,
-              callback: function (value) {
-                return value === 10.5 ? 10 : value;
-              },
+              stepSize: window.innerWidth < 768 ? Math.ceil(yAxisMax / 5) : 1,
+              precision: 0,
               font: {
                 size: window.innerWidth < 768 ? 8 : 12,
               },
+              includeBounds: true,
             },
             title: {
               display: window.innerWidth >= 768,
