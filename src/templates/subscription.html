@@ -17,6 +17,11 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="google-signin-client_id"
+      content="{{ GOOGLE_CLIENT_ID }}"
+      data-use-fedcm="true"
+    />
     <title>Subscription Plans - ArguMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://js.stripe.com/v3/"></script>
@@ -26,22 +31,39 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
+    <script>
+      // Make stripe public key available globally
+      window.stripePublicKey = "{{ stripe_public_key }}";
+    </script>
     <script
       type="module"
       src="{{ url_for('static', filename='js/translations.js') }}"
     ></script>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/auth.js') }}"
+    ></script>
+    <script>
+      // Make showAuthModal globally available
+      window.showAuthModal = function () {
+        showLoginModal();
+      };
+    </script>
   </head>
 
   <body class="bg-white min-h-screen">
     <!-- Header -->
     <header class="bg-gray-800 p-4">
       <div class="max-w-5xl mx-auto flex justify-between items-center">
-        <h1 class="text-white text-3xl font-bold">Subscription Plans</h1>
+        <h1
+          class="text-white text-3xl font-bold"
+          data-i18n="subscription.title"
+        ></h1>
         <a
           href="{{ url_for('pages.profile') }}"
           class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
+          data-i18n="subscription.backToProfile"
         >
-          Back to Profile
         </a>
       </div>
     </header>
@@ -51,33 +73,39 @@
       <div
         class="mt-4 mb-4 max-w-full md:w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"
       >
-        <span>You need to be logged in to upgrade your account.</span>
+        <span data-i18n="subscription.loginRequired"></span>
         <a
-          href="#"
+          href="javascript:void(0)"
           onclick="showAuthModal()"
           class="text-gray-800 underline hover:text-gray-600"
-        >
-          Login here</a
-        >
+          data-i18n="subscription.loginHere"
+        ></a>
       </div>
       {% else %}
 
       <!-- Subscription Plans -->
       <div class="mt-8">
-        <h2 class="text-2xl font-bold mb-6 text-center">Choose Your Plan</h2>
+        <h2
+          class="text-2xl font-bold mb-6 text-center"
+          data-i18n="subscription.choosePlan"
+        ></h2>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- Free Plan -->
           <div
-            class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+            class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col"
           >
-            <div class="bg-blue-50 p-6">
-              <h3 class="text-xl font-bold text-blue-800">Free</h3>
-              <p class="text-3xl font-bold mt-2">
-                $0<span class="text-sm font-normal text-gray-600">/month</span>
-              </p>
+            <div class="bg-gray-50 p-6">
+              <h3
+                class="text-xl font-bold text-gray-800"
+                data-i18n="subscription.plans.free.name"
+              ></h3>
+              <p
+                class="text-3xl font-bold mt-2"
+                data-i18n="subscription.plans.free.price"
+              ></p>
             </div>
-            <div class="p-6">
+            <div class="p-6 flex-grow">
               <ul class="space-y-3">
                 <li class="flex items-start">
                   <svg
@@ -94,9 +122,11 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_DAILY_EVAL_LIMITS.free }} daily
-                    evaluations</span
-                  >
+                    >{{ SETTINGS.TIER_DAILY_EVAL_LIMITS.free }}
+                    <span
+                      data-i18n="subscription.features.evaluationsPerDay"
+                    ></span
+                  ></span>
                 </li>
                 <li class="flex items-start">
                   <svg
@@ -113,9 +143,11 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_MONTHLY_EVAL_LIMITS.free }} monthly
-                    evaluations</span
-                  >
+                    >{{ SETTINGS.TIER_MONTHLY_EVAL_LIMITS.free }}
+                    <span
+                      data-i18n="subscription.features.evaluationsPerMonth"
+                    ></span
+                  ></span>
                 </li>
                 <li class="flex items-start">
                   <svg
@@ -132,9 +164,9 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_DAILY_VOICE_LIMITS.free }} daily voice
-                    recordings</span
-                  >
+                    >{{ SETTINGS.TIER_DAILY_VOICE_LIMITS.free }}
+                    <span data-i18n="subscription.features.voicePerDay"></span
+                  ></span>
                 </li>
                 <li class="flex items-start">
                   <svg
@@ -151,49 +183,82 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_MONTHLY_VOICE_LIMITS.free }} monthly voice
-                    recordings</span
-                  >
+                    >{{ SETTINGS.TIER_MONTHLY_VOICE_LIMITS.free }}
+                    <span data-i18n="subscription.features.voicePerMonth"></span
+                  ></span>
                 </li>
               </ul>
             </div>
-            <div class="px-6 pb-6">
-              {% if user.tier == 'free' %}
+            <div class="px-6 pb-6 mt-auto">
+              {% if user.tier == 'free' and not user.pending_plan_change %}
               <button
                 disabled
                 class="w-full py-2 px-4 bg-gray-300 text-gray-600 rounded-md cursor-not-allowed"
+                data-i18n="subscription.currentPlan"
+              ></button>
+              {% elif user.is_subscription_canceled and
+              user.subscription_end_date and not user.pending_plan_change %}
+              <button
+                disabled
+                class="w-full py-2 px-4 bg-gray-300 text-gray-600 rounded-md cursor-not-allowed"
+                id="will-switch-free"
               >
-                Current Plan
+                <span data-i18n="subscription.willSwitchToFree"></span>
               </button>
+              <script>
+                // Format the date based on the user's preferred language
+                document.addEventListener("DOMContentLoaded", function () {
+                  const endDate = new Date(
+                    "{{ user.subscription_end_date.isoformat() }}"
+                  );
+                  const language = localStorage.getItem("language") || "en";
+                  let formattedDate;
+
+                  if (language === "de") {
+                    formattedDate = endDate.toLocaleDateString("de-DE");
+                  } else {
+                    formattedDate = endDate.toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    });
+                  }
+
+                  // Get the translation and replace the placeholder
+                  fetch(`/static/translations/${language}.json`)
+                    .then((response) => response.json())
+                    .then((translations) => {
+                      const template =
+                        translations.subscription.willSwitchToFree;
+                      const text = template.replace("{date}", formattedDate);
+                      document.getElementById("will-switch-free").textContent =
+                        text;
+                    });
+                });
+              </script>
               {% else %}
-              <form
-                action="{{ url_for('pages.update_subscription') }}"
-                method="post"
-              >
-                <input type="hidden" name="plan" value="free" />
-                <button
-                  type="submit"
-                  class="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Select Free Plan
-                </button>
-              </form>
+              <button
+                id="downgrade-free"
+                class="w-full py-2 px-4 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                data-i18n="subscription.selectFreePlan"
+              ></button>
               {% endif %}
             </div>
           </div>
 
           <!-- Plus Plan -->
           <div
-            class="border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+            class="border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow flex flex-col"
           >
-            <div class="bg-purple-50 p-6">
-              <h3 class="text-xl font-bold text-purple-800">Plus</h3>
-              <p class="text-3xl font-bold mt-2">
-                $5<span class="text-sm font-normal text-gray-600">/month</span>
-              </p>
-            </div>
-            <div class="p-6">
-              <ul class="space-y-3">
+            <div class="px-6 pt-6">
+              <h3 class="text-xl font-bold mb-2">
+                <span data-i18n="subscription.plans.plus.name"></span>
+              </h3>
+              <p
+                class="text-2xl font-bold mb-4"
+                data-i18n="subscription.plans.plus.price"
+              ></p>
+              <ul class="space-y-2">
                 <li class="flex items-start">
                   <svg
                     class="h-5 w-5 text-green-500 mr-2 mt-0.5"
@@ -209,9 +274,11 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_DAILY_EVAL_LIMITS.plus }} daily
-                    evaluations</span
-                  >
+                    >{{ SETTINGS.TIER_DAILY_EVAL_LIMITS.plus }}
+                    <span
+                      data-i18n="subscription.features.evaluationsPerDay"
+                    ></span
+                  ></span>
                 </li>
                 <li class="flex items-start">
                   <svg
@@ -228,9 +295,11 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_MONTHLY_EVAL_LIMITS.plus }} monthly
-                    evaluations</span
-                  >
+                    >{{ SETTINGS.TIER_MONTHLY_EVAL_LIMITS.plus }}
+                    <span
+                      data-i18n="subscription.features.evaluationsPerMonth"
+                    ></span
+                  ></span>
                 </li>
                 <li class="flex items-start">
                   <svg
@@ -247,9 +316,9 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_DAILY_VOICE_LIMITS.plus }} daily voice
-                    recordings</span
-                  >
+                    >{{ SETTINGS.TIER_DAILY_VOICE_LIMITS.plus }}
+                    <span data-i18n="subscription.features.voicePerDay"></span
+                  ></span>
                 </li>
                 <li class="flex items-start">
                   <svg
@@ -266,59 +335,84 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_MONTHLY_VOICE_LIMITS.plus }} monthly voice
-                    recordings</span
-                  >
-                </li>
-                <li class="flex items-start">
-                  <svg
-                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
-                  <span>Priority support</span>
+                    >{{ SETTINGS.TIER_MONTHLY_VOICE_LIMITS.plus }}
+                    <span data-i18n="subscription.features.voicePerMonth"></span
+                  ></span>
                 </li>
               </ul>
             </div>
-            <div class="px-6 pb-6">
-              {% if user.tier == 'plus' %}
+            <div class="px-6 pb-6 mt-auto">
+              {% if (user.tier == 'plus' and not user.pending_plan_change) or
+              (user.tier == 'plus' and user.pending_plan_change == 'free') %}
               <button
                 disabled
                 class="w-full py-2 px-4 bg-gray-300 text-gray-600 rounded-md cursor-not-allowed"
+                data-i18n="subscription.currentPlan"
+              ></button>
+              {% elif user.pending_plan_change == 'plus' %}
+              <button
+                disabled
+                class="w-full py-2 px-4 bg-gray-300 text-gray-600 rounded-md cursor-not-allowed"
+                id="will-switch-plus"
               >
-                Current Plan
+                <span data-i18n="subscription.willSwitchToPlan"></span>
               </button>
+              <script>
+                // Format the date based on the user's preferred language
+                document.addEventListener("DOMContentLoaded", function () {
+                  const endDate = new Date(
+                    "{{ user.subscription_end_date.isoformat() }}"
+                  );
+                  const language = localStorage.getItem("language") || "en";
+                  let formattedDate;
+
+                  if (language === "de") {
+                    formattedDate = endDate.toLocaleDateString("de-DE");
+                  } else {
+                    formattedDate = endDate.toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    });
+                  }
+
+                  // Get the translation and replace the placeholder
+                  fetch(`/static/translations/${language}.json`)
+                    .then((response) => response.json())
+                    .then((translations) => {
+                      const template =
+                        translations.subscription.willSwitchToPlan;
+                      const text = template
+                        .replace("{date}", formattedDate)
+                        .replace("{plan}", "Plus");
+                      document.getElementById("will-switch-plus").textContent =
+                        text;
+                    });
+                });
+              </script>
               {% else %}
               <button
                 id="checkout-plus"
-                class="w-full py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-              >
-                Upgrade to Plus
-              </button>
+                class="w-full py-2 px-4 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                data-i18n="subscription.upgradePlus"
+              ></button>
               {% endif %}
             </div>
           </div>
 
           <!-- Pro Plan -->
           <div
-            class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+            class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col"
           >
-            <div class="bg-indigo-50 p-6">
-              <h3 class="text-xl font-bold text-indigo-800">Pro</h3>
-              <p class="text-3xl font-bold mt-2">
-                $20<span class="text-sm font-normal text-gray-600">/month</span>
-              </p>
-            </div>
-            <div class="p-6">
-              <ul class="space-y-3">
+            <div class="px-6 pt-6">
+              <h3 class="text-xl font-bold mb-2">
+                <span data-i18n="subscription.plans.pro.name"></span>
+              </h3>
+              <p
+                class="text-2xl font-bold mb-4"
+                data-i18n="subscription.plans.pro.price"
+              ></p>
+              <ul class="space-y-2">
                 <li class="flex items-start">
                   <svg
                     class="h-5 w-5 text-green-500 mr-2 mt-0.5"
@@ -334,28 +428,11 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_DAILY_EVAL_LIMITS.pro }} daily
-                    evaluations</span
-                  >
-                </li>
-                <li class="flex items-start">
-                  <svg
-                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
-                  <span
-                    >{{ SETTINGS.TIER_MONTHLY_EVAL_LIMITS.pro }} monthly
-                    evaluations</span
-                  >
+                    >{{ SETTINGS.TIER_DAILY_EVAL_LIMITS.pro }}
+                    <span
+                      data-i18n="subscription.features.evaluationsPerDay"
+                    ></span
+                  ></span>
                 </li>
                 <li class="flex items-start">
                   <svg
@@ -372,9 +449,11 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_DAILY_VOICE_LIMITS.pro }} daily voice
-                    recordings</span
-                  >
+                    >{{ SETTINGS.TIER_MONTHLY_EVAL_LIMITS.pro }}
+                    <span
+                      data-i18n="subscription.features.evaluationsPerMonth"
+                    ></span
+                  ></span>
                 </li>
                 <li class="flex items-start">
                   <svg
@@ -391,9 +470,9 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_MONTHLY_VOICE_LIMITS.pro }} monthly voice
-                    recordings</span
-                  >
+                    >{{ SETTINGS.TIER_DAILY_VOICE_LIMITS.pro }}
+                    <span data-i18n="subscription.features.voicePerDay"></span
+                  ></span>
                 </li>
                 <li class="flex items-start">
                   <svg
@@ -409,7 +488,10 @@
                       d="M5 13l4 4L19 7"
                     ></path>
                   </svg>
-                  <span>Priority support</span>
+                  <span
+                    >{{ SETTINGS.TIER_MONTHLY_VOICE_LIMITS.pro }}
+                    <span data-i18n="subscription.features.voicePerMonth"></span
+                  ></span>
                 </li>
                 <li class="flex items-start">
                   <svg
@@ -425,25 +507,103 @@
                       d="M5 13l4 4L19 7"
                     ></path>
                   </svg>
-                  <span>Advanced analytics</span>
+                  <span
+                    data-i18n="subscription.features.customQuestions"
+                  ></span>
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    data-i18n="subscription.features.prioritySupport"
+                  ></span>
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    data-i18n="subscription.features.roadmapInfluence"
+                  ></span>
                 </li>
               </ul>
             </div>
-            <div class="px-6 pb-6">
-              {% if user.tier == 'pro' %}
+            <div class="px-6 pb-6 mt-auto">
+              {% if (user.tier == 'pro' and not user.pending_plan_change) or
+              (user.tier == 'pro' and user.pending_plan_change == 'plus') %}
               <button
                 disabled
                 class="w-full py-2 px-4 bg-gray-300 text-gray-600 rounded-md cursor-not-allowed"
+                data-i18n="subscription.currentPlan"
+              ></button>
+              {% elif user.pending_plan_change == 'pro' %}
+              <button
+                disabled
+                class="w-full py-2 px-4 bg-gray-300 text-gray-600 rounded-md cursor-not-allowed"
+                id="will-switch-pro"
               >
-                Current Plan
+                <span data-i18n="subscription.willSwitchToPlan"></span>
               </button>
+              <script>
+                // Format the date based on the user's preferred language
+                document.addEventListener("DOMContentLoaded", function () {
+                  const endDate = new Date(
+                    "{{ user.subscription_end_date.isoformat() }}"
+                  );
+                  const language = localStorage.getItem("language") || "en";
+                  let formattedDate;
+
+                  if (language === "de") {
+                    formattedDate = endDate.toLocaleDateString("de-DE");
+                  } else {
+                    formattedDate = endDate.toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    });
+                  }
+
+                  // Get the translation and replace the placeholder
+                  fetch(`/static/translations/${language}.json`)
+                    .then((response) => response.json())
+                    .then((translations) => {
+                      const template =
+                        translations.subscription.willSwitchToPlan;
+                      const text = template
+                        .replace("{date}", formattedDate)
+                        .replace("{plan}", "Pro");
+                      document.getElementById("will-switch-pro").textContent =
+                        text;
+                    });
+                });
+              </script>
               {% else %}
               <button
                 id="checkout-pro"
-                class="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-              >
-                Upgrade to Pro
-              </button>
+                class="w-full py-2 px-4 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                data-i18n="subscription.upgradePro"
+              ></button>
               {% endif %}
             </div>
           </div>
@@ -451,56 +611,194 @@
       </div>
 
       <div class="mt-8 text-center text-gray-600">
-        <p>
-          All subscriptions are billed monthly and can be canceled at any time.
-        </p>
+        <p data-i18n="subscription.footer.billingInfo"></p>
         <p class="mt-2">
-          Need help?
+          <span data-i18n="subscription.footer.needHelp"></span>
           <a
-            href="{{ url_for('pages.support') }}"
-            class="text-blue-600 hover:underline"
-            >Contact support</a
-          >
+            href="javascript:void(0)"
+            onclick="showFeedbackModal()"
+            class="text-gray-600 underline hover:text-gray-800"
+            data-i18n="subscription.footer.contactSupport"
+          ></a>
         </p>
       </div>
 
-      <script>
+      <!-- Downgrade to Free Confirmation Modal -->
+      <div
+        id="downgradeModal"
+        class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+      >
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
+          <h3
+            class="text-xl font-bold mb-4"
+            data-i18n="subscription.confirmDowngrade"
+          ></h3>
+          <p
+            class="text-gray-600 mb-6"
+            data-i18n="subscription.confirmDowngradeMessage"
+          ></p>
+          <div class="flex justify-end gap-3">
+            <button
+              type="button"
+              onclick="hideDowngradeModal()"
+              class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md"
+              data-i18n="subscription.cancelButton"
+            ></button>
+            <form
+              action="{{ url_for('pages.update_subscription') }}"
+              method="post"
+            >
+              <input type="hidden" name="plan" value="free" />
+              <button
+                type="submit"
+                class="px-4 py-2 text-sm bg-red-600 text-white rounded-md hover:bg-red-700"
+                data-i18n="subscription.confirmButton"
+              ></button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Plan Change Confirmation Modal (Pro to Plus) -->
+      <div
+        id="planChangeModal"
+        class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50"
+      >
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
+          <h3
+            class="text-xl font-bold mb-4"
+            data-i18n="subscription.confirmPlanChange"
+          ></h3>
+          <p
+            class="text-gray-600 mb-6"
+            data-i18n="subscription.confirmPlanChangeMessage"
+          ></p>
+          <div class="flex justify-end gap-3">
+            <button
+              type="button"
+              onclick="hidePlanChangeModal()"
+              class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md"
+              data-i18n="subscription.cancelPlanChangeButton"
+            ></button>
+            <button
+              type="button"
+              id="confirmPlanChange"
+              class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              data-i18n="subscription.confirmPlanChangeButton"
+            ></button>
+          </div>
+        </div>
+      </div>
+
+      <script type="module">
         // Initialize Stripe
         const stripe = Stripe("{{ stripe_public_key }}");
 
-        // Handle Plus plan checkout
-        document
-          .getElementById("checkout-plus")
-          .addEventListener("click", async () => {
-            try {
-              const response = await fetch(
-                '{{ url_for("pages.create_checkout_session") }}',
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    plan: "plus",
-                  }),
-                }
-              );
+        // Import the handlePlanChangeResponse function
+        import { handlePlanChangeResponse } from "/static/js/translations.js";
 
-              const session = await response.json();
+        // Downgrade confirmation modal functions
+        function showDowngradeModal() {
+          document.getElementById("downgradeModal").classList.remove("hidden");
+          document.getElementById("downgradeModal").classList.add("flex");
+        }
 
-              // Redirect to Stripe Checkout
-              stripe.redirectToCheckout({
-                sessionId: session.id,
-              });
-            } catch (error) {
-              console.error("Error:", error);
+        function hideDowngradeModal() {
+          document.getElementById("downgradeModal").classList.add("hidden");
+          document.getElementById("downgradeModal").classList.remove("flex");
+        }
+
+        // Plan change confirmation modal functions
+        function showPlanChangeModal() {
+          document.getElementById("planChangeModal").classList.remove("hidden");
+          document.getElementById("planChangeModal").classList.add("flex");
+        }
+
+        function hidePlanChangeModal() {
+          document.getElementById("planChangeModal").classList.add("hidden");
+          document.getElementById("planChangeModal").classList.remove("flex");
+        }
+
+        // Close modals when clicking outside
+        const downgradeModal = document.getElementById("downgradeModal");
+        if (downgradeModal) {
+          downgradeModal.addEventListener("click", (e) => {
+            if (e.target === e.currentTarget) {
+              hideDowngradeModal();
             }
           });
+        }
+
+        const planChangeModal = document.getElementById("planChangeModal");
+        if (planChangeModal) {
+          planChangeModal.addEventListener("click", (e) => {
+            if (e.target === e.currentTarget) {
+              hidePlanChangeModal();
+            }
+          });
+        }
+
+        // Add event listener to the downgrade button
+        const downgradeButton = document.getElementById("downgrade-free");
+        if (downgradeButton) {
+          downgradeButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            showDowngradeModal();
+          });
+        }
+
+        // Handle Plus plan checkout
+        const checkoutPlusButton = document.getElementById("checkout-plus");
+        if (checkoutPlusButton) {
+          checkoutPlusButton.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            // Check if user is on Pro plan
+            const userTier = "{{ user.tier }}";
+            if (userTier === "pro") {
+              showPlanChangeModal();
+
+              // Add event listener to the confirm button
+              const confirmPlanChangeButton =
+                document.getElementById("confirmPlanChange");
+              confirmPlanChangeButton.addEventListener("click", async () => {
+                hidePlanChangeModal();
+                await handlePlusPlanCheckout();
+              });
+            } else {
+              // For other plans, proceed directly
+              await handlePlusPlanCheckout();
+            }
+          });
+        }
+
+        // Function to handle Plus plan checkout
+        async function handlePlusPlanCheckout() {
+          try {
+            const response = await fetch(
+              '{{ url_for("pages.create_checkout_session") }}',
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  plan: "plus",
+                }),
+              }
+            );
+
+            // Use the handlePlanChangeResponse function
+            handlePlanChangeResponse(response);
+          } catch (error) {
+            console.error("Error:", error);
+          }
+        }
 
         // Handle Pro plan checkout
-        document
-          .getElementById("checkout-pro")
-          .addEventListener("click", async () => {
+        const checkoutProButton = document.getElementById("checkout-pro");
+        if (checkoutProButton) {
+          checkoutProButton.addEventListener("click", async () => {
             try {
               const response = await fetch(
                 '{{ url_for("pages.create_checkout_session") }}',
@@ -515,33 +813,292 @@
                 }
               );
 
-              const session = await response.json();
-
-              // Redirect to Stripe Checkout
-              stripe.redirectToCheckout({
-                sessionId: session.id,
-              });
+              // Use the handlePlanChangeResponse function
+              handlePlanChangeResponse(response);
             } catch (error) {
               console.error("Error:", error);
             }
           });
+        }
+
+        // Make functions available globally
+        window.showDowngradeModal = showDowngradeModal;
+        window.hideDowngradeModal = hideDowngradeModal;
+        window.showPlanChangeModal = showPlanChangeModal;
+        window.hidePlanChangeModal = hidePlanChangeModal;
       </script>
       {% endif %}
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-100 py-6 mt-12">
-      <div class="max-w-5xl mx-auto px-4 text-center text-gray-600 text-sm">
-        <p>&copy; {{ current_year }} ArguMentor. All rights reserved.</p>
-        <div class="mt-2">
-          <a href="{{ url_for('pages.privacy') }}" class="hover:underline mx-2"
-            >Privacy Policy</a
-          >
-          <a href="{{ url_for('pages.terms') }}" class="hover:underline mx-2"
-            >Terms of Service</a
-          >
-        </div>
+    <!-- Feedback Modal -->
+    <div
+      id="feedbackModal"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center"
+    >
+      <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+        <h3
+          class="text-xl font-bold mb-4"
+          data-i18n="supportPage.feedbackModal.title"
+        ></h3>
+        <form id="feedbackForm" class="space-y-4">
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              data-i18n="supportPage.feedbackModal.categoryLabel"
+            ></label>
+            <select
+              id="feedbackCategory"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2"
+            >
+              <option
+                value="general"
+                data-i18n="supportPage.feedbackModal.categoryOptions.general"
+              ></option>
+              <option
+                value="feature"
+                data-i18n="supportPage.feedbackModal.categoryOptions.feature"
+              ></option>
+              <option
+                value="bug"
+                data-i18n="supportPage.feedbackModal.categoryOptions.bug"
+              ></option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              data-i18n="supportPage.feedbackModal.messageLabel"
+            ></label>
+            <textarea
+              id="feedbackMessage"
+              rows="4"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2"
+              data-i18n-placeholder="supportPage.feedbackModal.messagePlaceholder"
+            ></textarea>
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              data-i18n="supportPage.feedbackModal.emailLabel"
+            ></label>
+            <input
+              type="email"
+              id="feedbackEmail"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2"
+              data-i18n-placeholder="supportPage.feedbackModal.emailPlaceholder"
+            />
+            <p
+              class="text-xs text-gray-500 mt-1"
+              data-i18n="supportPage.feedbackModal.emailOptional"
+            ></p>
+          </div>
+          <div class="flex justify-end gap-2">
+            <button
+              type="button"
+              onclick="hideFeedbackModal()"
+              class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+              data-i18n="supportPage.feedbackModal.cancelButton"
+            ></button>
+            <button
+              type="submit"
+              id="feedbackSubmitButton"
+              class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700"
+              data-i18n="supportPage.feedbackModal.submitButton"
+            ></button>
+          </div>
+          <div id="feedbackLoading" class="mt-3 hidden">
+            <div class="flex items-center justify-center">
+              <div
+                class="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-800"
+              ></div>
+              <span
+                class="ml-2 text-sm text-gray-600"
+                data-i18n="supportPage.feedbackModal.loadingMessage"
+              ></span>
+            </div>
+          </div>
+        </form>
+        <div
+          id="feedbackSuccess"
+          class="mt-3 text-green-600 text-sm hidden"
+          data-i18n="supportPage.feedbackModal.successMessage"
+        ></div>
       </div>
-    </footer>
+    </div>
+
+    <script>
+      function showFeedbackModal() {
+        document.getElementById("feedbackModal").classList.remove("hidden");
+        document.getElementById("feedbackModal").classList.add("flex");
+        // Apply translations to select options since they don't get updated automatically
+        const currentLanguage = localStorage.getItem("language") || "en";
+        fetch(`/static/translations/${currentLanguage}.json`)
+          .then((response) => response.json())
+          .then((translations) => {
+            document
+              .querySelectorAll("#feedbackCategory option")
+              .forEach((option) => {
+                const key = option.getAttribute("data-i18n");
+                const translation = key
+                  .split(".")
+                  .reduce((obj, k) => obj && obj[k], translations);
+                if (translation) {
+                  option.textContent = translation;
+                }
+              });
+          });
+      }
+
+      function hideFeedbackModal() {
+        document.getElementById("feedbackModal").classList.add("hidden");
+        document.getElementById("feedbackModal").classList.remove("flex");
+        document.getElementById("feedbackForm").classList.remove("hidden");
+        document.getElementById("feedbackSuccess").classList.add("hidden");
+        document.getElementById("feedbackSuccess").innerHTML = "";
+
+        // Reset form state
+        const submitButton = document.getElementById("feedbackSubmitButton");
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+
+        const loadingElement = document.getElementById("feedbackLoading");
+        if (loadingElement) {
+          loadingElement.classList.add("hidden");
+        }
+      }
+
+      // Close modal when clicking outside
+      const feedbackModal = document.getElementById("feedbackModal");
+      if (feedbackModal) {
+        feedbackModal.addEventListener("click", (e) => {
+          if (e.target === e.currentTarget) {
+            hideFeedbackModal();
+          }
+        });
+      }
+
+      // Handle feedback form submission
+      const feedbackForm = document.getElementById("feedbackForm");
+      if (feedbackForm) {
+        feedbackForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const category = document.getElementById("feedbackCategory").value;
+          const message = document.getElementById("feedbackMessage").value;
+          const email = document.getElementById("feedbackEmail").value;
+          const submitButton = document.getElementById("feedbackSubmitButton");
+          const loadingElement = document.getElementById("feedbackLoading");
+
+          if (!message) {
+            document.getElementById("feedbackSuccess").innerHTML = `
+            <div class="text-red-500">
+              ${
+                window.translations?.supportPage?.feedbackModal?.errorMessage ||
+                "Please enter your feedback message"
+              }
+            </div>
+          `;
+            document
+              .getElementById("feedbackSuccess")
+              .classList.remove("hidden");
+            return;
+          }
+
+          try {
+            // Disable submit button and show loading indicator
+            submitButton.disabled = true;
+            submitButton.classList.add("opacity-50", "cursor-not-allowed");
+            loadingElement.classList.remove("hidden");
+
+            // Send feedback to server
+            const response = await fetch("/submit_feedback", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                category,
+                message,
+                email,
+              }),
+            });
+
+            // Hide loading indicator
+            loadingElement.classList.add("hidden");
+
+            if (response.ok) {
+              document.getElementById("feedbackSuccess").innerHTML = `
+              <p class="mb-4">${
+                window.translations?.supportPage?.feedbackModal
+                  ?.successMessage || "Thanks for the feedback!"
+              }</p>
+              <div class="flex justify-end">
+                <button onclick="hideFeedbackModal()" class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700">
+                  ${
+                    window.translations?.supportPage?.feedbackModal
+                      ?.closeButton || "Close"
+                  }
+                </button>
+              </div>
+            `;
+              document
+                .getElementById("feedbackSuccess")
+                .classList.remove("hidden");
+              document.getElementById("feedbackMessage").value = "";
+              document.getElementById("feedbackEmail").value = "";
+
+              setTimeout(() => {
+                hideFeedbackModal();
+                document
+                  .getElementById("feedbackSuccess")
+                  .classList.add("hidden");
+
+                // Re-enable submit button
+                submitButton.disabled = false;
+                submitButton.classList.remove(
+                  "opacity-50",
+                  "cursor-not-allowed"
+                );
+              }, 2000);
+            } else {
+              // Re-enable submit button on error
+              submitButton.disabled = false;
+              submitButton.classList.remove("opacity-50", "cursor-not-allowed");
+
+              document.getElementById("feedbackSuccess").innerHTML = `
+              <div class="text-red-500">
+                ${
+                  window.translations?.supportPage?.feedbackModal
+                    ?.errorMessage || "Failed to submit feedback"
+                }
+              </div>
+            `;
+              document
+                .getElementById("feedbackSuccess")
+                .classList.remove("hidden");
+            }
+          } catch (error) {
+            // Re-enable submit button on error
+            submitButton.disabled = false;
+            submitButton.classList.remove("opacity-50", "cursor-not-allowed");
+            loadingElement.classList.add("hidden");
+
+            console.error("Error submitting feedback:", error);
+
+            document.getElementById("feedbackSuccess").innerHTML = `
+            <div class="text-red-500">
+              ${
+                window.translations?.supportPage?.feedbackModal?.errorMessage ||
+                "Failed to submit feedback"
+              }
+            </div>
+          `;
+            document
+              .getElementById("feedbackSuccess")
+              .classList.remove("hidden");
+          }
+        });
+      }
+    </script>
   </body>
 </html>

@@ -15,6 +15,12 @@ class User(db.Model, UserMixin):
     xp = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
     tier = db.Column(db.String(20), nullable=False, default="anonymous")
+    # Stripe-related fields
+    stripe_customer_id = db.Column(db.String(255), unique=True, nullable=True)
+    stripe_subscription_id = db.Column(db.String(255), unique=True, nullable=True)
+    subscription_end_date = db.Column(db.DateTime, nullable=True)
+    is_subscription_canceled = db.Column(db.Boolean, default=False)
+    pending_plan_change = db.Column(db.String(20), nullable=True)
     answers = db.relationship(
         "Answer", backref="user", lazy=True, cascade="all, delete-orphan"
     )

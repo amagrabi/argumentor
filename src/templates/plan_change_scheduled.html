@@ -17,7 +17,7 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Subscription Success - ArguMentor</title>
+    <title>Plan Change Scheduled - ArguMentor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     {% include 'partials/favicons.html' %}
     <!-- Include the main stylesheet -->
@@ -37,7 +37,7 @@
       <div class="max-w-5xl mx-auto flex justify-between items-center">
         <h1
           class="text-white text-3xl font-bold"
-          data-i18n="subscription.subscriptionSuccess"
+          data-i18n="subscription.planChangeScheduled"
         ></h1>
         <a
           href="{{ url_for('pages.profile') }}"
@@ -68,27 +68,12 @@
           </div>
           <h2
             class="text-2xl font-bold text-gray-800 mb-2"
-            data-i18n="subscription.subscriptionSuccess"
+            data-i18n="subscription.planChangeScheduled"
           ></h2>
-          <p class="text-gray-600" id="success-message">
-            Thank you for your subscription! Your account has been successfully
-            upgraded to the {{ plan }} plan.
-          </p>
-          <script>
-            document.addEventListener("DOMContentLoaded", function () {
-              const language = localStorage.getItem("language") || "en";
-
-              // Get the translation and replace the placeholder
-              fetch(`/static/translations/${language}.json`)
-                .then((response) => response.json())
-                .then((translations) => {
-                  const template =
-                    translations.subscription.subscriptionSuccessMessage;
-                  const text = template.replace("{plan}", "{{ plan }}");
-                  document.getElementById("success-message").textContent = text;
-                });
-            });
-          </script>
+          <p
+            class="text-gray-600"
+            data-i18n="subscription.planChangeScheduledMessage"
+          ></p>
         </div>
 
         <div class="bg-gray-50 p-4 rounded-lg mb-6">
@@ -99,46 +84,52 @@
           <div class="flex justify-between mb-2">
             <span
               class="text-gray-600"
-              data-i18n="subscription.planLabel"
+              data-i18n="subscription.currentPlanLabel"
             ></span>
-            <span class="font-medium">{{ plan }}</span>
+            <span class="font-medium">{{ current_plan }}</span>
           </div>
           <div class="flex justify-between mb-2">
             <span
               class="text-gray-600"
-              data-i18n="subscription.statusLabel"
+              data-i18n="subscription.newPlanLabel"
             ></span>
-            <span
-              class="font-medium text-green-600"
-              data-i18n="subscription.active"
-            ></span>
+            <span class="font-medium">{{ new_plan }}</span>
           </div>
-          {% if plan == 'Plus' %}
           <div class="flex justify-between mb-2">
             <span
               class="text-gray-600"
-              data-i18n="subscription.priceLabel"
+              data-i18n="subscription.changeDateLabel"
             ></span>
-            <span
-              class="font-medium"
-              data-i18n="subscription.plans.plus.price"
-            ></span>
+            <span class="font-medium" id="change-date">
+              {{ subscription_end_date.strftime('%B %d, %Y') }}
+            </span>
           </div>
-          {% elif plan == 'Pro' %}
-          <div class="flex justify-between mb-2">
-            <span
-              class="text-gray-600"
-              data-i18n="subscription.priceLabel"
-            ></span>
-            <span
-              class="font-medium"
-              data-i18n="subscription.plans.pro.price"
-            ></span>
-          </div>
-          {% endif %}
+          <script>
+            // Format the date based on the user's preferred language
+            document.addEventListener("DOMContentLoaded", function () {
+              const endDate = new Date(
+                "{{ subscription_end_date.isoformat() }}"
+              );
+              const language = localStorage.getItem("language") || "en";
+              let formattedDate;
+
+              if (language === "de") {
+                formattedDate = endDate.toLocaleDateString("de-DE");
+              } else {
+                formattedDate = endDate.toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                });
+              }
+
+              document.getElementById("change-date").textContent =
+                formattedDate;
+            });
+          </script>
         </div>
 
-        <div class="mt-8">
+        <div class="mt-8 text-center">
           <a
             href="{{ url_for('pages.profile') }}"
             class="inline-block px-6 py-3 bg-gray-600 text-white rounded-md hover:bg-gray-800 transition-colors"

@@ -39,7 +39,10 @@
       type="module"
       src="{{ url_for('static', filename='js/profile.js') }}"
     ></script>
-    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/auth.js') }}"
+    ></script>
   </head>
   {% macro score_color(score) -%} {% set score_float = score|float|round(1,
   'common') %} {% if score_float >= 9.95 %} text-emerald-600 bg-emerald-50 {%
@@ -126,29 +129,14 @@
             <span class="ml-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full"
               >Free</span
             >
-            <a
-              href="{{ url_for('pages.subscription') }}"
-              class="ml-2 px-3 py-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors text-sm"
-              >Upgrade</a
-            >
             {% elif user.tier == "anonymous" %}
             <span class="ml-1 px-2 py-1 bg-gray-100 text-gray-800 rounded-full"
               >Anonymous</span
-            >
-            <a
-              href="{{ url_for('pages.subscription') }}"
-              class="ml-2 px-3 py-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors text-sm"
-              >Upgrade</a
             >
             {% elif user.tier == "plus" %}
             <span
               class="ml-1 px-2 py-1 bg-purple-100 text-purple-800 rounded-full"
               >Plus</span
-            >
-            <a
-              href="{{ url_for('pages.subscription') }}"
-              class="ml-2 px-3 py-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors text-sm"
-              >Upgrade to Pro</a
             >
             {% elif user.tier == "pro" %}
             <span
@@ -160,6 +148,93 @@
               class="ml-1 px-2 py-1 bg-purple-100 text-purple-800 rounded-full"
               >{{ user.tier|title }}</span
             >
+            {% endif %}
+            <a
+              href="{{ url_for('pages.subscription') }}"
+              class="ml-2 text-sm text-gray-700 hover:text-gray-900 underline transition-colors"
+              data-i18n="profile.changePlan"
+            ></a>
+
+            {% if user.pending_plan_change %}
+            <!-- Show pending plan change message -->
+            <div class="mt-1 text-sm text-gray-500" id="plan-change-notice">
+              <span data-i18n="profile.planChangeNotice"></span>
+            </div>
+            <script>
+              // Format the date based on the user's preferred language
+              document.addEventListener("DOMContentLoaded", function () {
+                const endDate = new Date(
+                  "{{ user.subscription_end_date.isoformat() }}"
+                );
+                const language = localStorage.getItem("language") || "en";
+                let formattedDate;
+
+                if (language === "de") {
+                  formattedDate = endDate.toLocaleDateString("de-DE");
+                } else {
+                  formattedDate = endDate.toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  });
+                }
+
+                // Get the translation and replace the placeholder
+                fetch(`/static/translations/${language}.json`)
+                  .then((response) => response.json())
+                  .then((translations) => {
+                    const template = translations.profile.planChangeNotice;
+                    const text = template
+                      .replace("{date}", formattedDate)
+                      .replace(
+                        "{plan}",
+                        "{{ user.pending_plan_change|title }}"
+                      );
+                    document.getElementById("plan-change-notice").textContent =
+                      text;
+                  });
+              });
+            </script>
+            {% elif user.is_subscription_canceled and user.subscription_end_date
+            and (user.tier == "plus" or user.tier == "pro") %}
+            <!-- Show subscription cancellation message -->
+            <div
+              class="mt-1 text-sm text-gray-500"
+              id="subscription-end-notice"
+            >
+              <span data-i18n="profile.subscriptionEndNotice"></span>
+            </div>
+            <script>
+              // Format the date based on the user's preferred language
+              document.addEventListener("DOMContentLoaded", function () {
+                const endDate = new Date(
+                  "{{ user.subscription_end_date.isoformat() }}"
+                );
+                const language = localStorage.getItem("language") || "en";
+                let formattedDate;
+
+                if (language === "de") {
+                  formattedDate = endDate.toLocaleDateString("de-DE");
+                } else {
+                  formattedDate = endDate.toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  });
+                }
+
+                // Get the translation and replace the placeholder
+                fetch(`/static/translations/${language}.json`)
+                  .then((response) => response.json())
+                  .then((translations) => {
+                    const template = translations.profile.subscriptionEndNotice;
+                    const text = template.replace("{date}", formattedDate);
+                    document.getElementById(
+                      "subscription-end-notice"
+                    ).textContent = text;
+                  });
+              });
+            </script>
             {% endif %}
           </div>
 
@@ -296,7 +371,7 @@
                 <div class="xp-bar-container">
                   <div
                     class="xp-progress-bar bg-green-500 h-full transition-all duration-500"
-                    style="width: {{ level_info.progress_percent }}%;"
+                    :style="`width: ${level_info.progress_percent}%`"
                   ></div>
                 </div>
                 <p class="text-sm mt-1">
@@ -892,9 +967,5 @@
     <!-- Critical Scripts -->
     <script type="module" src="/static/js/translationManager.js"></script>
     <script type="module" src="/static/js/profile.js" defer></script>
-    <script src="/static/js/auth.js" defer></script>
-
-    <!-- Non-critical scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   </body>
 </html>

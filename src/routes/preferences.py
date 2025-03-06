@@ -4,8 +4,8 @@ from flask import Blueprint, jsonify, request, session
 from flask_login import current_user
 
 from extensions import db
-from src.constants.categories import DEFAULT_CATEGORIES
 from models import UserAchievement
+from src.constants.categories import DEFAULT_CATEGORIES
 
 preferences_bp = Blueprint("preferences", __name__)
 
@@ -49,7 +49,7 @@ def get_user_achievements():
         if current_user.is_authenticated:
             # Query user's achievements from database
             user_achievements = UserAchievement.query.filter_by(
-                user_id=current_user.id
+                user_uuid=current_user.uuid
             ).all()
 
             # Extract achievement IDs
@@ -60,4 +60,8 @@ def get_user_achievements():
 
         return jsonify({"earned_achievements": earned_achievement_ids})
     except Exception as e:
+        import traceback
+
+        error_traceback = traceback.format_exc()
+        print(f"Error in get_user_achievements: {str(e)}\n{error_traceback}")
         return jsonify({"error": str(e), "earned_achievements": []}), 500

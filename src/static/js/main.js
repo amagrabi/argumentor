@@ -2709,15 +2709,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         // Store old level text for level up animation
         let oldChallengeLevelText = "";
         if (data.leveled_up && challengeCurrentLevelElement) {
-          // Debug log to see what data we have
-          console.log("Level up data:", {
-            previous_level: data.previous_level,
-            previous_display_name: data.level_info.previous_display_name,
-            level_info: data.level_info,
-            current_level: data.current_level,
-            display_name: data.level_info.display_name,
-          });
-
           // Get the current level number from level_info
           const previousLevelNumber = data.level_info.level_number - 1;
           // Use the level number to construct the display name

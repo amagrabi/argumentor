@@ -1,4 +1,4 @@
-function showLoginModal() {
+export function showLoginModal() {
   const translations = window.translations || {};
   const meta = document.querySelector('meta[name="google-signin-client_id"]');
   const clientId = meta ? meta.getAttribute("content") : "";
@@ -187,7 +187,7 @@ function showLoginModal() {
   }
 }
 
-function showSignupModal() {
+export function showSignupModal() {
   const translations = window.translations || {};
   const meta = document.querySelector('meta[name="google-signin-client_id"]');
   const clientId = meta ? meta.getAttribute("content") : "";
@@ -678,3 +678,11 @@ function handleSignupError(error) {
 
   errorElement.textContent = errorMessage || error.message;
 }
+
+// Attach necessary functions to window object for global access
+window.showLoginModal = showLoginModal;
+window.showSignupModal = showSignupModal;
+window.showPasswordResetRequestModal = showPasswordResetRequestModal;
+window.switchToSignup = switchToSignup;
+window.switchToLogin = switchToLogin;
+window.showAuthModal = showAuthModal;

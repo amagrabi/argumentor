@@ -312,6 +312,88 @@ def create_checkout_session():
     else:
         return jsonify({"error": "Invalid plan selected"}), 400
 
+    # If the user already has a pending plan change, update it
+    if user.pending_plan_change:
+        try:
+            # Retrieve the subscription
+            subscription = stripe.Subscription.retrieve(user.stripe_subscription_id)
+
+            # Find the appropriate price ID
+            price_id = None
+            if plan == "plus":
+                price_id = SETTINGS.STRIPE_PLUS_PRICE_ID
+            elif plan == "pro":
+                price_id = SETTINGS.STRIPE_PRO_PRICE_ID
+
+            if price_id:
+                # Update the scheduled plan change
+                stripe.Subscription.modify(
+                    user.stripe_subscription_id,
+                    items=[
+                        {
+                            "id": subscription["items"]["data"][0]["id"],
+                            "price": price_id,
+                        }
+                    ],
+                    proration_behavior="none",
+                    billing_cycle_anchor="unchanged",
+                )
+
+                # Update the pending plan change
+                user.pending_plan_change = plan
+                db.session.commit()
+
+                return jsonify(
+                    {
+                        "success": True,
+                        "message": "Plan change updated",
+                        "redirect": url_for("pages.plan_change_scheduled"),
+                    }
+                )
+        except Exception as e:
+            current_app.logger.error(f"Error updating plan change: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
+    # Check if user is switching from Pro to Plus
+    if user.tier == "pro" and plan == "plus" and user.stripe_subscription_id:
+        try:
+            # Schedule the downgrade to take effect at the end of the current billing period
+            subscription = stripe.Subscription.retrieve(user.stripe_subscription_id)
+
+            # Find the Plus plan price ID
+            plus_price_id = SETTINGS.STRIPE_PLUS_PRICE_ID
+
+            # Schedule an update to switch to the Plus plan at period end
+            stripe.Subscription.modify(
+                user.stripe_subscription_id,
+                items=[
+                    {
+                        "id": subscription["items"]["data"][0]["id"],
+                        "price": plus_price_id,
+                    }
+                ],
+                proration_behavior="none",  # Don't prorate, change at end of billing cycle
+                billing_cycle_anchor="unchanged",  # Keep the same billing cycle
+            )
+
+            # Update user record to indicate pending plan change
+            user.pending_plan_change = "plus"
+            db.session.commit()
+
+            # Return success without creating a checkout session
+            return jsonify(
+                {
+                    "success": True,
+                    "message": "Plan change scheduled",
+                    "redirect": url_for("pages.plan_change_scheduled"),
+                }
+            )
+
+        except Exception as e:
+            current_app.logger.error(f"Error scheduling plan change: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
+    # If user is on Free tier and upgrading, or any other case, create a new checkout session
     try:
         # Create a checkout session
         checkout_session = stripe.checkout.Session.create(
@@ -342,6 +424,12 @@ def create_checkout_session():
                 "plan": plan,
             },
         )
+
+        # Clear any pending plan changes or cancellation status when upgrading from free
+        if user.tier == "free":
+            user.pending_plan_change = None
+            user.is_subscription_canceled = False
+            db.session.commit()
 
         return jsonify({"id": checkout_session.id})
 
@@ -374,6 +462,29 @@ def subscription_success():
         user = User.query.filter_by(uuid=user_uuid).first()
         if user and plan in ["plus", "pro"]:
             user.tier = plan
+
+            # Store Stripe customer and subscription IDs
+            if checkout_session.customer:
+                user.stripe_customer_id = checkout_session.customer
+
+            # Get subscription details
+            if checkout_session.subscription:
+                user.stripe_subscription_id = checkout_session.subscription
+
+                # Get subscription details to store end date
+                subscription = stripe.Subscription.retrieve(
+                    checkout_session.subscription
+                )
+                if subscription:
+                    # Store the current period end as the subscription end date
+                    user.subscription_end_date = datetime.fromtimestamp(
+                        subscription.current_period_end, UTC
+                    )
+                    user.is_subscription_canceled = False
+
+                    # Clear any pending plan changes when creating a new subscription
+                    user.pending_plan_change = None
+
             db.session.commit()
 
         return render_template(
@@ -399,9 +510,57 @@ def update_subscription():
         return redirect(url_for("pages.home"))
 
     plan = request.form.get("plan")
-    if plan == "free":
-        user.tier = "free"
-        db.session.commit()
+
+    # If the user already has a pending plan change to free, just return
+    if plan == "free" and user.pending_plan_change == "free":
+        return redirect(url_for("pages.profile"))
+
+    if plan == "free" and user.tier != "free":
+        # Set up Stripe
+        stripe.api_key = SETTINGS.STRIPE_SECRET_KEY
+
+        # Check if the user has an active Stripe subscription
+        if user.stripe_subscription_id:
+            try:
+                # Retrieve the subscription
+                subscription = stripe.Subscription.retrieve(user.stripe_subscription_id)
+
+                # Cancel the subscription at the end of the current period
+                if subscription.status == "active":
+                    stripe.Subscription.modify(
+                        user.stripe_subscription_id, cancel_at_period_end=True
+                    )
+
+                    # Update the subscription end date if it's not already set
+                    if subscription.current_period_end:
+                        user.subscription_end_date = datetime.fromtimestamp(
+                            subscription.current_period_end, UTC
+                        )
+
+                    # Mark the subscription as canceled but keep the current tier until the end date
+                    user.is_subscription_canceled = True
+
+                    # Clear any pending plan changes since we're canceling
+                    user.pending_plan_change = None
+
+                    db.session.commit()
+                elif subscription.status in ["canceled", "unpaid"]:
+                    # If the subscription is already canceled or unpaid, update to free tier immediately
+                    user.tier = "free"
+                    user.is_subscription_canceled = True
+                    user.pending_plan_change = None
+                    db.session.commit()
+            except Exception as e:
+                current_app.logger.error(f"Error canceling subscription: {str(e)}")
+                # Even if there's an error with Stripe, still update the local status
+                user.tier = "free"
+                user.pending_plan_change = None
+                db.session.commit()
+        else:
+            # If there's no subscription ID (shouldn't happen normally), just update the tier
+            user.tier = "free"
+            user.pending_plan_change = None
+            db.session.commit()
 
     return redirect(url_for("pages.profile"))
 
@@ -443,14 +602,51 @@ def stripe_webhook():
                     if items:
                         price_id = items[0]["price"]["id"]
 
+                        # Determine the plan based on price ID
+                        new_plan = None
                         if price_id == SETTINGS.STRIPE_PLUS_PRICE_ID:
-                            user.tier = "plus"
+                            new_plan = "plus"
                         elif price_id == SETTINGS.STRIPE_PRO_PRICE_ID:
-                            user.tier = "pro"
+                            new_plan = "pro"
+
+                        # If there's a pending plan change and it matches the new plan,
+                        # clear the pending_plan_change field
+                        if (
+                            user.pending_plan_change
+                            and user.pending_plan_change == new_plan
+                        ):
+                            user.pending_plan_change = None
+
+                        # Update the user's tier if it's different
+                        if new_plan and user.tier != new_plan:
+                            user.tier = new_plan
+                            # If we're updating the tier, clear any pending plan changes
+                            user.pending_plan_change = None
+
+                        # Update subscription end date
+                        if "current_period_end" in subscription:
+                            user.subscription_end_date = datetime.fromtimestamp(
+                                subscription["current_period_end"], UTC
+                            )
+
+                        # Check if the subscription has cancel_at_period_end set
+                        if subscription.get("cancel_at_period_end", False):
+                            user.is_subscription_canceled = True
+                        else:
+                            user.is_subscription_canceled = False
 
                         db.session.commit()
                 elif subscription["status"] in ["canceled", "unpaid"]:
-                    user.tier = "free"
+                    # Only update tier to free if the subscription end date has passed
+                    current_time = datetime.now(UTC)
+                    if (
+                        not user.subscription_end_date
+                        or current_time >= user.subscription_end_date
+                    ):
+                        user.tier = "free"
+                        user.pending_plan_change = None
+
+                    user.is_subscription_canceled = True
                     db.session.commit()
 
     elif event["type"] == "customer.subscription.deleted":
@@ -460,7 +656,17 @@ def stripe_webhook():
         if user_uuid:
             user = User.query.filter_by(uuid=user_uuid).first()
             if user:
-                user.tier = "free"
+                # Only update tier to free if the subscription end date has passed
+                current_time = datetime.now(UTC)
+                if (
+                    not user.subscription_end_date
+                    or current_time >= user.subscription_end_date
+                ):
+                    user.tier = "free"
+                    # Clear any pending plan changes
+                    user.pending_plan_change = None
+
+                user.is_subscription_canceled = True
                 db.session.commit()
 
     return jsonify({"status": "success"})
@@ -572,3 +778,78 @@ def terms():
 @pages_bp.route("/contact")
 def contact():
     return render_template("contact.html")
+
+
+@pages_bp.route("/check-subscription-expirations", methods=["GET"])
+def check_subscription_expirations():
+    """Check for expired subscriptions and update user tiers."""
+    # Verify using the existing SECRET_KEY instead of a separate API_KEY
+    api_key = request.args.get("api_key")
+    if not api_key or api_key != current_app.config["SECRET_KEY"]:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    # Set up Stripe
+    stripe.api_key = SETTINGS.STRIPE_SECRET_KEY
+
+    # Get current time
+    current_time = datetime.now(UTC)
+
+    # Find users with expired subscriptions who haven't been moved to free tier yet
+    expired_subscriptions = User.query.filter(
+        User.is_subscription_canceled,
+        User.subscription_end_date <= current_time,
+        User.tier.in_(["plus", "pro"]),
+    ).all()
+
+    updated_count = 0
+    for user in expired_subscriptions:
+        user.tier = "free"
+        user.pending_plan_change = None
+        updated_count += 1
+
+    # Find users with pending plan changes whose subscription period has ended
+    pending_plan_changes = User.query.filter(
+        User.pending_plan_change.isnot(None),
+        User.subscription_end_date <= current_time,
+    ).all()
+
+    plan_change_count = 0
+    for user in pending_plan_changes:
+        # Update the user's tier to the pending plan
+        user.tier = user.pending_plan_change
+        user.pending_plan_change = None
+        plan_change_count += 1
+
+    if updated_count > 0 or plan_change_count > 0:
+        db.session.commit()
+
+    return jsonify(
+        {
+            "success": True,
+            "message": f"Checked subscription expirations. Updated {updated_count} users to free tier. Applied {plan_change_count} pending plan changes.",
+        }
+    )
+
+
+@pages_bp.route("/plan-change-scheduled")
+def plan_change_scheduled():
+    """Show confirmation page for scheduled plan changes."""
+    if "user_id" not in session:
+        return redirect(url_for("pages.home"))
+
+    user = User.query.filter_by(uuid=session["user_id"]).first()
+    if not user:
+        return redirect(url_for("pages.home"))
+
+    # If no pending plan change, redirect to subscription page
+    if not user.pending_plan_change:
+        return redirect(url_for("pages.subscription"))
+
+    return render_template(
+        "plan_change_scheduled.html",
+        user=user,
+        current_plan=user.tier.title(),
+        new_plan=user.pending_plan_change.title(),
+        subscription_end_date=user.subscription_end_date,
+        current_year=datetime.now().year,
+    )

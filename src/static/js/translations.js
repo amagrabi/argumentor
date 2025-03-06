@@ -232,3 +232,39 @@ function updateEvaluationTranslations() {
 
 // Export translations for backward compatibility
 export { translationManager };
+
+// Get the current language
+function getCurrentLanguage() {
+  return currentLanguage;
+}
+
+// Handle Stripe checkout response for plan changes
+async function handlePlanChangeResponse(response) {
+  try {
+    const data = await response.json();
+
+    if (data.success && data.redirect) {
+      // Redirect to the plan change scheduled page
+      window.location.href = data.redirect;
+    } else if (data.id) {
+      // Regular checkout session, redirect to Stripe
+      const stripe = Stripe(stripePublicKey);
+      stripe.redirectToCheckout({
+        sessionId: data.id,
+      });
+    } else {
+      console.error("Unexpected response format:", data);
+    }
+  } catch (error) {
+    console.error("Error handling plan change response:", error);
+  }
+}
+
+// Export the functions
+export {
+  loadTranslations,
+  getCurrentLanguage,
+  setLanguage,
+  applyTranslations,
+  handlePlanChangeResponse,
+};

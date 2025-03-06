@@ -140,3 +140,33 @@ flask db upgrade
 4. Push changes and deploy to Heroku
 
 The `Procfile` is configured to run migrations on each deploy, which ensures that Heroku automatically applies any pending migration scripts during the release phase.
+
+### Heroku Scheduler for Subscription Management
+
+To handle expired subscriptions automatically, set up a daily check using Heroku Scheduler:
+
+1. Install the Heroku Scheduler add-on:
+
+```bash
+heroku addons:create scheduler:standard
+```
+
+2. Open the Scheduler dashboard:
+
+```bash
+heroku addons:open scheduler
+```
+
+3. Add a new job with the following settings:
+
+   - Frequency: Daily
+   - Time: Select a low-traffic time (e.g., 3:00 AM UTC)
+   - Command: `curl "https://<add-domain-here>.herokuapp.com/check-subscription-expirations?api_key=$SECRET_KEY"`
+
+4. Make sure the `SECRET_KEY` environment variable is set in your Heroku app:
+
+```bash
+heroku config:set SECRET_KEY=your_secure_api_key
+```
+
+This ensures expired subscriptions are automatically downgraded to the free tier when they reach their end date.

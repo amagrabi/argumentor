@@ -283,16 +283,32 @@ def check_voice_limits():
     voice_limit = get_voice_limit(user.tier)
 
     if daily_count >= voice_limit:
-        error_message = f"Daily voice recording limit reached ({voice_limit}). "
+        error_message = (
+            f"Daily voice recording limit reached ({voice_limit}). "
+            if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+            else f"Tägliches Sprachaufnahmelimit erreicht ({voice_limit}). "
+        )
         if user.tier == "anonymous":
             error_message += (
-                'Log in for higher limits <a href="#" class="underline" '
-                'onclick="showAuthModal(); return false;">here</a>.'
+                (
+                    'Log in for higher limits <a href="#" class="underline" '
+                    'onclick="showAuthModal(); return false;">here</a>.'
+                )
+                if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                else (
+                    'Für höhere Limits kannst du dich <a href="#" class="underline" '
+                    'onclick="showAuthModal(); return false;">hier</a> anmelden.'
+                )
             )
         else:
             error_message += (
-                'If you need a higher limit, let me know in the <a href="#" class="underline" '
-                'onclick="showFeedbackModal(); return false;">feedback</a>.'
+                (
+                    'Upgrade your account for higher limits <a href="/subscription" class="underline">here</a>.'
+                )
+                if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                else (
+                    'Erhöhe dein Limit durch ein Upgrade deines Kontos <a href="/subscription" class="underline">hier</a>.'
+                )
             )
         return jsonify({"error": error_message, "limit_reached": True}), 200
 
@@ -301,16 +317,32 @@ def check_voice_limits():
     monthly_limit = get_monthly_voice_limit(user.tier)
 
     if monthly_count >= monthly_limit:
-        error_message = f"Monthly voice recording limit reached ({monthly_limit}). "
+        error_message = (
+            f"Monthly voice recording limit reached ({monthly_limit}). "
+            if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+            else f"Monatliches Sprachaufnahmelimit erreicht ({monthly_limit}). "
+        )
         if user.tier == "anonymous":
             error_message += (
-                'Log in for higher limits <a href="#" class="underline" '
-                'onclick="showAuthModal(); return false;">here</a>.'
+                (
+                    'Log in for higher limits <a href="#" class="underline" '
+                    'onclick="showAuthModal(); return false;">here</a>.'
+                )
+                if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                else (
+                    'Für höhere Limits kannst du dich <a href="#" class="underline" '
+                    'onclick="showAuthModal(); return false;">hier</a> anmelden.'
+                )
             )
         else:
             error_message += (
-                'If you need a higher limit, let me know in the <a href="#" class="underline" '
-                'onclick="showFeedbackModal(); return false;">feedback</a>.'
+                (
+                    'Upgrade your account for higher limits <a href="/subscription" class="underline">here</a>.'
+                )
+                if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                else (
+                    'Erhöhe dein Limit durch ein Upgrade deines Kontos <a href="/subscription" class="underline">hier</a>.'
+                )
             )
         return jsonify({"error": error_message, "limit_reached": True}), 200
 
@@ -334,16 +366,32 @@ def transcribe_voice():
     voice_limit = get_voice_limit(user.tier)
 
     if daily_count >= voice_limit:
-        error_message = f"Daily voice recording limit reached ({voice_limit}). "
+        error_message = (
+            f"Daily voice recording limit reached ({voice_limit}). "
+            if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+            else f"Tägliches Sprachaufnahmelimit erreicht ({voice_limit}). "
+        )
         if user.tier == "anonymous":
             error_message += (
-                'Log in for higher limits <a href="#" class="underline" '
-                'onclick="showAuthModal(); return false;">here</a>.'
+                (
+                    'Log in for higher limits <a href="#" class="underline" '
+                    'onclick="showAuthModal(); return false;">here</a>.'
+                )
+                if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                else (
+                    'Für höhere Limits kannst du dich <a href="#" class="underline" '
+                    'onclick="showAuthModal(); return false;">hier</a> anmelden.'
+                )
             )
         else:
             error_message += (
-                'If you need a higher limit, let me know in the <a href="#" class="underline" '
-                'onclick="showFeedbackModal(); return false;">feedback</a>.'
+                (
+                    'Upgrade your account for higher limits <a href="/subscription" class="underline">here</a>.'
+                )
+                if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                else (
+                    'Erhöhe dein Limit durch ein Upgrade deines Kontos <a href="/subscription" class="underline">hier</a>.'
+                )
             )
         return jsonify({"error": error_message}), 429
 
@@ -352,16 +400,32 @@ def transcribe_voice():
     monthly_limit = get_monthly_voice_limit(user.tier)
 
     if monthly_count >= monthly_limit:
-        error_message = f"Monthly voice recording limit reached ({monthly_limit}). "
+        error_message = (
+            f"Monthly voice recording limit reached ({monthly_limit}). "
+            if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+            else f"Monatliches Sprachaufnahmelimit erreicht ({monthly_limit}). "
+        )
         if user.tier == "anonymous":
             error_message += (
-                'Log in for higher limits <a href="#" class="underline" '
-                'onclick="showAuthModal(); return false;">here</a>.'
+                (
+                    'Log in for higher limits <a href="#" class="underline" '
+                    'onclick="showAuthModal(); return false;">here</a>.'
+                )
+                if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                else (
+                    'Für höhere Limits kannst du dich <a href="#" class="underline" '
+                    'onclick="showAuthModal(); return false;">hier</a> anmelden.'
+                )
             )
         else:
             error_message += (
-                'If you need a higher limit, let me know in the <a href="#" class="underline" '
-                'onclick="showFeedbackModal(); return false;">feedback</a>.'
+                (
+                    'Upgrade your account for higher limits <a href="/subscription" class="underline">here</a>.'
+                )
+                if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                else (
+                    'Erhöhe dein Limit durch ein Upgrade deines Kontos <a href="/subscription" class="underline">hier</a>.'
+                )
             )
         return jsonify({"error": error_message}), 429
 

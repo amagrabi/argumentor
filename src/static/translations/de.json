@@ -113,6 +113,10 @@
     "dailyVoiceRecordings": "Tägliche Sprachaufnahmen",
     "monthlyVoiceRecordings": "Monatliche Sprachaufnahmen",
     "level": "Level",
+    "changePlan": "Plan ändern",
+    "subscriptionCanceled": "Dein Abonnement wurde gekündigt. Dein {plan} Plan bleibt aktiv bis zum {date}, danach wirst du auf den kostenlosen Plan umgestellt.",
+    "subscriptionEndNotice": "Dein Abonnement wurde gekündigt. Dein Plan bleibt aktiv bis zum {date}, danach wirst du auf den kostenlosen Plan umgestellt.",
+    "planChangeNotice": "Dein Plan wird am {date} zu {plan} geändert.",
     "achievementData": {
       "first_argument": {
         "name": "Erste Schritte",
@@ -844,7 +848,7 @@
       "messagePlaceholder": "Teile uns deine Gedanken mit...",
       "emailLabel": "E-Mail (Optional)",
       "emailPlaceholder": "deine.email@beispiel.de",
-      "emailOptional": "Optional - nur wenn du kontaktiert werden möchtest",
+      "emailOptional": "Füge deine Email hinzu falls du eine Antwort bekommen möchtest.",
       "errorMessage": "Bitte gib deine Feedback-Nachricht ein",
       "loadingMessage": "Feedback wird gesendet...",
       "cancelButton": "Abbrechen",
@@ -942,8 +946,8 @@
     "title": "Kontakt",
     "goBack": "Zurück",
     "owner": "Diese Website wird von Amadeus Magrabi betrieben.",
-    "contactMe": "Du kannst mich über das Formular auf der",
-    "supportPage": "Support-Seite",
+    "contactMe": "Du kannst mich über das ",
+    "supportPage": "Feedback-Formular",
     "contactMeSuffix": " oder über",
     "mySocials": "Social Media",
     "feedbackSuffix": " kontaktieren.",
@@ -955,5 +959,67 @@
     "privacyPolicy": "Datenschutz",
     "termsOfService": "Nutzungsbedingungen",
     "contact": "Kontakt"
+  },
+  "subscription": {
+    "title": "Abonnement-Pläne",
+    "backToProfile": "Zurück zum Profil",
+    "choosePlan": "Wähle deinen Plan",
+    "loginRequired": "Du musst angemeldet sein, um dein Konto zu upgraden.",
+    "loginHere": "Hier anmelden",
+    "currentPlan": "Aktueller Plan",
+    "selectFreePlan": "Kostenlosen Plan wählen",
+    "upgradePlus": "Auf Plus upgraden",
+    "upgradePro": "Auf Pro upgraden",
+    "confirmDowngrade": "Bist du sicher, dass du dein Abonnement kündigen möchtest?",
+    "confirmDowngradeMessage": "Du wirst weiterhin Zugang zu deinem aktuellen Plan haben bis zum Ende deiner Abrechnungsperiode.",
+    "confirmButton": "Ja, Abonnement kündigen",
+    "cancelButton": "Nein, meinen Plan behalten",
+    "willSwitchToFree": "Wechselt zum kostenlosen Plan am {date}",
+    "willSwitchToPlan": "Wechselt zum {plan}-Plan am {date}",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "price": "0€/Monat"
+      },
+      "plus": {
+        "name": "Plus",
+        "price": "5€/Monat"
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "20€/Monat"
+      }
+    },
+    "features": {
+      "evaluationsPerDay": "Bewertungen pro Tag",
+      "evaluationsPerMonth": "Bewertungen pro Monat",
+      "voicePerDay": "Sprachaufnahmen pro Tag",
+      "voicePerMonth": "Sprachaufnahmen pro Monat",
+      "customQuestions": "Eigene Fragen hinzufügen",
+      "prioritySupport": "Prioritäts-Support",
+      "roadmapInfluence": "Einfluss auf die Feature-Roadmap"
+    },
+    "footer": {
+      "billingInfo": "Alle Abonnements werden monatlich abgerechnet und können jederzeit gekündigt werden. Bei Kündigung behältst du deine Premium-Funktionen bis zum Ende deiner aktuellen Abrechnungsperiode.",
+      "needHelp": "Falls du Hilfe brauchst, kannst du den ",
+      "contactSupport": "Support kontaktieren"
+    },
+    "confirmPlanChange": "Planänderung bestätigen",
+    "confirmPlanChangeMessage": "Bist du sicher, dass du deinen Plan ändern möchtest? Die Änderung wird am Ende deiner aktuellen Abrechnungsperiode wirksam.",
+    "confirmPlanChangeButton": "Ja, Plan ändern",
+    "cancelPlanChangeButton": "Nein, Plan behalten",
+    "planChangeScheduled": "Planänderung bestätigt",
+    "planChangeScheduledMessage": "Dein Abonnement wird am Ende deiner aktuellen Abrechnungsperiode geändert.",
+    "subscriptionDetails": "Abonnement-Details",
+    "currentPlanLabel": "Aktueller Plan:",
+    "newPlanLabel": "Neuer Plan:",
+    "changeDateLabel": "Änderungsdatum:",
+    "goToProfile": "Zu deinem Profil",
+    "subscriptionSuccess": "Abonnement erfolgreich",
+    "subscriptionSuccessMessage": "Vielen Dank für dein Abonnement! Dein Konto wurde erfolgreich auf den {plan}-Plan aktualisiert.",
+    "planLabel": "Plan:",
+    "statusLabel": "Status:",
+    "priceLabel": "Preis:",
+    "active": "Aktiv"
   }
 }

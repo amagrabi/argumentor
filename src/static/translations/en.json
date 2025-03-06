@@ -251,12 +251,29 @@
     }
   },
   "profile": {
-    "title": "Your Profile",
-    "goBack": "Go Back",
-    "accountInfo": "Account Information",
+    "title": "Profile",
+    "accountType": "Account Type",
+    "changePlan": "Change Plan",
+    "subscriptionEndNotice": "Your subscription has been canceled. Your plan will remain active until {date}, after which you'll be moved to the Free plan.",
+    "planChangeNotice": "Your plan will change to {plan} on {date}.",
     "username": "Username",
     "email": "Email",
-    "accountType": "Account Type",
+    "language": "Language",
+    "english": "English",
+    "german": "German",
+    "saveChanges": "Save Changes",
+    "changesSaved": "Changes saved successfully!",
+    "errorSaving": "Error saving changes. Please try again.",
+    "deleteAccount": "Delete Account",
+    "deleteAccountWarning": "Warning: This action cannot be undone. All your data will be permanently deleted.",
+    "confirmDelete": "Yes, Delete My Account",
+    "cancelDelete": "No, Keep My Account",
+    "confirmDeleteTitle": "Are you sure?",
+    "confirmDeleteMessage": "This will permanently delete your account and all associated data. This action cannot be undone.",
+    "accountDeleted": "Your account has been deleted.",
+    "errorDeleting": "Error deleting account. Please try again.",
+    "goBack": "Go Back",
+    "accountInfo": "Account Information",
     "dailyEvaluations": "Daily Evaluations",
     "monthlyEvaluations": "Monthly Evaluations",
     "currentLevel": "Current Level",
@@ -809,8 +826,8 @@
     "title": "Contact",
     "goBack": "Go Back",
     "owner": "This website is owned and operated by Amadeus Magrabi.",
-    "contactMe": "You can contact me by submitting feedback on the",
-    "supportPage": "support page",
+    "contactMe": "You can contact me by ",
+    "supportPage": "submitting feedback",
     "contactMeSuffix": " or via",
     "mySocials": "my socials",
     "feedbackSuffix": ".",
@@ -822,5 +839,67 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "contact": "Contact"
+  },
+  "subscription": {
+    "title": "Subscription Plans",
+    "backToProfile": "Back to Profile",
+    "choosePlan": "Choose Your Plan",
+    "loginRequired": "You need to be logged in to upgrade your account.",
+    "loginHere": "Login here",
+    "currentPlan": "Current Plan",
+    "selectFreePlan": "Select Free Plan",
+    "upgradePlus": "Upgrade to Plus",
+    "upgradePro": "Upgrade to Pro",
+    "confirmDowngrade": "Are you sure you want to cancel your subscription?",
+    "confirmDowngradeMessage": "You will continue to have access to your current plan until the end of your billing period.",
+    "confirmButton": "Yes, Cancel Subscription",
+    "cancelButton": "No, Keep My Plan",
+    "willSwitchToFree": "Will switch to Free on {date}",
+    "willSwitchToPlan": "Will switch to {plan} on {date}",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "price": "$0/month"
+      },
+      "plus": {
+        "name": "Plus",
+        "price": "$5/month"
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "$20/month"
+      }
+    },
+    "features": {
+      "evaluationsPerDay": "evaluations per day",
+      "evaluationsPerMonth": "evaluations per month",
+      "voicePerDay": "voice recordings per day",
+      "voicePerMonth": "voice recordings per month",
+      "customQuestions": "Add your own questions",
+      "prioritySupport": "Priority support",
+      "roadmapInfluence": "Influence on feature roadmap"
+    },
+    "footer": {
+      "billingInfo": "All subscriptions are billed monthly and can be canceled at any time. If you cancel, you'll keep your premium features until the end of your current billing period.",
+      "needHelp": "Need help?",
+      "contactSupport": "Contact support"
+    },
+    "confirmPlanChange": "Confirm Plan Change",
+    "confirmPlanChangeMessage": "Are you sure you want to change your plan? The change will take effect at the end of your current billing period.",
+    "confirmPlanChangeButton": "Yes, Change Plan",
+    "cancelPlanChangeButton": "No, Keep My Plan",
+    "planChangeScheduled": "Plan Change Scheduled",
+    "planChangeScheduledMessage": "Your subscription will be changed at the end of your current billing period.",
+    "subscriptionDetails": "Subscription Details",
+    "currentPlanLabel": "Current Plan:",
+    "newPlanLabel": "New Plan:",
+    "changeDateLabel": "Change Date:",
+    "goToProfile": "Go to Your Profile",
+    "subscriptionSuccess": "Subscription Successful",
+    "subscriptionSuccessMessage": "Thank you for your subscription! Your account has been successfully upgraded to the {plan} plan.",
+    "planLabel": "Plan:",
+    "statusLabel": "Status:",
+    "priceLabel": "Price:",
+    "active": "Active"
   }
 }

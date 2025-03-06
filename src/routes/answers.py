@@ -115,16 +115,32 @@ def submit_answer():
         eval_limit = get_eval_limit(user.tier)
 
         if daily_count >= eval_limit:
-            error_message = f"Daily evaluation limit reached ({eval_limit}). "
+            error_message = (
+                f"Daily evaluation limit reached ({eval_limit}). "
+                if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                else f"Tägliches Bewertungslimit erreicht ({eval_limit}). "
+            )
             if user.tier == "anonymous":
                 error_message += (
-                    'Log in for higher limits <a href="#" class="underline" '
-                    'onclick="showAuthModal(); return false;">here</a>.'
+                    (
+                        'Log in for higher limits <a href="#" class="underline" '
+                        'onclick="showAuthModal(); return false;">here</a>.'
+                    )
+                    if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                    else (
+                        'Für höhere Limits kannst du dich <a href="#" class="underline" '
+                        'onclick="showAuthModal(); return false;">hier</a> anmelden.'
+                    )
                 )
             else:
                 error_message += (
-                    'If you need a higher limit, let me know in the <a href="#" class="underline" '
-                    'onclick="showFeedbackModal(); return false;">feedback</a>.'
+                    (
+                        'Upgrade your account for higher limits <a href="/subscription" class="underline">here</a>.'
+                    )
+                    if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                    else (
+                        'Erhöhe dein Limit durch ein Upgrade deines Kontos <a href="/subscription" class="underline">hier</a>.'
+                    )
                 )
             return jsonify({"error": error_message}), 429
 
@@ -133,16 +149,32 @@ def submit_answer():
         monthly_limit = get_monthly_eval_limit(user.tier)
 
         if monthly_count >= monthly_limit:
-            error_message = f"Monthly evaluation limit reached ({monthly_limit}). "
+            error_message = (
+                f"Monthly evaluation limit reached ({monthly_limit}). "
+                if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                else f"Monatliches Bewertungslimit erreicht ({monthly_limit}). "
+            )
             if user.tier == "anonymous":
                 error_message += (
-                    'Log in for higher limits <a href="#" class="underline" '
-                    'onclick="showAuthModal(); return false;">here</a>.'
+                    (
+                        'Log in for higher limits <a href="#" class="underline" '
+                        'onclick="showAuthModal(); return false;">here</a>.'
+                    )
+                    if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                    else (
+                        'Für höhere Limits kannst du dich <a href="#" class="underline" '
+                        'onclick="showAuthModal(); return false;">hier</a> anmelden.'
+                    )
                 )
             else:
                 error_message += (
-                    'If you need a higher limit, let me know in the <a href="#" class="underline" '
-                    'onclick="showFeedbackModal(); return false;">feedback</a>.'
+                    (
+                        'Upgrade your account for higher limits <a href="/subscription" class="underline">here</a>.'
+                    )
+                    if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                    else (
+                        'Erhöhe dein Limit durch ein Upgrade deines Kontos <a href="/subscription" class="underline">hier</a>.'
+                    )
                 )
             return jsonify({"error": error_message}), 429
 
@@ -374,16 +406,32 @@ def submit_challenge_response():
         eval_limit = get_eval_limit(user.tier)
 
         if daily_count >= eval_limit:
-            error_message = f"Daily evaluation limit reached ({eval_limit}). "
+            error_message = (
+                f"Daily evaluation limit reached ({eval_limit}). "
+                if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                else f"Tägliches Bewertungslimit erreicht ({eval_limit}). "
+            )
             if user.tier == "anonymous":
                 error_message += (
-                    'Log in for higher limits <a href="#" class="underline" '
-                    'onclick="showAuthModal(); return false;">here</a>.'
+                    (
+                        'Log in for higher limits <a href="#" class="underline" '
+                        'onclick="showAuthModal(); return false;">here</a>.'
+                    )
+                    if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                    else (
+                        'Für höhere Limits kannst du dich <a href="#" class="underline" '
+                        'onclick="showAuthModal(); return false;">hier</a> anmelden.'
+                    )
                 )
             else:
                 error_message += (
-                    'If you need a higher limit, let me know in the <a href="#" class="underline" '
-                    'onclick="showFeedbackModal(); return false;">feedback</a>.'
+                    (
+                        'Upgrade your account for higher limits <a href="/subscription" class="underline">here</a>.'
+                    )
+                    if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                    else (
+                        'Erhöhe dein Limit durch ein Upgrade deines Kontos <a href="/subscription" class="underline">hier</a>.'
+                    )
                 )
             return jsonify({"error": error_message}), 429
 
@@ -392,16 +440,32 @@ def submit_challenge_response():
         monthly_limit = get_monthly_eval_limit(user.tier)
 
         if monthly_count >= monthly_limit:
-            error_message = f"Monthly evaluation limit reached ({monthly_limit}). "
+            error_message = (
+                f"Monthly evaluation limit reached ({monthly_limit}). "
+                if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                else f"Monatliches Bewertungslimit erreicht ({monthly_limit}). "
+            )
             if user.tier == "anonymous":
                 error_message += (
-                    'Log in for higher limits <a href="#" class="underline" '
-                    'onclick="showAuthModal(); return false;">here</a>.'
+                    (
+                        'Log in for higher limits <a href="#" class="underline" '
+                        'onclick="showAuthModal(); return false;">here</a>.'
+                    )
+                    if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                    else (
+                        'Für höhere Limits kannst du dich <a href="#" class="underline" '
+                        'onclick="showAuthModal(); return false;">hier</a> anmelden.'
+                    )
                 )
             else:
                 error_message += (
-                    'If you need a higher limit, let me know in the <a href="#" class="underline" '
-                    'onclick="showFeedbackModal(); return false;">feedback</a>.'
+                    (
+                        'Upgrade your account for higher limits <a href="/subscription" class="underline">here</a>.'
+                    )
+                    if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
+                    else (
+                        'Erhöhe dein Limit durch ein Upgrade deines Kontos <a href="/subscription" class="underline">hier</a>.'
+                    )
                 )
             return jsonify({"error": error_message}), 429
 
