@@ -836,15 +836,21 @@
       "title": "Dein Feedback teilen",
       "categoryLabel": "Kategorie",
       "categoryOptions": {
-        "feature": "Feature-Anfrage",
-        "bug": "Bug-Report",
+        "feature": "Funktionswunsch",
+        "bug": "Fehlerbericht",
         "general": "Allgemeines Feedback"
       },
       "messageLabel": "Nachricht",
       "messagePlaceholder": "Teile uns deine Gedanken mit...",
+      "emailLabel": "E-Mail (Optional)",
+      "emailPlaceholder": "deine.email@beispiel.de",
+      "emailOptional": "Optional - nur wenn du kontaktiert werden möchtest",
+      "errorMessage": "Bitte gib deine Feedback-Nachricht ein",
+      "loadingMessage": "Feedback wird gesendet...",
       "cancelButton": "Abbrechen",
       "submitButton": "Feedback absenden",
-      "successMessage": "Danke für dein Feedback!"
+      "successMessage": "Danke für dein Feedback!",
+      "closeButton": "Schließen"
     }
   },
   "privacy": {

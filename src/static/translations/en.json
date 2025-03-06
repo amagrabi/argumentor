@@ -708,10 +708,16 @@
         "general": "General Feedback"
       },
       "messageLabel": "Message",
-      "messagePlaceholder": "Share your thoughts...",
+      "messagePlaceholder": "Tell us what you think...",
+      "emailLabel": "Email (Optional)",
+      "emailPlaceholder": "your.email@example.com",
+      "emailOptional": "You can add your email if you'd like to receive a reply.",
+      "errorMessage": "Please enter your feedback message",
+      "loadingMessage": "Submitting feedback...",
       "cancelButton": "Cancel",
       "submitButton": "Submit Feedback",
-      "successMessage": "Thanks for the feedback!"
+      "successMessage": "Thanks for the feedback!",
+      "closeButton": "Close"
     }
   },
   "privacy": {

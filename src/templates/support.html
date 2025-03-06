@@ -213,6 +213,22 @@
               data-i18n-placeholder="supportPage.feedbackModal.messagePlaceholder"
             ></textarea>
           </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1"
+              data-i18n="supportPage.feedbackModal.emailLabel"
+            ></label>
+            <input
+              type="email"
+              id="feedbackEmail"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2"
+              data-i18n-placeholder="supportPage.feedbackModal.emailPlaceholder"
+            />
+            <p
+              class="text-xs text-gray-500 mt-1"
+              data-i18n="supportPage.feedbackModal.emailOptional"
+            ></p>
+          </div>
           <div class="flex justify-end gap-2">
             <button
               type="button"
@@ -224,11 +240,24 @@
             </button>
             <button
               type="submit"
+              id="feedbackSubmitButton"
               class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700"
               data-i18n="supportPage.feedbackModal.submitButton"
             >
               Submit Feedback
             </button>
+          </div>
+          <div id="feedbackLoading" class="mt-3 hidden">
+            <div class="flex items-center justify-center">
+              <div
+                class="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-800"
+              ></div>
+              <span
+                class="ml-2 text-sm text-gray-600"
+                data-i18n="supportPage.feedbackModal.loadingMessage"
+                >Submitting feedback...</span
+              >
+            </div>
           </div>
         </form>
         <div
@@ -288,6 +317,20 @@
       function hideFeedbackModal() {
         document.getElementById("feedbackModal").classList.add("hidden");
         document.getElementById("feedbackModal").classList.remove("flex");
+
+        // Reset form state
+        const submitButton = document.getElementById("feedbackSubmitButton");
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.classList.remove("opacity-50", "cursor-not-allowed");
+        }
+
+        const loadingElement = document.getElementById("feedbackLoading");
+        if (loadingElement) {
+          loadingElement.classList.add("hidden");
+        }
+
+        document.getElementById("feedbackSuccess").classList.add("hidden");
       }
 
       function shareArguMentor() {
@@ -318,44 +361,122 @@
       // Handle feedback form submission
       document
         .getElementById("feedbackForm")
-        .addEventListener("submit", function (e) {
+        .addEventListener("submit", async function (e) {
           e.preventDefault();
-
           const category = document.getElementById("feedbackCategory").value;
           const message = document.getElementById("feedbackMessage").value;
+          const email = document.getElementById("feedbackEmail").value;
+          const submitButton = document.getElementById("feedbackSubmitButton");
+          const loadingElement = document.getElementById("feedbackLoading");
 
-          if (!message.trim()) {
+          if (!message) {
+            document.getElementById("feedbackSuccess").innerHTML = `
+              <div class="text-red-500">
+                ${
+                  window.translations?.supportPage?.feedbackModal
+                    ?.errorMessage || "Please enter your feedback message"
+                }
+              </div>
+            `;
+            document
+              .getElementById("feedbackSuccess")
+              .classList.remove("hidden");
             return;
           }
 
-          // Send feedback to server
-          fetch("/submit_feedback", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              category: category,
-              message: message,
-            }),
-          })
-            .then((response) => {
-              if (response.ok) {
+          try {
+            // Disable submit button and show loading indicator
+            submitButton.disabled = true;
+            submitButton.classList.add("opacity-50", "cursor-not-allowed");
+            loadingElement.classList.remove("hidden");
+
+            // Send feedback to server
+            const response = await fetch("/submit_feedback", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                category,
+                message,
+                email,
+              }),
+            });
+
+            // Hide loading indicator
+            loadingElement.classList.add("hidden");
+
+            if (response.ok) {
+              document.getElementById("feedbackSuccess").innerHTML = `
+                <p class="mb-4">${
+                  window.translations?.supportPage?.feedbackModal
+                    ?.successMessage || "Thanks for the feedback!"
+                }</p>
+                <div class="flex justify-end">
+                  <button onclick="hideFeedbackModal()" class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700">
+                    ${
+                      window.translations?.supportPage?.feedbackModal
+                        ?.closeButton || "Close"
+                    }
+                  </button>
+                </div>
+              `;
+              document
+                .getElementById("feedbackSuccess")
+                .classList.remove("hidden");
+              document.getElementById("feedbackMessage").value = "";
+              document.getElementById("feedbackEmail").value = "";
+
+              setTimeout(() => {
+                hideFeedbackModal();
                 document
                   .getElementById("feedbackSuccess")
-                  .classList.remove("hidden");
-                document.getElementById("feedbackMessage").value = "";
-                setTimeout(() => {
-                  hideFeedbackModal();
-                  document
-                    .getElementById("feedbackSuccess")
-                    .classList.add("hidden");
-                }, 2000);
-              }
-            })
-            .catch((error) => {
-              console.error("Error submitting feedback:", error);
-            });
+                  .classList.add("hidden");
+
+                // Re-enable submit button
+                submitButton.disabled = false;
+                submitButton.classList.remove(
+                  "opacity-50",
+                  "cursor-not-allowed"
+                );
+              }, 2000);
+            } else {
+              // Re-enable submit button on error
+              submitButton.disabled = false;
+              submitButton.classList.remove("opacity-50", "cursor-not-allowed");
+
+              document.getElementById("feedbackSuccess").innerHTML = `
+                <div class="text-red-500">
+                  ${
+                    window.translations?.supportPage?.feedbackModal
+                      ?.errorMessage || "Failed to submit feedback"
+                  }
+                </div>
+              `;
+              document
+                .getElementById("feedbackSuccess")
+                .classList.remove("hidden");
+            }
+          } catch (error) {
+            // Re-enable submit button on error
+            submitButton.disabled = false;
+            submitButton.classList.remove("opacity-50", "cursor-not-allowed");
+            loadingElement.classList.add("hidden");
+
+            console.error("Error submitting feedback:", error);
+
+            document.getElementById("feedbackSuccess").innerHTML = `
+              <div class="text-red-500">
+                ${
+                  window.translations?.supportPage?.feedbackModal
+                    ?.errorMessage || "Failed to submit feedback"
+                }
+              </div>
+            `;
+            document
+              .getElementById("feedbackSuccess")
+              .classList.remove("hidden");
+          }
         });
     </script>
   </body>

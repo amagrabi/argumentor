@@ -1,7 +1,8 @@
 import json
+import logging
 import os
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 
 import stripe
 from flask import (
@@ -15,12 +16,14 @@ from flask import (
     url_for,
 )
 from flask_login import current_user
+from flask_mail import Message
 
 from config import get_settings
 from constants.achievements import ACHIEVEMENTS
 from constants.levels import Level
 from extensions import db, limiter
 from models import Answer, Feedback, User
+from routes.password_reset import mail
 from services.level_service import get_level_info
 from services.question_service import load_questions
 from utils import (
@@ -479,16 +482,54 @@ def submit_feedback():
         data = request.json
         message = data.get("message", "").strip()
         category = data.get("category", "").strip()
+        email = data.get("email", "").strip()
 
         if not message or not category:
             return jsonify({"error": "Message and category are required"}), 400
 
         feedback = Feedback(
-            user_uuid=session.get("user_id"), message=message, category=category
+            user_uuid=session.get("user_id"),
+            message=message,
+            category=category,
+            email=email if email else None,
         )
 
         db.session.add(feedback)
         db.session.commit()
+
+        # Send email notification to admin
+        try:
+            user_info = ""
+            if session.get("user_id"):
+                user = User.query.filter_by(uuid=session.get("user_id")).first()
+                if user:
+                    user_info = f"From user: {user.username} (ID: {user.uuid})"
+
+            contact_info = (
+                f"Contact email: {email}" if email else "No contact email provided"
+            )
+
+            msg = Message(
+                subject=f"New Feedback: {category}",
+                sender=SETTINGS.MAIL_DEFAULT_SENDER,
+                recipients=[SETTINGS.MAIL_USERNAME],
+                body=f"""
+New feedback has been submitted:
+
+Category: {category}
+{user_info}
+{contact_info}
+
+Message:
+{message}
+
+Timestamp: {datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")}
+                """,
+            )
+            mail.send(msg)
+        except Exception as e:
+            # Log the error but don't fail the feedback submission
+            logging.error(f"Failed to send feedback notification email: {str(e)}")
 
         return jsonify({"success": True})
     except Exception as e:

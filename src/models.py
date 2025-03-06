@@ -141,6 +141,7 @@ class Feedback(db.Model):
     category = db.Column(
         db.String(50), nullable=False
     )  # e.g., 'bug', 'feature', 'general'
+    email = db.Column(db.String(255), nullable=True)  # Optional email for contact
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
 
     def __repr__(self):
