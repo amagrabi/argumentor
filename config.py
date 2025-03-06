@@ -28,6 +28,13 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str = Field(default="fallback")
     GOOGLE_CLIENT_SECRET: str = Field(default="fallback")
 
+    # Stripe settings for subscriptions
+    STRIPE_SECRET_KEY: str = Field(default="sk_test_your_test_key")
+    STRIPE_PUBLIC_KEY: str = Field(default="pk_test_your_test_key")
+    STRIPE_WEBHOOK_SECRET: str = Field(default="whsec_your_webhook_secret")
+    STRIPE_PLUS_PRICE_ID: str = Field(default="price_plus_id")
+    STRIPE_PRO_PRICE_ID: str = Field(default="price_pro_id")
+
     MAIL_SERVER: str = Field(default="smtp.gmail.com")
     MAIL_PORT: int = Field(default=587)
     MAIL_USE_TLS: bool = Field(default=True)

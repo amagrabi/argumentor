@@ -118,6 +118,7 @@ def create_app():
             "'unsafe-inline'",
             "https://fedcm.googleapis.com",
             "https://unpkg.com",
+            "https://js.stripe.com",
         ],
         "style-src": [
             "'self'",
@@ -130,12 +131,15 @@ def create_app():
             "https://accounts.google.com",
             "https://fedcm.googleapis.com",
             "https://identity.google.com",
+            "https://js.stripe.com",
+            "https://hooks.stripe.com",
         ],
         "connect-src": [
             "'self'",
             "https://accounts.google.com",
             "https://fedcm.googleapis.com",
             "https://identity.google.com",
+            "https://api.stripe.com",
         ],
     }
 

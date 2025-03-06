@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-51N4QB84CL"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-51N4QB84CL");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subscription Plans - ArguMentor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    {% include 'partials/favicons.html' %}
+    <!-- Include the main stylesheet -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/translations.js') }}"
+    ></script>
+  </head>
+
+  <body class="bg-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-gray-800 p-4">
+      <div class="max-w-5xl mx-auto flex justify-between items-center">
+        <h1 class="text-white text-3xl font-bold">Subscription Plans</h1>
+        <a
+          href="{{ url_for('pages.profile') }}"
+          class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors"
+        >
+          Back to Profile
+        </a>
+      </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto p-4">
+      {% if not current_user.is_authenticated %}
+      <div
+        class="mt-4 mb-4 max-w-full md:w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"
+      >
+        <span>You need to be logged in to upgrade your account.</span>
+        <a
+          href="#"
+          onclick="showAuthModal()"
+          class="text-gray-800 underline hover:text-gray-600"
+        >
+          Login here</a
+        >
+      </div>
+      {% else %}
+
+      <!-- Subscription Plans -->
+      <div class="mt-8">
+        <h2 class="text-2xl font-bold mb-6 text-center">Choose Your Plan</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Free Plan -->
+          <div
+            class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div class="bg-blue-50 p-6">
+              <h3 class="text-xl font-bold text-blue-800">Free</h3>
+              <p class="text-3xl font-bold mt-2">
+                $0<span class="text-sm font-normal text-gray-600">/month</span>
+              </p>
+            </div>
+            <div class="p-6">
+              <ul class="space-y-3">
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >{{ SETTINGS.TIER_DAILY_EVAL_LIMITS.free }} daily
+                    evaluations</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >{{ SETTINGS.TIER_MONTHLY_EVAL_LIMITS.free }} monthly
+                    evaluations</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >{{ SETTINGS.TIER_DAILY_VOICE_LIMITS.free }} daily voice
+                    recordings</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >{{ SETTINGS.TIER_MONTHLY_VOICE_LIMITS.free }} monthly voice
+                    recordings</span
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="px-6 pb-6">
+              {% if user.tier == 'free' %}
+              <button
+                disabled
+                class="w-full py-2 px-4 bg-gray-300 text-gray-600 rounded-md cursor-not-allowed"
+              >
+                Current Plan
+              </button>
+              {% else %}
+              <form
+                action="{{ url_for('pages.update_subscription') }}"
+                method="post"
+              >
+                <input type="hidden" name="plan" value="free" />
+                <button
+                  type="submit"
+                  class="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Select Free Plan
+                </button>
+              </form>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Plus Plan -->
+          <div
+            class="border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+          >
+            <div class="bg-purple-50 p-6">
+              <h3 class="text-xl font-bold text-purple-800">Plus</h3>
+              <p class="text-3xl font-bold mt-2">
+                $5<span class="text-sm font-normal text-gray-600">/month</span>
+              </p>
+            </div>
+            <div class="p-6">
+              <ul class="space-y-3">
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >{{ SETTINGS.TIER_DAILY_EVAL_LIMITS.plus }} daily
+                    evaluations</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >{{ SETTINGS.TIER_MONTHLY_EVAL_LIMITS.plus }} monthly
+                    evaluations</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >{{ SETTINGS.TIER_DAILY_VOICE_LIMITS.plus }} daily voice
+                    recordings</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >{{ SETTINGS.TIER_MONTHLY_VOICE_LIMITS.plus }} monthly voice
+                    recordings</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span>Priority support</span>
+                </li>
+              </ul>
+            </div>
+            <div class="px-6 pb-6">
+              {% if user.tier == 'plus' %}
+              <button
+                disabled
+                class="w-full py-2 px-4 bg-gray-300 text-gray-600 rounded-md cursor-not-allowed"
+              >
+                Current Plan
+              </button>
+              {% else %}
+              <button
+                id="checkout-plus"
+                class="w-full py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+              >
+                Upgrade to Plus
+              </button>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Pro Plan -->
+          <div
+            class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div class="bg-indigo-50 p-6">
+              <h3 class="text-xl font-bold text-indigo-800">Pro</h3>
+              <p class="text-3xl font-bold mt-2">
+                $20<span class="text-sm font-normal text-gray-600">/month</span>
+              </p>
+            </div>
+            <div class="p-6">
+              <ul class="space-y-3">
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >{{ SETTINGS.TIER_DAILY_EVAL_LIMITS.pro }} daily
+                    evaluations</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >{{ SETTINGS.TIER_MONTHLY_EVAL_LIMITS.pro }} monthly
+                    evaluations</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >{{ SETTINGS.TIER_DAILY_VOICE_LIMITS.pro }} daily voice
+                    recordings</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span
+                    >{{ SETTINGS.TIER_MONTHLY_VOICE_LIMITS.pro }} monthly voice
+                    recordings</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span>Priority support</span>
+                </li>
+                <li class="flex items-start">
+                  <svg
+                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                  <span>Advanced analytics</span>
+                </li>
+              </ul>
+            </div>
+            <div class="px-6 pb-6">
+              {% if user.tier == 'pro' %}
+              <button
+                disabled
+                class="w-full py-2 px-4 bg-gray-300 text-gray-600 rounded-md cursor-not-allowed"
+              >
+                Current Plan
+              </button>
+              {% else %}
+              <button
+                id="checkout-pro"
+                class="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+              >
+                Upgrade to Pro
+              </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 text-center text-gray-600">
+        <p>
+          All subscriptions are billed monthly and can be canceled at any time.
+        </p>
+        <p class="mt-2">
+          Need help?
+          <a
+            href="{{ url_for('pages.support') }}"
+            class="text-blue-600 hover:underline"
+            >Contact support</a
+          >
+        </p>
+      </div>
+
+      <script>
+        // Initialize Stripe
+        const stripe = Stripe("{{ stripe_public_key }}");
+
+        // Handle Plus plan checkout
+        document
+          .getElementById("checkout-plus")
+          .addEventListener("click", async () => {
+            try {
+              const response = await fetch(
+                '{{ url_for("pages.create_checkout_session") }}',
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    plan: "plus",
+                  }),
+                }
+              );
+
+              const session = await response.json();
+
+              // Redirect to Stripe Checkout
+              stripe.redirectToCheckout({
+                sessionId: session.id,
+              });
+            } catch (error) {
+              console.error("Error:", error);
+            }
+          });
+
+        // Handle Pro plan checkout
+        document
+          .getElementById("checkout-pro")
+          .addEventListener("click", async () => {
+            try {
+              const response = await fetch(
+                '{{ url_for("pages.create_checkout_session") }}',
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    plan: "pro",
+                  }),
+                }
+              );
+
+              const session = await response.json();
+
+              // Redirect to Stripe Checkout
+              stripe.redirectToCheckout({
+                sessionId: session.id,
+              });
+            } catch (error) {
+              console.error("Error:", error);
+            }
+          });
+      </script>
+      {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 py-6 mt-12">
+      <div class="max-w-5xl mx-auto px-4 text-center text-gray-600 text-sm">
+        <p>&copy; {{ current_year }} ArguMentor. All rights reserved.</p>
+        <div class="mt-2">
+          <a href="{{ url_for('pages.privacy') }}" class="hover:underline mx-2"
+            >Privacy Policy</a
+          >
+          <a href="{{ url_for('pages.terms') }}" class="hover:underline mx-2"
+            >Terms of Service</a
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

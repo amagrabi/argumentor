@@ -1,7 +1,9 @@
 import json
 import os
 import uuid
+from datetime import datetime
 
+import stripe
 from flask import (
     Blueprint,
     current_app,
@@ -152,6 +154,16 @@ def how_to_improve():
     # Get the page content from translations
     page_content = translations.get("howToImprovePage", {})
 
+    # Ensure the translations are properly loaded
+    if not page_content:
+        # Fallback to English if the current language doesn't have the content
+        fallback_file = os.path.join(
+            current_app.root_path, "static", "translations", "en.json"
+        )
+        with open(fallback_file, "r", encoding="utf-8") as f:
+            fallback_translations = json.load(f)
+            page_content = fallback_translations.get("howToImprovePage", {})
+
     return render_template(
         "how_to_improve.html", page_content=page_content, translations=translations
     )
@@ -159,7 +171,21 @@ def how_to_improve():
 
 @pages_bp.route("/support")
 def support():
-    return render_template("support.html")
+    # Get language from query parameter or session (default to "en")
+    lang = request.args.get("lang") or session.get("language", "en")
+    trans_file = os.path.join(
+        current_app.root_path, "static", "translations", f"{lang}.json"
+    )
+
+    with open(trans_file, "r", encoding="utf-8") as f:
+        translations = json.load(f)
+
+    # Get the page content from translations
+    page_content = translations.get("supportPage", {})
+
+    return render_template(
+        "support.html", page_content=page_content, translations=translations
+    )
 
 
 @pages_bp.route("/profile")
@@ -232,6 +258,209 @@ def profile():
         earned_achievements=earned_achievements,
         all_levels=levels_with_status,
     )
+
+
+@pages_bp.route("/subscription")
+def subscription():
+    """Render the subscription page with plan options."""
+    if "user_id" not in session:
+        return redirect(url_for("pages.home"))
+
+    user = User.query.filter_by(uuid=session["user_id"]).first()
+    if not user:
+        return redirect(url_for("pages.home"))
+
+    # Set up Stripe
+    stripe.api_key = SETTINGS.STRIPE_SECRET_KEY
+
+    return render_template(
+        "subscription.html",
+        user=user,
+        SETTINGS=SETTINGS,
+        stripe_public_key=SETTINGS.STRIPE_PUBLIC_KEY,
+        current_year=datetime.now().year,
+    )
+
+
+@pages_bp.route("/create-checkout-session", methods=["POST"])
+def create_checkout_session():
+    """Create a Stripe checkout session for the selected plan."""
+    if "user_id" not in session:
+        return jsonify({"error": "User not authenticated"}), 401
+
+    user = User.query.filter_by(uuid=session["user_id"]).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    # Set up Stripe
+    stripe.api_key = SETTINGS.STRIPE_SECRET_KEY
+
+    # Get the plan from the request
+    data = request.json
+    plan = data.get("plan")
+
+    # Set price based on plan
+    if plan == "plus":
+        plan_name = "Plus"
+        amount = 500  # $5.00
+    elif plan == "pro":
+        plan_name = "Pro"
+        amount = 2000  # $20.00
+    else:
+        return jsonify({"error": "Invalid plan selected"}), 400
+
+    try:
+        # Create a checkout session
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[
+                {
+                    "price_data": {
+                        "currency": "usd",
+                        "product_data": {
+                            "name": f"ArguMentor {plan_name} Plan",
+                            "description": f"Monthly subscription to ArguMentor {plan_name} Plan",
+                        },
+                        "unit_amount": amount,
+                        "recurring": {
+                            "interval": "month",
+                        },
+                    },
+                    "quantity": 1,
+                },
+            ],
+            mode="subscription",
+            success_url=request.host_url
+            + "subscription-success?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=request.host_url + "subscription",
+            client_reference_id=user.uuid,
+            metadata={
+                "user_uuid": user.uuid,
+                "plan": plan,
+            },
+        )
+
+        return jsonify({"id": checkout_session.id})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@pages_bp.route("/subscription-success")
+def subscription_success():
+    """Handle successful subscription."""
+    if "user_id" not in session:
+        return redirect(url_for("pages.home"))
+
+    session_id = request.args.get("session_id")
+    if not session_id:
+        return redirect(url_for("pages.subscription"))
+
+    # Set up Stripe
+    stripe.api_key = SETTINGS.STRIPE_SECRET_KEY
+
+    try:
+        # Retrieve the checkout session
+        checkout_session = stripe.checkout.Session.retrieve(session_id)
+
+        # Get the user and plan from the session metadata
+        user_uuid = checkout_session.metadata.get("user_uuid")
+        plan = checkout_session.metadata.get("plan")
+
+        # Update the user's tier
+        user = User.query.filter_by(uuid=user_uuid).first()
+        if user and plan in ["plus", "pro"]:
+            user.tier = plan
+            db.session.commit()
+
+        return render_template(
+            "subscription_success.html",
+            plan=plan.title(),
+            user=user,
+            current_year=datetime.now().year,
+        )
+
+    except Exception as e:
+        current_app.logger.error(f"Error processing subscription success: {str(e)}")
+        return redirect(url_for("pages.subscription"))
+
+
+@pages_bp.route("/update-subscription", methods=["POST"])
+def update_subscription():
+    """Update user subscription to free tier."""
+    if "user_id" not in session:
+        return redirect(url_for("pages.home"))
+
+    user = User.query.filter_by(uuid=session["user_id"]).first()
+    if not user:
+        return redirect(url_for("pages.home"))
+
+    plan = request.form.get("plan")
+    if plan == "free":
+        user.tier = "free"
+        db.session.commit()
+
+    return redirect(url_for("pages.profile"))
+
+
+@pages_bp.route("/stripe-webhook", methods=["POST"])
+def stripe_webhook():
+    """Handle Stripe webhook events."""
+    payload = request.get_data(as_text=True)
+    sig_header = request.headers.get("Stripe-Signature")
+
+    # Set up Stripe
+    stripe.api_key = SETTINGS.STRIPE_SECRET_KEY
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, SETTINGS.STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError as e:
+        # Invalid payload
+        current_app.logger.error(f"Invalid Stripe payload: {str(e)}")
+        return jsonify({"error": "Invalid payload"}), 400
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        current_app.logger.error(f"Invalid Stripe signature: {str(e)}")
+        return jsonify({"error": "Invalid signature"}), 400
+
+    # Handle the event
+    if event["type"] == "customer.subscription.updated":
+        subscription = event["data"]["object"]
+        user_uuid = subscription.metadata.get("user_uuid")
+
+        if user_uuid:
+            user = User.query.filter_by(uuid=user_uuid).first()
+            if user:
+                # Update user tier based on subscription status
+                if subscription["status"] == "active":
+                    # Get the plan from the subscription items
+                    items = subscription["items"]["data"]
+                    if items:
+                        price_id = items[0]["price"]["id"]
+
+                        if price_id == SETTINGS.STRIPE_PLUS_PRICE_ID:
+                            user.tier = "plus"
+                        elif price_id == SETTINGS.STRIPE_PRO_PRICE_ID:
+                            user.tier = "pro"
+
+                        db.session.commit()
+                elif subscription["status"] in ["canceled", "unpaid"]:
+                    user.tier = "free"
+                    db.session.commit()
+
+    elif event["type"] == "customer.subscription.deleted":
+        subscription = event["data"]["object"]
+        user_uuid = subscription.metadata.get("user_uuid")
+
+        if user_uuid:
+            user = User.query.filter_by(uuid=user_uuid).first()
+            if user:
+                user.tier = "free"
+                db.session.commit()
+
+    return jsonify({"status": "success"})
 
 
 @pages_bp.route("/submit_feedback", methods=["GET", "POST"])
