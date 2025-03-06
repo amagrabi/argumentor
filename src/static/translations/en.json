@@ -507,8 +507,32 @@
   },
   "howToImprovePage": {
     "title": "How to Improve",
-    "overviewTitle": "Overview",
+    "goBack": "Go Back",
+    "overviewTitle": "",
     "overview": "Spot biases and dodge common logical fallacies to make your arguments stronger and more convincing. Knowing these pitfalls helps you sharpen your problem-solving and decision-making skills.",
+    "argumentStepsTitle": "Build Your Argument Step-by-Step",
+    "argumentSteps": {
+      "state": {
+        "title": "State",
+        "description": "Clearly articulate your main claim. Ask yourself, \"What exactly am I trying to prove?\" Keep your statement concise and debatable."
+      },
+      "explain": {
+        "title": "Explain",
+        "description": "Detail your thought process by outlining the rationale behind your claim. Describe the assumptions and logical steps that lead you to your conclusion."
+      },
+      "evidence": {
+        "title": "Evidence",
+        "description": "Back up your reasoning with solid data, reputable sources, or concrete examples. Look for statistics, case studies, or expert opinions that lend credibility to your argument."
+      },
+      "conclusion": {
+        "title": "Conclusion",
+        "description": "Summarize your argument by tying your evidence back to your claim. Reiterate how your data supports your position and address any potential counterarguments."
+      }
+    },
+    "argumentStepsNote": "Breaking your argument into these steps makes it easier to identify gaps in your reasoning and refine each part systematically.",
+    "argumentStepsAdvice": "Always seek out credible information and avoid relying solely on assumptions. Validate your data and be open to updating your views when confronted with new evidence. This not only strengthens your argument but also enhances its persuasiveness.",
+    "understandingBiasesTitle": "Understanding Cognitive Biases and Logical Fallacies",
+    "understandingBiasesDescription": "Our reasoning can be impaired by two common pitfalls. Cognitive biases are systematic errors in thinking caused by mental shortcuts, while logical fallacies are common flaws in reasoning that weaken the arguments' validity. Being aware of these sources of reasoning errors can help you build clearer, more objective arguments.",
     "cognitiveBiasesTitle": "Cognitive Biases",
     "logicalFallaciesTitle": "Logical Fallacies",
     "exampleTitle": "Example",
@@ -621,7 +645,7 @@
     "title": "Support - ArguMentor",
     "header": "Support ArguMentor",
     "goBack": "Go Back",
-    "howToSupport": "How to Support this Project",
+    "howToSupport": "",
     "financialSupport": {
       "title": "☕ Buy Me a Coffee",
       "description": "Help keep the servers running and support the development of new features.",
@@ -696,7 +720,7 @@
     "lastUpdated": "Last Updated: February 19, 2025",
     "sections": {
       "yourPrivacy": {
-        "title": "Your Privacy",
+        "title": "",
         "content": "Your privacy is important. This privacy policy explains what data is collected and how it is used."
       },
       "dataCollected": {
@@ -779,13 +803,14 @@
     "title": "Contact",
     "goBack": "Go Back",
     "owner": "This website is owned and operated by Amadeus Magrabi.",
-    "contactMe": "You can contact me",
-    "here": "here",
-    "feedback": "You can also send me feedback via the form on the",
+    "contactMe": "You can contact me by submitting feedback on the",
     "supportPage": "support page",
-    "or": "or",
-    "buyMeACoffee": "buy me a coffee",
-    "supportText": "to support the platform."
+    "contactMeSuffix": " or via",
+    "mySocials": "my socials",
+    "feedbackSuffix": ".",
+    "or": "",
+    "buyMeACoffee": "",
+    "supportText": ""
   },
   "footer": {
     "privacyPolicy": "Privacy Policy",

@@ -518,7 +518,7 @@
       "title": "Analysieren & Verbessern",
       "description": "Analysiere deine Leistung, verfolge deinen Fortschritt und steigere dein Level."
     },
-    "overviewTitle": "Überblick",
+    "overviewTitle": "",
     "overview": "Diese Plattform hilft dir, deine Argumentations- und Entscheidungsfähigkeiten zu verbessern.",
     "profileSection": {
       "title": "Profilseite",
@@ -640,8 +640,32 @@
   },
   "howToImprovePage": {
     "title": "Wie man sich verbessert",
-    "overviewTitle": "Überblick",
+    "goBack": "Zurück",
+    "overviewTitle": "",
     "overview": "Erkenne Denkverzerrungen und vermeide logische Fehlschlüsse, um stärkere und überzeugendere Argumente zu entwickeln. Dieses Bewusstsein hilft dir, deinen Ansatz zur Problemlösung und Entscheidungsfindung zu verbessern.",
+    "argumentStepsTitle": "Baue dein Argument Schritt für Schritt auf",
+    "argumentSteps": {
+      "state": {
+        "title": "Formuliere",
+        "description": "Artikuliere deine Hauptaussage klar. Frage dich: 'Was genau möchte ich beweisen?' Halte deine Aussage präzise und diskutierbar."
+      },
+      "explain": {
+        "title": "Erkläre",
+        "description": "Beschreibe deinen Gedankengang, indem du die Logik hinter deiner Aussage darlegst. Erläutere die Annahmen und logischen Schritte, die zu deiner Schlussfolgerung führen."
+      },
+      "evidence": {
+        "title": "Belege",
+        "description": "Untermauere deine Argumentation mit soliden Daten, seriösen Quellen oder konkreten Beispielen. Suche nach Statistiken, Fallstudien oder Expertenmeinungen, die deinem Argument Glaubwürdigkeit verleihen."
+      },
+      "conclusion": {
+        "title": "Fazit",
+        "description": "Fasse dein Argument zusammen, indem du deine Belege mit deiner Hauptaussage verbindest. Wiederhole, wie deine Daten deine Position stützen und gehe auf mögliche Gegenargumente ein."
+      }
+    },
+    "argumentStepsNote": "Diese Schritte helfen dir, Lücken in deiner Argumentation zu erkennen und jeden Teil systematisch zu verbessern.",
+    "argumentStepsAdvice": "Suche nach glaubwürdigen Informationen und vermeide es, dich nur auf Annahmen zu stützen. Überprüfe deine Daten und sei bereit, deine Ansichten zu ändern, wenn du neue Beweise erhältst. Das stärkt dein Argument und macht es überzeugender.",
+    "understandingBiasesTitle": "Kognitive Verzerrungen und logische Fehlschlüsse verstehen",
+    "understandingBiasesDescription": "Unser Denken kann durch zwei häufige Fallstricke beeinträchtigt werden. Kognitive Verzerrungen sind Denkfehler, die durch mentale Abkürzungen entstehen. Logische Fehlschlüsse sind häufige Argumentationsfehler, die die Gültigkeit von Argumenten schwächen. Das Bewusstsein für diese Quellen von Denkfehlern kann dir helfen, klarere und objektivere Argumente aufzubauen.",
     "cognitiveBiasesTitle": "Kognitive Verzerrungen",
     "logicalFallaciesTitle": "Logische Fehlschlüsse",
     "exampleTitle": "Beispiel",
@@ -748,26 +772,13 @@
         "description": "Man nutzt emotionale Appelle statt logischer Argumente.",
         "example": "Diese Politik wird die Zukunft der Kinder zerstören! (ohne Belege)"
       }
-    ],
-    "argumentStepsTitle": "Baue dein Argument Schritt für Schritt auf",
-    "argumentStep1Title": "Formuliere:",
-    "argumentStep1Content": "Artikuliere deine Hauptaussage klar. Frage dich: 'Was genau möchte ich beweisen?' Halte deine Aussage präzise und diskutierbar.",
-    "argumentStep2Title": "Erkläre:",
-    "argumentStep2Content": "Beschreibe deinen Gedankengang, indem du die Logik hinter deiner Aussage darlegst. Erläutere die Annahmen und logischen Schritte, die zu deiner Schlussfolgerung führen.",
-    "argumentStep3Title": "Belege:",
-    "argumentStep3Content": "Untermauere deine Argumentation mit soliden Daten, seriösen Quellen oder konkreten Beispielen. Suche nach Statistiken, Fallstudien oder Expertenmeinungen, die deinem Argument Glaubwürdigkeit verleihen.",
-    "argumentStep4Title": "Fazit:",
-    "argumentStep4Content": "Fasse dein Argument zusammen, indem du deine Belege mit deiner Hauptaussage verbindest. Wiederhole, wie deine Daten deine Position stützen und gehe auf mögliche Gegenargumente ein.",
-    "argumentStepsExplanation": "Diese Schritte helfen dir, Lücken in deiner Argumentation zu erkennen und jeden Teil systematisch zu verbessern.",
-    "argumentStepsAdditional": "Suche nach glaubwürdigen Informationen und vermeide es, dich nur auf Annahmen zu stützen. Überprüfe deine Daten und sei bereit, deine Ansichten zu ändern, wenn du neue Beweise erhältst. Das stärkt dein Argument und macht es überzeugender.",
-    "biasesSectionTitle": "Kognitive Verzerrungen und logische Fehlschlüsse verstehen",
-    "biasesSectionContent": "Unser Denken kann durch zwei häufige Fallstricke beeinträchtigt werden. Kognitive Verzerrungen sind Denkfehler, die durch mentale Abkürzungen entstehen. Logische Fehlschlüsse sind häufige Argumentationsfehler, die die Gültigkeit von Argumenten schwächen. Das Bewusstsein für diese Quellen von Denkfehlern kann dir helfen, klarere und objektivere Argumente aufzubauen."
+    ]
   },
   "supportPage": {
     "title": "Support - ArguMentor",
     "header": "ArguMentor unterstützen",
     "goBack": "Zurück",
-    "howToSupport": "Wie du dieses Projekt unterstützen kannst",
+    "howToSupport": "",
     "financialSupport": {
       "title": "☕ Buy Me a Coffee",
       "description": "Hilf dabei, die Server am Laufen zu halten und die Entwicklung neuer Features zu unterstützen.",
@@ -842,7 +853,7 @@
     "lastUpdated": "Zuletzt aktualisiert: 19. Februar 2025",
     "sections": {
       "yourPrivacy": {
-        "title": "Dein Datenschutz",
+        "title": "",
         "content": "Deine Privatsphäre ist wichtig. Diese Datenschutzerklärung erläutert, welche Daten erfasst und wie sie verwendet werden."
       },
       "dataCollected": {
@@ -925,13 +936,14 @@
     "title": "Kontakt",
     "goBack": "Zurück",
     "owner": "Diese Website wird von Amadeus Magrabi betrieben.",
-    "contactMe": "Du kannst mich",
-    "here": "hier kontaktieren",
-    "feedback": "Du kannst mir Feedback über das Formular auf der",
+    "contactMe": "Du kannst mich über das Formular auf der",
     "supportPage": "Support-Seite",
-    "or": "schicken oder das Projekt über ",
-    "buyMeACoffee": "Buy Me a Coffee",
-    "supportText": " unterstützen."
+    "contactMeSuffix": " oder über",
+    "mySocials": "Social Media",
+    "feedbackSuffix": " kontaktieren.",
+    "or": "",
+    "buyMeACoffee": "",
+    "supportText": ""
   },
   "footer": {
     "privacyPolicy": "Datenschutz",

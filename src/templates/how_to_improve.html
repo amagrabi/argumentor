@@ -17,7 +17,13 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-i18n="howToImprove.title">How to Improve - ArguMentor</title>
+    <title data-i18n="howToImprovePage.title">
+      How to Improve - ArguMentor
+    </title>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/translations.js') }}"
+    ></script>
     <script src="https://cdn.tailwindcss.com"></script>
     {% include 'partials/favicons.html' %}
   </head>
@@ -29,14 +35,14 @@
       >
         <h1
           class="text-white text-3xl font-bold"
-          data-i18n="howToImprove.title"
+          data-i18n="howToImprovePage.title"
         >
           How to Improve
         </h1>
         <a
           href="/"
           class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors mt-1"
-          data-i18n="howToImprove.goBack"
+          data-i18n="howToImprovePage.goBack"
         >
           Go Back
         </a>
@@ -45,58 +51,152 @@
 
     <!-- Main Content -->
     <main class="max-w-5xl mx-auto p-4">
-      <!-- Introduction Section -->
+      <!-- Overview Section -->
       <section class="mb-8">
         <h2
           class="text-2xl font-bold mb-4"
-          data-i18n="howToImprove.overviewTitle"
-        >
-          Overview
-        </h2>
-        <p class="mb-4" data-i18n="howToImprove.overview"></p>
+          data-i18n="howToImprovePage.overviewTitle"
+        ></h2>
+        <p class="mb-4" data-i18n="howToImprovePage.overview">
+          Spot biases and dodge common logical fallacies to make your arguments
+          stronger and more convincing. Knowing these pitfalls helps you sharpen
+          your problem-solving and decision-making skills.
+        </p>
       </section>
 
-      <!-- Dimension Sections -->
-      {% for dimension in dimensions %}
+      <!-- Build Your Argument Section -->
       <section class="mb-8">
         <h2
           class="text-2xl font-bold mb-4"
-          data-i18n="howToImprove.dimensions.{{ dimension.key }}.title"
+          data-i18n="howToImprovePage.argumentStepsTitle"
         >
-          {{ dimension.title }}
+          Build Your Argument Step-by-Step
+        </h2>
+        <ol class="list-decimal ml-6 space-y-4">
+          <li>
+            <strong data-i18n="howToImprovePage.argumentSteps.state.title"
+              >State:</strong
+            >
+            <span data-i18n="howToImprovePage.argumentSteps.state.description">
+              Clearly articulate your main claim. Ask yourself, "What exactly am
+              I trying to prove?" Keep your statement concise and debatable.
+            </span>
+          </li>
+          <li>
+            <strong data-i18n="howToImprovePage.argumentSteps.explain.title"
+              >Explain:</strong
+            >
+            <span
+              data-i18n="howToImprovePage.argumentSteps.explain.description"
+            >
+              Detail your thought process by outlining the rationale behind your
+              claim. Describe the assumptions and logical steps that lead you to
+              your conclusion.
+            </span>
+          </li>
+          <li>
+            <strong data-i18n="howToImprovePage.argumentSteps.evidence.title"
+              >Evidence:</strong
+            >
+            <span
+              data-i18n="howToImprovePage.argumentSteps.evidence.description"
+            >
+              Back up your reasoning with solid data, reputable sources, or
+              concrete examples. Look for statistics, case studies, or expert
+              opinions that lend credibility to your argument.
+            </span>
+          </li>
+          <li>
+            <strong data-i18n="howToImprovePage.argumentSteps.conclusion.title"
+              >Conclusion:</strong
+            >
+            <span
+              data-i18n="howToImprovePage.argumentSteps.conclusion.description"
+            >
+              Summarize your argument by tying your evidence back to your claim.
+              Reiterate how your data supports your position and address any
+              potential counterarguments.
+            </span>
+          </li>
+        </ol>
+        <p class="mt-4" data-i18n="howToImprovePage.argumentStepsNote">
+          Breaking your argument into these steps makes it easier to identify
+          gaps in your reasoning and refine each part systematically.
+        </p>
+        <p class="mt-4" data-i18n="howToImprovePage.argumentStepsAdvice">
+          Always seek out credible information and avoid relying solely on
+          assumptions. Validate your data and be open to updating your views
+          when confronted with new evidence. This not only strengthens your
+          argument but also enhances its persuasiveness.
+        </p>
+      </section>
+
+      <!-- Understanding Biases Section -->
+      <section class="mb-8">
+        <h2
+          class="text-2xl font-bold mb-4"
+          data-i18n="howToImprovePage.understandingBiasesTitle"
+        >
+          Understanding Cognitive Biases and Logical Fallacies
         </h2>
         <p
-          class="mb-4"
-          data-i18n="howToImprove.dimensions.{{ dimension.key }}.description"
+          class="mb-6"
+          data-i18n="howToImprovePage.understandingBiasesDescription"
         >
-          {{ dimension.description }}
+          Our reasoning can be impaired by two common pitfalls. Cognitive biases
+          are systematic errors in thinking caused by mental shortcuts, while
+          logical fallacies are common flaws in reasoning that weaken the
+          arguments' validity. Being aware of these sources of reasoning errors
+          can help you build clearer, more objective arguments.
         </p>
-        <div class="ml-6">
-          <h3
-            class="text-lg font-semibold mb-2"
-            data-i18n="howToImprove.dimensions.{{ dimension.key }}.tipsTitle"
-          >
-            Tips to Improve:
-          </h3>
-          <ul class="list-disc ml-6 space-y-2">
-            {% for tip in dimension.tips %}
-            <li
-              data-i18n="howToImprove.dimensions.{{ dimension.key }}.tips.{{ loop.index0 }}"
-            >
-              {{ tip }}
-            </li>
-            {% endfor %}
-          </ul>
+
+        <!-- Cognitive Biases -->
+        <h3
+          class="text-xl font-bold mb-4"
+          data-i18n="howToImprovePage.cognitiveBiasesTitle"
+        >
+          Cognitive Biases
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {% for bias in page_content.cognitive_biases %}
+          <div class="border border-gray-200 rounded-lg p-4">
+            <h4 class="font-bold mb-2">{{ bias.name }}</h4>
+            <p class="text-sm text-gray-700 mb-2">{{ bias.description }}</p>
+            <p class="text-sm italic text-gray-600">
+              <span data-i18n="howToImprovePage.exampleTitle">Example</span>: {{
+              bias.example }}
+            </p>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Logical Fallacies -->
+        <h3
+          class="text-xl font-bold mb-4"
+          data-i18n="howToImprovePage.logicalFallaciesTitle"
+        >
+          Logical Fallacies
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {% for fallacy in page_content.logical_fallacies %}
+          <div class="border border-gray-200 rounded-lg p-4">
+            <h4 class="font-bold mb-2">{{ fallacy.name }}</h4>
+            <p class="text-sm text-gray-700 mb-2">{{ fallacy.description }}</p>
+            <p class="text-sm italic text-gray-600">
+              <span data-i18n="howToImprovePage.exampleTitle">Example</span>: {{
+              fallacy.example }}
+            </p>
+          </div>
+          {% endfor %}
         </div>
       </section>
-      {% endfor %}
 
       <!-- Bottom Go Back Button -->
       <div class="text-center my-4">
         <a
           href="/"
           class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-200 transition-colors"
-          data-i18n="howToImprove.goBack"
+          data-i18n="howToImprovePage.goBack"
         >
           Go Back
         </a>
@@ -104,12 +204,12 @@
     </main>
 
     <!-- Critical Scripts -->
-    <script type="module" src="/static/js/translationManager.js"></script>
-
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        // Apply translations using the translation manager
-        window.translationManager?.applyTranslations();
+        // Apply translations
+        if (window.applyTranslations) {
+          window.applyTranslations();
+        }
       });
     </script>
   </body>

@@ -18,6 +18,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title data-i18n="supportPage.title">Support - ArguMentor</title>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/translations.js') }}"
+    ></script>
     <script src="https://cdn.tailwindcss.com"></script>
     {% include 'partials/favicons.html' %}
   </head>
@@ -236,9 +240,56 @@
     </div>
 
     <!-- Critical Scripts -->
-    <script type="module" src="/static/js/translationManager.js"></script>
-
     <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Apply translations
+        if (window.applyTranslations) {
+          window.applyTranslations();
+        }
+
+        // Populate roadmap features
+        populateRoadmapFeatures();
+      });
+
+      function populateRoadmapFeatures() {
+        const featuresList = document.getElementById("roadmapFeaturesList");
+        if (
+          !featuresList ||
+          !window.translations?.supportPage?.roadmap?.features
+        )
+          return;
+
+        const features = window.translations.supportPage.roadmap.features;
+
+        // Clear existing content
+        featuresList.innerHTML = "";
+
+        // Add each feature to the list
+        Object.keys(features).forEach((key) => {
+          const feature = features[key];
+          const listItem = document.createElement("li");
+          listItem.className = "flex items-start gap-2";
+          listItem.innerHTML = `
+            <span class="text-yellow-500">⭐</span>
+            <div>
+              <div class="font-bold">${feature.title}</div>
+              <div class="text-sm text-gray-600">${feature.description}</div>
+            </div>
+          `;
+          featuresList.appendChild(listItem);
+        });
+      }
+
+      function showFeedbackModal() {
+        document.getElementById("feedbackModal").classList.remove("hidden");
+        document.getElementById("feedbackModal").classList.add("flex");
+      }
+
+      function hideFeedbackModal() {
+        document.getElementById("feedbackModal").classList.add("hidden");
+        document.getElementById("feedbackModal").classList.remove("flex");
+      }
+
       function shareArguMentor() {
         const shareText = "Test your reasoning skills";
         const shareUrl = "https://www.argumentorai.com";
@@ -252,143 +303,60 @@
             })
             .catch((error) => console.log("Error sharing:", error));
         } else {
-          // Fallback to copying to clipboard
-          navigator.clipboard
-            .writeText(`${shareText}\n${shareUrl}`)
-            .then(() => alert("Share text copied to clipboard!"))
-            .catch(() => alert("Failed to copy share text"));
+          // Fallback for browsers that don't support the Web Share API
+          const tempInput = document.createElement("input");
+          document.body.appendChild(tempInput);
+          tempInput.value = shareUrl;
+          tempInput.select();
+          document.execCommand("copy");
+          document.body.removeChild(tempInput);
+
+          alert("Link copied to clipboard!");
         }
       }
 
-      function showFeedbackModal() {
-        document.getElementById("feedbackModal").classList.remove("hidden");
-      }
-
-      function hideFeedbackModal() {
-        document.getElementById("feedbackModal").classList.add("hidden");
-        // Reset form visibility and success message immediately
-        document.getElementById("feedbackForm").classList.remove("hidden");
-        document.getElementById("feedbackSuccess").classList.add("hidden");
-        // Clear any previous input
-        document.getElementById("feedbackMessage").value = "";
-      }
-
-      // Close modal when clicking outside
-      document
-        .getElementById("feedbackModal")
-        .addEventListener("click", (e) => {
-          if (e.target === e.currentTarget) {
-            hideFeedbackModal();
-          }
-        });
-
+      // Handle feedback form submission
       document
         .getElementById("feedbackForm")
-        .addEventListener("submit", async (e) => {
+        .addEventListener("submit", function (e) {
           e.preventDefault();
 
-          const message = document
-            .getElementById("feedbackMessage")
-            .value.trim();
           const category = document.getElementById("feedbackCategory").value;
+          const message = document.getElementById("feedbackMessage").value;
 
-          if (!message) {
-            document.getElementById("feedbackSuccess").innerHTML = `
-            <p class="text-red-600">Please enter your feedback message</p>
-          `;
-            document
-              .getElementById("feedbackSuccess")
-              .classList.remove("hidden");
+          if (!message.trim()) {
             return;
           }
 
-          try {
-            const response = await fetch("/submit_feedback", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ message, category }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-              document.getElementById("feedbackForm").classList.add("hidden");
-              document.getElementById("feedbackSuccess").innerHTML = `
-              <p class="mb-4">Thanks for the feedback!</p>
-              <div class="flex justify-end">
-                <button onclick="hideFeedbackModal()" class="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-700">
-                  Close
-                </button>
-              </div>
-            `;
-              document
-                .getElementById("feedbackSuccess")
-                .classList.remove("hidden");
-              document.getElementById("feedbackMessage").value = "";
-            } else {
-              document.getElementById("feedbackSuccess").innerHTML = `
-              <p class="text-red-600">${
-                data.error || "Failed to submit feedback"
-              }</p>
-            `;
-              document
-                .getElementById("feedbackSuccess")
-                .classList.remove("hidden");
-            }
-          } catch (error) {
-            console.error("Error:", error);
-            document.getElementById("feedbackSuccess").innerHTML = `
-            <p class="text-red-600">Failed to submit feedback</p>
-          `;
-            document
-              .getElementById("feedbackSuccess")
-              .classList.remove("hidden");
-          }
-        });
-
-      document.addEventListener("DOMContentLoaded", () => {
-        // Apply translations using the translation manager
-        window.translationManager?.applyTranslations();
-
-        // Populate roadmap features list after translations are loaded
-        const featuresList = document.getElementById("roadmapFeaturesList");
-        if (
-          featuresList &&
-          window.translations?.supportPage?.roadmap?.features
-        ) {
-          const features = window.translations.supportPage.roadmap.features;
-
-          // Convert features object to array while maintaining order
-          const featuresArray = Object.entries(features).map(
-            ([key, value]) => ({
-              key,
-              ...value,
+          // Send feedback to server
+          fetch("/submit_feedback", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              category: category,
+              message: message,
+            }),
+          })
+            .then((response) => {
+              if (response.ok) {
+                document
+                  .getElementById("feedbackSuccess")
+                  .classList.remove("hidden");
+                document.getElementById("feedbackMessage").value = "";
+                setTimeout(() => {
+                  hideFeedbackModal();
+                  document
+                    .getElementById("feedbackSuccess")
+                    .classList.add("hidden");
+                }, 2000);
+              }
             })
-          );
-
-          // Create HTML for each feature
-          featuresArray.forEach((feature) => {
-            const li = document.createElement("li");
-            li.className = "flex items-start";
-            li.innerHTML = `
-              <span class="text-green-500 mr-2">⭐</span>
-              <div>
-                <span class="font-medium">${feature.title}</span>
-                <p class="text-gray-600 text-sm">${feature.description}</p>
-              </div>
-            `;
-            featuresList.appendChild(li);
-          });
-        }
-
-        // Show feedback modal if show_feedback parameter is present
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has("show_feedback")) {
-          showFeedbackModal();
-        }
-      });
+            .catch((error) => {
+              console.error("Error submitting feedback:", error);
+            });
+        });
     </script>
   </body>
 </html>
