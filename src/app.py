@@ -1,5 +1,6 @@
 import logging
 import os
+import traceback
 from datetime import timedelta
 
 from flask import Flask, jsonify, request, send_from_directory, session
@@ -172,11 +173,24 @@ def create_app():
 
     @app.errorhandler(Exception)
     def handle_exception(e):
-        db.session.remove()  # Ensure the session is cleaned up
-        return jsonify(error=str(e)), 500
+        # Log the error
+        logger.error(f"Unhandled exception: {str(e)}")
+        logger.error(f"Traceback: {traceback.format_exc()}")
+
+        # Clean up the database session
+        db.session.remove()
+
+        # Return a JSON response for API endpoints
+        if request.path.startswith("/reset_password"):
+            return jsonify(error=str(e)), 500
+
+        return jsonify(error="An unexpected error occurred"), 500
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):
+        if exception:
+            logger.error(f"Exception during request: {str(exception)}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
         db.session.remove()
 
     return app

@@ -600,8 +600,14 @@ function showPasswordResetRequestModal() {
             <label class="block text-sm font-medium mb-1">Email</label>
             <input type="email" id="resetEmail" required class="w-full px-3 py-2 border rounded-lg">
           </div>
-          <button type="submit" class="w-full bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
-            Request Reset Link
+          <button type="submit" class="w-full bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 relative">
+            <span class="inline-block transition-opacity duration-200">Request Reset Link</span>
+            <span class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200">
+              <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </span>
           </button>
         </form>
       </div>
@@ -609,10 +615,19 @@ function showPasswordResetRequestModal() {
   `;
 
   const form = modal.querySelector("#resetRequestForm");
+  const submitButton = form.querySelector('button[type="submit"]');
+  const buttonText = submitButton.querySelector("span:first-child");
+  const loadingSpinner = submitButton.querySelector("span:last-child");
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("resetEmail").value;
     const messageDiv = document.getElementById("resetRequestMessage");
+
+    // Disable button and show loading state
+    submitButton.disabled = true;
+    buttonText.classList.add("opacity-0");
+    loadingSpinner.classList.remove("opacity-0");
 
     try {
       const response = await fetch("/request-reset", {
@@ -626,12 +641,19 @@ function showPasswordResetRequestModal() {
       messageDiv.classList.remove("hidden", "text-red-500");
       messageDiv.classList.add("text-green-500");
 
-      // Clear form
-      document.getElementById("resetEmail").value = "";
+      // Hide form elements after successful submission
+      document.getElementById("resetEmail").parentElement.style.display =
+        "none";
+      submitButton.style.display = "none";
     } catch (error) {
       messageDiv.textContent = "Failed to send reset request";
       messageDiv.classList.remove("hidden", "text-green-500");
       messageDiv.classList.add("text-red-500");
+
+      // Re-enable button and hide loading state
+      submitButton.disabled = false;
+      buttonText.classList.remove("opacity-0");
+      loadingSpinner.classList.add("opacity-0");
     }
   });
 
