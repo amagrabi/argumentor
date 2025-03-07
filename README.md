@@ -117,6 +117,13 @@ Recreate db for local development:
 flask recreate_db
 ```
 
+Upgrading users:
+
+```sh
+flask list_users
+flask upgrade_user
+```
+
 ### Database Migrations
 
 This project uses Flask-Migrate (and Alembic) to manage database schema changes. Follow these guidelines to keep your migration history clean and your environments in sync.
