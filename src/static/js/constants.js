@@ -32,10 +32,10 @@ export const CATEGORY_ICONS = {
 // Character limits for different fields
 export const CHAR_LIMITS = {
   CLAIM: 200,
-  ARGUMENT: 1000,
+  ARGUMENT: 2000,
   COUNTERARGUMENT: 800,
-  CHALLENGE: 2000,
-  VOICE: 2000,
+  CHALLENGE: 3000,
+  VOICE: 3000,
 };
 
 // Color gradient configuration for scores

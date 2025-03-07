@@ -58,10 +58,10 @@ class Settings(BaseSettings):
 
     # Maximum characters allowed for each field
     MAX_CLAIM: int = Field(default=200)
-    MAX_ARGUMENT: int = Field(default=1000)
+    MAX_ARGUMENT: int = Field(default=2000)
     MAX_COUNTERARGUMENT: int = Field(default=800)
-    MAX_VOICE_ANSWER: int = Field(default=2000)
-    MAX_CHALLENGE_RESPONSE: int = Field(default=2000)
+    MAX_VOICE_ANSWER: int = Field(default=3000)
+    MAX_CHALLENGE_RESPONSE: int = Field(default=3000)
 
     # Below this threshold, no XP is awarded
     RELEVANCE_THRESHOLD_FOR_XP: int = Field(default=3)

@@ -566,13 +566,13 @@
                 id="claimInput"
                 class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
                 data-i18n-placeholder="main.inputLabels.claimDescription"
-                maxlength="200"
+                maxlength="{{ char_limits.claim }}"
               ></textarea>
               <div class="mt-1 text-sm text-gray-500">
                 <span data-i18n="challenge.charactersRemaining"
                   >Characters remaining:</span
                 >
-                <span id="claimCount">200</span>
+                <span id="claimCount">{{ char_limits.claim }}</span>
               </div>
             </div>
 
@@ -587,13 +587,13 @@
                 id="argumentInput"
                 class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
                 data-i18n-placeholder="main.inputLabels.reasoningDescription"
-                maxlength="1000"
+                maxlength="{{ char_limits.argument }}"
               ></textarea>
               <div class="mt-1 text-sm text-gray-500">
                 <span data-i18n="challenge.charactersRemaining"
                   >Characters remaining:</span
                 >
-                <span id="argumentCount">1000</span>
+                <span id="argumentCount">{{ char_limits.argument }}</span>
               </div>
             </div>
 
@@ -608,13 +608,13 @@
                 id="counterargumentInput"
                 class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
                 data-i18n-placeholder="main.inputLabels.counterargumentDescription"
-                maxlength="800"
+                maxlength="{{ char_limits.counterargument }}"
               ></textarea>
               <div class="mt-1 text-sm text-gray-500">
                 <span data-i18n="challenge.charactersRemaining"
                   >Characters remaining:</span
                 >
-                <span id="counterargumentCount">800</span>
+                <span id="counterargumentCount">{{ char_limits.counterargument }}</span>
               </div>
             </div>
           </div>
@@ -937,13 +937,13 @@
                 id="challengeResponseInput"
                 class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
                 data-i18n-placeholder="main.inputLabels.challengeDescription"
-                maxlength="2000"
+                maxlength="{{ char_limits.challenge }}"
               ></textarea>
               <div class="mt-1 text-sm text-gray-500">
                 <span data-i18n="challenge.charactersRemaining"
                   >Characters remaining:</span
                 >
-                <span id="challengeCount">2000</span>
+                <span id="challengeCount">{{ char_limits.challenge }}</span>
               </div>
             </div>
           </div>
@@ -1003,11 +1003,11 @@
                 id="challengeVoiceTranscript"
                 class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
                 data-i18n-placeholder="main.voiceInput.transcriptPlaceholder"
-                maxlength="2000"
+                maxlength="{{ char_limits.voice }}"
               ></textarea>
               <div class="mt-1 text-sm text-gray-500">
                 <span data-i18n="challenge.charactersRemaining">Characters remaining:</span>
-                <span id="challengeVoiceCount">2000</span>
+                <span id="challengeVoiceCount">{{ char_limits.voice }}</span>
               </div>
             </div>
           </div>

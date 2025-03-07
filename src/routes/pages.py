@@ -110,6 +110,13 @@ def home():
         all_achievements=all_achievements,
         earned_achievements=earned_achievements,
         user=user,
+        char_limits={
+            "claim": SETTINGS.MAX_CLAIM,
+            "argument": SETTINGS.MAX_ARGUMENT,
+            "counterargument": SETTINGS.MAX_COUNTERARGUMENT,
+            "voice": SETTINGS.MAX_VOICE_ANSWER,
+            "challenge": SETTINGS.MAX_CHALLENGE_RESPONSE,
+        },
     )
 
 
