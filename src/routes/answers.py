@@ -299,6 +299,9 @@ def submit_answer():
             "input_mode": input_mode,
             "total_score": avg_all,
             "evaluation_scores": evaluation["scores"],
+            "argument": argument,
+            "claim": claim,
+            "counterargument": counterargument,
         }
         newly_awarded = check_and_award_achievements(user, answer_data, session)
 

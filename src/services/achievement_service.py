@@ -83,8 +83,8 @@ def check_and_award_achievements(
     if all(score >= 9 for score in scores.values()) and not has_master:
         award_achievement("master_of_all")
 
-    # Check for all seven categories with 7+ rating - only for authenticated users
-    if user.is_authenticated and not user.has_achievement("all_seven_categories"):
+    # Check for all categories with 7+ rating - only for authenticated users
+    if user.is_authenticated and not user.has_achievement("all_categories"):
         # Get all answers with their categories and scores
         category_high_scores = {}
         for answer in user.answers:
@@ -113,17 +113,34 @@ def check_and_award_achievements(
 
         # Check if all categories have at least one 7+ score
         if len(category_high_scores) >= 9:  # All 9 categories
-            award_achievement("all_seven_categories")
+            award_achievement("all_categories")
 
     # Check for wordsmith (long argument)
     argument = answer_data.get("argument", "")
+    claim = answer_data.get("claim", "")
+    counterargument = answer_data.get("counterargument", "")
+    input_mode = answer_data.get("input_mode", "text")
+    is_challenge = answer_data.get("is_challenge", False)
+
+    # Calculate total text length based on input mode and section
+    if is_challenge:
+        # For challenge responses, just use the argument length directly
+        total_length = len(argument)
+    else:
+        # For voice inputs, use the full text
+        if input_mode == "voice":
+            total_length = len(argument)
+        # For text inputs, combine all fields
+        else:
+            total_length = len(claim) + len(argument) + len(counterargument)
+
     has_wordsmith = user.is_authenticated and user.has_achievement("wordsmith")
-    if len(argument) > 900 and total_score >= 7.5 and not has_wordsmith:
+    if total_length > 1800 and total_score >= 7.5 and not has_wordsmith:
         award_achievement("wordsmith")
 
     # Check for concise master
     has_concise = user.is_authenticated and user.has_achievement("concise_master")
-    if len(argument) < 200 and total_score >= 7.5 and not has_concise:
+    if total_length < 300 and total_score >= 7.5 and not has_concise:
         award_achievement("concise_master")
 
     # Count total answers and award milestones - only for authenticated users

@@ -76,7 +76,7 @@
   "writeQuestion": {
     "title": "Write Your Own Question",
     "close": "✕",
-    "label": "Enter your question:",
+    "label": "Write your question...",
     "hint": "Write a clear question that can be argued from multiple perspectives.",
     "submit": "Use This Question"
   },
@@ -354,7 +354,7 @@
         "name": "Daily Scholar",
         "description": "Submit arguments for 5 consecutive days"
       },
-      "all_seven_categories": {
+      "all_categories": {
         "name": "Balanced Greatness",
         "description": "Receive a 7+ rating in each category"
       },

@@ -81,9 +81,9 @@ ACHIEVEMENTS = [
         description_key="profile.achievementData.daily_streak.description",
     ),
     Achievement(
-        id="all_seven_categories",
-        name_key="profile.achievementData.all_seven_categories.name",
-        description_key="profile.achievementData.all_seven_categories.description",
+        id="all_categories",
+        name_key="profile.achievementData.all_categories.name",
+        description_key="profile.achievementData.all_categories.description",
     ),
     Achievement(
         id="master_of_all",
