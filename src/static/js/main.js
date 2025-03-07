@@ -937,6 +937,11 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
 
   if (currentQuestion?.id) {
     payload.question_id = currentQuestion.id;
+
+    // For custom questions, include the question text in the payload
+    if (currentQuestion.isCustom) {
+      payload.question_text = currentQuestion.description;
+    }
   }
 
   // Before processing the new response, clear any previous challenge content:
@@ -3328,3 +3333,72 @@ function localScrollToMainEvaluation() {
 document.addEventListener("refreshAchievements", () => {
   updateLocalAchievementsDisplay(all_achievements);
 });
+
+// Write Question button handler (for pro users)
+const writeQuestionButton = document.getElementById("writeQuestionButton");
+if (writeQuestionButton) {
+  writeQuestionButton.addEventListener("click", () => {
+    document.getElementById("writeQuestionOverlay").classList.remove("hidden");
+    document.getElementById("customQuestion").focus();
+  });
+
+  // Close button for write question overlay
+  document
+    .getElementById("closeWriteQuestion")
+    .addEventListener("click", () => {
+      document.getElementById("writeQuestionOverlay").classList.add("hidden");
+    });
+
+  // Click outside to close
+  document
+    .getElementById("writeQuestionOverlay")
+    .addEventListener("click", (e) => {
+      if (e.target === document.getElementById("writeQuestionOverlay")) {
+        document.getElementById("writeQuestionOverlay").classList.add("hidden");
+      }
+    });
+
+  // Submit custom question
+  document
+    .getElementById("submitCustomQuestion")
+    .addEventListener("click", () => {
+      const customQuestionText = document
+        .getElementById("customQuestion")
+        .value.trim();
+
+      if (!customQuestionText) {
+        showToast("Please enter a question", "error");
+        return;
+      }
+
+      // Create a custom question object with a unique ID
+      const customQuestion = {
+        id: "custom_" + Date.now(),
+        description: customQuestionText,
+        category: "Custom",
+        isCustom: true,
+      };
+
+      // Store the selected question
+      currentQuestion = customQuestion;
+      sessionStorage.setItem("currentQuestion", JSON.stringify(customQuestion));
+
+      // Also store in the server session
+      fetch("/store_custom_question", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: customQuestion }),
+      }).catch((error) => {
+        console.error("Error storing custom question:", error);
+      });
+
+      // Update the display
+      updateQuestionDisplay(customQuestion);
+
+      // Hide the overlay
+      document.getElementById("writeQuestionOverlay").classList.add("hidden");
+
+      // Clear the textarea for next time
+      document.getElementById("customQuestion").value = "";
+    });
+}

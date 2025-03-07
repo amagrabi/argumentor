@@ -32,7 +32,8 @@
     "howToSupport": "How to Support",
     "buttons": {
       "randomQuestion": "Random Question",
-      "selectQuestion": "Select Question"
+      "selectQuestion": "Select Question",
+      "writeQuestion": "Write Question"
     },
     "inputLabels": {
       "claim": "Your Claim",
@@ -71,6 +72,13 @@
     "title": "Select a Question",
     "close": "✕",
     "loading": "Loading questions..."
+  },
+  "writeQuestion": {
+    "title": "Write Your Own Question",
+    "close": "✕",
+    "label": "Enter your question:",
+    "hint": "Write a clear question that can be argued from multiple perspectives.",
+    "submit": "Use This Question"
   },
   "challenge": {
     "title": "Challenge",
@@ -687,8 +695,8 @@
           "description": "Challenge your friends and compete in reasoning battles."
         },
         "moreQuestions": {
-          "title": "Custom Questions",
-          "description": "Add more questions and support the option to create your own."
+          "title": "More Questions",
+          "description": "Add more questions and add new categories."
         },
         "betterAnalytics": {
           "title": "Better Analytics",

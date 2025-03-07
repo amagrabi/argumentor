@@ -23,20 +23,31 @@ export function typeWriter(element, text, speed) {
 export function updateQuestionDisplay(question) {
   const questionElem = document.getElementById("questionDescription");
   if (questionElem && question) {
-    // Try to get the translated question text if available
-    const translatedQuestion =
-      window.translations?.questions?.[question.category]?.[question.id];
-    questionElem.textContent = translatedQuestion || question.description;
+    // For custom questions, use the description directly
+    if (question.isCustom) {
+      questionElem.textContent = question.description;
+    } else {
+      // Try to get the translated question text if available
+      const translatedQuestion =
+        window.translations?.questions?.[question.category]?.[question.id];
+      questionElem.textContent = translatedQuestion || question.description;
+    }
   }
 
   const categoryBadge = document.getElementById("categoryBadge");
   if (categoryBadge) {
-    const translatedCategory =
-      window.translations?.categories?.[question.category] || question.category;
-    const categoryText = CATEGORY_ICONS[question.category]
-      ? `${CATEGORY_ICONS[question.category]} ${translatedCategory}`
-      : translatedCategory;
-    categoryBadge.textContent = categoryText;
+    // For custom questions, show "Custom" category
+    if (question.isCustom) {
+      categoryBadge.textContent = "✏️ Custom";
+    } else {
+      const translatedCategory =
+        window.translations?.categories?.[question.category] ||
+        question.category;
+      const categoryText = CATEGORY_ICONS[question.category]
+        ? `${CATEGORY_ICONS[question.category]} ${translatedCategory}`
+        : translatedCategory;
+      categoryBadge.textContent = categoryText;
+    }
   }
 }
 

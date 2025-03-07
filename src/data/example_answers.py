@@ -107,14 +107,24 @@ EXAMPLE_ANSWERS = [
     },
     {
         "question_text": """
-            Can free will exist if our decisions are determined by biological and
-            physical influences?
+            Would the introduction of Ranked Choice Voting (RCV) strengthen democracy?
         """,
-        "claim": "Potatoes are good.",
+        "claim": "The introduction of Ranked Choice Voting (RCV) would strengthen democracy.",
         "argument": """
-            Potatoes contain vitamins. Potatoes are organic. Therefore they are healthy.
-            Also, potatoes taste good, and potatoes can be used in a variety of dishes.
-            Therefore, potatoes are good.
+            Ranked Choice Voting (RCV) strengthens democracy by ensuring majority rule,
+            reducing polarization, and expanding voter choice. Unlike first-past-the-post,
+            where candidates can win with a mere plurality, RCV ensures winners have true
+            majority support by redistributing votes until one candidate surpasses 50%.
+            This eliminates the spoiler effect, allowing voters to rank their true preferences
+            without fear of wasting their vote.
+
+            RCV also reduces negative campaigning, as candidates must appeal to a broader
+            audience to gain second-choice rankings. It encourages political diversity,
+            weakening two-party dominance and giving independent candidates a fairer chance.
+            Moreover, RCV increases voter engagement, as people feel their choices matter more.
+
+            By making elections fairer, reducing strategic voting, and promoting consensus-driven
+            leadership, RCV creates a stronger, more representative democracy.
         """,
         "counterargument": "",
     },

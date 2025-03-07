@@ -109,6 +109,7 @@ def home():
         monthly_voice_limit=monthly_voice_limit,
         all_achievements=all_achievements,
         earned_achievements=earned_achievements,
+        user=user,
     )
 
 

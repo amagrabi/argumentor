@@ -49,3 +49,19 @@ def handle_select_question():
 
     session.setdefault("seen_question_ids", []).append(question["id"])
     return jsonify(question)
+
+
+@questions_bp.route("/store_custom_question", methods=["POST"])
+def handle_store_custom_question():
+    """Store a custom question in the session."""
+    if not request.is_json:
+        return json_error("Content-Type must be application/json", 400)
+
+    question_data = request.json.get("question")
+    if not question_data:
+        return json_error("Question data is required", 400)
+
+    # Store the custom question in the session
+    session["current_question"] = question_data
+
+    return jsonify({"success": True})

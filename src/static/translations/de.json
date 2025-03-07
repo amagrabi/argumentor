@@ -39,7 +39,8 @@
     "howToSupport": "So kannst du unterstützen",
     "buttons": {
       "randomQuestion": "Zufällige Frage",
-      "selectQuestion": "Frage auswählen"
+      "selectQuestion": "Frage auswählen",
+      "writeQuestion": "Frage erstellen"
     },
     "inputLabels": {
       "claim": "Deine These",
@@ -73,6 +74,18 @@
       "transcriptPlaceholder": "Deine transkribierte Sprache erscheint hier...",
       "charactersRemaining": "Verbleibende Zeichen:"
     }
+  },
+  "questionSelection": {
+    "title": "Frage auswählen",
+    "close": "✕",
+    "loading": "Fragen werden geladen..."
+  },
+  "writeQuestion": {
+    "title": "Eigene Frage erstellen",
+    "close": "✕",
+    "label": "Gib deine Frage ein:",
+    "hint": "Schreibe eine klare, zum Nachdenken anregende Frage, die aus verschiedenen Perspektiven diskutiert werden kann.",
+    "submit": "Diese Frage verwenden"
   },
   "challenge": {
     "title": "Challenge",
@@ -807,8 +820,8 @@
           "description": "Fordere deine Freunde heraus und messe dich in Streitgesprächen."
         },
         "moreQuestions": {
-          "title": "Individuelle Fragen",
-          "description": "Erlaube nutzerdefinierte Fragen und erweitere den Fragenkatalog."
+          "title": "Neue Fragen",
+          "description": "Füge neue Fragen und neue Kategorien hinzu."
         },
         "betterAnalytics": {
           "title": "Bessere Analysen",
