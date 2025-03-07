@@ -658,7 +658,7 @@
               class="border p-4 rounded-lg group hover:bg-gray-50 transition-colors"
             >
               <div class="relative">
-                <p class="font-bold text-gray-800 pr-40">
+                <p class="font-bold text-gray-800 pr-48">
                   {{ answer.question_text }}
                 </p>
                 <div
@@ -730,12 +730,12 @@
                 <div class="mt-2 space-y-2">
                   <!-- Claim and Argument Sections -->
                   {% if answer.input_mode == 'voice' %}
-                  <p class="text-sm break-words pr-40">
+                  <p class="text-sm break-words pr-48">
                     <span class="font-medium text-sm text-black">Answer:</span>
                     <span class="text-gray-600">{{ answer.argument }}</span>
                   </p>
                   {% else %}
-                  <p class="text-sm break-words pr-40">
+                  <p class="text-sm break-words pr-48">
                     <span
                       class="font-medium text-sm text-black"
                       data-i18n="profile.claim"
@@ -743,7 +743,7 @@
                     ><span>: </span>
                     <span class="text-gray-600">{{ answer.claim }}</span>
                   </p>
-                  <p class="text-sm break-words mt-1">
+                  <p class="text-sm break-words mt-1 pr-48">
                     <span
                       class="font-medium text-sm text-black"
                       data-i18n="profile.argument"
@@ -755,7 +755,7 @@
                   <!-- Move Counterargument Section here -->
                   {% if answer.counterargument and answer.input_mode != 'voice'
                   %}
-                  <p class="text-sm break-words mt-1">
+                  <p class="text-sm break-words mt-1 pr-48">
                     <span
                       class="font-medium text-sm text-black"
                       data-i18n="profile.counterargument"
@@ -794,6 +794,19 @@
                     >
                     <span class="text-gray-600"
                       >{{ answer.challenge_response }}</span
+                    >
+                  </p>
+                  {% endif %}
+
+                  <!-- Challenge Evaluation Feedback -->
+                  {% if answer.challenge_evaluation_feedback and
+                  answer.challenge_evaluation_feedback.Overall %}
+                  <p class="text-sm break-words mt-1">
+                    <span class="font-medium text-sm text-black"
+                      >Challenge Evaluation:</span
+                    >
+                    <span class="text-gray-600"
+                      >{{ answer.challenge_evaluation_feedback.Overall }}</span
                     >
                   </p>
                   {% endif %}

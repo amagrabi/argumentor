@@ -89,9 +89,21 @@ def submit_answer():
         ):
             return jsonify({"error": "Character limit exceeded"}), 400
 
-        # If question_text wasn't provided, try to look it up using question_id.
+        # Get question_text from the request by looking up question_id if necessary.
         question_id = data.get("question_id")
-        if not question_text and question_id:
+        question_text = data.get("question_text", "")
+
+        # Handle custom questions (their IDs start with "custom_")
+        if question_id and question_id.startswith("custom_"):
+            # For custom questions, use the question_text directly from the request
+            question_text = data.get("question_text", "")
+            if not question_text:
+                # If question_text wasn't provided, try to get it from the session
+                session_question = session.get("current_question", {})
+                if session_question and session_question.get("id") == question_id:
+                    question_text = session_question.get("description", "")
+        elif question_id:
+            # For regular questions, look up the text
             if (
                 question_id
                 == "does-free-will-exist-if-all-decisions-are-ultimately-influenced-by-biologicalphysical-factors"
@@ -240,24 +252,6 @@ def submit_answer():
             db.session.add(user)
         else:
             user.xp = old_xp
-
-        # Get question_text from the request by looking up question_id if necessary.
-        question_id = data.get("question_id")
-        question_text = ""
-        if question_id:
-            if (
-                question_id
-                == "does-free-will-exist-if-all-decisions-are-ultimately-influenced-by-biologicalphysical-factors"
-            ):
-                question_text = "Does free will exist if all decisions are ultimately influenced by biological/physical factors?"
-            else:
-                for questions in get_questions().values():
-                    for q in questions:
-                        if q["id"] == question_id:
-                            question_text = q["description"]
-                            break
-                    if question_text:
-                        break
 
         # Get mode from request payload
         input_mode = data.get("input_mode", "text")
@@ -503,8 +497,14 @@ def submit_challenge_response():
 
         # Update the answer with the challenge response and evaluation
         answer.challenge_response = challenge_response
-        answer.challenge_evaluation_scores = scores
-        answer.challenge_evaluation_feedback = evaluation["feedback"]
+        # Include total_score in the challenge_evaluation_scores dictionary
+        scores_with_overall = scores.copy()
+        scores_with_overall["Overall"] = evaluation["total_score"]
+        answer.challenge_evaluation_scores = scores_with_overall
+        # Include overall_feedback in the challenge_evaluation_feedback dictionary
+        feedback_with_overall = evaluation["feedback"].copy()
+        feedback_with_overall["Overall"] = evaluation["overall_feedback"]
+        answer.challenge_evaluation_feedback = feedback_with_overall
         answer.challenge_xp_earned = xp_gained
         answer.challenge_response_created_at = datetime.now(UTC)
 
