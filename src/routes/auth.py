@@ -42,6 +42,14 @@ def signup():
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             return jsonify({"error": "Invalid email format."}), 400
 
+        # Validate username length
+        if len(username) < 3:
+            return jsonify(
+                {"error": "Username must be at least 3 characters long."}
+            ), 400
+        if len(username) > 30:
+            return jsonify({"error": "Username cannot exceed 30 characters."}), 400
+
         # Check if the username already exists.
         if User.query.filter_by(username=username).first():
             return jsonify({"error": "Username already exists."}), 400
@@ -253,6 +261,15 @@ def google_auth():
                 return jsonify(
                     {"error": "Username is required for Google signups."}
                 ), 400
+
+            # Validate username length
+            if len(username) < 3:
+                return jsonify(
+                    {"error": "Username must be at least 3 characters long."}
+                ), 400
+            if len(username) > 30:
+                return jsonify({"error": "Username cannot exceed 30 characters."}), 400
+
             # Ensure the username isn't already in use.
             if User.query.filter_by(username=username).first():
                 return jsonify({"error": "Username already exists."}), 400

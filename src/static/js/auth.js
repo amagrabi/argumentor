@@ -553,6 +553,12 @@ function showGoogleUsernameModal(credential) {
         if (error.includes("Username already exists")) {
           errorDiv.textContent =
             translations.auth?.googleAuth?.errors?.usernameExists || error;
+        } else if (error.includes("Username must be at least")) {
+          errorDiv.textContent =
+            translations.auth?.googleAuth?.errors?.usernameTooShort || error;
+        } else if (error.includes("Username cannot exceed")) {
+          errorDiv.textContent =
+            translations.auth?.googleAuth?.errors?.usernameTooLong || error;
         } else {
           errorDiv.textContent =
             translations.auth?.errors?.serverError || error;
@@ -583,6 +589,7 @@ function showGoogleUsernameModal(credential) {
 })();
 
 function showPasswordResetRequestModal() {
+  const translations = window.translations || {};
   const modal = document.createElement("div");
   modal.innerHTML = `
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
@@ -590,18 +597,24 @@ function showPasswordResetRequestModal() {
       <div class="bg-white rounded-lg p-6 w-full max-w-md relative"
            onclick="event.stopPropagation()">
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold">Reset Password</h3>
+          <h3 class="text-lg font-semibold">${
+            translations.resetPassword?.title || "Reset Password"
+          }</h3>
           <button onclick="this.parentElement.parentElement.parentElement.remove()"
                   class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
         </div>
         <form id="resetRequestForm" class="space-y-4">
           <div id="resetRequestMessage" class="text-sm mb-2 hidden"></div>
           <div>
-            <label class="block text-sm font-medium mb-1">Email</label>
+            <label class="block text-sm font-medium mb-1">${
+              translations.auth?.email || "Email"
+            }</label>
             <input type="email" id="resetEmail" required class="w-full px-3 py-2 border rounded-lg">
           </div>
           <button type="submit" class="w-full bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 relative">
-            <span class="inline-block transition-opacity duration-200">Request Reset Link</span>
+            <span class="inline-block transition-opacity duration-200">${
+              translations.resetPassword?.requestLink || "Request Reset Link"
+            }</span>
             <span class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200">
               <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -637,7 +650,8 @@ function showPasswordResetRequestModal() {
       });
 
       const data = await response.json();
-      messageDiv.textContent = data.message;
+      messageDiv.textContent =
+        translations.resetPassword?.resetInstructions || data.message;
       messageDiv.classList.remove("hidden", "text-red-500");
       messageDiv.classList.add("text-green-500");
 
@@ -690,6 +704,10 @@ function handleSignupError(error) {
     errorMessage = translations.auth?.errors?.emailInUse;
   } else if (error.message.includes("Username already exists")) {
     errorMessage = translations.auth?.errors?.usernameInUse;
+  } else if (error.message.includes("Username must be at least")) {
+    errorMessage = translations.auth?.errors?.usernameTooShort;
+  } else if (error.message.includes("Username cannot exceed")) {
+    errorMessage = translations.auth?.errors?.usernameTooLong;
   } else if (error.message.includes("Password too weak")) {
     errorMessage = translations.auth?.errors?.weakPassword;
   } else if (error.message.includes("Invalid email")) {

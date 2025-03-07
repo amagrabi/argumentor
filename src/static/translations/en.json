@@ -130,7 +130,9 @@
       "usernameDescription": "",
       "continue": "Continue",
       "errors": {
-        "usernameExists": "Username already exists"
+        "usernameExists": "Username already exists",
+        "usernameTooShort": "Username must be at least 3 characters long",
+        "usernameTooLong": "Username cannot exceed 30 characters"
       }
     },
     "errors": {
@@ -138,6 +140,8 @@
       "userNotFound": "User not found",
       "emailInUse": "This email is already in use",
       "usernameInUse": "This username is already in use",
+      "usernameTooShort": "Username must be at least 3 characters long",
+      "usernameTooLong": "Username cannot exceed 30 characters",
       "weakPassword": "Password is too weak",
       "invalidEmail": "Invalid email address",
       "accountLocked": "Account locked. Please try again later",
@@ -148,6 +152,25 @@
   "languages": {
     "en": "English",
     "de": "German"
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "submit": "Reset Password",
+    "requestLink": "Request Reset Link",
+    "resetInstructions": "If an account exists with this email, you will receive reset instructions.",
+    "success": "Password successfully reset. Redirecting...",
+    "email": {
+      "subject": "Password Reset Request",
+      "message": "To reset your password, visit the following link:\n\n{resetUrl}\n\nThis link will expire in 1 hour.\n\nIf you did not request this reset, please ignore this email."
+    },
+    "errors": {
+      "passwordMismatch": "Passwords do not match",
+      "invalidToken": "Your password reset link is invalid or has expired. Please request a new one.",
+      "updateFailed": "Failed to update password. Please try again.",
+      "generic": "An error occurred"
+    }
   },
   "currentLang": "EN",
   "errors": {
@@ -392,7 +415,8 @@
     "argument": "Argument",
     "counterargument": "Counterarguments",
     "challengeResponse": "Challenge Response",
-    "feedbackDetails": "Details"
+    "feedbackDetails": "Details",
+    "noAnswersYet": "You haven't submitted any answers yet."
   },
   "howItWorksPage": {
     "title": "How It Works",

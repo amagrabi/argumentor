@@ -1,10 +1,12 @@
+import json
 import logging
 import secrets
 import sys
 import traceback
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 
-from flask import Blueprint, jsonify, render_template, request, session
+from flask import Blueprint, current_app, jsonify, render_template, request, session
 from flask_login import login_user
 from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash
@@ -55,21 +57,43 @@ def request_reset():
     user.reset_token_expiry = datetime.now(UTC) + timedelta(hours=1)
     db.session.commit()
 
+    # Get user's preferred language or default to English
+    language = user.preferred_language or "en"
+
+    # Load translations
+    try:
+        translations_path = (
+            Path(current_app.root_path) / "static" / "translations" / f"{language}.json"
+        )
+        with open(translations_path, "r", encoding="utf-8") as f:
+            translations = json.load(f)
+
+        email_subject = (
+            translations.get("resetPassword", {})
+            .get("email", {})
+            .get("subject", "Password Reset Request")
+        )
+        email_message_template = (
+            translations.get("resetPassword", {})
+            .get("email", {})
+            .get(
+                "message",
+                "To reset your password, visit the following link:\n\n{resetUrl}\n\nThis link will expire in 1 hour.\n\nIf you did not request this reset, please ignore this email.",
+            )
+        )
+    except Exception as e:
+        logger.error(f"Error loading translations: {e}")
+        email_subject = "Password Reset Request"
+        email_message_template = "To reset your password, visit the following link:\n\n{resetUrl}\n\nThis link will expire in 1 hour.\n\nIf you did not request this reset, please ignore this email."
+
     # Send reset email
     reset_url = f"{request.host_url}reset-password?token={token}"
     msg = Message(
-        "Password Reset Request",
+        email_subject,
         sender=SETTINGS.MAIL_DEFAULT_SENDER,
         recipients=[email],
     )
-    msg.body = f"""To reset your password, visit the following link:
-
-{reset_url}
-
-This link will expire in 1 hour.
-
-If you did not request this reset, please ignore this email.
-"""
+    msg.body = email_message_template.format(resetUrl=reset_url)
     mail.send(msg)
 
     return jsonify(
@@ -191,7 +215,30 @@ def reset_password():
 def reset_password_page():
     token = request.args.get("token")
     if not token:
-        return "Invalid reset link", 400
+        # Get language from request or default to English
+        language = request.args.get("lang") or "en"
+
+        # Load translations
+        try:
+            translations_path = (
+                Path(current_app.root_path)
+                / "static"
+                / "translations"
+                / f"{language}.json"
+            )
+            with open(translations_path, "r", encoding="utf-8") as f:
+                translations = json.load(f)
+
+            error_message = (
+                translations.get("resetPassword", {})
+                .get("errors", {})
+                .get("invalidToken", "Invalid reset link")
+            )
+        except Exception as e:
+            logger.error(f"Error loading translations: {e}")
+            error_message = "Invalid reset link"
+
+        return error_message, 400
 
     user = User.query.filter_by(reset_token=token).first()
     if (
@@ -199,6 +246,33 @@ def reset_password_page():
         or not user.reset_token_expiry
         or user.reset_token_expiry.replace(tzinfo=UTC) < datetime.now(UTC)
     ):
-        return "Invalid or expired reset token", 400
+        # Get language from user or default to English
+        language = user.preferred_language if user else "en"
 
-    return render_template("reset_password.html", token=token)
+        # Load translations
+        try:
+            translations_path = (
+                Path(current_app.root_path)
+                / "static"
+                / "translations"
+                / f"{language}.json"
+            )
+            with open(translations_path, "r", encoding="utf-8") as f:
+                translations = json.load(f)
+
+            error_message = (
+                translations.get("resetPassword", {})
+                .get("errors", {})
+                .get("invalidToken", "Invalid or expired reset token")
+            )
+        except Exception as e:
+            logger.error(f"Error loading translations: {e}")
+            error_message = "Invalid or expired reset token"
+
+        return error_message, 400
+
+    # Pass the user's preferred language to the template
+    preferred_language = user.preferred_language if user else "en"
+    return render_template(
+        "reset_password.html", token=token, preferred_language=preferred_language
+    )

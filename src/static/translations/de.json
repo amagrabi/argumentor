@@ -8,7 +8,18 @@
     "voiceRequiredField": "Bitte gib deine Antwort ein, bevor du abschickst.",
     "unexpectedError": "Es ist ein unerwarteter Fehler aufgetreten. Bitte versuche es erneut und gib Feedback, wenn das Problem weiterhin besteht.",
     "similarAnswer": "Du hast bereits eine sehr ähnliche Antwort auf diese Frage eingereicht. Ändere dein Argument, um eine neue Bewertung zu erhalten.",
-    "tooManySubmissions": "Zu viele Einreichungen. Bitte warte, bevor du es erneut versuchst."
+    "tooManySubmissions": "Zu viele Einreichungen. Bitte warte, bevor du es erneut versuchst.",
+    "invalidCredentials": "Ungültige Anmeldedaten",
+    "userNotFound": "Benutzer nicht gefunden",
+    "emailInUse": "Diese E-Mail-Adresse wird bereits verwendet",
+    "usernameInUse": "Dieser Benutzername wird bereits verwendet",
+    "usernameTooShort": "Der Benutzername muss mindestens 3 Zeichen lang sein",
+    "usernameTooLong": "Der Benutzername darf nicht länger als 30 Zeichen sein",
+    "weakPassword": "Das Passwort ist zu schwach",
+    "invalidEmail": "Ungültige E-Mail-Adresse",
+    "accountLocked": "Konto gesperrt. Bitte versuche es später erneut",
+    "tooManyAttempts": "Zu viele Anmeldeversuche. Bitte warte einen Moment",
+    "serverError": "Ein Serverfehler ist aufgetreten. Bitte versuche es später erneut"
   },
   "header": {
     "login": "Anmelden",
@@ -214,6 +225,7 @@
     "counterargument": "Gegenargumente",
     "challengeResponse": "Antwort",
     "feedbackDetails": "Details",
+    "noAnswersYet": "Du hast noch keine Antworten eingereicht.",
     "achievementDescriptions": {
       "first_argument": {
         "name": "Erste Schritte",
@@ -392,6 +404,8 @@
       "userNotFound": "Benutzer nicht gefunden",
       "emailInUse": "Diese E-Mail-Adresse wird bereits verwendet",
       "usernameInUse": "Dieser Benutzername wird bereits verwendet",
+      "usernameTooShort": "Der Benutzername muss mindestens 3 Zeichen lang sein",
+      "usernameTooLong": "Der Benutzername darf nicht länger als 30 Zeichen sein",
       "weakPassword": "Das Passwort ist zu schwach",
       "invalidEmail": "Ungültige E-Mail-Adresse",
       "accountLocked": "Konto gesperrt. Bitte versuche es später erneut",
@@ -403,7 +417,9 @@
       "usernameDescription": "",
       "continue": "Weiter",
       "errors": {
-        "usernameExists": "Dieser Benutzername wird bereits verwendet"
+        "usernameExists": "Dieser Benutzername wird bereits verwendet",
+        "usernameTooShort": "Der Benutzername muss mindestens 3 Zeichen lang sein",
+        "usernameTooLong": "Der Benutzername darf nicht länger als 30 Zeichen sein"
       }
     }
   },
@@ -1031,5 +1047,24 @@
     "statusLabel": "Status:",
     "priceLabel": "Preis:",
     "active": "Aktiv"
+  },
+  "resetPassword": {
+    "title": "Passwort zurücksetzen",
+    "newPassword": "Neues Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "submit": "Passwort zurücksetzen",
+    "requestLink": "Link zum Zurücksetzen anfordern",
+    "resetInstructions": "Wenn ein Konto mit dieser E-Mail-Adresse existiert, erhältst du Anweisungen zum Zurücksetzen.",
+    "success": "Passwort erfolgreich zurückgesetzt. Weiterleitung...",
+    "email": {
+      "subject": "Anfrage zum Zurücksetzen des Passworts",
+      "message": "Um dein Passwort zurückzusetzen, besuche den folgenden Link:\n\n{resetUrl}\n\nDieser Link läuft in 1 Stunde ab.\n\nWenn du diese Anfrage nicht gestellt hast, ignoriere bitte diese E-Mail."
+    },
+    "errors": {
+      "passwordMismatch": "Passwörter stimmen nicht überein",
+      "invalidToken": "Dein Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen. Bitte fordere einen neuen an.",
+      "updateFailed": "Fehler beim Aktualisieren des Passworts. Bitte versuche es erneut.",
+      "generic": "Ein Fehler ist aufgetreten"
+    }
   }
 }
