@@ -70,29 +70,32 @@ class Settings(BaseSettings):
 
     SUBMISSION_RATE_LIMITS: str = Field(default="10 per minute, 100 per day")
 
-    TIER_DAILY_EVAL_LIMITS: ClassVar[Dict[str, int]] = {
-        "anonymous": 10,
-        "free": 20,
-        "plus": 50,
-        "pro": 200,
-    }
     TIER_MONTHLY_EVAL_LIMITS: ClassVar[Dict[str, int]] = {
         "anonymous": 10,
-        "free": 50,
-        "plus": 1000,
-        "pro": 10000,
-    }
-    TIER_DAILY_VOICE_LIMITS: ClassVar[Dict[str, int]] = {
-        "anonymous": 5,
-        "free": 20,
-        "plus": 50,
-        "pro": 200,
+        "free": 30,
+        "plus": 100,
+        "pro": 1000,
     }
     TIER_MONTHLY_VOICE_LIMITS: ClassVar[Dict[str, int]] = {
         "anonymous": 5,
-        "free": 50,
-        "plus": 1000,
-        "pro": 10000,
+        "free": 20,
+        "plus": 100,
+        "pro": 1000,
+    }
+
+    # Daily limits are currently not documented
+    # They quietly disabled by setting them above monthly limits, but they might be enforced in the future
+    TIER_DAILY_EVAL_LIMITS: ClassVar[Dict[str, int]] = {
+        "anonymous": 11,
+        "free": 21,
+        "plus": 101,
+        "pro": 1001,
+    }
+    TIER_DAILY_VOICE_LIMITS: ClassVar[Dict[str, int]] = {
+        "anonymous": 6,
+        "free": 21,
+        "plus": 101,
+        "pro": 1001,
     }
 
     SUPPORTED_LANGUAGES: ClassVar[List[str]] = ["en", "de"]

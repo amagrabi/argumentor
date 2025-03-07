@@ -282,7 +282,6 @@
     "errorDeleting": "Error deleting account. Please try again.",
     "goBack": "Go Back",
     "accountInfo": "Account Information",
-    "dailyEvaluations": "Daily Evaluations",
     "monthlyEvaluations": "Monthly Evaluations",
     "currentLevel": "Current Level",
     "levelProgression": "Level Progression",
@@ -298,11 +297,9 @@
     "challenge": "Challenge",
     "achievements": "Achievements",
     "usageLimits": "Usage Limits:",
-    "evaluations": "Evaluations",
-    "voiceRecordings": "Voice Recordings",
-    "daily": "Daily",
+    "evaluations": "Evaluations per Month",
+    "voiceRecordings": "Voice Recordings per Month",
     "monthly": "Monthly",
-    "dailyVoiceRecordings": "Daily Voice Recordings",
     "monthlyVoiceRecordings": "Monthly Voice Recordings",
     "level": "Level",
     "achievementData": {
@@ -879,9 +876,7 @@
       }
     },
     "features": {
-      "evaluationsPerDay": "evaluations per day",
       "evaluationsPerMonth": "evaluations per month",
-      "voicePerDay": "voice recordings per day",
       "voicePerMonth": "voice recordings per month",
       "customQuestions": "Add your own questions",
       "prioritySupport": "Priority support",

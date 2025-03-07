@@ -93,41 +93,20 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- Free Plan -->
           <div
-            class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col"
+            class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col {% if user.tier == 'free' and not user.pending_plan_change %}bg-gray-50{% endif %}"
           >
-            <div class="bg-gray-50 p-6">
+            <div class="p-6">
               <h3
                 class="text-xl font-bold text-gray-800"
                 data-i18n="subscription.plans.free.name"
               ></h3>
               <p
-                class="text-3xl font-bold mt-2"
+                class="text-2xl font-bold mt-2"
                 data-i18n="subscription.plans.free.price"
               ></p>
             </div>
-            <div class="p-6 flex-grow">
+            <div class="px-6 flex-grow">
               <ul class="space-y-3">
-                <li class="flex items-start">
-                  <svg
-                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
-                  <span
-                    >{{ SETTINGS.TIER_DAILY_EVAL_LIMITS.free }}
-                    <span
-                      data-i18n="subscription.features.evaluationsPerDay"
-                    ></span
-                  ></span>
-                </li>
                 <li class="flex items-start">
                   <svg
                     class="h-5 w-5 text-green-500 mr-2 mt-0.5"
@@ -164,32 +143,13 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_DAILY_VOICE_LIMITS.free }}
-                    <span data-i18n="subscription.features.voicePerDay"></span
-                  ></span>
-                </li>
-                <li class="flex items-start">
-                  <svg
-                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
-                  <span
                     >{{ SETTINGS.TIER_MONTHLY_VOICE_LIMITS.free }}
                     <span data-i18n="subscription.features.voicePerMonth"></span
                   ></span>
                 </li>
               </ul>
             </div>
-            <div class="px-6 pb-6 mt-auto">
+            <div class="px-6 pb-6 mt-6">
               {% if user.tier == 'free' and not user.pending_plan_change %}
               <button
                 disabled
@@ -248,7 +208,7 @@
 
           <!-- Plus Plan -->
           <div
-            class="border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow flex flex-col"
+            class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col {% if user.tier == 'plus' and not user.pending_plan_change %}bg-gray-50{% endif %}"
           >
             <div class="px-6 pt-6">
               <h3 class="text-xl font-bold mb-2">
@@ -258,28 +218,9 @@
                 class="text-2xl font-bold mb-4"
                 data-i18n="subscription.plans.plus.price"
               ></p>
-              <ul class="space-y-2">
-                <li class="flex items-start">
-                  <svg
-                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
-                  <span
-                    >{{ SETTINGS.TIER_DAILY_EVAL_LIMITS.plus }}
-                    <span
-                      data-i18n="subscription.features.evaluationsPerDay"
-                    ></span
-                  ></span>
-                </li>
+            </div>
+            <div class="px-6 flex-grow">
+              <ul class="space-y-3">
                 <li class="flex items-start">
                   <svg
                     class="h-5 w-5 text-green-500 mr-2 mt-0.5"
@@ -316,32 +257,13 @@
                     ></path>
                   </svg>
                   <span
-                    >{{ SETTINGS.TIER_DAILY_VOICE_LIMITS.plus }}
-                    <span data-i18n="subscription.features.voicePerDay"></span
-                  ></span>
-                </li>
-                <li class="flex items-start">
-                  <svg
-                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
-                  <span
                     >{{ SETTINGS.TIER_MONTHLY_VOICE_LIMITS.plus }}
                     <span data-i18n="subscription.features.voicePerMonth"></span
                   ></span>
                 </li>
               </ul>
             </div>
-            <div class="px-6 pb-6 mt-auto">
+            <div class="px-6 pb-6 mt-6">
               {% if (user.tier == 'plus' and not user.pending_plan_change) or
               (user.tier == 'plus' and user.pending_plan_change == 'free') %}
               <button
@@ -402,7 +324,7 @@
 
           <!-- Pro Plan -->
           <div
-            class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col"
+            class="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col {% if user.tier == 'pro' and not user.pending_plan_change %}bg-gray-50{% endif %}"
           >
             <div class="px-6 pt-6">
               <h3 class="text-xl font-bold mb-2">
@@ -412,28 +334,9 @@
                 class="text-2xl font-bold mb-4"
                 data-i18n="subscription.plans.pro.price"
               ></p>
-              <ul class="space-y-2">
-                <li class="flex items-start">
-                  <svg
-                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
-                  <span
-                    >{{ SETTINGS.TIER_DAILY_EVAL_LIMITS.pro }}
-                    <span
-                      data-i18n="subscription.features.evaluationsPerDay"
-                    ></span
-                  ></span>
-                </li>
+            </div>
+            <div class="px-6 flex-grow">
+              <ul class="space-y-3">
                 <li class="flex items-start">
                   <svg
                     class="h-5 w-5 text-green-500 mr-2 mt-0.5"
@@ -453,25 +356,6 @@
                     <span
                       data-i18n="subscription.features.evaluationsPerMonth"
                     ></span
-                  ></span>
-                </li>
-                <li class="flex items-start">
-                  <svg
-                    class="h-5 w-5 text-green-500 mr-2 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
-                  <span
-                    >{{ SETTINGS.TIER_DAILY_VOICE_LIMITS.pro }}
-                    <span data-i18n="subscription.features.voicePerDay"></span
                   ></span>
                 </li>
                 <li class="flex items-start">
@@ -549,7 +433,7 @@
                 </li>
               </ul>
             </div>
-            <div class="px-6 pb-6 mt-auto">
+            <div class="px-6 pb-6 mt-6">
               {% if (user.tier == 'pro' and not user.pending_plan_change) or
               (user.tier == 'pro' and user.pending_plan_change == 'plus') %}
               <button
