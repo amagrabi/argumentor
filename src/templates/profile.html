@@ -100,31 +100,33 @@
               ></h2>
               <p class="text-base mb-2">
                 <span
-                  class="text-gray-500 font-medium"
+                  class="text-gray-700 font-medium"
                   data-i18n="profile.username"
                 ></span
-                ><span class="text-gray-500 font-medium">: </span>
-                {{ current_user.username if current_user.is_authenticated else
-                "Anonymous" }}
+                ><span class="text-gray-700 font-medium">: </span>
+                <span class="text-gray-500"
+                  >{{ current_user.username if current_user.is_authenticated
+                  else "Anonymous" }}</span
+                >
               </p>
               <p class="text-base mb-2">
                 <span
-                  class="text-gray-500 font-medium"
+                  class="text-gray-700 font-medium"
                   data-i18n="profile.email"
                 ></span
-                ><span class="text-gray-500 font-medium">: </span>
-                {{ user.email or "unknown" }}
+                ><span class="text-gray-700 font-medium">: </span>
+                <span class="text-gray-500">{{ user.email or "unknown" }}</span>
               </p>
             </div>
           </div>
 
           <div class="text-base mb-3">
             <span
-              class="text-gray-500 font-medium"
+              class="text-gray-700 font-medium"
               data-i18n="profile.accountType"
             >
             </span
-            ><span class="text-gray-500 font-medium">: </span>
+            ><span class="text-gray-700 font-medium">: </span>
             {% if user.tier == "free" %}
             <span class="ml-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full"
               >Free</span
@@ -139,8 +141,7 @@
               >Plus</span
             >
             {% elif user.tier == "pro" %}
-            <span
-              class="ml-1 px-2 py-1 bg-purple-100 text-purple-800 rounded-full"
+            <span class="ml-1 px-2 py-1 bg-black text-white rounded-full"
               >Pro</span
             >
             {% else %}
@@ -151,7 +152,7 @@
             {% endif %}
             <a
               href="{{ url_for('pages.subscription') }}"
-              class="ml-2 text-sm text-gray-700 hover:text-gray-900 underline transition-colors"
+              class="ml-2 text-sm text-gray-500 hover:text-gray-900 underline transition-colors"
               data-i18n="profile.changePlan"
             ></a>
 
@@ -241,7 +242,7 @@
           <!-- Usage Limits Section -->
           <div class="mb-4">
             <h3
-              class="text-gray-500 font-medium mb-2"
+              class="text-gray-700 font-medium mb-2"
               data-i18n="profile.usageLimits"
             ></h3>
             <div class="grid grid-cols-2 gap-3">
@@ -302,11 +303,11 @@
         ></h2>
         <p class="text-base mb-4">
           <span
-            class="text-gray-500 font-medium"
+            class="text-gray-700 font-medium"
             data-i18n="profile.totalXP"
           ></span
-          ><span class="text-gray-500 font-medium">: </span>
-          <strong>{{ xp }}</strong>
+          ><span class="text-gray-700 font-medium">: </span>
+          <span class="text-black font-bold">{{ xp }}</span>
         </p>
         <div id="xpInfo" class="mt-8 mb-8 text-center profile-xp">
           <div class="flex items-center justify-start">
