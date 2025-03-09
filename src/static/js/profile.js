@@ -35,6 +35,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Load translations first
   await loadTranslations();
 
+  // Initialize XP progress bar
+  initializeXpProgressBar();
+
   const answersDataElement = document.getElementById("answersData");
   const answers = JSON.parse(answersDataElement.textContent);
 
@@ -112,6 +115,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 });
+
+// Function to initialize the XP progress bar
+function initializeXpProgressBar() {
+  const progressBar = document.querySelector(".xp-progress-bar");
+  if (progressBar) {
+    // Get the progress percentage from the element's attribute
+    const progressElement = document.querySelector(".xp-bar-container");
+    if (progressElement) {
+      const progressPercent = progressElement.getAttribute(
+        "data-progress-percent"
+      );
+      if (progressPercent) {
+        progressBar.style.width = `${progressPercent}%`;
+      } else {
+        // If data attribute is not available, try to get it from the text content
+        const progressText = document.getElementById("xpProgressText");
+        if (progressText) {
+          const progressParts = progressText.textContent
+            .split("/")
+            .map((part) => part.trim());
+          if (progressParts.length === 2) {
+            const current = parseFloat(progressParts[0]);
+            const total = parseFloat(progressParts[1]);
+            if (!isNaN(current) && !isNaN(total) && total > 0) {
+              const percent = (current / total) * 100;
+              progressBar.style.width = `${percent}%`;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 function getDatasetsForMetrics(answers, selectedMetrics) {
   // Display labels corresponding to each metric key.

@@ -327,7 +327,10 @@
                 <strong>{{ level_info.display_name }}</strong>
               </p>
               <div class="xp-bar-wrapper mt-2">
-                <div class="xp-bar-container">
+                <div
+                  class="xp-bar-container"
+                  data-progress-percent="{{ level_info.progress_percent }}"
+                >
                   <div
                     class="xp-progress-bar bg-green-500 h-full transition-all duration-500"
                     :style="`width: ${level_info.progress_percent}%`"
