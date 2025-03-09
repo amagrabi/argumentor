@@ -3,7 +3,10 @@ from datetime import UTC, datetime
 
 from flask_login import UserMixin
 
+from config import get_settings
 from extensions import db
+
+SETTINGS = get_settings()
 
 
 class User(db.Model, UserMixin):
@@ -106,6 +109,20 @@ class Answer(db.Model):
         return f"<Answer {self.id} for user {self.user_uuid}>"
 
     def to_dict(self):
+        total_xp = 0
+        if (
+            self.evaluation_scores.get("Relevance", 0)
+            >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
+        ):
+            total_xp += self.xp_earned
+
+        if (
+            self.challenge_response
+            and self.challenge_evaluation_scores.get("Relevance", 0)
+            >= SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
+        ):
+            total_xp += self.challenge_xp_earned
+
         return {
             "id": self.id,
             "question_text": self.question_text,
@@ -122,6 +139,7 @@ class Answer(db.Model):
             "challenge_xp_earned": self.challenge_xp_earned,
             "created_at": self.created_at.isoformat(),
             "input_mode": self.input_mode,
+            "total_xp": total_xp,
         }
 
 

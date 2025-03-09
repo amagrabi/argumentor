@@ -61,7 +61,7 @@ def calculate_valid_xp(answer):
     return total_xp
 
 
-# Register the template filter
+# Register the calculate_valid_xp function as a template filter
 @pages_bp.app_template_filter("calculate_valid_xp")
 def calculate_valid_xp_filter(answer):
     return calculate_valid_xp(answer)

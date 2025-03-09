@@ -625,9 +625,9 @@
                 >
                   <p>{{ answer.created_at[:10] }}</p>
                   <p
-                    class="{% if answer.xp_earned > 0 %}text-green-600{% endif %}"
+                    class="{% if answer.total_xp > 0 %}text-green-600{% endif %}"
                   >
-                    +{{ answer.xp_earned }} XP
+                    +{{ answer.total_xp }} XP
                   </p>
                   <p>
                     Argument:
