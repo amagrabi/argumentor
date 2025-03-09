@@ -8,6 +8,10 @@ from google.genai import types
 from config import get_settings
 from data.argument_structures import ARGUMENT_STRUCTURE_LONG
 from services.base_evaluator import BaseEvaluator
+from services.llm import (
+    SYSTEM_INSTRUCTION_CHALLENGE_DE,
+    SYSTEM_INSTRUCTION_CHALLENGE_EN,
+)
 
 SETTINGS = get_settings()
 logger = logging.getLogger(__name__)
@@ -58,7 +62,9 @@ class DummyEvaluator(BaseEvaluator):
             "argument_structure": argument_structure,
         }
 
-    def evaluate_challenge(self, answer, challenge_response: str) -> Dict:
+    def evaluate_challenge(
+        self, answer, challenge_response: str, input_mode: str = None
+    ) -> Dict:
         # A clean, separate evaluation for challenge responses:
         # Here we use a slightly lower scoring range (1 to 8) so that
         # challenge responses do not inadvertently get inflated scores.
@@ -108,42 +114,61 @@ class LLMEvaluator(BaseEvaluator):
         self.response_schema = response_schema
 
     def build_argument_prompt(
-        self, question_text: str, claim: str, argument: str, counterargument: str
+        self,
+        question_text: str,
+        claim: str,
+        argument: str,
+        counterargument: str,
+        input_mode: str = None,
     ) -> str:
         from flask import session
 
+        from utils import auto_dedent
+
         language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
 
-        # If the claim equals the argument and there is no counterargument, assume it's a voice response.
-        if claim == argument and not counterargument:
+        # Check if it's a voice response either by input_mode parameter or by comparing claim and argument
+        is_voice_response = input_mode == "voice" or (
+            claim == argument and not counterargument
+        )
+
+        if is_voice_response:
             if language == "de":
-                return f"""
+                return auto_dedent(f"""
                     Frage (dem Benutzer gestellt): {question_text}
-                    Antwort (vom Benutzer): {claim}
-                """
+
+                    Sprachantwort (vom Benutzer): {claim}
+                """)
             else:
-                return f"""
+                return auto_dedent(f"""
                     Question (given to user): {question_text}
-                    Answer (from user): {claim}
-                """
+
+                    Voice answer (from user): {claim}
+                """)
         else:
             if language == "de":
-                return f"""
+                return auto_dedent(f"""
                     Frage (dem Benutzer gestellt): {question_text}
                     These zur Beantwortung der Frage (vom Benutzer): {claim}
                     Argument zur Unterstützung der These (vom Benutzer): {argument}
                     Widerlegung von Gegenargumenten (vom Benutzer; optional): {counterargument}
-                """
+                """)
             else:
-                return f"""
+                return auto_dedent(f"""
                     Question (given to user): {question_text}
                     Claim to answer the question (written by user): {claim}
                     Argument to support the claim (written by user): {argument}
                     Counterargument rebuttal (written by user; optional): {counterargument}
-                """
+                """)
 
     def evaluate(
-        self, question_text: str, claim: str, argument: str, counterargument: str
+        self,
+        question_text: str,
+        claim: str,
+        argument: str,
+        counterargument: str,
+        input_mode: str = None,
+        voice_answer: str = None,
     ) -> Dict:
         from flask import session
 
@@ -152,9 +177,25 @@ class LLMEvaluator(BaseEvaluator):
             language, self.system_instructions[SETTINGS.DEFAULT_LANGUAGE]
         )
 
+        # For voice answers, ensure we use the full voice answer and log it
+        if input_mode == "voice":
+            # Use voice_answer if provided, otherwise use claim
+            full_answer = voice_answer if voice_answer is not None else claim
+            logger.debug(f"LLM Evaluator - Full Voice Answer (Language: {language}):")
+            logger.debug(full_answer)
+            # Use the full answer for both claim and argument
+            claim = full_answer
+            argument = full_answer
+
         prompt = self.build_argument_prompt(
-            question_text, claim, argument, counterargument
+            question_text, claim, argument, counterargument, input_mode
         )
+
+        # Add debug logs for system message and prompt
+        logger.debug("LLM Evaluator - System Instruction:")
+        logger.debug(system_instruction)
+        logger.debug("LLM Evaluator - Prompt:")
+        logger.debug(prompt)
 
         try:
             response = self.client.models.generate_content(
@@ -209,45 +250,68 @@ class LLMEvaluator(BaseEvaluator):
 
         from utils import auto_dedent
 
-        language = session.get("language", "en")
+        language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
+
+        # Check if this was a voice response
+        is_voice_response = (
+            hasattr(answer, "input_mode") and answer.input_mode == "voice"
+        )
 
         if language == "de":
-            return auto_dedent(f"""
+            prompt = auto_dedent(f"""
                 Ursprüngliche Frage (vom System): {answer.question_text}
-                Ursprüngliche These (vom Benutzer): {answer.claim}
-                Ursprüngliches Argument (vom Benutzer): {answer.argument}
-                Ursprüngliche Widerlegung von Gegenargumenten (vom Benutzer; optional): {answer.counterargument}
                 Challenge (vom System): {answer.challenge}
 
                 Bitte bewerte die Antwort des Benutzers auf die Challenge unten.
-                Konzentriere dich ausschließlich auf die Qualität dieser Challenge-Antwort und
-                bewerte nicht erneut die ursprüngliche These oder das ursprüngliche Argument.
 
-                Challenge-Antwort (vom Benutzer): {challenge_response}
+                {"Sprach-Challenge-Antwort" if is_voice_response else "Challenge-Antwort"} (vom Benutzer): {challenge_response}
             """)
         else:
-            return auto_dedent(f"""
+            prompt = auto_dedent(f"""
                 Original question (from system): {answer.question_text}
-                Original claim (from user): {answer.claim}
-                Original argument (from user): {answer.argument}
-                Original counterargument rebuttal (from user; optional): {answer.counterargument}
                 Challenge (from system): {answer.challenge}
 
                 Please evaluate the user's response to the challenge below.
-                Focus solely on the quality of this challenge response, and do not re-evaluate the original claim or argument.
 
-                Challenge response (from user): {challenge_response}
+                {"Voice challenge response" if is_voice_response else "Challenge response"} (from user): {challenge_response}
             """)
 
-    def evaluate_challenge(self, answer, challenge_response: str) -> Dict:
+        return prompt
+
+    def evaluate_challenge(
+        self,
+        answer,
+        challenge_response: str,
+        input_mode: str = None,
+        voice_answer: str = None,
+    ) -> Dict:
         from flask import session
 
         language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
-        system_instruction = self.system_instructions.get(
-            language, self.system_instructions[SETTINGS.DEFAULT_LANGUAGE]
-        )
+        if language == "de":
+            system_instruction = SYSTEM_INSTRUCTION_CHALLENGE_DE
+        else:
+            system_instruction = SYSTEM_INSTRUCTION_CHALLENGE_EN
 
-        prompt = self.build_challenge_prompt(answer, challenge_response)
+        # If input_mode is provided, update the answer object's input_mode for the prompt building
+        if input_mode and hasattr(answer, "input_mode"):
+            original_input_mode = answer.input_mode
+            answer.input_mode = input_mode
+            # For voice answers, use the full voice answer
+            if input_mode == "voice" and voice_answer:
+                challenge_response = voice_answer
+            prompt = self.build_challenge_prompt(answer, challenge_response)
+            answer.input_mode = original_input_mode  # Restore original value
+        else:
+            prompt = self.build_challenge_prompt(answer, challenge_response)
+
+        # Add debug logs for system message and prompt
+        logger.debug(
+            f"LLM Challenge Evaluator - System Instruction (Language: {language}):"
+        )
+        logger.debug(system_instruction)
+        logger.debug("LLM Challenge Evaluator - Prompt:")
+        logger.debug(prompt)
 
         try:
             response = self.client.models.generate_content(
@@ -298,6 +362,10 @@ class LLMEvaluator(BaseEvaluator):
             raise
 
     def _parse_response(self, response) -> Dict:
+        # Add debug log for raw LLM response
+        logger.debug("LLM Evaluator - Raw Response:")
+        logger.debug(json.dumps(response, indent=2))
+
         return {
             "scores": {
                 "Relevance": response["relevance_rating"],

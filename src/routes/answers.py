@@ -43,12 +43,14 @@ def create_evaluator():
         return DummyEvaluator()
 
 
-def evaluate_answer(question_text, claim, argument, counterargument):
+def evaluate_answer(question_text, claim, argument, counterargument, input_mode=None):
     """
     Evaluate the answer using the configured evaluator
     """
     evaluator = create_evaluator()
-    return evaluator.evaluate(question_text, claim, argument, counterargument)
+    return evaluator.evaluate(
+        question_text, claim, argument, counterargument, input_mode
+    )
 
 
 @answers_bp.route("/submit_answer", methods=["POST"])
@@ -190,8 +192,29 @@ def submit_answer():
                 )
             return jsonify({"error": error_message}), 429
 
+        # Get mode from request payload
+        input_mode = data.get("input_mode", "text")
+
+        # For voice answers, use the voice answer text for both claim and argument
+        if input_mode == "voice":
+            voice_answer = data.get("voice_answer", "").strip()
+            if not voice_answer:  # Fallback to claim if voice_answer is empty
+                voice_answer = claim
+            claim = voice_answer  # Store the full answer in the database
+            argument = voice_answer
+            counterargument = None
+
         evaluator = create_evaluator()
-        evaluation = evaluator.evaluate(question_text, claim, argument, counterargument)
+        evaluation = evaluator.evaluate(
+            question_text,
+            claim,
+            argument,
+            counterargument,
+            input_mode,
+            voice_answer
+            if input_mode == "voice"
+            else None,  # Pass voice_answer to evaluator
+        )
 
         # Determine XP and overall rating for the main answer
         scores = evaluation["scores"]
@@ -252,9 +275,6 @@ def submit_answer():
             db.session.add(user)
         else:
             user.xp = old_xp
-
-        # Get mode from request payload
-        input_mode = data.get("input_mode", "text")
 
         # Use consistent property name without quotes to avoid issues
         scores_dict = {**evaluation["scores"]}
@@ -468,7 +488,12 @@ def submit_challenge_response():
 
         try:
             evaluator = create_evaluator()
-            evaluation = evaluator.evaluate_challenge(answer, challenge_response)
+            # For voice answers, use the full voice answer
+            if input_mode == "voice" and voice_answer:
+                challenge_response = voice_answer
+            evaluation = evaluator.evaluate_challenge(
+                answer, challenge_response, input_mode, voice_answer
+            )
         except Exception as eval_error:
             logger.error(f"Error during challenge evaluation: {str(eval_error)}")
             return jsonify({"error": f"Evaluation error: {str(eval_error)}"}), 500

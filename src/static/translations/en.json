@@ -282,7 +282,7 @@
     }
   },
   "profile": {
-    "title": "Profile",
+    "title": "Your Profile",
     "accountType": "Account Type",
     "changePlan": "Change Plan",
     "subscriptionEndNotice": "Your subscription has been canceled. Your plan will remain active until {date}, after which you'll be moved to the Free plan.",
@@ -411,10 +411,11 @@
     "progressOverTime": "Progress Over Time",
     "rating": "Rating",
     "time": "Time",
-    "claim": "Claim",
-    "argument": "Argument",
-    "counterargument": "Counterarguments",
-    "challengeResponse": "Challenge Response",
+    "claim": "Claim:",
+    "argument": "Argument:",
+    "counterargument": "Counterargument:",
+    "voiceAnswer": "Voice Answer:",
+    "challengeResponse": "Challenge Response:",
     "feedbackDetails": "Details",
     "noAnswersYet": "You haven't submitted any answers yet."
   },

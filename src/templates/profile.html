@@ -690,24 +690,26 @@
                   <!-- Claim and Argument Sections -->
                   {% if answer.input_mode == 'voice' %}
                   <p class="text-sm break-words pr-48">
-                    <span class="font-medium text-sm text-black">Answer:</span>
-                    <span class="text-gray-600">{{ answer.argument }}</span>
+                    <span
+                      class="font-medium text-sm text-black"
+                      data-i18n="profile.voiceAnswer"
+                      >Voice Answer:</span
+                    >
+                    <span class="text-gray-600">{{ answer.claim }}</span>
                   </p>
                   {% else %}
                   <p class="text-sm break-words pr-48">
                     <span
                       class="font-medium text-sm text-black"
                       data-i18n="profile.claim"
-                    ></span
-                    ><span>: </span>
+                    ></span>
                     <span class="text-gray-600">{{ answer.claim }}</span>
                   </p>
                   <p class="text-sm break-words mt-1 pr-48">
                     <span
                       class="font-medium text-sm text-black"
                       data-i18n="profile.argument"
-                    ></span
-                    ><span>: </span>
+                    ></span>
                     <span class="text-gray-600">{{ answer.argument }}</span>
                   </p>
 
@@ -718,8 +720,7 @@
                     <span
                       class="font-medium text-sm text-black"
                       data-i18n="profile.counterargument"
-                    ></span
-                    ><span>: </span>
+                    ></span>
                     <span class="text-gray-600"
                       >{{ answer.counterargument }}</span
                     >
