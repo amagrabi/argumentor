@@ -914,7 +914,15 @@
           modalContainer.style.opacity = "1";
 
           modalImage.src = imagePath;
-          modalTitle.textContent = title;
+
+          // Format the title to use a colon instead of parentheses
+          // Example: "Level 2 (Socratic Apprentice)" -> "Level 2: Socratic Apprentice"
+          const levelMatch = title.match(/^(Level \d+)\s*\(([^)]+)\)$/);
+          if (levelMatch) {
+            modalTitle.textContent = `${levelMatch[1]}: ${levelMatch[2]}`;
+          } else {
+            modalTitle.textContent = title;
+          }
         };
 
         window.closeModal = function () {
