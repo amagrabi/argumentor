@@ -127,12 +127,7 @@ class LLMEvaluator(BaseEvaluator):
 
         language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
 
-        # Check if it's a voice response either by input_mode parameter or by comparing claim and argument
-        is_voice_response = input_mode == "voice" or (
-            claim == argument and not counterargument
-        )
-
-        if is_voice_response:
+        if input_mode == "voice":
             if language == "de":
                 return auto_dedent(f"""
                     Frage (dem Benutzer gestellt): {question_text}
