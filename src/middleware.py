@@ -19,6 +19,8 @@ def ensure_user_id():
         new_user = User(uuid=new_id, username=default_username)
         db.session.add(new_user)
         db.session.commit()
+        # Make the session permanent to ensure it persists
+        session.permanent = True
         logger.debug(
             f"Anonymous user created with id: {new_id} and username: {default_username}"
         )

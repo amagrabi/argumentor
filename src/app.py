@@ -55,7 +55,7 @@ def create_app():
 
     app = Flask(__name__, instance_path=instance_path, static_folder="static")
     app.config.from_mapping(get_settings())
-    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=2)
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
     app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
 
     # Add SQLAlchemy engine options tuned for production

@@ -188,6 +188,8 @@ def login():
             # Log in the user after the transaction is committed
             login_user(user)
             session["user_id"] = user.uuid
+            # Make the session permanent so it persists
+            session.permanent = True
 
             # Update session language with the user's saved preference.
             if hasattr(user, "preferred_language") and user.preferred_language in [
@@ -310,6 +312,9 @@ def google_auth():
         db.session.commit()
         login_user(user)
         session["user_id"] = user.uuid
+        # Make the session permanent so it persists
+        session.permanent = True
+
         return jsonify(
             {
                 "message": "Google login successful",
