@@ -2210,7 +2210,6 @@ window.addEventListener("DOMContentLoaded", async () => {
       let challengeXpInfo = document.getElementById("challengeXpInfo");
 
       if (!challengeXpInfo && challengeEvalDiv) {
-        console.log("Creating missing challengeXpInfo element");
         challengeXpInfo = document.createElement("div");
         challengeXpInfo.id = "challengeXpInfo";
         challengeXpInfo.className = "mt-4 text-center profile-xp";
@@ -2550,9 +2549,6 @@ window.addEventListener("DOMContentLoaded", async () => {
                             // Double check we're still showing the old image
                             // This is critical to ensure we start with the old image
                             if (levelImage.src !== oldImageSrc) {
-                              console.log(
-                                "Resetting to old image before animation"
-                              );
                               levelImage.src = oldImageSrc;
                               levelImage.alt = `Level ${data.previous_level}`;
                               // Force a reflow to ensure the old image is rendered

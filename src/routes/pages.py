@@ -133,15 +133,27 @@ def how_it_works():
     # Get the evaluation criteria from the translation file
     criteria = translations.get("evaluationCriteria", {})
 
-    # Create a mapping for dimension translations
-    dimension_mapping = {
-        "Relevance": translations["evaluation"]["scores"]["relevance"],
-        "Logical Structure": translations["evaluation"]["scores"]["logic"],
-        "Clarity": translations["evaluation"]["scores"]["clarity"],
-        "Depth": translations["evaluation"]["scores"]["depth"],
-        "Objectivity": translations["evaluation"]["scores"]["objectivity"],
-        "Creativity": translations["evaluation"]["scores"]["creativity"],
-    }
+    # Create a mapping for dimension translations based on language
+    if lang == "de":
+        # For German, use the German keys from the translation file
+        dimension_mapping = {
+            "Relevanz": translations["evaluation"]["scores"]["relevance"],
+            "Logische Struktur": translations["evaluation"]["scores"]["logic"],
+            "Klarheit": translations["evaluation"]["scores"]["clarity"],
+            "Tiefe": translations["evaluation"]["scores"]["depth"],
+            "Objektivität": translations["evaluation"]["scores"]["objectivity"],
+            "Kreativität": translations["evaluation"]["scores"]["creativity"],
+        }
+    else:
+        # For English and other languages, use the English keys
+        dimension_mapping = {
+            "Relevance": translations["evaluation"]["scores"]["relevance"],
+            "Logical Structure": translations["evaluation"]["scores"]["logic"],
+            "Clarity": translations["evaluation"]["scores"]["clarity"],
+            "Depth": translations["evaluation"]["scores"]["depth"],
+            "Objectivity": translations["evaluation"]["scores"]["objectivity"],
+            "Creativity": translations["evaluation"]["scores"]["creativity"],
+        }
 
     return render_template(
         "how_it_works.html",

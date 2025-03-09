@@ -447,6 +447,10 @@
       "title": "Challenge Feature",
       "description": "After your main argument, you have the option to dive deeper with a challenge. It is designed to help you improve your argument and identify any logical inconsistencies, unclear points, or unaddressed counterarguments.",
       "additionalInfo": "Take on the challenge for extra feedback and XP. It's optional, so feel free to skip to another question if you like."
+    },
+    "evaluationCriteria": {
+      "title": "Evaluation Criteria",
+      "description": "Your arguments will be evaluated on these criteria:"
     }
   },
   "evaluationCriteria": {

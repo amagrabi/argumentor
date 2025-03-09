@@ -567,7 +567,7 @@
   },
   "evaluationCriteria": {
     "scoring_dimensions": {
-      "Relevance": {
+      "Relevanz": {
         "description": "Bewertung, wie relevant das Argument zur gestellten Frage ist.",
         "levels": {
           "1": "Keine Relevanz zur Frage; völlig fehlgeleitet.",
@@ -582,7 +582,7 @@
           "10": "Außerordentlich relevant; meistert die Fragestellung mit präziser Fokussierung."
         }
       },
-      "Logical Structure": {
+      "Logische Struktur": {
         "description": "Bewertung der logischen Konsistenz, Klarheit der Prämissen und schlüssigen Verbindungen im Argument.",
         "levels": {
           "1": "Mehrere logische Fehler; die Struktur wirkt chaotisch und inkohärent.",
@@ -597,7 +597,7 @@
           "10": "Fehlerlose Logik und Struktur mit vollständiger Klarheit."
         }
       },
-      "Clarity": {
+      "Klarheit": {
         "description": "Bewertung, wie klar und verständlich die Ideen ausgedrückt, organisiert und kommuniziert werden.",
         "levels": {
           "1": "Unverständliche Sprache; die Ideen sind schwer oder gar nicht nachvollziehbar.",
@@ -612,7 +612,7 @@
           "10": "Perfekte Klarheit und optimale Informationsdichte."
         }
       },
-      "Depth": {
+      "Tiefe": {
         "description": "Grad der Einsicht und umfassenden Erkundung der Komplexität und Implikationen des Themas.",
         "levels": {
           "1": "Sehr oberflächlich ohne Erforschung tieferer Zusammenhänge.",
@@ -627,7 +627,7 @@
           "10": "Umfassende und definitive Analyse; alle Dimensionen werden in ihrer Tiefe erschlossen."
         }
       },
-      "Objectivity": {
+      "Objektivität": {
         "description": "Bewertung der Ausgewogenheit und Unparteilichkeit bei der Berücksichtigung divergierender Perspektiven.",
         "levels": {
           "1": "Stark voreingenommen, ohne Anerkennung anderer Perspektiven.",
@@ -642,7 +642,7 @@
           "10": "Vorbildliche Objektivität; präsentiert eine vollständig ausgewogene Analyse."
         }
       },
-      "Creativity": {
+      "Kreativität": {
         "description": "Bewertung der Originalität, innovativen Ansätze und Einzigartigkeit der Einsichten.",
         "levels": {
           "1": "Völlig abgekupfert, ohne erkennbare Originalität.",
