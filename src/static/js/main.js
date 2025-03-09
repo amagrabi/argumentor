@@ -2654,6 +2654,8 @@ window.addEventListener("DOMContentLoaded", async () => {
                   }
                 }
               }, 100);
+              // Disconnect the observer after triggering the animation
+              challengeXpAnimationObserver.disconnect();
             }
           },
           { threshold: 0.5 }
