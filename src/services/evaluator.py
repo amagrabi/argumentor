@@ -19,7 +19,13 @@ logger = logging.getLogger(__name__)
 
 class DummyEvaluator(BaseEvaluator):
     def evaluate(
-        self, question_text: str, claim: str, argument: str, counterargument: str
+        self,
+        question_text: str,
+        claim: str,
+        argument: str,
+        counterargument: str,
+        input_mode: str = None,
+        voice_answer: str = None,
     ) -> Dict:
         scores = {
             "Relevance": random.randint(1, 10),
@@ -63,7 +69,11 @@ class DummyEvaluator(BaseEvaluator):
         }
 
     def evaluate_challenge(
-        self, answer, challenge_response: str, input_mode: str = None
+        self,
+        answer,
+        challenge_response: str,
+        input_mode: str = None,
+        voice_answer: str = None,
     ) -> Dict:
         # A clean, separate evaluation for challenge responses:
         # Here we use a slightly lower scoring range (1 to 8) so that

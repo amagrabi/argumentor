@@ -23,10 +23,30 @@ export function formatMaxRecordingTime() {
   return formatTime(VOICE_LIMITS.MAX_RECORDING_TIME);
 }
 
+// Helper function to set initial status message
+function setInitialStatusMessage(statusElement) {
+  if (!statusElement) return;
+
+  // Wait for translations to be available
+  const checkTranslations = () => {
+    if (window.translations?.main?.voiceInput?.status?.initial) {
+      statusElement.textContent =
+        window.translations.main.voiceInput.status.initial;
+    } else {
+      setTimeout(checkTranslations, 100); // Check again in 100ms
+    }
+  };
+  checkTranslations();
+}
+
 // Initialize voice input for main section
 export function initMainVoiceInput() {
   const voiceTranscript = document.getElementById("voiceTranscript");
   const voiceCount = document.getElementById("voiceCount");
+  const recordButton = document.getElementById("recordButton");
+  const recordingTimer = document.getElementById("recordingTimer");
+  const timerDisplay = document.getElementById("timerDisplay");
+  const recordingStatus = document.getElementById("recordingStatus");
 
   if (voiceTranscript && voiceCount) {
     voiceTranscript.setAttribute("maxlength", CHAR_LIMITS.VOICE.toString());
@@ -36,23 +56,11 @@ export function initMainVoiceInput() {
     voiceTranscript.addEventListener("input", () => {
       const remaining = CHAR_LIMITS.VOICE - voiceTranscript.value.length;
       voiceCount.textContent = remaining.toString();
-      // Clear error message on input
-      document.getElementById("errorMessage").textContent = "";
     });
   }
 
-  // Setup recording button
-  const recordButton = document.getElementById("recordButton");
-  const recordingTimer = document.getElementById("recordingTimer");
-  const timerDisplay = document.getElementById("timerDisplay");
-  const recordingStatus = document.getElementById("recordingStatus");
-
   // Set initial status message
-  if (recordingStatus) {
-    recordingStatus.textContent =
-      translations?.main?.voiceInput?.status?.initial ||
-      "Record up to 2 minutes. You can edit the text afterwards.";
-  }
+  setInitialStatusMessage(recordingStatus);
 
   if (recordButton) {
     recordButton.addEventListener("click", () =>
@@ -61,9 +69,7 @@ export function initMainVoiceInput() {
         recordingTimer,
         timerDisplay,
         recordingStatus,
-        transcriptElement: voiceTranscript,
-        countElement: voiceCount,
-        errorMessageElement: "errorMessage",
+        voiceTranscript,
       })
     );
   }
@@ -103,25 +109,6 @@ export function initChallengeVoiceInput() {
     "challengeVoiceTranscript"
   );
   const challengeVoiceCount = document.getElementById("challengeVoiceCount");
-
-  if (challengeVoiceTranscript && challengeVoiceCount) {
-    challengeVoiceTranscript.setAttribute(
-      "maxlength",
-      CHAR_LIMITS.VOICE.toString()
-    );
-    challengeVoiceCount.textContent = CHAR_LIMITS.VOICE.toString();
-
-    // Update remaining character count as user edits challenge voice transcript
-    challengeVoiceTranscript.addEventListener("input", () => {
-      const remaining =
-        CHAR_LIMITS.VOICE - challengeVoiceTranscript.value.length;
-      challengeVoiceCount.textContent = remaining.toString();
-      // Clear error message on input
-      document.getElementById("challengeErrorMessage").textContent = "";
-    });
-  }
-
-  // Setup challenge recording button
   const challengeRecordButton = document.getElementById(
     "challengeRecordButton"
   );
@@ -135,12 +122,23 @@ export function initChallengeVoiceInput() {
     "challengeRecordingStatus"
   );
 
-  // Set initial status message
-  if (challengeRecordingStatus) {
-    challengeRecordingStatus.textContent =
-      translations?.main?.voiceInput?.status?.initial ||
-      "Record up to 2 minutes. You can edit the text afterwards.";
+  if (challengeVoiceTranscript && challengeVoiceCount) {
+    challengeVoiceTranscript.setAttribute(
+      "maxlength",
+      CHAR_LIMITS.VOICE.toString()
+    );
+    challengeVoiceCount.textContent = CHAR_LIMITS.VOICE.toString();
+
+    // Update remaining character count as user edits voice transcript
+    challengeVoiceTranscript.addEventListener("input", () => {
+      const remaining =
+        CHAR_LIMITS.VOICE - challengeVoiceTranscript.value.length;
+      challengeVoiceCount.textContent = remaining.toString();
+    });
   }
+
+  // Set initial status message
+  setInitialStatusMessage(challengeRecordingStatus);
 
   if (challengeRecordButton) {
     challengeRecordButton.addEventListener("click", () =>
@@ -149,10 +147,7 @@ export function initChallengeVoiceInput() {
         recordingTimer: challengeRecordingTimer,
         timerDisplay: challengeTimerDisplay,
         recordingStatus: challengeRecordingStatus,
-        transcriptElement: challengeVoiceTranscript,
-        countElement: challengeVoiceCount,
-        errorMessageElement: "challengeErrorMessage",
-        isChallenge: true,
+        voiceTranscript: challengeVoiceTranscript,
       })
     );
   }
