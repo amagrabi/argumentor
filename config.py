@@ -72,15 +72,15 @@ class Settings(BaseSettings):
 
     TIER_MONTHLY_EVAL_LIMITS: ClassVar[Dict[str, int]] = {
         "anonymous": 10,
-        "free": 30,
-        "plus": 100,
-        "pro": 1000,
+        "free": 20,
+        "plus": 50,
+        "pro": 500,
     }
     TIER_MONTHLY_VOICE_LIMITS: ClassVar[Dict[str, int]] = {
         "anonymous": 5,
         "free": 20,
-        "plus": 100,
-        "pro": 1000,
+        "plus": 50,
+        "pro": 500,
     }
 
     # Daily limits are currently not documented
@@ -88,14 +88,14 @@ class Settings(BaseSettings):
     TIER_DAILY_EVAL_LIMITS: ClassVar[Dict[str, int]] = {
         "anonymous": 11,
         "free": 21,
-        "plus": 101,
-        "pro": 1001,
+        "plus": 51,
+        "pro": 501,
     }
     TIER_DAILY_VOICE_LIMITS: ClassVar[Dict[str, int]] = {
         "anonymous": 6,
         "free": 21,
-        "plus": 101,
-        "pro": 1001,
+        "plus": 51,
+        "pro": 501,
     }
 
     SUPPORTED_LANGUAGES: ClassVar[List[str]] = ["en", "de"]
