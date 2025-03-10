@@ -158,6 +158,13 @@ textarea:focus {
 
 /* Responsive grid adjustments */
 @media (max-width: 768px) {
+  body,
+  main {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
   .educational-card {
     min-height: auto;
   }
@@ -292,15 +299,16 @@ textarea:focus {
   #evaluationResults .xp-bar-wrapper p.text-sm,
   #challengeEvaluationResults .xp-bar-wrapper p.text-sm,
   #xpInfo.profile-xp .xp-bar-wrapper p.text-sm {
-    font-size: 0.625rem !important;
+    font-size: 0.7rem !important; /* Slightly larger for better readability */
     margin-top: 2px !important;
     margin-bottom: 2px !important;
-    padding-left: 35px !important;
+    padding-left: 30px !important; /* Adjusted padding for better alignment */
     padding-right: 8px !important;
     max-width: 400px !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    text-align: left !important; /* Ensure text is left-aligned */
   }
 
   /* Username and level text - Adjusted positioning and width */
@@ -368,6 +376,32 @@ textarea:focus {
 
   #challengeSection .text-base {
     font-size: 0.875rem;
+  }
+
+  /* Fix for usage limits grid */
+  .grid.grid-cols-2 {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Ensure content doesn't overflow its container */
+  .rounded-lg,
+  .border,
+  .p-3,
+  .p-4 {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  /* Fix for level progression section */
+  .w-full.overflow-x-auto {
+    max-width: 100%;
+    scrollbar-width: thin;
+  }
+
+  /* Fix for any absolute positioned elements that might cause overflow */
+  .absolute {
+    max-width: 100vw;
   }
 }
 
@@ -1286,19 +1320,20 @@ textarea:focus {
   top: 60px !important; /* Reverted back to original value */
 }
 
-/* Make progress and next level text smaller */
-#xpInfo.profile-xp .xp-bar-wrapper p.text-sm {
-  font-size: 0.875rem !important; /* 14px */
-  margin-top: 4px;
-  margin-bottom: 4px;
-  position: relative;
-  left: 0;
-  padding-left: 38px;
-}
+/* Make progress and next level text smaller - Only for mobile */
+@media (max-width: 768px) {
+  #xpInfo.profile-xp .xp-bar-wrapper p.text-sm {
+    font-size: 0.7rem !important; /* Consistent font size */
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+    padding-left: 40px !important; /* Increased padding to move text more to the right */
+    text-align: left !important; /* Ensure text is left-aligned */
+  }
 
-/* Ensure proper spacing between progress and next level text */
-#xpInfo.profile-xp .xp-bar-wrapper p.text-sm + p.text-sm {
-  margin-top: 2px;
+  /* Ensure proper spacing between progress and next level text */
+  #xpInfo.profile-xp .xp-bar-wrapper p.text-sm + p.text-sm {
+    margin-top: 0 !important; /* Reduced vertical space between progress and next level text */
+  }
 }
 
 /* Adjust the XP bar wrapper positioning for profile page */
@@ -1539,15 +1574,16 @@ textarea:focus {
   #evaluationResults .xp-bar-wrapper p.text-sm,
   #challengeEvaluationResults .xp-bar-wrapper p.text-sm,
   #xpInfo.profile-xp .xp-bar-wrapper p.text-sm {
-    font-size: 0.625rem !important;
+    font-size: 0.7rem !important; /* Slightly larger for better readability */
     margin-top: 2px !important;
     margin-bottom: 2px !important;
-    padding-left: 35px !important;
+    padding-left: 30px !important; /* Adjusted padding for better alignment */
     padding-right: 8px !important;
     max-width: 400px !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    text-align: left !important; /* Ensure text is left-aligned */
   }
 
   /* Container adjustments for better spacing */
@@ -1786,5 +1822,156 @@ textarea:focus {
     margin-bottom: 10px;
     /* Add some margin on the left for y-axis labels */
     margin-left: 5px;
+  }
+}
+
+/* Responsive text sizing for profile page on small screens */
+@media (max-width: 480px) {
+  /* Account information section */
+  .mb-6 h2.text-xl {
+    font-size: 1.1rem; /* Reduce section headers */
+  }
+
+  .mb-6 p.text-base,
+  .mb-6 .text-base,
+  .mb-6 span.text-gray-700,
+  .mb-6 span.text-gray-500 {
+    font-size: 0.875rem; /* Reduce account info text */
+    word-break: break-word; /* Allow long words to break */
+  }
+
+  /* Fix for "Change plan" link */
+  a[data-i18n="profile.changePlan"] {
+    font-size: 0.75rem !important;
+  }
+
+  /* Usage limits section */
+  .mb-4 h3.text-gray-700 {
+    font-size: 0.9rem !important;
+  }
+
+  .profile-usage-limits {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem; /* Reduce gap on small screens */
+  }
+
+  .profile-usage-limits .bg-gray-50 {
+    padding: 0.5rem; /* Reduce padding */
+  }
+
+  .profile-usage-limits .flex.items-center {
+    flex-wrap: wrap;
+  }
+
+  .profile-usage-limits .font-medium {
+    font-size: 0.75rem; /* Smaller font for usage limits */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Current level section */
+  h2.text-xl[data-i18n="profile.currentLevel"] {
+    font-size: 1.1rem;
+  }
+
+  p.text-base span.text-gray-700[data-i18n="profile.totalXP"],
+  p.text-base span.text-black {
+    font-size: 0.875rem;
+  }
+
+  /* XP info section */
+  #xpInfo.profile-xp .flex.flex-col p {
+    font-size: 0.875rem !important;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Keep level image on the left for small screens */
+  #xpInfo.profile-xp .flex.items-center.justify-start {
+    flex-direction: row;
+    align-items: flex-start !important;
+  }
+
+  #xpInfo.profile-xp .level-image-wrapper {
+    margin-right: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  #xpInfo.profile-xp .flex.flex-col.text-left {
+    text-align: left;
+    width: calc(100% - 70px);
+    padding-left: 0 !important; /* Remove left padding to move closer to image */
+  }
+
+  #xpInfo.profile-xp .move-down {
+    left: -30px !important; /* Adjust to move text closer to the right */
+  }
+
+  #xpInfo.profile-xp .xp-bar-wrapper {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 0 !important;
+  }
+
+  #xpInfo.profile-xp .xp-bar-container {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0px !important; /* Move bar to the left to connect with level image */
+  }
+
+  /* Make progress and next level text scale properly on mobile */
+  #xpInfo.profile-xp .xp-bar-wrapper p.text-sm {
+    font-size: 0.7rem !important; /* Consistent font size */
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+    padding-left: 40px !important; /* Increased padding to move text more to the right */
+    text-align: left !important; /* Ensure text is left-aligned */
+  }
+
+  /* Achievements section */
+  h2.text-xl[data-i18n="profile.achievements"] {
+    font-size: 1.1rem;
+  }
+
+  h2.text-xl span.text-gray-600 {
+    font-size: 0.875rem;
+  }
+
+  /* For very small screens, adjust grid layout for usage limits */
+  @media (max-width: 360px) {
+    .mb-4 .grid.grid-cols-2,
+    .profile-usage-limits {
+      grid-template-columns: 1fr; /* Change to single column */
+      gap: 0.75rem;
+    }
+
+    /* Further reduce font sizes */
+    .mb-6 h2.text-xl,
+    h2.text-xl[data-i18n="profile.currentLevel"],
+    h2.text-xl[data-i18n="profile.achievements"] {
+      font-size: 1rem;
+    }
+
+    .mb-6 p.text-base,
+    .mb-6 .text-base,
+    .mb-6 span.text-gray-700,
+    .mb-6 span.text-gray-500,
+    p.text-base span.text-gray-700[data-i18n="profile.totalXP"],
+    p.text-base span.text-black {
+      font-size: 0.8rem;
+    }
+
+    /* Ensure all text fits within container */
+    .mb-6,
+    .mb-4,
+    #xpInfo,
+    .text-base {
+      max-width: 100%;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
   }
 }

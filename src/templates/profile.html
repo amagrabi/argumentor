@@ -51,7 +51,7 @@
   bg-yellow-50 {% elif score_float >= 4 %} text-amber-600 bg-amber-50 {% else %}
   text-red-600 bg-red-50 {% endif %} {%- endmacro %}
 
-  <body class="bg-white min-h-screen">
+  <body class="bg-white min-h-screen overflow-x-hidden">
     <script id="answersData" type="application/json">
       {{ answers_json | tojson }}
     </script>
@@ -71,7 +71,7 @@
       </div>
     </header>
 
-    <main class="max-w-5xl mx-auto p-4">
+    <main class="max-w-5xl mx-auto p-4 overflow-x-hidden">
       {% if not current_user.is_authenticated %}
       <div
         class="mt-4 mb-4 max-w-full md:w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"
@@ -245,13 +245,17 @@
               class="text-gray-700 font-medium mb-2"
               data-i18n="profile.usageLimits"
             ></h3>
-            <div class="grid grid-cols-2 gap-3">
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 gap-3 profile-usage-limits"
+            >
               <!-- Evaluations Card -->
-              <div class="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                <div class="flex items-center mb-2">
+              <div
+                class="bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200 flex flex-col min-h-[70px] sm:min-h-[90px]"
+              >
+                <div class="flex items-center mb-1 sm:mb-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 text-gray-800 mr-2"
+                    class="h-4 w-4 sm:h-5 sm:w-5 text-gray-800 mr-2 flex-shrink-0"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -261,21 +265,25 @@
                       clip-rule="evenodd"
                     />
                   </svg>
-                  <span class="font-medium" data-i18n="profile.evaluations"
+                  <span
+                    class="font-medium text-sm sm:text-base"
+                    data-i18n="profile.evaluations"
                     >Evaluations</span
                   >
                 </div>
-                <div class="font-medium">
+                <div class="font-medium text-sm sm:text-base mt-auto">
                   {{ monthly_eval_count }} / {{ monthly_eval_limit }}
                 </div>
               </div>
 
               <!-- Voice Recordings Card -->
-              <div class="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                <div class="flex items-center mb-2">
+              <div
+                class="bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200 flex flex-col min-h-[70px] sm:min-h-[90px]"
+              >
+                <div class="flex items-center mb-1 sm:mb-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 text-gray-800 mr-2"
+                    class="h-4 w-4 sm:h-5 sm:w-5 text-gray-800 mr-2 flex-shrink-0"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -285,11 +293,13 @@
                       clip-rule="evenodd"
                     />
                   </svg>
-                  <span class="font-medium" data-i18n="profile.voiceRecordings"
+                  <span
+                    class="font-medium text-sm sm:text-base"
+                    data-i18n="profile.voiceRecordings"
                     >Voice Recordings</span
                   >
                 </div>
-                <div class="font-medium">
+                <div class="font-medium text-sm sm:text-base mt-auto">
                   {{ monthly_voice_count }} / {{ monthly_voice_limit }}
                 </div>
               </div>
