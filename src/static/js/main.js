@@ -1071,8 +1071,12 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
       overallEvalDiv.innerHTML += `
         <div class="mt-6 flex justify-center">
           <div class="w-full max-w-full bg-white rounded-xl shadow-sm border border-gray-100 argument-structure-box">
-            <h3 class="text-base sm:text-lg font-bold mb-3 text-center text-gray-800">
-              ${translations.evaluation.argumentstructure}
+            <h3 class="text-base sm:text-lg mb-3 text-center text-gray-800">
+              <span class="font-bold">${
+                translations.evaluation.argumentstructure.split("(")[0]
+              }</span><span class="font-normal text-gray-500">(${
+        translations.evaluation.argumentstructure.split("(")[1]
+      }</span>
             </h3>
             <div id="argumentStructureViz" class="overflow-x-auto flex justify-center"></div>
           </div>
