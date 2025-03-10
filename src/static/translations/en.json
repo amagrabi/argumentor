@@ -399,12 +399,8 @@
         "description": "Submit 100 arguments"
       },
       "hundred_challenges": {
-        "name": "Century Solver",
+        "name": "Sage of a Hundred Trials",
         "description": "Complete 100 challenges"
-      },
-      "domain_expert": {
-        "name": "Domain Expert",
-        "description": "Receive five 8+ scores in the same category"
       }
     },
     "yourAnswers": "Your Answers",
@@ -415,7 +411,10 @@
     "argument": "Argument:",
     "counterargument": "Counterargument:",
     "voiceAnswer": "Voice Answer:",
+    "evaluation": "Evaluation:",
+    "challengeAnswerHistory": "Challenge:",
     "challengeResponse": "Challenge Response:",
+    "challengeEvaluation": "Challenge Evaluation:",
     "feedbackDetails": "Details",
     "noAnswersYet": "You haven't submitted any answers yet."
   },

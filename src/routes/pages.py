@@ -220,6 +220,15 @@ def profile():
     if not user:
         return redirect(url_for("pages.home"))
 
+    # Get language from query parameter or session (default to "en")
+    lang = request.args.get("lang") or session.get("language", "en")
+    trans_file = os.path.join(
+        current_app.root_path, "static", "translations", f"{lang}.json"
+    )
+
+    with open(trans_file, "r", encoding="utf-8") as f:
+        translations = json.load(f)
+
     level_info = get_level_info(user.xp)
     daily_eval_count = get_daily_evaluation_count(user.uuid)
     eval_limit = get_eval_limit(user.tier)
@@ -280,6 +289,7 @@ def profile():
         all_achievements=all_achievements,
         earned_achievements=earned_achievements,
         all_levels=levels_with_status,
+        translations=translations,
     )
 
 

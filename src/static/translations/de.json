@@ -57,7 +57,7 @@
       "claim": "Deine These",
       "claimDescription": "Formuliere deine Position klar und präzise...",
       "reasoning": "Deine Begründung",
-      "reasoningDescription": "Erkläre die Logik und Beweise für deine These...",
+      "reasoningDescription": "Erkläre die Argumente für deine These...",
       "counterargument": "Gegenargumente entkräften (optional)",
       "counterargumentDescription": "Gehe auf mögliche Einwände ein, um dein Argument zu stärken...",
       "challengeDescription": "Verteidige und verbessere dein Argument..."
@@ -220,11 +220,15 @@
     "progressOverTime": "Fortschritt",
     "rating": "Bewertung",
     "time": "Zeit",
-    "claim": "These",
-    "argument": "Argument",
-    "counterargument": "Gegenargumente",
-    "challengeResponse": "Antwort",
-    "feedbackDetails": "Details",
+    "claim": "These:",
+    "argument": "Argument:",
+    "counterargument": "Gegenargumente:",
+    "voiceAnswer": "Sprachantwort:",
+    "evaluation": "Bewertung:",
+    "challengeAnswerHistory": "Challenge:",
+    "challengeResponse": "Challenge Antwort:",
+    "challengeEvaluation": "Challenge Bewertung:",
+    "feedbackDetails": "Details:",
     "noAnswersYet": "Du hast noch keine Antworten eingereicht.",
     "achievementDescriptions": {
       "first_argument": {
@@ -359,7 +363,7 @@
       "description": "Reiche 100 Argumente ein"
     },
     "hundred_challenges": {
-      "name": "Jahrhundert-Löser",
+      "name": "Meister der Hundert Prüfungen",
       "description": "Löse 100 Herausforderungen"
     }
   },

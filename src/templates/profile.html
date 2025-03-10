@@ -733,9 +733,10 @@
                   <!-- New Evaluation Section -->
                   {% if answer.evaluation_feedback.Overall %}
                   <p class="text-sm break-words mt-1">
-                    <span class="font-medium text-sm text-black"
-                      >Evaluation:</span
-                    >
+                    <span
+                      class="font-medium text-sm text-black"
+                      data-i18n="profile.evaluation"
+                    ></span>
                     <span class="text-gray-600"
                       >{{ answer.evaluation_feedback.Overall }}</span
                     >
@@ -745,16 +746,18 @@
                   <!-- Challenge Section (Left Side) -->
                   {% if answer.challenge %}
                   <p class="text-sm break-words mt-1">
-                    <span class="font-medium text-sm text-black"
-                      >Challenge:</span
-                    >
+                    <span
+                      class="font-medium text-sm text-black"
+                      data-i18n="profile.challengeAnswerHistory"
+                    ></span>
                     <span class="text-gray-600">{{ answer.challenge }}</span>
                   </p>
                   {% endif %} {% if answer.challenge_response %}
                   <p class="text-sm break-words mt-1">
-                    <span class="font-medium text-sm text-black"
-                      >Challenge Response:</span
-                    >
+                    <span
+                      class="font-medium text-sm text-black"
+                      data-i18n="profile.challengeResponse"
+                    ></span>
                     <span class="text-gray-600"
                       >{{ answer.challenge_response }}</span
                     >
@@ -765,9 +768,10 @@
                   {% if answer.challenge_evaluation_feedback and
                   answer.challenge_evaluation_feedback.Overall %}
                   <p class="text-sm break-words mt-1">
-                    <span class="font-medium text-sm text-black"
-                      >Challenge Evaluation:</span
-                    >
+                    <span
+                      class="font-medium text-sm text-black"
+                      data-i18n="profile.challengeEvaluation"
+                    ></span>
                     <span class="text-gray-600"
                       >{{ answer.challenge_evaluation_feedback.Overall }}</span
                     >
