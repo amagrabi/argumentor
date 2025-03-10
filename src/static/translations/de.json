@@ -871,9 +871,9 @@
         "general": "Allgemeines Feedback"
       },
       "messageLabel": "Nachricht",
-      "messagePlaceholder": "Teile uns deine Gedanken mit...",
+      "messagePlaceholder": "",
       "emailLabel": "E-Mail (Optional)",
-      "emailPlaceholder": "deine.email@beispiel.de",
+      "emailPlaceholder": "",
       "emailOptional": "Füge deine Email hinzu falls du eine Antwort bekommen möchtest.",
       "errorMessage": "Bitte gib deine Feedback-Nachricht ein",
       "loadingMessage": "Feedback wird gesendet...",

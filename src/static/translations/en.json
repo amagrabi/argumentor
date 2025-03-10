@@ -759,9 +759,9 @@
         "general": "General Feedback"
       },
       "messageLabel": "Message",
-      "messagePlaceholder": "Tell us what you think...",
+      "messagePlaceholder": "",
       "emailLabel": "Email (Optional)",
-      "emailPlaceholder": "your.email@example.com",
+      "emailPlaceholder": "",
       "emailOptional": "You can add your email if you'd like to receive a reply.",
       "errorMessage": "Please enter your feedback message",
       "loadingMessage": "Submitting feedback...",
