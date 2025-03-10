@@ -8,6 +8,7 @@ from flask_limiter.errors import RateLimitExceeded
 from flask_login import current_user
 from flask_migrate import Migrate
 from flask_talisman import Talisman
+from werkzeug.exceptions import NotFound
 
 from commands import register_commands
 from config import get_settings
@@ -173,6 +174,10 @@ def create_app():
 
     @app.errorhandler(Exception)
     def handle_exception(e):
+        # Skip detailed logging for common routing exceptions that should be handled by specific handlers
+        if isinstance(e, NotFound):
+            return handle_not_found(e)
+
         # Log the error
         logger.error(f"Unhandled exception: {str(e)}")
         logger.error(f"Traceback: {traceback.format_exc()}")
@@ -185,6 +190,25 @@ def create_app():
             return jsonify(error=str(e)), 500
 
         return jsonify(error="An unexpected error occurred"), 500
+
+    @app.errorhandler(404)
+    def handle_not_found(e):
+        # Check if the request is likely from a WordPress scanning bot
+        path = request.path.lower()
+        if (
+            "wp-" in path
+            or "wordpress" in path
+            or "xmlrpc.php" in path
+            or "wlwmanifest.xml" in path
+        ):
+            # For WordPress scanning bots, return a simple 404 without logging
+            return jsonify(error="Not Found"), 404
+
+        # For other 404s, log at a lower level
+        logger.info(f"404 Not Found: {request.path}")
+
+        # Return a JSON response for API endpoints
+        return jsonify(error="The requested URL was not found"), 404
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):

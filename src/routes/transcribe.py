@@ -552,7 +552,7 @@ def transcribe_voice():
             return jsonify({"error": "Error during transcription"}), 500
 
         was_improved = improved_transcript != transcript
-        logger.debug(f"Transcription was improved: {was_improved}")
+        logger.info(f"Transcription was improved: {was_improved}")
 
         return jsonify(
             {
