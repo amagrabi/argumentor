@@ -92,8 +92,8 @@ def post_process_transcription(
         logger.debug(f"Selected system prompt for language {language}")
 
         prompt = f"""
-        Please improve this speech-to-text transcription while preserving its original meaning.
-        Focus on fixing punctuation, capitalization, and obvious recognition errors.
+        Please improve this speech-to-text transcription and make it more readable while preserving its original meaning.
+        Focus on fixing punctuation, capitalization, obvious recognition errors, and removing filler words like "um", "uh", "you know".
         The user tried to answer this question: {question_text}
 
         Original transcription:
@@ -102,8 +102,8 @@ def post_process_transcription(
 
         if language == "de":
             prompt = f"""
-            Bitte verbessere diese Sprache-zu-Text-Transkription unter Beibehaltung ihrer ursprünglichen Bedeutung.
-            Konzentriere dich auf die Korrektur von Zeichensetzung, Großschreibung und offensichtlichen Erkennungsfehlern.
+            Bitte verbessere diese Sprache-zu-Text-Transkription und verbessere die Lesbarkeit unter Beibehaltung ihrer ursprünglichen Bedeutung.
+            Konzentriere dich auf die Korrektur von Zeichensetzung, Großschreibung, offensichtlichen Erkennungsfehlern und entferne Füllwörter wie "ähm", "äh", "sozusagen".
             Der Benutzer versucht, diese Frage zu beantworten: {question_text}
 
             Ursprüngliche Transkription:
