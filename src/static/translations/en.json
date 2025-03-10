@@ -563,19 +563,19 @@
     "argumentStepsTitle": "Build Your Argument Step-by-Step",
     "argumentSteps": {
       "state": {
-        "title": "State",
+        "title": "State:",
         "description": "Clearly articulate your main claim. Ask yourself, \"What exactly am I trying to prove?\". Keep your statement concise and debatable."
       },
       "explain": {
-        "title": "Explain",
+        "title": "Explain:",
         "description": "Detail your thought process by outlining the rationale behind your claim. Describe the assumptions and logical steps that lead you to your conclusion."
       },
       "evidence": {
-        "title": "Evidence",
+        "title": "Evidence:",
         "description": "Back up your reasoning with solid data, reputable sources, or concrete examples. Look for statistics, case studies, or expert opinions that lend credibility to your argument."
       },
       "conclusion": {
-        "title": "Conclusion",
+        "title": "Conclusion:",
         "description": "Summarize your argument by tying your evidence back to your claim. Reiterate how your data supports your position and address any potential counterarguments."
       }
     },

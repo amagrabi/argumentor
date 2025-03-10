@@ -680,19 +680,19 @@
     "argumentStepsTitle": "Baue dein Argument Schritt für Schritt auf",
     "argumentSteps": {
       "state": {
-        "title": "Formuliere",
+        "title": "Formuliere:",
         "description": "Artikuliere deine Hauptaussage klar. Frage dich: 'Was genau möchte ich beweisen?'. Halte deine Aussage präzise und diskutierbar."
       },
       "explain": {
-        "title": "Erkläre",
+        "title": "Erkläre:",
         "description": "Beschreibe deinen Gedankengang, indem du die Logik hinter deiner Aussage darlegst. Erläutere die Annahmen und logischen Schritte, die zu deiner Schlussfolgerung führen."
       },
       "evidence": {
-        "title": "Belege",
+        "title": "Belege:",
         "description": "Untermauere deine Argumentation mit soliden Daten, seriösen Quellen oder konkreten Beispielen. Suche nach Statistiken, Fallstudien oder Expertenmeinungen, die deinem Argument Glaubwürdigkeit verleihen."
       },
       "conclusion": {
-        "title": "Fazit",
+        "title": "Fazit:",
         "description": "Fasse dein Argument zusammen, indem du deine Belege mit deiner Hauptaussage verbindest. Wiederhole, wie deine Daten deine Position stützen und gehe auf mögliche Gegenargumente ein."
       }
     },
