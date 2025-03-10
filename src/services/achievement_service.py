@@ -116,31 +116,28 @@ def check_and_award_achievements(
             award_achievement("all_categories")
 
     # Check for wordsmith (long argument)
+    input_mode = answer_data.get("input_mode", "text")
     argument = answer_data.get("argument", "")
     claim = answer_data.get("claim", "")
     counterargument = answer_data.get("counterargument", "")
-    input_mode = answer_data.get("input_mode", "text")
+    voice_answer = answer_data.get("voice_answer", "")
     is_challenge = answer_data.get("is_challenge", False)
 
-    # Calculate total text length based on input mode and section
     if is_challenge:
-        # For challenge responses, just use the argument length directly
+        # For challenges, argument contains the full text for both voice and text inputs
         total_length = len(argument)
+    elif input_mode == "voice":
+        total_length = len(voice_answer)
     else:
-        # For voice inputs, use the full text
-        if input_mode == "voice":
-            total_length = len(argument)
-        # For text inputs, combine all fields
-        else:
-            total_length = len(claim) + len(argument) + len(counterargument)
+        total_length = len(claim) + len(argument) + len(counterargument)
 
     has_wordsmith = user.is_authenticated and user.has_achievement("wordsmith")
-    if total_length > 1800 and total_score >= 7.5 and not has_wordsmith:
+    if total_length > 1700 and total_score >= 7.5 and not has_wordsmith:
         award_achievement("wordsmith")
 
     # Check for concise master
     has_concise = user.is_authenticated and user.has_achievement("concise_master")
-    if total_length < 300 and total_score >= 7.5 and not has_concise:
+    if total_length < 400 and total_score >= 7.5 and not has_concise:
         award_achievement("concise_master")
 
     # Count total answers and award milestones - only for authenticated users
