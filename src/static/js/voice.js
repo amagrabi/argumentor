@@ -69,7 +69,8 @@ export function initMainVoiceInput() {
         recordingTimer,
         timerDisplay,
         recordingStatus,
-        voiceTranscript,
+        transcriptElement: voiceTranscript,
+        countElement: voiceCount,
       })
     );
   }
@@ -147,7 +148,8 @@ export function initChallengeVoiceInput() {
         recordingTimer: challengeRecordingTimer,
         timerDisplay: challengeTimerDisplay,
         recordingStatus: challengeRecordingStatus,
-        voiceTranscript: challengeVoiceTranscript,
+        transcriptElement: challengeVoiceTranscript,
+        countElement: challengeVoiceCount,
       })
     );
   }

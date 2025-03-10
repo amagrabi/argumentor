@@ -56,7 +56,7 @@ Deine Aufgabe ist es, die Qualität der Sprache-zu-Text-Transkriptionen zu verbe
 1. Korrektur von Zeichensetzung und Großschreibung
 2. Korrektur offensichtlicher Worterkennungsfehler oder Ergänzung fehlender Wörter basierend auf dem Kontext
 3. Beibehaltung der ursprünglichen Bedeutung bei gleichzeitiger Verbesserung der Lesbarkeit
-4. Entfernung bedeutungsloser Füllwörter wie "ähm" oder "sozusagen"
+4. Entfernung bedeutungsloser Füllwörter wie "Ähm"/"ähm"/"äh" oder "sozusagen"
 
 Nimm nur dann Änderungen vor, wenn du sehr sicher bist, dass sie die Transkriptionsgenauigkeit oder Lesbarkeit verbessern.
 
@@ -80,6 +80,7 @@ def post_process_transcription(
     try:
         # Return early if transcript is empty or too short
         if not transcript or len(transcript.strip()) < 3:
+            logger.debug("Transcript too short for post-processing")
             return transcript
 
         logger.debug(f"Original transcription before post-processing: {transcript}")
@@ -88,6 +89,7 @@ def post_process_transcription(
         system_prompt = TRANSCRIPTION_SYSTEM_PROMPTS.get(
             language, TRANSCRIPTION_SYSTEM_PROMPT_EN
         )
+        logger.debug(f"Selected system prompt for language {language}")
 
         prompt = f"""
         Please improve this speech-to-text transcription while preserving its original meaning.
@@ -108,51 +110,61 @@ def post_process_transcription(
             {transcript}
             """
 
-        response = CLIENT.models.generate_content(
-            model=SETTINGS.MODEL,
-            contents=[
-                genai.types.Content(
-                    role="user", parts=[genai.types.Part.from_text(text=prompt)]
-                )
-            ],
-            config=genai.types.GenerateContentConfig(
-                temperature=0.1,  # Low temperature for more consistent output
-                top_p=0.8,
-                top_k=40,
-                max_output_tokens=2048,
-                safety_settings=[
-                    genai.types.SafetySetting(
-                        category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"
-                    ),
-                    genai.types.SafetySetting(
-                        category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="OFF"
-                    ),
-                    genai.types.SafetySetting(
-                        category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="OFF"
-                    ),
-                    genai.types.SafetySetting(
-                        category="HARM_CATEGORY_HARASSMENT", threshold="OFF"
-                    ),
+        logger.debug("Starting LLM post-processing")
+        try:
+            response = CLIENT.models.generate_content(
+                model=SETTINGS.MODEL,
+                contents=[
+                    genai.types.Content(
+                        role="user", parts=[genai.types.Part.from_text(text=prompt)]
+                    )
                 ],
-                system_instruction=[genai.types.Part.from_text(text=system_prompt)],
-            ),
-        )
+                config=genai.types.GenerateContentConfig(
+                    temperature=0.1,  # Low temperature for more consistent output
+                    top_p=0.8,
+                    top_k=40,
+                    max_output_tokens=2048,
+                    safety_settings=[
+                        genai.types.SafetySetting(
+                            category="HARM_CATEGORY_HATE_SPEECH", threshold="OFF"
+                        ),
+                        genai.types.SafetySetting(
+                            category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="OFF"
+                        ),
+                        genai.types.SafetySetting(
+                            category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="OFF"
+                        ),
+                        genai.types.SafetySetting(
+                            category="HARM_CATEGORY_HARASSMENT", threshold="OFF"
+                        ),
+                    ],
+                    system_instruction=[genai.types.Part.from_text(text=system_prompt)],
+                ),
+            )
 
-        improved_transcript = response.text.strip()
-        logger.debug(
-            f"Improved transcription after post-processing: {improved_transcript}"
-        )
+            # Extract the text from the response
+            if hasattr(response, "text"):
+                improved_transcript = response.text.strip()
+            elif hasattr(response, "parts") and response.parts:
+                improved_transcript = response.parts[0].text.strip()
+            else:
+                logger.warning(
+                    "Unexpected response format from LLM, using original transcript"
+                )
+                improved_transcript = transcript
 
-        if improved_transcript == transcript:
-            logger.debug("No improvements made during post-processing")
-        else:
-            logger.debug("Transcription was improved during post-processing")
-
-        return improved_transcript if improved_transcript else transcript
+            logger.debug(
+                f"LLM post-processing completed. Result: {improved_transcript}"
+            )
+            return improved_transcript
+        except Exception as e:
+            logger.error(f"Error in LLM post-processing: {str(e)}", exc_info=True)
+            # If LLM processing fails, return the original transcript
+            return transcript
 
     except Exception as e:
-        logger.error(f"Error in LLM post-processing: {str(e)}")
-        return transcript  # Return original transcript if post-processing fails
+        logger.error(f"Error in post-processing setup: {str(e)}", exc_info=True)
+        return transcript
 
 
 def upload_audio_to_gcs(audio_content, file_mime):
@@ -182,11 +194,18 @@ def transcribe_audio(audio_content, file_mime):
     chunk_length_ms = SETTINGS.VOICE_CHUNK_LIMIT
     # Determine the input format based on file_mime.
     input_format = "webm" if "webm" in file_mime or "ogg" in file_mime else "wav"
+    logger.debug(
+        f"Audio format determined as: {input_format} from mime type: {file_mime}"
+    )
 
     try:
+        logger.debug("Loading audio file for processing")
         audio = AudioSegment.from_file(io.BytesIO(audio_content), format=input_format)
+        logger.debug(
+            f"Audio loaded successfully. Duration: {len(audio)}ms, Channels: {audio.channels}, Sample width: {audio.sample_width}, Frame rate: {audio.frame_rate}"
+        )
     except Exception as e:
-        logger.error(f"Error loading audio file for chunking: {e}")
+        logger.error(f"Error loading audio file for chunking: {e}", exc_info=True)
         return ""
 
     # Capture session-dependent data before launching background tasks.
@@ -200,49 +219,76 @@ def transcribe_audio(audio_content, file_mime):
         """
         Exports the given AudioSegment to a WAV byte stream and then performs synchronous speech recognition.
         """
-        # Convert the audio segment's sample rate to 16000 Hz, sample width to 16 bit (2 bytes),
-        # and ensure it's in mono (1 channel)
-        audio_segment = (
-            audio_segment.set_frame_rate(16000).set_sample_width(2).set_channels(1)
-        )
-        buffer = io.BytesIO()
-        audio_segment.export(buffer, format="wav")
-        chunk_bytes = buffer.getvalue()
-
-        # Prepare Google Speech API client and config.
-        client = speech.SpeechClient(credentials=google_credentials)
-        config = speech.RecognitionConfig(
-            encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-            sample_rate_hertz=16000,  # Matches the exported WAV header
-            language_code=language_code,
-            model=SETTINGS.VOICE_MODEL,
-            use_enhanced=SETTINGS.VOICE_ENHANCED,
-            enable_automatic_punctuation=SETTINGS.VOICE_PUNCTUATION,
-            audio_channel_count=1,
-        )
-
-        audio_request = speech.RecognitionAudio(content=chunk_bytes)
         try:
-            # Use synchronous recognition with a timeout.
-            response = client.recognize(config=config, audio=audio_request, timeout=30)
-            chunk_transcript = ""
-            for result in response.results:
-                chunk_transcript += result.alternatives[0].transcript + " "
-            return chunk_transcript
+            # Convert the audio segment's sample rate to 16000 Hz, sample width to 16 bit (2 bytes),
+            # and ensure it's in mono (1 channel)
+            logger.debug(
+                f"Processing chunk. Original properties - Duration: {len(audio_segment)}ms, Channels: {audio_segment.channels}, Sample width: {audio_segment.sample_width}, Frame rate: {audio_segment.frame_rate}"
+            )
+
+            audio_segment = (
+                audio_segment.set_frame_rate(16000).set_sample_width(2).set_channels(1)
+            )
+            logger.debug(
+                f"Chunk converted. New properties - Duration: {len(audio_segment)}ms, Channels: {audio_segment.channels}, Sample width: {audio_segment.sample_width}, Frame rate: {audio_segment.frame_rate}"
+            )
+
+            buffer = io.BytesIO()
+            audio_segment.export(buffer, format="wav")
+            chunk_bytes = buffer.getvalue()
+            logger.debug(f"Exported WAV chunk size: {len(chunk_bytes)} bytes")
+
+            # Prepare Google Speech API client and config.
+            client = speech.SpeechClient(credentials=google_credentials)
+            config = speech.RecognitionConfig(
+                encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
+                sample_rate_hertz=16000,  # Matches the exported WAV header
+                language_code=language_code,
+                model=SETTINGS.VOICE_MODEL,
+                use_enhanced=SETTINGS.VOICE_ENHANCED,
+                enable_automatic_punctuation=SETTINGS.VOICE_PUNCTUATION,
+                audio_channel_count=1,
+            )
+            logger.debug(
+                f"Speech recognition config: model={SETTINGS.VOICE_MODEL}, enhanced={SETTINGS.VOICE_ENHANCED}, punctuation={SETTINGS.VOICE_PUNCTUATION}"
+            )
+
+            audio_request = speech.RecognitionAudio(content=chunk_bytes)
+            try:
+                # Use synchronous recognition with a timeout.
+                logger.debug("Starting speech recognition request")
+                response = client.recognize(
+                    config=config, audio=audio_request, timeout=30
+                )
+                chunk_transcript = ""
+                for result in response.results:
+                    chunk_transcript += result.alternatives[0].transcript + " "
+                logger.debug(
+                    f"Speech recognition successful. Transcript length: {len(chunk_transcript)}"
+                )
+                return chunk_transcript
+            except Exception as e:
+                logger.error(f"Error transcribing chunk: {e}", exc_info=True)
+                return ""
         except Exception as e:
-            logger.error(f"Error transcribing chunk: {e}")
+            logger.error(f"Error processing audio chunk: {e}", exc_info=True)
             return ""
 
     # If the entire audio is short enough, process it as one chunk.
     if len(audio) <= chunk_length_ms:
+        logger.debug(f"Processing audio as single chunk (duration: {len(audio)}ms)")
         transcript = process_audio_chunk(audio, language_code)
         return transcript.strip()
     else:
         # Split audio into chunks.
+        logger.debug(
+            f"Splitting audio into chunks. Total duration: {len(audio)}ms, Chunk size: {chunk_length_ms}ms"
+        )
         chunks = [
             audio[i : i + chunk_length_ms]
             for i in range(0, len(audio), chunk_length_ms)
         ]
+        logger.debug(f"Split into {len(chunks)} chunks")
         transcript_chunks = ["" for _ in range(len(chunks))]
 
         # Process each chunk concurrently.
@@ -255,12 +301,16 @@ def transcribe_audio(audio_content, file_mime):
                 idx = future_to_index[future]
                 try:
                     transcript_chunks[idx] = future.result().strip()
+                    logger.debug(f"Chunk {idx} processed successfully")
                 except Exception as e:
-                    logger.error(f"Error processing chunk {idx}: {e}")
+                    logger.error(f"Error processing chunk {idx}: {e}", exc_info=True)
                     transcript_chunks[idx] = ""
         full_transcript = " ".join(transcript_chunks)
         # Replace any occurrence of multiple whitespace characters with a single space
         clean_transcript = re.sub(r"\s+", " ", full_transcript).strip()
+        logger.debug(
+            f"All chunks processed. Final transcript length: {len(clean_transcript)}"
+        )
         return clean_transcript
 
 
@@ -469,11 +519,16 @@ def transcribe_voice():
 
         # Process the initial transcription
         logger.debug("Starting initial transcription")
-        transcript = transcribe_audio(audio_file.read(), audio_file.content_type)
+        try:
+            transcript = transcribe_audio(audio_file.read(), audio_file.content_type)
+            logger.debug(f"Initial transcription result: {transcript}")
+        except Exception as e:
+            logger.error(f"Error during initial transcription: {str(e)}", exc_info=True)
+            return jsonify({"error": "Error during transcription"}), 500
 
         # Return early if transcription failed
         if not transcript:
-            logger.error("Initial transcription failed")
+            logger.error("Initial transcription failed - empty transcript")
             return jsonify(
                 {
                     "error": "No text could be identified in the recording",
@@ -483,10 +538,18 @@ def transcribe_voice():
 
         logger.debug("Initial transcription successful, starting post-processing")
         # Post-process the transcription with LLM, including the question context
-        improved_transcript = post_process_transcription(
-            transcript, language, question_text
-        )
-        logger.debug("Post-processing complete")
+        try:
+            improved_transcript = post_process_transcription(
+                transcript, language, question_text
+            )
+            logger.debug(f"Post-processing result: {improved_transcript}")
+        except Exception as e:
+            logger.error(f"Error during post-processing: {str(e)}", exc_info=True)
+            return jsonify({"error": "Error during transcription"}), 500
+
+        if not improved_transcript:
+            logger.error("Post-processing failed - empty result")
+            return jsonify({"error": "Error during transcription"}), 500
 
         was_improved = improved_transcript != transcript
         logger.debug(f"Transcription was improved: {was_improved}")
