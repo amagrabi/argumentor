@@ -213,13 +213,15 @@ textarea:focus {
   }
 
   #rerollButton,
-  #selectQuestionButton {
+  #selectQuestionButton,
+  #writeQuestionButton {
     font-size: 0.7rem; /* Smaller text */
     padding: 0.25rem 0.75rem; /* Smaller padding */
   }
 
   #rerollButton svg,
-  #selectQuestionButton svg {
+  #selectQuestionButton svg,
+  #writeQuestionButton svg {
     width: 0.875rem; /* 14px */
     height: 0.875rem;
   }
