@@ -2024,3 +2024,69 @@ textarea:focus {
   padding-right: 0; /* Remove any padding */
   width: 100%; /* Ensure the container takes full width */
 }
+
+/* Fix for achievement tooltips getting cut off on the left side */
+.group:hover .group-hover\:opacity-100 {
+  transform: translate(calc(-50% + 20px), 0.5rem) !important;
+  left: 50%;
+  right: auto;
+}
+
+/* First column needs special positioning to avoid cutoff */
+.grid-cols-10 > .group:nth-child(10n + 1) .group-hover\:opacity-100,
+.grid-cols-10 > .group:nth-child(10n + 2) .group-hover\:opacity-100,
+.sm\:grid-cols-10 > .group:nth-child(10n + 1) .group-hover\:opacity-100,
+.sm\:grid-cols-10 > .group:nth-child(10n + 2) .group-hover\:opacity-100,
+.md\:grid-cols-12 > .group:nth-child(12n + 1) .group-hover\:opacity-100,
+.md\:grid-cols-12 > .group:nth-child(12n + 2) .group-hover\:opacity-100 {
+  transform: translate(0, 0.5rem) !important;
+  left: 0;
+  right: auto;
+}
+
+/* Last column needs special positioning to avoid cutoff on the right */
+.grid-cols-10 > .group:nth-child(10n) .group-hover\:opacity-100,
+.grid-cols-10 > .group:nth-child(10n-1) .group-hover\:opacity-100,
+.sm\:grid-cols-10 > .group:nth-child(10n) .group-hover\:opacity-100,
+.sm\:grid-cols-10 > .group:nth-child(10n-1) .group-hover\:opacity-100,
+.md\:grid-cols-12 > .group:nth-child(12n) .group-hover\:opacity-100,
+.md\:grid-cols-12 > .group:nth-child(12n-1) .group-hover\:opacity-100 {
+  transform: translate(-100%, 0.5rem) !important;
+  left: 100%;
+  right: auto;
+}
+
+/* Additional tooltip positioning rules for custom grid columns to fix tooltip cutoff on second rows */
+.sm\:grid-cols-12 > .group:nth-child(12n + 1) .group-hover\:opacity-100,
+.sm\:grid-cols-12 > .group:nth-child(12n + 2) .group-hover\:opacity-100 {
+  transform: translate(0, 0.5rem) !important;
+  left: 0;
+  right: auto;
+}
+
+.md\:grid-cols-14 > .group:nth-child(14n + 1) .group-hover\:opacity-100,
+.md\:grid-cols-14 > .group:nth-child(14n + 2) .group-hover\:opacity-100 {
+  transform: translate(0, 0.5rem) !important;
+  left: 0;
+  right: auto;
+}
+
+/* Additional tooltip positioning rules for md grid on profile page */
+.md\:grid-cols-14 > .group:nth-child(14n + 1) .group-hover\:opacity-100,
+.md\:grid-cols-14 > .group:nth-child(14n + 2) .group-hover\:opacity-100 {
+  transform: translate(0, 0.5rem) !important;
+  left: 0;
+  right: auto;
+}
+
+/* Additional tooltip positioning rules for lg grid on profile page using attribute selector */
+[class*="lg:grid-cols-[repeat(17,minmax(0,40px))]"]
+  > .group:nth-child(17n + 1)
+  .group-hover\:opacity-100,
+[class*="lg:grid-cols-[repeat(17,minmax(0,40px))]"]
+  > .group:nth-child(17n + 2)
+  .group-hover\:opacity-100 {
+  transform: translate(0, 0.5rem) !important;
+  left: 0;
+  right: auto;
+}
