@@ -103,6 +103,12 @@ class Answer(db.Model):
 
     input_mode = db.Column(db.String(10), nullable=True)  # "text" or "voice"
 
+    # Achievement that was completed by this answer (if any)
+    completed_achievement = db.Column(db.String(50), nullable=True)
+
+    # Store multiple achievements completed by this answer
+    completed_achievements = db.Column(db.JSON, default=list, nullable=True)
+
     __table_args__ = (db.Index("ix_user_question", "user_uuid", "question_id"),)
 
     def __repr__(self):
@@ -144,6 +150,8 @@ class Answer(db.Model):
             "input_mode": self.input_mode,
             "total_xp": total_xp,
             "category": "Custom" if is_custom else None,
+            "completed_achievement": getattr(self, "completed_achievement", None),
+            "completed_achievements": getattr(self, "completed_achievements", []),
         }
 
 

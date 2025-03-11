@@ -1992,3 +1992,33 @@ textarea:focus {
     }
   }
 }
+
+/* Align achievement icons with voice/text icon in answer history */
+.absolute.top-0.right-0 .flex.justify-end,
+.absolute.top-0.right-0 .flex.items-center.justify-end {
+  margin-right: 0; /* Remove the right margin */
+  margin-top: 4px; /* Add vertical space between voice/text icon and achievement icons */
+  justify-content: flex-end; /* Ensure icons are aligned to the right */
+  width: 100%; /* Ensure the container takes full width */
+}
+
+/* Ensure consistent alignment for single achievement icon */
+.absolute.top-0.right-0 .flex.justify-end.pr-1 {
+  padding-right: 0 !important; /* Remove the existing padding */
+  margin-top: 4px; /* Add vertical space between voice/text icon and achievement icons */
+  justify-content: flex-end; /* Ensure icons are aligned to the right */
+  width: 100%; /* Ensure the container takes full width */
+}
+
+/* Ensure the voice/text icon is properly aligned */
+.absolute.top-0.right-0 p svg.inline {
+  display: block;
+  margin-left: auto; /* Push to the right */
+  margin-right: 0; /* Remove right margin */
+}
+
+/* Add specific right alignment for the flex container of the voice/text icon */
+.absolute.top-0.right-0 p.flex.justify-end {
+  padding-right: 0; /* Remove any padding */
+  width: 100%; /* Ensure the container takes full width */
+}

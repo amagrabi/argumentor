@@ -325,6 +325,16 @@ def submit_answer():
         }
         newly_awarded = check_and_award_achievements(user, answer_data, session)
 
+        # If an achievement was completed by this answer, store it in the Answer object
+        if answer_data.get("completed_achievement"):
+            new_answer.completed_achievement = answer_data["completed_achievement"]
+            db.session.commit()
+
+        # Store all completed achievements
+        if answer_data.get("completed_achievements"):
+            new_answer.completed_achievements = answer_data["completed_achievements"]
+            db.session.commit()
+
         old_level = get_level_name(old_xp)
         new_level = get_level_name(total_xp)
         leveled_up = old_level != new_level
@@ -559,6 +569,39 @@ def submit_challenge_response():
                 user, challenge_answer_data, session
             )
             logger.debug(f"Newly awarded achievements: {newly_awarded}")
+
+            # If an achievement was completed by this challenge response, store it in the Answer object
+            if challenge_answer_data.get("completed_achievement"):
+                # If there's already a completed_achievement, move it to the completed_achievements list
+                if answer.completed_achievement and not answer.completed_achievements:
+                    answer.completed_achievements = [answer.completed_achievement]
+                elif (
+                    answer.completed_achievement
+                    and answer.completed_achievements
+                    and answer.completed_achievement
+                    not in answer.completed_achievements
+                ):
+                    answer.completed_achievements.append(answer.completed_achievement)
+
+                # Set the new completed_achievement
+                answer.completed_achievement = challenge_answer_data[
+                    "completed_achievement"
+                ]
+                db.session.commit()
+
+            # Store all completed achievements
+            if challenge_answer_data.get("completed_achievements"):
+                # Initialize completed_achievements if it doesn't exist
+                if not answer.completed_achievements:
+                    answer.completed_achievements = []
+
+                # Merge the achievements from the challenge with existing achievements
+                for achievement_id in challenge_answer_data["completed_achievements"]:
+                    if achievement_id not in answer.completed_achievements:
+                        answer.completed_achievements.append(achievement_id)
+
+                db.session.commit()
+
         except Exception as achievement_error:
             logger.error(f"Error checking achievements: {str(achievement_error)}")
             return jsonify(
@@ -577,47 +620,49 @@ def submit_challenge_response():
                 level_info["previous_level_image"] = previous_level.image_path
 
             logger.debug(f"Leveled up: {leveled_up}")
+
+            try:
+                logger.debug("Building response data")
+                # Make sure evaluation has consistent structure
+                eval_copy = dict(evaluation)
+                if "total_score" not in eval_copy:
+                    eval_copy["total_score"] = avg_all
+
+                response_data = {
+                    "evaluation": eval_copy,
+                    "challenge_xp_earned": xp_gained,
+                    "current_xp": user.xp,
+                    "current_level": level_info["display_name"],
+                    "leveled_up": leveled_up,
+                    "level_info": level_info,
+                    "relevance_too_low": scores["Relevance"]
+                    < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP,
+                }
+
+                # Add any newly awarded achievements to the response
+                if newly_awarded:
+                    response_data["achievements"] = [
+                        {
+                            "id": achievement.id,
+                            "name": achievement.name,
+                            "description": achievement.description,
+                            "name_key": achievement.name_key,
+                            "description_key": achievement.description_key,
+                        }
+                        for achievement in newly_awarded
+                    ]
+
+                logger.debug("Response prepared successfully, returning to client")
+                return jsonify(response_data)
+            except Exception as response_error:
+                logger.error(f"Error preparing response: {str(response_error)}")
+                return jsonify(
+                    {"error": f"Response preparation error: {str(response_error)}"}
+                ), 500
         except Exception as level_error:
-            logger.error(f"Error checking level info: {str(level_error)}")
-            return jsonify({"error": f"Level info error: {str(level_error)}"}), 500
-
-        try:
-            logger.debug("Building response data")
-            # Make sure evaluation has consistent structure
-            eval_copy = dict(evaluation)
-            if "total_score" not in eval_copy:
-                eval_copy["total_score"] = avg_all
-
-            response_data = {
-                "evaluation": eval_copy,
-                "challenge_xp_earned": xp_gained,
-                "current_xp": user.xp,
-                "current_level": level_info["display_name"],
-                "leveled_up": leveled_up,
-                "level_info": level_info,
-                "relevance_too_low": scores["Relevance"]
-                < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP,
-            }
-
-            # Add any newly awarded achievements to the response
-            if newly_awarded:
-                response_data["achievements"] = [
-                    {
-                        "id": achievement.id,
-                        "name": achievement.name,
-                        "description": achievement.description,
-                        "name_key": achievement.name_key,
-                        "description_key": achievement.description_key,
-                    }
-                    for achievement in newly_awarded
-                ]
-
-            logger.debug("Response prepared successfully, returning to client")
-            return jsonify(response_data)
-        except Exception as response_error:
-            logger.error(f"Error preparing response: {str(response_error)}")
+            logger.error(f"Error calculating level: {str(level_error)}")
             return jsonify(
-                {"error": f"Response preparation error: {str(response_error)}"}
+                {"error": f"Level calculation error: {str(level_error)}"}
             ), 500
 
     except Exception as e:

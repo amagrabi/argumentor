@@ -35,6 +35,10 @@ def check_and_award_achievements(
         return []
 
     newly_awarded = []
+    # Store the achievement ID in the answer data if it triggered an achievement
+    answer_data["completed_achievement"] = None
+    # Store multiple achievements completed by this answer
+    answer_data["completed_achievements"] = []
 
     # For tracking achievements for anonymous users
     session_achievements = []
@@ -49,11 +53,21 @@ def check_and_award_achievements(
             if not user.has_achievement(achievement_id):
                 user.award_achievement(achievement_id)
                 newly_awarded.append(ACHIEVEMENTS_BY_ID[achievement_id])
+                # Store the first achievement that this answer completed
+                if answer_data.get("completed_achievement") is None:
+                    answer_data["completed_achievement"] = achievement_id
+                # Store all achievements that this answer completed
+                answer_data["completed_achievements"].append(achievement_id)
         # Track in session for anonymous users
         elif session is not None:
             if achievement_id not in session_achievements:
                 session_achievements.append(achievement_id)
                 newly_awarded.append(ACHIEVEMENTS_BY_ID[achievement_id])
+                # Store the first achievement that this answer completed
+                if answer_data.get("completed_achievement") is None:
+                    answer_data["completed_achievement"] = achievement_id
+                # Store all achievements that this answer completed
+                answer_data["completed_achievements"].append(achievement_id)
 
     # First argument achievement
     if not user.is_authenticated or not user.has_achievement("first_argument"):
