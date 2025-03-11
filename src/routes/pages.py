@@ -69,13 +69,26 @@ def calculate_valid_xp_filter(answer):
 
 
 @pages_bp.route("/")
-def home():
+@pages_bp.route("/<lang>")
+def home(lang=None):
+    if lang:
+        if lang not in ["en", "de"]:
+            return redirect(url_for("pages.home"))
+        session["language"] = lang
+        if current_user.is_authenticated:
+            current_user.preferred_language = lang
+            db.session.commit()
+
     if "user_id" not in session:
         session["user_id"] = str(uuid.uuid4())
 
     user = User.query.filter_by(uuid=session["user_id"]).first()
     if not user:
-        user = User(uuid=session["user_id"], tier="anonymous")
+        # Generate a default username using a prefix and a short version of the UUID
+        default_username = f"anonymous_{session['user_id'][:8]}"
+        user = User(
+            uuid=session["user_id"], username=default_username, tier="anonymous"
+        )
         db.session.add(user)
         db.session.commit()
 
@@ -121,10 +134,19 @@ def home():
     )
 
 
+@pages_bp.route("/<lang>/how_it_works")
 @pages_bp.route("/how_it_works")
-def how_it_works():
+def how_it_works(lang=None):
+    if lang:
+        if lang not in ["en", "de"]:
+            return redirect(url_for("pages.how_it_works"))
+        session["language"] = lang
+        if current_user.is_authenticated:
+            current_user.preferred_language = lang
+            db.session.commit()
+
     # First check for the query parameter; if not present, use the session language (default to "en")
-    lang = request.args.get("lang") or session.get("language", "en")
+    lang = session.get("language", "en")
     trans_file = os.path.join(
         current_app.root_path, "static", "translations", f"{lang}.json"
     )
@@ -164,10 +186,19 @@ def how_it_works():
     )
 
 
+@pages_bp.route("/<lang>/how_to_improve")
 @pages_bp.route("/how_to_improve")
-def how_to_improve():
-    # Get language from query parameter or session (default to "en")
-    lang = request.args.get("lang") or session.get("language", "en")
+def how_to_improve(lang=None):
+    if lang:
+        if lang not in ["en", "de"]:
+            return redirect(url_for("pages.how_to_improve"))
+        session["language"] = lang
+        if current_user.is_authenticated:
+            current_user.preferred_language = lang
+            db.session.commit()
+
+    # Get language from session (default to "en")
+    lang = session.get("language", "en")
     trans_file = os.path.join(
         current_app.root_path, "static", "translations", f"{lang}.json"
     )
@@ -193,10 +224,19 @@ def how_to_improve():
     )
 
 
+@pages_bp.route("/<lang>/support")
 @pages_bp.route("/support")
-def support():
-    # Get language from query parameter or session (default to "en")
-    lang = request.args.get("lang") or session.get("language", "en")
+def support(lang=None):
+    if lang:
+        if lang not in ["en", "de"]:
+            return redirect(url_for("pages.support"))
+        session["language"] = lang
+        if current_user.is_authenticated:
+            current_user.preferred_language = lang
+            db.session.commit()
+
+    # Get language from session (default to "en")
+    lang = session.get("language", "en")
     trans_file = os.path.join(
         current_app.root_path, "static", "translations", f"{lang}.json"
     )

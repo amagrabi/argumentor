@@ -108,8 +108,17 @@ export async function changeLanguage(lang) {
     })
   );
 
-  // Force page reload to ensure all components are updated
-  window.location.reload();
+  // Get the current path without language prefix
+  const path = window.location.pathname;
+  const pathSegments = path.split("/").filter(Boolean);
+  const isLanguagePath = ["en", "de"].includes(pathSegments[0]);
+  const basePath = isLanguagePath
+    ? "/" + pathSegments.slice(1).join("/")
+    : path;
+
+  // Construct the new URL with language prefix
+  const newPath = lang === "en" ? basePath : `/${lang}${basePath}`;
+  window.location.href = newPath;
 }
 
 function toggleDropdown() {

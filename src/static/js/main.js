@@ -1692,36 +1692,24 @@ window.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlLang = urlParams.get("lang");
+    // Check for language in URL path
+    const pathSegments = window.location.pathname.split("/").filter(Boolean);
+    const pathLang = pathSegments[0];
 
-    if (urlLang) {
-      // Validate language parameter
-      const validLang = SUPPORTED_LANGUAGES.includes(urlLang)
-        ? urlLang
-        : DEFAULT_LANGUAGE;
-
-      if (validLang !== localStorage.getItem("language")) {
-        // First update the server-side language
+    if (["en", "de"].includes(pathLang)) {
+      if (pathLang !== localStorage.getItem("language")) {
+        // Update localStorage and server-side language
         await fetch("/set_language", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ language: validLang }),
+          body: JSON.stringify({ language: pathLang }),
         });
 
-        // Then update localStorage
-        localStorage.setItem("language", validLang);
-
-        // Remove the lang parameter from URL
-        const newUrl = new URL(window.location.href);
-        newUrl.searchParams.delete("lang");
-        window.history.replaceState({}, "", newUrl);
-
-        // Reload the page without trying to load categories first
+        localStorage.setItem("language", pathLang);
         window.location.reload();
-        return; // Exit early to prevent further execution
+        return;
       }
     }
 

@@ -271,7 +271,9 @@ def submit_answer():
                         return jsonify({"error": "similarAnswer"}), 409
                 # If one has a counterargument and the other doesn't, we treat them as different.
         if not user:
-            user = User(uuid=user_uuid, xp=old_xp)
+            # Generate a default username using a prefix and a short version of the UUID
+            default_username = f"anonymous_{user_uuid[:8]}"
+            user = User(uuid=user_uuid, username=default_username, xp=old_xp)
             db.session.add(user)
         else:
             user.xp = old_xp
