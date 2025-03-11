@@ -63,6 +63,8 @@ def create_app():
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
     app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
 
+    app.url_map.strict_slashes = False
+
     # Add SQLAlchemy engine options tuned for production
     app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
         "pool_size": 10,  # Number of persistent connections to keep open
