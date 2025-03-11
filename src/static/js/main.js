@@ -3402,7 +3402,7 @@ if (writeQuestionButton) {
       const customQuestion = {
         id: "custom_" + Date.now(),
         description: customQuestionText,
-        category: "Custom",
+        category: "Custom", // Keep this as "Custom" for internal use
         isCustom: true,
       };
 

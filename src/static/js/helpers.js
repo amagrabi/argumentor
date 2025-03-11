@@ -38,7 +38,9 @@ export function updateQuestionDisplay(question) {
   if (categoryBadge) {
     // For custom questions, show "Custom" category
     if (question.isCustom) {
-      categoryBadge.textContent = "✏️ Custom";
+      const translatedCustom =
+        window.translations?.categories?.Custom || "Custom";
+      categoryBadge.textContent = `✏️ ${translatedCustom}`;
     } else {
       const translatedCategory =
         window.translations?.categories?.[question.category] ||

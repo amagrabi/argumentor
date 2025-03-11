@@ -123,6 +123,9 @@ class Answer(db.Model):
         ):
             total_xp += self.challenge_xp_earned
 
+        # Determine if this is a custom question
+        is_custom = self.question_id and self.question_id.startswith("custom_")
+
         return {
             "id": self.id,
             "question_text": self.question_text,
@@ -140,6 +143,7 @@ class Answer(db.Model):
             "created_at": self.created_at.isoformat(),
             "input_mode": self.input_mode,
             "total_xp": total_xp,
+            "category": "Custom" if is_custom else None,
         }
 
 

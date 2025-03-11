@@ -630,6 +630,30 @@
               class="border p-4 rounded-lg group hover:bg-gray-50 transition-colors"
             >
               <div class="relative">
+                <!-- Add the category badge above the question text -->
+                <div class="mb-2">
+                  {% if answer.category %}
+                  <span
+                    class="bg-gray-700 text-white rounded-full text-xs break-words max-w-[60%] inline-flex items-center category-badge"
+                  >
+                    {% if answer.category == "Philosophy" %}📚 &nbsp; {% elif
+                    answer.category == "AI & Future" %}🤖 &nbsp; {% elif
+                    answer.category == "Personal Growth & Relationships" %}🌱
+                    &nbsp; {% elif answer.category == "Politics" %}🏛️ &nbsp; {%
+                    elif answer.category == "Ethics" %}⚖️ &nbsp; {% elif
+                    answer.category == "Thought Experiments" %}💡 &nbsp; {% elif
+                    answer.category == "Business & Risk" %}💼 &nbsp; {% elif
+                    answer.category == "Biases & Fallacies" %}🔍 &nbsp; {% elif
+                    answer.category == "Fun & Casual" %}🎉 &nbsp; {% elif
+                    answer.category == "Custom" %}📝 &nbsp; {% else %}📝 &nbsp;
+                    {% endif %}
+                    <span data-i18n="categories.{{ answer.category }}"
+                      >{{ answer.category }}</span
+                    >
+                  </span>
+                  {% endif %}
+                </div>
+
                 <p class="font-bold text-gray-800 pr-20 sm:pr-24 md:pr-28">
                   {{ answer.question_text }}
                 </p>

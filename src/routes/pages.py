@@ -24,6 +24,7 @@ from constants.levels import Level
 from extensions import db, limiter
 from models import Answer, Feedback, User
 from routes.password_reset import mail
+from services.achievement_service import get_question_category
 from services.level_service import get_level_info
 from services.question_service import load_questions
 from utils import (
@@ -253,7 +254,15 @@ def profile():
         .order_by(Answer.created_at.desc(), Answer.id.desc())
         .all()
     )
-    answers_dict = [answer.to_dict() for answer in answers]
+    answers_dict = []
+    for answer in answers:
+        answer_data = answer.to_dict()
+        # Add the category to each answer
+        if answer.question_id and answer.question_id.startswith("custom_"):
+            answer_data["category"] = "Custom"
+        elif not answer_data.get("category"):
+            answer_data["category"] = get_question_category(answer.question_id)
+        answers_dict.append(answer_data)
 
     # Pre-compute level status flags
     levels_with_status = []

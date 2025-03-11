@@ -16,6 +16,43 @@ async function loadTranslations() {
   }
 }
 
+// Function to translate categories specifically
+function translateCategories() {
+  if (!translations.categories) {
+    return;
+  }
+
+  document.querySelectorAll('[data-i18n^="categories."]').forEach((element) => {
+    const key = element.getAttribute("data-i18n");
+    const categoryName = key.replace("categories.", "");
+
+    // Special handling for Custom category
+    if (categoryName === "Custom" && translations.categories.Custom) {
+      element.textContent = translations.categories.Custom;
+      return;
+    }
+
+    // Try direct match first
+    if (translations.categories[categoryName]) {
+      element.textContent = translations.categories[categoryName];
+      return;
+    }
+
+    // If no direct match, try to find the category by comparing with the original text
+    const originalText = element.textContent.trim();
+
+    // Find the matching category in translations
+    for (const [category, translation] of Object.entries(
+      translations.categories
+    )) {
+      if (category === originalText) {
+        element.textContent = translation;
+        break;
+      }
+    }
+  });
+}
+
 // Initialize the chart variable
 let progressChart = null;
 
@@ -34,6 +71,9 @@ const colors = {
 document.addEventListener("DOMContentLoaded", async () => {
   // Load translations first
   await loadTranslations();
+
+  // Apply category translations
+  translateCategories();
 
   // Initialize XP progress bar
   initializeXpProgressBar();
