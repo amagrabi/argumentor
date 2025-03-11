@@ -38,7 +38,7 @@
     },
     "inputLabels": {
       "claim": "Your Claim",
-      "claimDescription": "State your position clearly and concisely...",
+      "claimDescription": "State your main position on the question above clearly and concisely...",
       "reasoning": "Your Reasoning",
       "reasoningDescription": "Explain the logic and evidence supporting your claim...",
       "counterargument": "Counterargument Rebuttal (optional)",
@@ -555,7 +555,7 @@
     }
   },
   "cards": {
-    "platformGuideDescription": "Answer questions, get feedback, and track your progress.",
+    "platformGuideDescription": "Choose a question, craft an argument, and get feedback.",
     "platformGuideLearnMore": "Learn More →",
     "reasoningTipsDescription": "Focus on clear premises, logical conclusions, and refuting counterarguments.",
     "reasoningTipsLearnMore": "Learn More →",

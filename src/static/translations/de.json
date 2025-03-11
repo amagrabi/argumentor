@@ -62,7 +62,7 @@
     },
     "inputLabels": {
       "claim": "Deine These",
-      "claimDescription": "Formuliere deine Position klar und präzise...",
+      "claimDescription": "Formuliere deine Position zu der oben genannten Frage klar und präzise...",
       "reasoning": "Deine Begründung",
       "reasoningDescription": "Erkläre die Argumente für deine These...",
       "counterargument": "Gegenargumente entkräften (optional)",
@@ -671,7 +671,7 @@
     }
   },
   "cards": {
-    "platformGuideDescription": "Beantworte Fragen, erhalte Feedback und verfolge deinen Fortschritt.",
+    "platformGuideDescription": "Wähle eine Frage, formuliere dein Argument und erhalte Feedback.",
     "platformGuideLearnMore": "Mehr erfahren →",
     "reasoningTipsDescription": "Konzentriere dich auf klare Prämissen und logische Schlussfolgerungen.",
     "reasoningTipsLearnMore": "Mehr erfahren →",
