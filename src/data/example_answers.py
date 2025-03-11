@@ -128,6 +128,133 @@ EXAMPLE_ANSWERS = [
         """,
         "counterargument": "",
     },
+    {
+        "question_text": """
+            Is religion good for society?
+        """,
+        "claim": """
+            Religion is good for society.
+        """,
+        "argument": """
+            Religion is good for society because it teaches people to be moral. Without religion,
+            people wouldn't know right from wrong. History shows that religious societies are
+            better than non-religious ones. Religious people are happier and more generous.
+            They donate more to charity and volunteer more. Religion gives people hope and
+            meaning in life. It brings communities together and creates social bonds.
+            Religious institutions provide important services like education and healthcare.
+            Most people throughout history have been religious, which proves it's natural
+            and necessary. Atheist societies like the Soviet Union were terrible and
+            oppressive. Religion is the foundation of our laws and values. Without it,
+            society would collapse into chaos and immorality. Therefore, religion is
+            definitely good for society.
+        """,
+        "counterargument": "",
+    },
+    {
+        "question_text": """
+            Should you follow your passion, even if it means less financial security?
+        """,
+        "claim": """
+            Following your passion can be worthwhile despite financial uncertainty.
+        """,
+        "argument": """
+            Following your passion involves trading financial security for personal fulfillment,
+            which can be a reasonable choice for many people. When we pursue work aligned with
+            our interests and values, we often experience greater motivation and satisfaction.
+            This intrinsic motivation can lead to higher quality work and potentially greater
+            success in the long run.
+
+            Financial security is undeniably important for meeting basic needs and reducing stress.
+            However, studies suggest that beyond a certain threshold, additional income contributes
+            minimally to happiness. Meanwhile, job satisfaction significantly impacts overall
+            well-being and mental health.
+
+            The decision involves personal risk tolerance and circumstances. Those with financial
+            safety nets, minimal obligations, or marketable skills may find it easier to pursue
+            passion-based careers. Others might compromise by pursuing passions as side projects
+            while maintaining stable employment.
+
+            Ultimately, the "passion versus security" dichotomy oversimplifies a complex decision.
+            Many successful people find ways to incorporate their passions into financially viable
+            careers or gradually transition to more fulfilling work. The best approach depends on
+            individual values, responsibilities, and opportunities.
+        """,
+        "counterargument": "",
+    },
+    {
+        "question_text": """
+            Can an AI be creative?
+        """,
+        "claim": """
+            AI systems can demonstrate genuine creativity.
+        """,
+        "argument": """
+            Creativity fundamentally involves generating outputs that are both novel and valuable,
+            and contemporary AI systems increasingly demonstrate these capabilities across domains.
+            While humans program the initial parameters and training data, advanced AI systems like
+            GPT-4, DALL-E, and AlphaGo have produced outputs that were neither explicitly programmed
+            nor predictable by their creators.
+
+            Consider AlphaGo's famous "Move 37" against Lee Sedol, which experts initially considered
+            a mistake but proved brilliant. This move wasn't pre-programmed but emerged from the
+            system's learning process. Similarly, AI-generated art has won competitions and musical
+            compositions have been performed by prestigious orchestras, with audiences unable to
+            distinguish them from human-created works.
+
+            The counterargument that AI merely recombines existing data misunderstands human creativity,
+            which similarly builds upon prior knowledge and experience. Humans don't create ex nihilo;
+            we synthesize our experiences into new forms. AI systems do the same, but with vastly
+            larger datasets.
+
+            While AI lacks consciousness or intention behind its creations, this doesn't invalidate
+            the creativity of its outputs. Many human creative processes involve unconscious
+            processing and emergent ideas. The value and novelty of the output, rather than the
+            subjective experience of the creator, are the measurable aspects of creativity that
+            AI demonstrably achieves.
+        """,
+        "counterargument": "",
+    },
+    {
+        "question_text": """
+            What is the most important global issue to solve?
+        """,
+        "claim": """
+            Climate change is the most urgent global issue.
+        """,
+        "argument": """
+            Climate change stands as humanity's most critical challenge because it uniquely threatens
+            to undermine all other aspects of human progress and survival. Unlike other serious
+            problems that remain contained within specific regions or sectors, climate change
+            presents an existential risk with cascading effects across every dimension of human
+            and natural systems.
+
+            The scientific consensus is unequivocal: we face irreversible planetary transformation
+            without rapid, systemic changes. Rising temperatures are already intensifying extreme
+            weather events, disrupting agricultural systems, accelerating biodiversity loss, and
+            threatening coastal communities worldwide. These impacts disproportionately affect
+            vulnerable populations who have contributed least to the problem, creating a profound
+            ethical dimension to this crisis.
+
+            What makes climate change uniquely important is its role as a threat multiplier.
+            It exacerbates food and water insecurity, drives mass migration, intensifies resource
+            conflicts, and threatens global economic stability. Even if we make progress on poverty,
+            disease, and inequality, unchecked climate change would undermine these achievements.
+            Furthermore, many climate tipping points—like ice sheet collapse or permafrost thawing—
+            could trigger feedback loops beyond human control once crossed.
+
+            The temporal aspect is equally critical. Unlike problems that can be addressed
+            sequentially, climate action faces a rapidly closing window of opportunity. Each year
+            of delayed action locks in more warming and makes solutions more costly and less
+            effective. Yet we possess the technological and economic tools to address this crisis
+            while creating more equitable, resilient societies. What's required is unprecedented
+            political will and international cooperation.
+
+            Solving climate change doesn't mean neglecting other global challenges—rather, it
+            creates the stable environmental foundation necessary for addressing all other aspects
+            of human development and flourishing in the long term.
+        """,
+        "counterargument": "",
+    },
 ]
 
 # Clean up multiline strings
