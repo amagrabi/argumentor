@@ -261,11 +261,27 @@ async function getNewQuestion(shouldScroll = true) {
       query = `?categories=${encodedCategories.join(",")}`;
     }
     const response = await fetch("/get_question" + query);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error fetching new question:", errorData.error);
+
+      // Show a message to the user if no questions are available
+      const questionElem = document.getElementById("questionDescription");
+      if (questionElem) {
+        questionElem.textContent =
+          translations.errors?.noQuestionsAvailable ||
+          "No questions available for the selected categories. Try selecting different categories.";
+      }
+      return;
+    }
+
     const question = await response.json();
     if (question.error) {
       console.error("Error fetching new question:", question.error);
       return;
     }
+
     currentQuestion = {
       ...question,
       id: question.id, // Ensure ID is included

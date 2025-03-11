@@ -179,7 +179,14 @@
     "voiceRequiredField": "Please provide your argument before submitting.",
     "unexpectedError": "An unexpected error occurred while processing your submission. Please try again and send feedback if the issue persists.",
     "similarAnswer": "You already submitted a very similar answer to this question. Change your argument to receive a new evaluation.",
-    "tooManySubmissions": "Too many submissions. Please wait before trying again."
+    "tooManySubmissions": "Too many submissions. Please wait before trying again.",
+    "invalidEmail": "Please enter a valid email address.",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "requiredField": "This field is required.",
+    "loginFailed": "Login failed. Please check your credentials.",
+    "signupFailed": "Signup failed. Please try again.",
+    "noQuestionsAvailable": "No questions available for the selected categories. Try selecting different categories."
   },
   "questions": {
     "Philosophy": {

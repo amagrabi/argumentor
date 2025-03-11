@@ -57,12 +57,12 @@ LEVELS = [
     ),
     Level(
         id=6,
-        name="Debate Ninja",
+        name="Thought Tactician",
         xp_threshold=750,
     ),
     Level(
         id=7,
-        name="Thought Tactician",
+        name="Debate Ninja",
         xp_threshold=1000,
     ),
     Level(
