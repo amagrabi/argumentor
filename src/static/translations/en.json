@@ -559,7 +559,7 @@
     }
   },
   "cards": {
-    "platformGuideDescription": "Choose a question, craft an argument, and get feedback. <a href='/how_it_works' class='underline hover:text-gray-600 transition-colors'>Watch a demo here</a>.",
+    "platformGuideDescription": "Choose a question, craft an argument, and get feedback. Watch a demo <a href='/how_it_works' class='underline hover:text-gray-600 transition-colors'>here</a>.",
     "platformGuideLearnMore": "Learn More →",
     "reasoningTipsDescription": "Focus on clear premises, logical conclusions, and refuting counterarguments.",
     "reasoningTipsLearnMore": "Learn More →",
