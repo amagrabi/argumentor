@@ -1,10 +1,10 @@
 # ArguMentor
 
-<!-- <p align="center">
-    <img width="400" height="400" src="demo.gif" alt="Demo">
-</p> -->
-
 ArguMentor is a platform to train reasoning and decision-making skills. Users can construct arguments to challenging questions, improve with AI-driven feedback and track their progress.
+
+<p align="center">
+    <img src="src/static/vid/demo.gif" width="600" alt="ArguMentor Demo">
+</p>
 
 ## Installation
 
