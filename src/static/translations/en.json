@@ -8,6 +8,10 @@
     "logout": "Logout",
     "profile": "Profile"
   },
+  "steps": {
+    "chooseQuestion": "Choose Question",
+    "answerQuestion": "Answer Question"
+  },
   "settings": {
     "title": "Settings",
     "filterCategories": "Filter Categories",

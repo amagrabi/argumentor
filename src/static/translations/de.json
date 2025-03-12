@@ -32,6 +32,10 @@
     "logout": "Abmelden",
     "profile": "Profil"
   },
+  "steps": {
+    "chooseQuestion": "Frage auswählen",
+    "answerQuestion": "Frage beantworten"
+  },
   "settings": {
     "title": "Einstellungen",
     "filterCategories": "Kategorien filtern",
