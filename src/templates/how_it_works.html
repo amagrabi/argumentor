@@ -398,8 +398,16 @@
             videoContainer.classList.remove("video-loading");
           });
 
+          // Also remove loading class if video is already playing or has loaded
+          if (demoVideo.readyState >= 3 || !demoVideo.paused) {
+            videoContainer.classList.remove("video-loading");
+          }
+
           // Function to toggle play/pause
           const togglePlayPause = () => {
+            // When user interacts, also remove loading class
+            videoContainer.classList.remove("video-loading");
+
             if (demoVideo.paused) {
               // Try to play and handle any autoplay restrictions
               const playPromise = demoVideo.play();
