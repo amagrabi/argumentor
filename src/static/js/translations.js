@@ -98,8 +98,21 @@ function updateLanguageIndicator() {
 }
 
 export async function changeLanguage(lang) {
+  // Store original hasVisitedBefore value to preserve first-time visitor status
+  const hasVisitedBefore = localStorage.getItem("hasVisitedBefore");
+
   // Update localStorage
   localStorage.setItem("language", lang);
+
+  // For first-time visitors, we'll delay setting hasVisitedBefore until they
+  // interact with the page/video
+  if (!hasVisitedBefore) {
+    // Remove any existing hasVisitedBefore to ensure they get the first-time experience
+    localStorage.removeItem("hasVisitedBefore");
+
+    // Add a flag to indicate this is a language redirect for a first-time visitor
+    sessionStorage.setItem("isLanguageRedirect", "true");
+  }
 
   // Dispatch language change event
   window.dispatchEvent(

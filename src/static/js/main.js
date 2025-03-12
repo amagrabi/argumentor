@@ -1698,16 +1698,34 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     if (["en", "de"].includes(pathLang)) {
       if (pathLang !== localStorage.getItem("language")) {
+        // Store original hasVisitedBefore value to preserve first-time visitor status
+        const hasVisitedBefore = localStorage.getItem("hasVisitedBefore");
+
         // Update localStorage and server-side language
         await fetch("/set_language", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ language: pathLang }),
+          body: JSON.stringify({
+            language: pathLang,
+            isFirstTimeVisit: !hasVisitedBefore,
+          }),
         });
 
         localStorage.setItem("language", pathLang);
+
+        // For first-time visitors through language endpoints, we'll delay setting hasVisitedBefore
+        // until they interact with the page/video, which is handled in the DOMContentLoaded
+        // event of index.html
+        if (!hasVisitedBefore) {
+          // Remove any existing hasVisitedBefore to ensure they get the first-time experience
+          localStorage.removeItem("hasVisitedBefore");
+
+          // Add a flag to indicate this is a language redirect for a first-time visitor
+          sessionStorage.setItem("isLanguageRedirect", "true");
+        }
+
         window.location.reload();
         return;
       }

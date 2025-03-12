@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang if lang else 'en' }}" data-language-redirect="{{ 'true' if is_language_redirect else 'false' }}">
   <head>
     <!-- Google tag (gtag.js) -->
     <script
@@ -1634,6 +1634,9 @@
           if (demoVideo && !demoVideo.paused) {
             demoVideo.pause();
           }
+
+          // Always mark as visited when hiding the video
+          localStorage.setItem('hasVisitedBefore', 'true');
         }
       }
 
@@ -1641,14 +1644,101 @@
         // Check if this is the first visit
         const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
 
+        // Get the referrer to check if we came from a language redirect
+        const referrer = document.referrer;
+        const currentUrl = window.location.href;
+
+        // Extract domains to compare
+        const getReferrerDomain = () => {
+          try {
+            const url = new URL(referrer);
+            return url.hostname;
+          } catch {
+            return null;
+          }
+        };
+
+        const getCurrentDomain = () => {
+          try {
+            const url = new URL(currentUrl);
+            return url.hostname;
+          } catch {
+            return null;
+          }
+        };
+
+        // Check if the current path has a language prefix
+        const hasLanguagePrefix = () => {
+          const pathSegments = window.location.pathname.split('/').filter(Boolean);
+          return ['en', 'de'].includes(pathSegments[0]);
+        };
+
+        // Check if the referrer is from the same site and was a language route
+        const referrerDomain = getReferrerDomain();
+        const currentDomain = getCurrentDomain();
+        const isLanguageRedirectClientSide = referrerDomain === currentDomain &&
+          (/^\/(en|de)(\/|$)/.test(new URL(referrer).pathname) ||
+           /^\/(en|de)(\/|$)/.test(window.location.pathname));
+
+        // Check for language redirect flags
+        const isLanguageRedirectServerSide = document.documentElement.getAttribute('data-language-redirect') === 'true';
+        const isLanguageRedirectSession = sessionStorage.getItem('isLanguageRedirect') === 'true';
+
+        // If there was a language redirect in the session, clear it for future navigation
+        if (isLanguageRedirectSession) {
+          sessionStorage.removeItem('isLanguageRedirect');
+        }
+
+        // Check if we are accessing the site through a language URL for the first time
+        const isFirstTimeLanguageAccess = hasLanguagePrefix() && !hasVisitedBefore;
+
+        // Use any of the detection methods
+        const isLanguageRedirect = isLanguageRedirectClientSide || isLanguageRedirectServerSide || isLanguageRedirectSession;
+
+        // Show the video if:
+        // 1. User has never visited before (hasVisitedBefore is null/false)
         if (!hasVisitedBefore) {
           // First time visitor - show the video section
           const videoSection = document.getElementById('firstTimeVideoSection');
           if (videoSection) {
             videoSection.classList.remove('hidden');
 
-            // Mark as visited for future visits
-            localStorage.setItem('hasVisitedBefore', 'true');
+            // Mark as visited for future visits, but only if:
+            // - It's not a language redirect OR
+            // - We're not directly accessing through a language URL for the first time
+            // This ensures that visiting /de or /en directly won't immediately mark as visited
+            if (!isLanguageRedirect && !isFirstTimeLanguageAccess) {
+              localStorage.setItem('hasVisitedBefore', 'true');
+            }
+
+            // If this is a first-time language access, we'll set the visited flag after video interaction
+            if (isFirstTimeLanguageAccess) {
+              // Add listeners to set hasVisitedBefore on video interaction
+              const demoVideo = document.getElementById('demoVideo');
+              const submitButton = document.getElementById('submitAnswer');
+
+              // Set visited when user interacts with the page meaningfully
+              if (submitButton) {
+                submitButton.addEventListener('click', function() {
+                  localStorage.setItem('hasVisitedBefore', 'true');
+                });
+              }
+
+              // Set visited when video is played, paused, or ended
+              if (demoVideo) {
+                demoVideo.addEventListener('play', function() {
+                  localStorage.setItem('hasVisitedBefore', 'true');
+                });
+
+                demoVideo.addEventListener('pause', function() {
+                  localStorage.setItem('hasVisitedBefore', 'true');
+                });
+
+                demoVideo.addEventListener('ended', function() {
+                  localStorage.setItem('hasVisitedBefore', 'true');
+                });
+              }
+            }
 
             // Set up video functionality
             const demoVideo = document.getElementById('demoVideo');

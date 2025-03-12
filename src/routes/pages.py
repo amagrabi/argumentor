@@ -71,13 +71,22 @@ def calculate_valid_xp_filter(answer):
 @pages_bp.route("/")
 @pages_bp.route("/<lang>")
 def home(lang=None):
+    is_language_redirect = False
     if lang:
         if lang not in ["en", "de"]:
             return redirect(url_for("pages.home"))
         session["language"] = lang
+        is_language_redirect = True
         if current_user.is_authenticated:
             current_user.preferred_language = lang
             db.session.commit()
+
+    # Check if this is marked as a first-time visit after language redirect
+    is_first_time_visit = session.pop("is_first_time_visit", False)
+
+    # For language redirects, we'll let the client-side code determine
+    # if the user is a first-time visitor based on localStorage
+    is_language_redirect = True if is_first_time_visit else is_language_redirect
 
     if "user_id" not in session:
         session["user_id"] = str(uuid.uuid4())
@@ -124,6 +133,7 @@ def home(lang=None):
         all_achievements=all_achievements,
         earned_achievements=earned_achievements,
         user=user,
+        is_language_redirect=is_language_redirect,
         char_limits={
             "claim": SETTINGS.MAX_CLAIM,
             "argument": SETTINGS.MAX_ARGUMENT,
@@ -831,9 +841,14 @@ def set_language():
 
     data = request.get_json()
     language = data.get("language")
+    is_first_time_visit = data.get("isFirstTimeVisit", False)
 
     if language in ["en", "de"]:
         session["language"] = language
+        # Track if this is a first-time visit for the redirected language
+        # Only set is_first_time_visit in the session if it's explicitly True
+        if is_first_time_visit is True:
+            session["is_first_time_visit"] = True
         load_questions()
         # If logged in, persist language preference in the user's account.
         if current_user.is_authenticated:
