@@ -25,6 +25,123 @@
     ></script>
     <script src="https://cdn.tailwindcss.com"></script>
     {% include 'partials/favicons.html' %}
+    <style>
+      .video-ended-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60px;
+        height: 60px;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        opacity: 0.9;
+        transition: opacity 0.2s;
+      }
+
+      .video-ended-button:hover {
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      .video-play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50px;
+        height: 50px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+      }
+
+      .video-play-button:hover {
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+
+      /* Hover effect for playing video */
+      #videoContainer:hover .video-hover-effect {
+        opacity: 1;
+      }
+
+      .video-hover-effect {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        background-color: rgba(0, 0, 0, 0.3);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s;
+        pointer-events: auto; /* Make it clickable */
+      }
+
+      .video-loading {
+        position: relative;
+        min-height: 200px;
+        background-color: #f3f4f6;
+      }
+
+      .video-loading::after {
+        content: "Loading...";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #6b7280;
+        font-size: 16px;
+      }
+
+      .video-needs-interaction::after {
+        content: "Tap to play";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 120px;
+        height: 60px;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        cursor: pointer;
+        opacity: 0.9;
+      }
+
+      .relative {
+        position: relative;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
   </head>
   <body class="bg-white font-sans leading-normal tracking-normal text-gray-900">
     <!-- Header with Go Back Button -->
@@ -49,6 +166,29 @@
 
     <!-- Main Content -->
     <main class="max-w-5xl mx-auto p-4">
+      <!-- Demo Video Section -->
+      <section class="mb-8">
+        <div class="w-full flex justify-center">
+          <div class="w-full max-w-3xl rounded-lg overflow-hidden shadow-lg">
+            <div id="videoContainer" class="relative">
+              <video
+                id="demoVideo"
+                class="w-full cursor-pointer"
+                src="{{ url_for('static', filename='vid/demo.webm') }}"
+                autoplay
+                muted
+                playsinline
+              >
+                Your browser does not support the video tag.
+              </video>
+              <div class="video-hover-effect">❚❚</div>
+              <div class="video-play-button hidden">▶</div>
+              <div class="video-ended-button hidden">▶</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Updated Overview Section Using Translation Keys -->
       <section class="mb-8">
         <h2
@@ -241,6 +381,100 @@
       document.addEventListener("DOMContentLoaded", () => {
         // Apply translations using the translation manager
         window.translationManager?.applyTranslations();
+
+        // Handle demo video behavior
+        const demoVideo = document.getElementById("demoVideo");
+        const videoContainer = document.getElementById("videoContainer");
+        const hoverEffect = document.querySelector(".video-hover-effect");
+        const playButton = document.querySelector(".video-play-button");
+        const endedButton = document.querySelector(".video-ended-button");
+
+        if (demoVideo && videoContainer) {
+          // Add loading class
+          videoContainer.classList.add("video-loading");
+
+          // Remove loading class when video can play
+          demoVideo.addEventListener("canplay", () => {
+            videoContainer.classList.remove("video-loading");
+          });
+
+          // Function to toggle play/pause
+          const togglePlayPause = () => {
+            if (demoVideo.paused) {
+              // Try to play and handle any autoplay restrictions
+              const playPromise = demoVideo.play();
+
+              if (playPromise !== undefined) {
+                playPromise
+                  .then(() => {
+                    // Video started playing
+                    playButton.classList.add("hidden");
+                    endedButton.classList.add("hidden");
+                    videoContainer.classList.remove("video-needs-interaction");
+                  })
+                  .catch((error) => {
+                    console.log("Autoplay prevented:", error);
+                    // Add a visual indicator that user interaction is needed
+                    videoContainer.classList.add("video-needs-interaction");
+                  });
+              }
+            } else {
+              // Pause the video
+              demoVideo.pause();
+              playButton.classList.remove("hidden");
+            }
+          };
+
+          // Add click event to toggle play/pause when clicked on video
+          demoVideo.addEventListener("click", togglePlayPause);
+
+          // Add click event to hover effect element
+          if (hoverEffect) {
+            hoverEffect.addEventListener("click", (e) => {
+              e.stopPropagation(); // Prevent the click from reaching the video
+              togglePlayPause();
+            });
+          }
+
+          // Add click events to play and ended buttons
+          if (playButton) {
+            playButton.addEventListener("click", (e) => {
+              e.stopPropagation();
+              togglePlayPause();
+            });
+          }
+
+          if (endedButton) {
+            endedButton.addEventListener("click", (e) => {
+              e.stopPropagation();
+              // Reset video to beginning and play
+              demoVideo.currentTime = 0;
+              togglePlayPause();
+            });
+          }
+
+          // Add ended event to show a play button or visual indicator
+          demoVideo.addEventListener("ended", () => {
+            // Show the ended button
+            endedButton.classList.remove("hidden");
+            playButton.classList.add("hidden");
+          });
+
+          // Remove ended button when video starts playing again
+          demoVideo.addEventListener("play", () => {
+            endedButton.classList.add("hidden");
+            playButton.classList.add("hidden");
+          });
+
+          // Show play button when video is paused
+          demoVideo.addEventListener("pause", () => {
+            // Don't show play button if video ended (we show the ended button instead)
+            if (!demoVideo.ended) {
+              playButton.classList.remove("hidden");
+              endedButton.classList.add("hidden");
+            }
+          });
+        }
       });
     </script>
   </body>

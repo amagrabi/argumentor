@@ -675,7 +675,7 @@
     }
   },
   "cards": {
-    "platformGuideDescription": "Wähle eine Frage, formuliere dein Argument und erhalte Feedback.",
+    "platformGuideDescription": "Wähle eine Frage, formuliere dein Argument und erhalte Feedback. <a href='/how_it_works' class='underline hover:text-gray-600 transition-colors'>Schau dir ein Erklärvideo an</a>.",
     "platformGuideLearnMore": "Mehr erfahren →",
     "reasoningTipsDescription": "Konzentriere dich auf klare Prämissen und logische Schlussfolgerungen.",
     "reasoningTipsLearnMore": "Mehr erfahren →",
