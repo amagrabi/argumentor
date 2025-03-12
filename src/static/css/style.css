@@ -1793,7 +1793,13 @@ textarea:focus {
 }
 
 #progressChart {
-  max-height: 70vh;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Fix for "Change plan" link - reduced font size for all screen sizes */
+a[data-i18n="profile.changePlan"] {
+  font-size: 0.7rem !important;
 }
 
 /* Global chart styles */
@@ -1859,9 +1865,9 @@ textarea:focus {
     word-break: break-word; /* Allow long words to break */
   }
 
-  /* Fix for "Change plan" link */
+  /* Fix for "Change plan" link on mobile */
   a[data-i18n="profile.changePlan"] {
-    font-size: 0.75rem !important;
+    font-size: 0.65rem !important;
   }
 
   /* Usage limits section */

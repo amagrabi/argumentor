@@ -296,7 +296,7 @@
   "profile": {
     "title": "Your Profile",
     "accountType": "Account Type",
-    "changePlan": "Change Plan",
+    "changePlan": "Change",
     "subscriptionEndNotice": "Your subscription has been canceled. Your plan will remain active until {date}, after which you'll be moved to the Free plan.",
     "planChangeNotice": "Your plan will change to {plan} on {date}.",
     "username": "Username",

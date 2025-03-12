@@ -145,7 +145,7 @@
     "monthly": "Monatlich",
     "monthlyVoiceRecordings": "Monatliche Sprachaufnahmen",
     "level": "Level",
-    "changePlan": "Plan ändern",
+    "changePlan": "Ändern",
     "subscriptionCanceled": "Dein Abonnement wurde gekündigt. Dein {plan} Plan bleibt aktiv bis zum {date}, danach wirst du auf den kostenlosen Plan umgestellt.",
     "subscriptionEndNotice": "Dein Abonnement wurde gekündigt. Dein Plan bleibt aktiv bis zum {date}, danach wirst du auf den kostenlosen Plan umgestellt.",
     "planChangeNotice": "Dein Plan wird am {date} zu {plan} geändert.",
