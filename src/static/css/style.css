@@ -2134,138 +2134,233 @@ a[data-i18n="profile.changePlan"] {
     margin: 0.075rem !important;
     padding: 0.075rem !important;
   }
+}
 
-  /* Adjust tooltip position for achievements on the right edge */
-  .group:nth-child(6n) .opacity-0.group-hover\:opacity-100,
-  .group:nth-child(6n-1) .opacity-0.group-hover\:opacity-100 {
+/* New adaptive tooltip positioning system */
+/* For all grid layouts, use a more flexible approach */
+/* Left side of the grid - tooltips expand to the right */
+.inline-grid
+  > .group:nth-child(odd):nth-last-child(n + 3)
+  .opacity-0.group-hover\:opacity-100 {
+  left: 0;
+  right: auto;
+  transform: translateY(0.5rem);
+}
+
+/* Right side of the grid - tooltips expand to the left */
+.inline-grid
+  > .group:nth-child(even):nth-last-child(n + 3)
+  .opacity-0.group-hover\:opacity-100 {
+  left: auto;
+  right: 0;
+  transform: translateY(0.5rem);
+}
+
+/* More specific rules for different grid layouts */
+/* 5 columns (default mobile) - 2 rows */
+.grid-cols-5 > .group:nth-child(5n + 1) .opacity-0.group-hover\:opacity-100,
+.grid-cols-5 > .group:nth-child(5n + 2) .opacity-0.group-hover\:opacity-100,
+.grid-cols-5 > .group:nth-child(5n + 3) .opacity-0.group-hover\:opacity-100 {
+  left: 0;
+  right: auto;
+  transform: translateY(0.5rem);
+}
+
+.grid-cols-5 > .group:nth-child(5n + 4) .opacity-0.group-hover\:opacity-100,
+.grid-cols-5 > .group:nth-child(5n) .opacity-0.group-hover\:opacity-100 {
+  left: auto;
+  right: 0;
+  transform: translateY(0.5rem);
+}
+
+/* Fix for 2-row layout - ensure first item in second row expands right */
+.grid-cols-5 > .group:nth-child(6) .opacity-0.group-hover\:opacity-100 {
+  left: 0;
+  right: auto;
+  transform: translateY(0.5rem);
+}
+
+/* Fix for 4-row layout - ensure first items in even rows expand right */
+.grid-cols-5 > .group:nth-child(11) .opacity-0.group-hover\:opacity-100,
+.grid-cols-5 > .group:nth-child(16) .opacity-0.group-hover\:opacity-100 {
+  left: 0;
+  right: auto;
+  transform: translateY(0.5rem);
+}
+
+/* 7 columns (sm breakpoint) */
+.sm\:grid-cols-7 > .group:nth-child(7n + 1) .opacity-0.group-hover\:opacity-100,
+.sm\:grid-cols-7 > .group:nth-child(7n + 2) .opacity-0.group-hover\:opacity-100,
+.sm\:grid-cols-7 > .group:nth-child(7n + 3) .opacity-0.group-hover\:opacity-100,
+.sm\:grid-cols-7
+  > .group:nth-child(7n + 4)
+  .opacity-0.group-hover\:opacity-100 {
+  left: 0;
+  right: auto;
+  transform: translateY(0.5rem);
+}
+
+.sm\:grid-cols-7 > .group:nth-child(7n + 5) .opacity-0.group-hover\:opacity-100,
+.sm\:grid-cols-7 > .group:nth-child(7n + 6) .opacity-0.group-hover\:opacity-100,
+.sm\:grid-cols-7 > .group:nth-child(7n) .opacity-0.group-hover\:opacity-100 {
+  left: auto;
+  right: 0;
+  transform: translateY(0.5rem);
+}
+
+/* Fix for 2-row layout - ensure first item in second row expands right */
+.sm\:grid-cols-7 > .group:nth-child(8) .opacity-0.group-hover\:opacity-100 {
+  left: 0;
+  right: auto;
+  transform: translateY(0.5rem);
+}
+
+/* Fix for 3-row layout - ensure first item in third row expands right */
+.sm\:grid-cols-7 > .group:nth-child(15) .opacity-0.group-hover\:opacity-100 {
+  left: 0;
+  right: auto;
+  transform: translateY(0.5rem);
+}
+
+/* 9-10 columns (md breakpoint) */
+.md\:grid-cols-9 > .group:nth-child(9n + 1) .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-9 > .group:nth-child(9n + 2) .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-9 > .group:nth-child(9n + 3) .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-9 > .group:nth-child(9n + 4) .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-9
+  > .group:nth-child(9n + 5)
+  .opacity-0.group-hover\:opacity-100 {
+  left: 0;
+  right: auto;
+  transform: translateY(0.5rem);
+}
+
+.md\:grid-cols-9 > .group:nth-child(9n + 6) .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-9 > .group:nth-child(9n + 7) .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-9 > .group:nth-child(9n + 8) .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-9 > .group:nth-child(9n) .opacity-0.group-hover\:opacity-100 {
+  left: auto;
+  right: 0;
+  transform: translateY(0.5rem);
+}
+
+/* Fix for 2-row layout - ensure first item in second row expands right */
+.md\:grid-cols-9 > .group:nth-child(10) .opacity-0.group-hover\:opacity-100 {
+  left: 0;
+  right: auto;
+  transform: translateY(0.5rem);
+}
+
+.md\:grid-cols-10
+  > .group:nth-child(10n + 1)
+  .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-10
+  > .group:nth-child(10n + 2)
+  .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-10
+  > .group:nth-child(10n + 3)
+  .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-10
+  > .group:nth-child(10n + 4)
+  .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-10
+  > .group:nth-child(10n + 5)
+  .opacity-0.group-hover\:opacity-100 {
+  left: 0;
+  right: auto;
+  transform: translateY(0.5rem);
+}
+
+.md\:grid-cols-10
+  > .group:nth-child(10n + 6)
+  .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-10
+  > .group:nth-child(10n + 7)
+  .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-10
+  > .group:nth-child(10n + 8)
+  .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-10
+  > .group:nth-child(10n + 9)
+  .opacity-0.group-hover\:opacity-100,
+.md\:grid-cols-10 > .group:nth-child(10n) .opacity-0.group-hover\:opacity-100 {
+  left: auto;
+  right: 0;
+  transform: translateY(0.5rem);
+}
+
+/* Fix for 2-row layout - ensure first item in second row expands right */
+.md\:grid-cols-10 > .group:nth-child(11) .opacity-0.group-hover\:opacity-100 {
+  left: 0;
+  right: auto;
+  transform: translateY(0.5rem);
+}
+
+/* For the custom repeat grid at lg breakpoint */
+/* This is a more generic approach since we can't easily target the repeat pattern with nth-child */
+@media (min-width: 1024px) {
+  /* First half of achievements - tooltips expand right */
+  .lg\:grid-cols-\[repeat\(17\,minmax\(0\,40px\)\)\]
+    > .group:nth-child(-n + 9)
+    .opacity-0.group-hover\:opacity-100,
+  .lg\:grid-cols-\[repeat\(19\,minmax\(0\,40px\)\)\]
+    > .group:nth-child(-n + 10)
+    .opacity-0.group-hover\:opacity-100 {
+    left: 0;
+    right: auto;
+    transform: translateY(0.5rem);
+  }
+
+  /* Second half of achievements - tooltips expand left */
+  .lg\:grid-cols-\[repeat\(17\,minmax\(0\,40px\)\)\]
+    > .group:nth-child(n + 10)
+    .opacity-0.group-hover\:opacity-100,
+  .lg\:grid-cols-\[repeat\(19\,minmax\(0\,40px\)\)\]
+    > .group:nth-child(n + 11)
+    .opacity-0.group-hover\:opacity-100 {
     left: auto;
     right: 0;
     transform: translateY(0.5rem);
   }
 
-  /* Adjust tooltip position for achievements on the left edge */
-  .group:nth-child(6n-5) .opacity-0.group-hover\:opacity-100 {
+  /* Fix for 2-row layout in large screens */
+  .lg\:grid-cols-\[repeat\(17\,minmax\(0\,40px\)\)\]
+    > .group:nth-child(18)
+    .opacity-0.group-hover\:opacity-100,
+  .lg\:grid-cols-\[repeat\(19\,minmax\(0\,40px\)\)\]
+    > .group:nth-child(20)
+    .opacity-0.group-hover\:opacity-100 {
     left: 0;
     right: auto;
     transform: translateY(0.5rem);
   }
 }
 
-/* First column needs special positioning to avoid cutoff */
-.grid-cols-10 > .group:nth-child(10n + 1) .group-hover\:opacity-100,
-.grid-cols-10 > .group:nth-child(10n + 2) .group-hover\:opacity-100,
-.sm\:grid-cols-10 > .group:nth-child(10n + 1) .group-hover\:opacity-100,
-.sm\:grid-cols-10 > .group:nth-child(10n + 2) .group-hover\:opacity-100,
-.md\:grid-cols-12 > .group:nth-child(12n + 1) .group-hover\:opacity-100,
-.md\:grid-cols-12 > .group:nth-child(12n + 2) .group-hover\:opacity-100 {
-  transform: translate(0, 0.5rem) !important;
-  left: 0;
-  right: auto;
+/* ... existing code ... */
+
+/* Ensure proper text alignment in evaluation sections */
+#challengeEvaluationResults p,
+#challengeEvaluationResults .score-item {
+  text-align: left !important;
 }
 
-/* Last column needs special positioning to avoid cutoff on the right */
-.grid-cols-10 > .group:nth-child(10n) .group-hover\:opacity-100,
-.grid-cols-10 > .group:nth-child(10n-1) .group-hover\:opacity-100,
-.sm\:grid-cols-10 > .group:nth-child(10n) .group-hover\:opacity-100,
-.sm\:grid-cols-10 > .group:nth-child(10n-1) .group-hover\:opacity-100,
-.md\:grid-cols-12 > .group:nth-child(12n) .group-hover\:opacity-100,
-.md\:grid-cols-12 > .group:nth-child(12n-1) .group-hover\:opacity-100 {
-  transform: translate(-100%, 0.5rem) !important;
-  left: 100%;
-  right: auto;
+#challengeEvaluationResults #challengeOverallEvaluation,
+#challengeEvaluationResults #challengeOverallEvaluation p,
+#challengeEvaluationResults #challengeScores {
+  text-align: left !important;
 }
 
-/* Additional tooltip positioning rules for custom grid columns to fix tooltip cutoff on second rows */
-.sm\:grid-cols-12 > .group:nth-child(12n + 1) .group-hover\:opacity-100,
-.sm\:grid-cols-12 > .group:nth-child(12n + 2) .group-hover\:opacity-100 {
-  transform: translate(0, 0.5rem) !important;
-  left: 0;
-  right: auto;
+#challengeEvaluationResults .score-item div.flex {
+  padding-left: 0 !important;
 }
 
-.md\:grid-cols-14 > .group:nth-child(14n + 1) .group-hover\:opacity-100,
-.md\:grid-cols-14 > .group:nth-child(14n + 2) .group-hover\:opacity-100 {
-  transform: translate(0, 0.5rem) !important;
-  left: 0;
-  right: auto;
+/* Fix the margins for better spacing */
+#challengeEvaluationResults .score-item p.text-sm {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
 }
 
-/* Additional tooltip positioning rules for md grid on profile page */
-.md\:grid-cols-14 > .group:nth-child(14n + 1) .group-hover\:opacity-100,
-.md\:grid-cols-14 > .group:nth-child(14n + 2) .group-hover\:opacity-100 {
-  transform: translate(0, 0.5rem) !important;
-  left: 0;
-  right: auto;
-}
-
-/* Additional tooltip positioning rules for lg grid on profile page using attribute selector */
-[class*="lg:grid-cols-[repeat(17,minmax(0,40px))]"]
-  > .group:nth-child(17n + 1)
-  .group-hover\:opacity-100,
-[class*="lg:grid-cols-[repeat(17,minmax(0,40px))]"]
-  > .group:nth-child(17n + 2)
-  .group-hover\:opacity-100 {
-  transform: translate(0, 0.5rem) !important;
-  left: 0;
-  right: auto;
-}
-
-/* Loading animation for page transitions */
-.page-loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Reduce font size for all textareas and input fields on very small screens */
-@media (max-width: 480px) {
-  #challengeResponseInput,
-  #challengeVoiceTranscript,
-  #responseInput,
-  #voiceTranscript,
-  textarea,
-  input[type="text"] {
-    font-size: 0.8125rem !important; /* Even smaller font (13px) on very small screens */
-  }
-}
-
-/* Mobile responsive styles for image modal */
-@media (max-width: 640px) {
-  #imageModal .transform {
-    margin: 0 auto;
-    max-width: calc(100% - 32px);
-  }
-
-  #imageModal .aspect-square {
-    max-height: 70vh;
-  }
-}
-
-/* Make achievement section more compact on mobile */
-@media (max-width: 640px) {
-  h2.text-xl[data-i18n="profile.achievements"],
-  h5.text-lg[data-i18n="profile.achievements"] {
-    margin-bottom: 0.5rem !important;
-  }
-
-  h2.text-xl[data-i18n="profile.achievements"] + div,
-  h5.text-lg[data-i18n="profile.achievements"] + div {
-    margin-bottom: 1rem !important;
-  }
+/* Only keep text-center for the XP info section */
+#challengeEvaluationResults #challengeXpInfo {
+  text-align: center;
 }

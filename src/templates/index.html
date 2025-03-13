@@ -255,13 +255,11 @@
     <script type="module" src="/static/js/constants.js"></script>
     <script type="module" src="/static/js/helpers.js"></script>
     <script type="module" src="/static/js/voice.js" defer></script>
-    <script type="module" src="/static/js/main.js"></script>
+    <script type="module" src="/static/js/main.js" defer></script>
 
     <!-- Initialize translations -->
-    <script type="module">
-      // Wait for DOM to be ready
-      document.addEventListener('DOMContentLoaded', () => {
-        // Apply initial translations
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
         window.translationManager?.applyTranslations();
       });
     </script>
@@ -1076,7 +1074,16 @@
               </div>
             </div>
           </div>
-        </div>
+
+          <script>
+            // Dispatch event to trigger achievement tooltip positioning
+            document.addEventListener('DOMContentLoaded', function() {
+              setTimeout(function() {
+                document.dispatchEvent(new CustomEvent('achievementsLoaded'));
+              }, 100); // Small delay to ensure DOM is fully rendered
+            });
+          </script>
+
         <!-- Additional instructions/link to the profile page -->
         <div class="mt-2 text-center">
           <p class="text-sm text-center">
@@ -1936,5 +1943,6 @@
         </a>
       </div>
     </footer>
+    <script src="/static/js/achievementTooltips.js" defer></script>
   </body>
 </html>

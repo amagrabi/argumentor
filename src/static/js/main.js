@@ -1994,32 +1994,32 @@ window.addEventListener("DOMContentLoaded", async () => {
         // Create the div if it doesn't exist
         const newChallengeEvalDiv = document.createElement("div");
         newChallengeEvalDiv.id = "challengeEvaluationResults";
-        newChallengeEvalDiv.className = "mt-8 bg-white p-8 fade-in";
+        newChallengeEvalDiv.className = "mt-8 bg-white p-8 fade-in text-left";
         newChallengeEvalDiv.style.display = "block";
 
         // Create the structure
         newChallengeEvalDiv.innerHTML = `
-          <h2 class="text-2xl font-bold mb-6" data-i18n="evaluation.title">
+          <h2 class="text-2xl font-bold mb-6 text-left" data-i18n="evaluation.title">
             Evaluation
           </h2>
-          <div id="challengeOverallEvaluation" class="mb-6"></div>
-          <div id="challengeScores" class="grid gap-4 mb-8">
-            <div class="score-item">
+          <div id="challengeOverallEvaluation" class="mb-6 text-left"></div>
+          <div id="challengeScores" class="grid gap-4 mb-8 text-left">
+            <div class="score-item text-left">
               <span data-i18n="evaluation.scores.relevance">Relevance</span>
             </div>
-            <div class="score-item">
+            <div class="score-item text-left">
               <span data-i18n="evaluation.scores.logic">Logical Structure</span>
             </div>
-            <div class="score-item">
+            <div class="score-item text-left">
               <span data-i18n="evaluation.scores.clarity">Clarity</span>
             </div>
-            <div class="score-item">
+            <div class="score-item text-left">
               <span data-i18n="evaluation.scores.depth">Depth</span>
             </div>
-            <div class="score-item">
+            <div class="score-item text-left">
               <span data-i18n="evaluation.scores.objectivity">Objectivity</span>
             </div>
-            <div class="score-item">
+            <div class="score-item text-left">
               <span data-i18n="evaluation.scores.creativity">Creativity</span>
             </div>
           </div>
@@ -2403,6 +2403,11 @@ window.addEventListener("DOMContentLoaded", async () => {
             </div>
           </div>
 
+          <script>
+          // Dispatch event to trigger tooltip positioning
+          document.dispatchEvent(new CustomEvent('achievementsLoaded'));
+          </script>
+
           <!-- Profile and Login Messages -->
           <div class="mt-2 text-center">
             <p class="text-sm text-center">
@@ -2728,7 +2733,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         challengeEvalDiv.classList.add("fade-in");
 
         // Ensure it has the same styling as the main evaluation section
-        challengeEvalDiv.className = "mt-8 bg-white p-8 fade-in";
+        challengeEvalDiv.className = "mt-8 bg-white p-8 fade-in text-left";
 
         localScrollToChallengeEvaluation();
       } else {
@@ -3153,6 +3158,99 @@ window.addEventListener("DOMContentLoaded", async () => {
   if (challengeRecordButton) {
     challengeRecordButton.addEventListener("click", toggleChallengeRecording);
   }
+
+  // Add achievement tooltip positioning logic
+  function setupAchievementTooltips() {
+    const achievementGroups = document.querySelectorAll(
+      ".inline-grid > .group"
+    );
+    if (!achievementGroups.length) return;
+
+    // Get the grid container
+    const gridContainer = achievementGroups[0].parentElement;
+
+    // Get the number of columns in the grid
+    const computedStyle = window.getComputedStyle(gridContainer);
+    const gridTemplateColumns = computedStyle.getPropertyValue(
+      "grid-template-columns"
+    );
+    const columnCount = gridTemplateColumns.split(" ").length;
+
+    achievementGroups.forEach((group, index) => {
+      const tooltip = group.querySelector(
+        ".opacity-0.group-hover\\:opacity-100"
+      );
+      if (!tooltip) return;
+
+      // Add mouseenter event to dynamically position tooltip
+      group.addEventListener("mouseenter", () => {
+        // Reset any previous positioning
+        tooltip.style.left = "";
+        tooltip.style.right = "";
+        tooltip.style.transform = "";
+
+        // Calculate row and column position
+        const row = Math.floor(index / columnCount);
+        const column = index % columnCount;
+
+        // Calculate the center position of the icon relative to the viewport
+        const rect = group.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const iconCenter = rect.left + rect.width / 2;
+
+        // Determine if we're in the left or right half of the screen
+        const isLeftHalf = iconCenter < viewportWidth / 2;
+
+        // For left half of the screen, position tooltip to the right
+        // For right half of the screen, position tooltip to the left
+        if (isLeftHalf) {
+          tooltip.style.left = "0";
+          tooltip.style.right = "auto";
+          tooltip.style.transform = "translateY(0.5rem)";
+        } else {
+          tooltip.style.left = "auto";
+          tooltip.style.right = "0";
+          tooltip.style.transform = "translateY(0.5rem)";
+        }
+      });
+    });
+  }
+
+  // Call the function on page load
+  setupAchievementTooltips();
+
+  // Also call it when the window is resized
+  window.addEventListener("resize", setupAchievementTooltips);
+
+  // Set up a MutationObserver to detect when achievements are added to the DOM
+  const achievementObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (
+        mutation.type === "childList" &&
+        (mutation.target.classList.contains("inline-grid") ||
+          mutation.target.closest(".inline-grid"))
+      ) {
+        setupAchievementTooltips();
+      }
+    });
+  });
+
+  // Start observing the document with the configured parameters
+  const achievementContainers = document.querySelectorAll(".inline-grid");
+  achievementContainers.forEach((container) => {
+    achievementObserver.observe(container, { childList: true, subtree: true });
+  });
+
+  // Also observe the body for any new achievement containers that might be added
+  achievementObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: false,
+    characterData: false,
+  });
+
+  // Call it again when navigating to profile page or when achievements are loaded dynamically
+  document.addEventListener("achievementsLoaded", setupAchievementTooltips);
 });
 
 // Update selectedCategories based on selected items and possibly re-roll the question

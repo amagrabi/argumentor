@@ -175,9 +175,9 @@ export function createEvaluationScores(data, isChallenge = false) {
     const translationKey = EVALUATION_TRANSLATION_MAPPING[category];
 
     return `
-      <div class="mb-2 score-item">
-        <div class="flex justify-between items-center">
-          <span data-i18n="evaluation.scores.${translationKey}">${
+      <div class="mb-2 score-item text-left">
+        <div class="flex justify-between items-center text-left">
+          <span data-i18n="evaluation.scores.${translationKey}" class="text-left">${
       translations.evaluation.scores[translationKey] || category
     }</span>
           <span class="font-medium score-value" style="color: ${color};">${finalScore}/10</span>
@@ -186,7 +186,7 @@ export function createEvaluationScores(data, isChallenge = false) {
           <div class="rounded-full h-2 score-bar"
                style="width: 0%; background-color: ${color}; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);"></div>
         </div>
-        <p class="text-sm text-gray-500">${feedbackText}</p>
+        <p class="text-sm text-gray-500 text-left">${feedbackText}</p>
       </div>
     `;
   }).join("");
@@ -202,7 +202,7 @@ export function createOverallEvaluation(data, isChallenge = false) {
   const totalScoreColor = scoreToColor(totalScore);
 
   return `
-    <p class="text-l font-bold mb-2">
+    <p class="text-l font-bold mb-2 text-left">
       ${
         translations.evaluation.overall
       }: <span id="${prefix}TotalScoreValue" style="color: ${totalScoreColor};">${totalScore.toFixed(
@@ -213,7 +213,7 @@ export function createOverallEvaluation(data, isChallenge = false) {
       <div id="${prefix}TotalScoreBar" class="rounded-full total-progress-bar"
            style="width: 0%; background-color: ${totalScoreColor}; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);"></div>
     </div>
-    <p id="${prefix}OverallFeedback" class="text-md">
+    <p id="${prefix}OverallFeedback" class="text-md text-left">
       ${data.evaluation.overall_feedback}
     </p>
   `;
