@@ -3451,3 +3451,56 @@ if (writeQuestionButton) {
       document.getElementById("customQuestion").value = "";
     });
 }
+
+// Show loading indicator during page transitions
+function showLoadingIndicator() {
+  // Create loading overlay if it doesn't exist
+  let loadingOverlay = document.getElementById("loadingOverlay");
+  if (!loadingOverlay) {
+    loadingOverlay = document.createElement("div");
+    loadingOverlay.id = "loadingOverlay";
+    loadingOverlay.className = "loading-overlay";
+
+    const spinner = document.createElement("div");
+    spinner.className = "spinner";
+
+    loadingOverlay.appendChild(spinner);
+    document.body.appendChild(loadingOverlay);
+  } else {
+    loadingOverlay.style.display = "flex";
+  }
+}
+
+// Hide loading indicator
+function hideLoadingIndicator() {
+  const loadingOverlay = document.getElementById("loadingOverlay");
+  if (loadingOverlay) {
+    loadingOverlay.style.display = "none";
+  }
+}
+
+// Add event listeners for page transitions
+document.addEventListener("DOMContentLoaded", function () {
+  // Add click event listeners to all links
+  document.addEventListener("click", function (e) {
+    // Check if the clicked element is a link
+    let target = e.target;
+    while (target && target.tagName !== "A") {
+      target = target.parentElement;
+    }
+
+    if (
+      target &&
+      target.tagName === "A" &&
+      target.href &&
+      !target.href.startsWith("javascript:") &&
+      !target.getAttribute("download") &&
+      target.getAttribute("target") !== "_blank"
+    ) {
+      showLoadingIndicator();
+    }
+  });
+
+  // Hide loading indicator when page is fully loaded
+  window.addEventListener("load", hideLoadingIndicator);
+});

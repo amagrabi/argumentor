@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ lang if lang else 'en' }}" data-language-redirect="{{ 'true' if is_language_redirect else 'false' }}">
+<html lang="{{ session.get('language', 'en') }}">
   <head>
     <!-- Google tag (gtag.js) -->
     <script
@@ -25,7 +25,7 @@
     />
     <meta name="user-authenticated" content="{{ current_user.is_authenticated | string | lower }}" />
     <meta name="user-username" content="{{ current_user.username if current_user.is_authenticated else 'Anonymous' }}" />
-    <title>ArguMentor - Sharpen Your Reasoning Skills</title>
+    <title>ArguMentor - Train Logical Reasoning</title>
     <meta
       name="description"
       content="ArguMentor is a platform that helps you build & refine your reasoning skills. Construct compelling arguments and receive AI-driven feedback to improve your decision-making."
@@ -247,8 +247,22 @@
       }
     </script>
     <script type="module" src="/static/js/translations.js"></script>
+    <script>
+      // Hide loading indicator when page is loaded
+      window.addEventListener('load', function() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+          loadingOverlay.style.display = 'none';
+        }
+      });
+    </script>
   </head>
   <body class="bg-white min-h-screen">
+    <!-- Loading Indicator -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+
     <div class="max-w-5xl mx-auto px-4 py-6">
       <!-- Header -->
       <header class="flex flex-col xs:flex-row justify-between items-center mb-2 xs:mb-4">
@@ -521,11 +535,29 @@
                 <video
                   id="demoVideo"
                   class="w-full cursor-pointer"
-                  src="{{ url_for('static', filename='vid/demo.webm') }}"
+                  preload="auto"
                   autoplay
                   muted
                   playsinline
+                  poster="{{ url_for('static', filename='img/video_poster.webp') }}"
                 >
+                  <!-- High resolution for desktop -->
+                  <source
+                    media="(min-width: 768px)"
+                    src="{{ url_for('static', filename='vid/demo.webm') }}"
+                    type="video/webm"
+                  />
+                  <!-- Medium resolution for tablets -->
+                  <source
+                    media="(min-width: 480px)"
+                    src="{{ url_for('static', filename='vid/demo_medium.webm') }}"
+                    type="video/webm"
+                  />
+                  <!-- Low resolution for mobile -->
+                  <source
+                    src="{{ url_for('static', filename='vid/demo_mobile.webm') }}"
+                    type="video/webm"
+                  />
                   Your browser does not support the video tag.
                 </video>
                 <div class="video-hover-effect">❚❚</div>
