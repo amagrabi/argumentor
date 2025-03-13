@@ -3503,4 +3503,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Hide loading indicator when page is fully loaded
   window.addEventListener("load", hideLoadingIndicator);
+
+  // Also handle browser back/forward navigation
+  window.addEventListener("pageshow", function (event) {
+    // The pageshow event is fired when the page is shown, including when navigating back
+    hideLoadingIndicator();
+  });
+
+  // Handle popstate event (browser back/forward buttons)
+  window.addEventListener("popstate", function (event) {
+    hideLoadingIndicator();
+  });
 });
