@@ -178,6 +178,14 @@ def create_app():
                 current_user.preferred_language = lang
                 db.session.commit()
 
+    @app.route("/robots.txt")
+    def serve_robots_txt():
+        return send_from_directory(app.static_folder, "robots.txt")
+
+    @app.route("/sitemap.xml")
+    def serve_sitemap():
+        return send_from_directory(app.static_folder, "sitemap.xml")
+
     @app.errorhandler(Exception)
     def handle_exception(e):
         # Skip detailed logging for common routing exceptions that should be handled by specific handlers

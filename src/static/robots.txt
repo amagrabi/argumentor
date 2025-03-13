@@ -1,0 +1,26 @@
+User-agent: *
+Allow: /
+
+# Disallow potentially sensitive or admin areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /login
+Disallow: /register
+Disallow: /reset-password
+Disallow: /profile
+Disallow: /subscription
+Disallow: /subscription_success
+Disallow: /plan_change_scheduled
+
+# Add specific directive for Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Add specific directive for Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Reference to sitemap
+Sitemap: https://www.argumentorai.com/sitemap.xml
