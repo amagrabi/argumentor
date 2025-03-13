@@ -2364,3 +2364,11 @@ a[data-i18n="profile.changePlan"] {
 #challengeEvaluationResults #challengeXpInfo {
   text-align: center;
 }
+
+/* Ensure profile page message is centered */
+.text-center p.text-sm.text-center,
+#challengeSection .text-center p.text-sm.text-center {
+  text-align: center !important;
+  width: 100%;
+  display: block;
+}

@@ -2410,7 +2410,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
           <!-- Profile and Login Messages -->
           <div class="mt-2 text-center">
-            <p class="text-sm text-center">
+            <p class="text-sm text-center" style="text-align: center !important; width: 100%; display: block;">
               <span data-i18n="evaluation.checkProfile">${
                 translations.evaluation.checkProfile || "Check your"
               }</span>
