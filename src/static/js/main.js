@@ -2406,12 +2406,19 @@ window.addEventListener("DOMContentLoaded", async () => {
           <!-- Profile and Login Messages -->
           <div class="mt-2 text-center">
             <p class="text-sm text-center">
-              <span data-i18n="evaluation.checkProfile">Check your</span>
+              <span data-i18n="evaluation.checkProfile">${
+                translations.evaluation.checkProfile || "Check your"
+              }</span>
               <a href="/profile" class="inline-flex items-baseline text-gray-800 underline hover:text-gray-600">
                 <img src="https://img.icons8.com/windows/32/gender-neutral-user.png" alt="Profile" class="w-4 h-4 mr-1 relative top-0.5" />
-                <span data-i18n="evaluation.profilePage">Profile Page</span>
+                <span data-i18n="evaluation.profilePage">${
+                  translations.evaluation.profilePage || "Profile Page"
+                }</span>
               </a>
-              <span data-i18n="evaluation.reviewProgress">to review answered questions and track your progress.</span>
+              <span data-i18n="evaluation.reviewProgress">${
+                translations.evaluation.reviewProgress ||
+                "to review answered questions and track your progress."
+              }</span>
             </p>
           </div>
 
