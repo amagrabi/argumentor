@@ -2193,3 +2193,15 @@ a[data-i18n="profile.changePlan"] {
     font-size: 0.8125rem !important; /* Even smaller font (13px) on very small screens */
   }
 }
+
+/* Mobile responsive styles for image modal */
+@media (max-width: 640px) {
+  #imageModal .transform {
+    margin: 0 auto;
+    max-width: calc(100% - 32px);
+  }
+
+  #imageModal .aspect-square {
+    max-height: 70vh;
+  }
+}
