@@ -1,8 +1,10 @@
 import logging
+import resource
+import sys
 import uuid
 from datetime import UTC, datetime
 
-from flask import request, session
+from flask import after_this_request, request, session
 from flask_login import current_user
 
 from extensions import db
@@ -55,3 +57,55 @@ def log_visit():
             logger.info(
                 f"Logged visit for user: {session.get('user_id')} on {today_str}"
             )
+
+
+def monitor_memory_usage():
+    """
+    Middleware to monitor memory usage and log when it exceeds thresholds.
+    This helps identify memory leaks or high memory usage patterns.
+    """
+
+    def memory_usage_kb():
+        """Return memory usage in kilobytes"""
+        try:
+            # For Unix systems
+            rusage_denom = 1024.0
+            if sys.platform == "darwin":
+                # ... macOS ...
+                rusage_denom = rusage_denom
+            else:
+                # ... Linux ...
+                rusage_denom = rusage_denom
+
+            # Get memory usage from resource module
+            usage = resource.getrusage(resource.RUSAGE_SELF)
+            return usage.ru_maxrss / rusage_denom
+        except Exception as e:
+            logger.error(f"Error getting memory usage: {e}")
+            return 0
+
+    def middleware():
+        # Check memory before request
+        mem_before = memory_usage_kb()
+
+        # Log if memory usage is high
+        if mem_before > 450 * 1024:  # 450MB (Heroku free tier has 512MB limit)
+            logger.warning(f"High memory usage detected: {mem_before:.2f}KB")
+
+        @after_this_request
+        def after_request(response):
+            # Check memory after request
+            mem_after = memory_usage_kb()
+            mem_diff = mem_after - mem_before
+
+            # Log significant memory increases
+            if mem_diff > 50 * 1024:  # 50MB increase in a single request
+                logger.warning(
+                    f"Large memory increase: {mem_diff:.2f}KB in request {request.path}"
+                )
+
+            return response
+
+        return None
+
+    return middleware

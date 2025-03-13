@@ -77,6 +77,8 @@ def post_process_transcription(
     """
     Uses LLM to improve the transcription quality by fixing common issues.
     """
+    import gc
+
     try:
         # Return early if transcript is empty or too short
         if not transcript or len(transcript.strip()) < 3:
@@ -153,6 +155,11 @@ def post_process_transcription(
                 )
                 improved_transcript = transcript
 
+            # Free up memory
+            del prompt
+            del response
+            gc.collect()
+
             logger.debug(
                 f"LLM post-processing completed. Result: {improved_transcript}"
             )
@@ -185,6 +192,7 @@ def transcribe_audio(audio_content, file_mime):
     Transcribes the audio content. If the audio is longer than a certain threshold,
     it is split into chunks that are transcribed concurrently.
     """
+    import gc
     import io
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -204,6 +212,9 @@ def transcribe_audio(audio_content, file_mime):
         logger.debug(
             f"Audio loaded successfully. Duration: {len(audio)}ms, Channels: {audio.channels}, Sample width: {audio.sample_width}, Frame rate: {audio.frame_rate}"
         )
+        # Free up memory
+        del audio_content
+        gc.collect()
     except Exception as e:
         logger.error(f"Error loading audio file for chunking: {e}", exc_info=True)
         return ""
@@ -238,6 +249,9 @@ def transcribe_audio(audio_content, file_mime):
             chunk_bytes = buffer.getvalue()
             logger.debug(f"Exported WAV chunk size: {len(chunk_bytes)} bytes")
 
+            # Free up memory
+            del buffer
+
             # Prepare Google Speech API client and config.
             client = speech.SpeechClient(credentials=google_credentials)
             config = speech.RecognitionConfig(
@@ -266,6 +280,10 @@ def transcribe_audio(audio_content, file_mime):
                 logger.debug(
                     f"Speech recognition successful. Transcript length: {len(chunk_transcript)}"
                 )
+                # Free up memory
+                del chunk_bytes
+                del audio_request
+                gc.collect()
                 return chunk_transcript
             except Exception as e:
                 logger.error(f"Error transcribing chunk: {e}", exc_info=True)
@@ -278,6 +296,9 @@ def transcribe_audio(audio_content, file_mime):
     if len(audio) <= chunk_length_ms:
         logger.debug(f"Processing audio as single chunk (duration: {len(audio)}ms)")
         transcript = process_audio_chunk(audio, language_code)
+        # Free up memory
+        del audio
+        gc.collect()
         return transcript.strip()
     else:
         # Split audio into chunks.
@@ -289,10 +310,16 @@ def transcribe_audio(audio_content, file_mime):
             for i in range(0, len(audio), chunk_length_ms)
         ]
         logger.debug(f"Split into {len(chunks)} chunks")
+        # Free up original audio to save memory
+        del audio
+        gc.collect()
+
         transcript_chunks = ["" for _ in range(len(chunks))]
 
-        # Process each chunk concurrently.
-        with ThreadPoolExecutor(max_workers=len(chunks)) as executor:
+        # Process each chunk with limited concurrency to avoid memory issues
+        # Limit to max 2 concurrent threads to reduce memory usage
+        max_workers = min(2, len(chunks))
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
             future_to_index = {
                 executor.submit(process_audio_chunk, chunk, language_code): idx
                 for idx, chunk in enumerate(chunks)
@@ -305,6 +332,11 @@ def transcribe_audio(audio_content, file_mime):
                 except Exception as e:
                     logger.error(f"Error processing chunk {idx}: {e}", exc_info=True)
                     transcript_chunks[idx] = ""
+
+        # Free up chunks to save memory
+        del chunks
+        gc.collect()
+
         full_transcript = " ".join(transcript_chunks)
         # Replace any occurrence of multiple whitespace characters with a single space
         clean_transcript = re.sub(r"\s+", " ", full_transcript).strip()

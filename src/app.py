@@ -14,7 +14,7 @@ from werkzeug.exceptions import NotFound
 from commands import register_commands
 from config import get_settings
 from extensions import db, limiter, login_manager
-from middleware import ensure_user_id, log_visit
+from middleware import ensure_user_id, log_visit, monitor_memory_usage
 from routes.answers import answers_bp
 from routes.auth import auth_bp
 from routes.pages import pages_bp
@@ -67,8 +67,8 @@ def create_app():
 
     # Add SQLAlchemy engine options tuned for production
     app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-        "pool_size": 10,  # Number of persistent connections to keep open
-        "max_overflow": 20,  # Additional connections allowed beyond pool_size under load
+        "pool_size": 5,  # Reduced from 10 to save memory
+        "max_overflow": 10,  # Reduced from 20 to save memory
         "pool_timeout": 30,  # Increased wait time (in seconds) for a free connection
         "pool_recycle": 180,  # Recycle connections older than 3 minutes (helps avoid stale connections)
         "pool_pre_ping": True,  # Check connection health before using it
@@ -105,6 +105,10 @@ def create_app():
     # Add request handlers
     app.before_request(ensure_user_id)
     app.before_request(log_visit)
+
+    # Register memory monitoring middleware in production
+    if not SETTINGS.DEV:
+        app.before_request(monitor_memory_usage())
     app.after_request(add_cors_headers)
 
     @app.context_processor
