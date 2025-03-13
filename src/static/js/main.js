@@ -3301,89 +3301,166 @@ function updateCategoryUI() {
 // Question selection overlay handler
 document
   .getElementById("selectQuestionButton")
-  .addEventListener("click", () => {
-    fetch("/get_all_questions")
-      .then((response) => response.json())
-      .then((questions) => {
-        const questionList = document.getElementById("questionList");
-        questionList.innerHTML = "";
+  .addEventListener("click", async () => {
+    // First ensure categories are loaded
+    if (!selectedCategories || selectedCategories.length === 0) {
+      try {
+        await loadSavedCategories();
+      } catch (error) {
+        console.error("Failed to load categories:", error);
+        selectedCategories = DEFAULT_CATEGORIES;
+      }
+    }
 
-        const filteredQuestions = questions.filter((q) =>
+    try {
+      const response = await fetch("/get_all_questions");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const questions = await response.json();
+
+      // Get the original overlay
+      const originalOverlay = document.getElementById(
+        "questionSelectionOverlay"
+      );
+
+      // Make a clean clone of the original overlay
+      const clonedOverlay = originalOverlay.cloneNode(true);
+
+      // Hide the original
+      originalOverlay.style.display = "none";
+
+      // Get and clear the question list in the clone
+      const questionList = clonedOverlay.querySelector("#questionList");
+      questionList.innerHTML = "";
+
+      // Apply filtering
+      let filteredQuestions = [];
+      if (selectedCategories && selectedCategories.length > 0) {
+        filteredQuestions = questions.filter((q) =>
           selectedCategories.includes(q.category)
         );
-        const groups = {};
-        const categoryOrder = [];
-        filteredQuestions.forEach((question) => {
-          if (!groups[question.category]) {
-            groups[question.category] = [];
-            categoryOrder.push(question.category);
-          }
-          groups[question.category].push(question);
+      } else {
+        filteredQuestions = questions;
+      }
+
+      // Group questions by category
+      const groups = {};
+      const categoryOrder = [];
+      filteredQuestions.forEach((question) => {
+        if (!groups[question.category]) {
+          groups[question.category] = [];
+          categoryOrder.push(question.category);
+        }
+        groups[question.category].push(question);
+      });
+
+      if (filteredQuestions.length === 0) {
+        const noQuestionsItem = document.createElement("div");
+        noQuestionsItem.className = "text-gray-600 py-2";
+        noQuestionsItem.textContent =
+          "No questions available for the selected categories.";
+        questionList.appendChild(noQuestionsItem);
+      } else {
+        categoryOrder.forEach((category) => {
+          const heading = document.createElement("h4");
+          heading.className = "mt-4 mb-2 font-bold text-lg";
+          heading.textContent = translations.categories[category] || category;
+          questionList.appendChild(heading);
+
+          groups[category].forEach((question) => {
+            const item = document.createElement("div");
+            item.className =
+              "question-item cursor-pointer p-2 border-b hover:bg-gray-100";
+            item.textContent = question.description;
+            item.dataset.id = question.id;
+            item.addEventListener("click", () => {
+              // Store the selected question
+              currentQuestion = question;
+              sessionStorage.setItem(
+                "currentQuestion",
+                JSON.stringify(question)
+              );
+
+              // Update the display
+              updateQuestionDisplay(question);
+
+              // Hide the cloned overlay and remove it from the DOM
+              clonedOverlay.classList.add("hidden");
+              document.body.removeChild(clonedOverlay);
+            });
+            questionList.appendChild(item);
+          });
+        });
+      }
+
+      // Add close button functionality
+      const closeButton = clonedOverlay.querySelector(
+        "#closeQuestionSelection"
+      );
+      if (closeButton) {
+        closeButton.addEventListener("click", () => {
+          clonedOverlay.classList.add("hidden");
+          document.body.removeChild(clonedOverlay);
+        });
+      }
+
+      // Add click outside to close functionality
+      clonedOverlay.addEventListener("click", (e) => {
+        if (e.target === clonedOverlay) {
+          clonedOverlay.classList.add("hidden");
+          document.body.removeChild(clonedOverlay);
+        }
+      });
+
+      // Ensure the overlay has the right CSS
+      clonedOverlay.classList.remove("hidden");
+      clonedOverlay.style.display = "flex";
+      clonedOverlay.style.visibility = "visible";
+      clonedOverlay.style.zIndex = "9999";
+
+      // Append the cloned overlay directly to the body
+      document.body.appendChild(clonedOverlay);
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+      // Show an error overlay
+      const tempOverlay = document.createElement("div");
+      tempOverlay.className =
+        "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center";
+      tempOverlay.style.zIndex = "9999";
+
+      const contentBox = document.createElement("div");
+      contentBox.className =
+        "bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-11/12 max-w-2xl";
+
+      const header = document.createElement("div");
+      header.className = "flex justify-between items-center mb-4";
+      header.innerHTML = `
+        <h3 class="text-lg font-bold">Error</h3>
+        <button id="closeErrorOverlay" class="bg-gray-800 text-white px-3 py-1 rounded-full text-sm">✕</button>
+      `;
+
+      const content = document.createElement("div");
+      content.innerHTML =
+        "<div class='text-red-600 py-2'>Failed to load questions. Please try again.</div>";
+
+      contentBox.appendChild(header);
+      contentBox.appendChild(content);
+      tempOverlay.appendChild(contentBox);
+      document.body.appendChild(tempOverlay);
+
+      document
+        .getElementById("closeErrorOverlay")
+        .addEventListener("click", () => {
+          document.body.removeChild(tempOverlay);
         });
 
-        if (filteredQuestions.length === 0) {
-          const noQuestionsItem = document.createElement("div");
-          noQuestionsItem.className = "text-gray-600 py-2";
-          noQuestionsItem.textContent =
-            "No questions available for the selected categories.";
-          questionList.appendChild(noQuestionsItem);
-        } else {
-          categoryOrder.forEach((category) => {
-            const heading = document.createElement("h4");
-            heading.className = "mt-4 mb-2 font-bold text-lg";
-            // Translate the category name using the translations object.
-            heading.textContent = translations.categories[category] || category;
-            questionList.appendChild(heading);
-
-            groups[category].forEach((question) => {
-              const item = document.createElement("div");
-              item.className =
-                "question-item cursor-pointer p-2 border-b hover:bg-gray-100";
-              item.textContent = question.description;
-              item.dataset.id = question.id;
-              item.addEventListener("click", () => {
-                // Store the selected question
-                currentQuestion = question;
-                sessionStorage.setItem(
-                  "currentQuestion",
-                  JSON.stringify(question)
-                );
-
-                // Update the display
-                updateQuestionDisplay(question);
-
-                // Try to hide the overlay if it exists
-                const overlay = document.getElementById(
-                  "questionSelectionOverlay"
-                );
-                if (overlay) {
-                  overlay.classList.add("hidden");
-                }
-              });
-              questionList.appendChild(item);
-            });
-          });
+      tempOverlay.addEventListener("click", (e) => {
+        if (e.target === tempOverlay) {
+          document.body.removeChild(tempOverlay);
         }
-        document
-          .getElementById("questionSelectionOverlay")
-          .classList.remove("hidden");
-      })
-      .catch((error) => console.error("Error fetching questions:", error));
-  });
-
-document
-  .getElementById("closeQuestionSelection")
-  .addEventListener("click", () => {
-    document.getElementById("questionSelectionOverlay").classList.add("hidden");
-  });
-
-document
-  .getElementById("questionSelectionOverlay")
-  .addEventListener("click", (e) => {
-    if (e.target === document.getElementById("questionSelectionOverlay")) {
-      document
-        .getElementById("questionSelectionOverlay")
-        .classList.add("hidden");
+      });
     }
   });
 
@@ -3422,158 +3499,6 @@ document.getElementById("nextQuestion").addEventListener("click", async () => {
       "Failed to load new question";
   }
 });
-
-function updateLocalLevelInfo(totalXp, levelInfo) {
-  // Use dynamic import to access the module function
-  import("./level.js").then((levelModule) => {
-    levelModule.updateLevelInfo(totalXp, levelInfo);
-  });
-}
-
-function updateLocalXpIndicator(totalXp, levelInfo) {
-  // Update the local level info
-  updateLocalLevelInfo(totalXp, levelInfo);
-
-  // Then update level images using dynamic import
-  import("./level.js").then((levelModule) => {
-    // Just update the images since we already updated the level info
-    const levelImages = document.querySelectorAll(".level-image");
-    levelImages.forEach((img) => {
-      img.src = levelInfo.level_image;
-      img.alt = levelInfo.level_label;
-    });
-  });
-}
-
-// Function to load saved categories
-async function loadSavedCategories() {
-  try {
-    const response = await fetch("/get_categories");
-    const data = await response.json();
-    // If no categories are returned, use the defaults
-    selectedCategories =
-      data.categories && data.categories.length > 0
-        ? data.categories
-        : DEFAULT_CATEGORIES;
-
-    // Wait for next tick to ensure DOM is ready
-    setTimeout(() => {
-      updateCategoryUI();
-    }, 0);
-  } catch (error) {
-    console.error("Error loading categories:", error);
-    selectedCategories = DEFAULT_CATEGORIES;
-    setTimeout(() => {
-      updateCategoryUI();
-    }, 0);
-  }
-}
-
-// Local wrappers to use imported functions
-function localScrollToChallengeEvaluation() {
-  import("./evaluation.js").then((evalModule) => {
-    evalModule.scrollToChallengeEvaluation();
-  });
-}
-
-function localScrollToMainEvaluation() {
-  import("./evaluation.js").then((evalModule) => {
-    evalModule.scrollToMainEvaluation();
-  });
-}
-
-// Event listener for achievement updates
-document.addEventListener("refreshAchievements", () => {
-  updateLocalAchievementsDisplay(all_achievements);
-});
-
-// Write Question button handler (for pro users)
-const writeQuestionButton = document.getElementById("writeQuestionButton");
-if (writeQuestionButton) {
-  writeQuestionButton.addEventListener("click", () => {
-    document.getElementById("writeQuestionOverlay").classList.remove("hidden");
-    document.getElementById("customQuestion").focus();
-  });
-
-  // Close button for write question overlay
-  document
-    .getElementById("closeWriteQuestion")
-    .addEventListener("click", () => {
-      document.getElementById("writeQuestionOverlay").classList.add("hidden");
-    });
-
-  // Click outside to close
-  document
-    .getElementById("writeQuestionOverlay")
-    .addEventListener("click", (e) => {
-      if (e.target === document.getElementById("writeQuestionOverlay")) {
-        document.getElementById("writeQuestionOverlay").classList.add("hidden");
-      }
-    });
-
-  // Submit custom question
-  document
-    .getElementById("submitCustomQuestion")
-    .addEventListener("click", () => {
-      const customQuestionText = document
-        .getElementById("customQuestion")
-        .value.trim();
-
-      if (!customQuestionText) {
-        showToast("Please enter a question", "error");
-        return;
-      }
-
-      // Create a custom question object with a unique ID
-      const customQuestion = {
-        id: "custom_" + Date.now(),
-        description: customQuestionText,
-        category: "Custom", // Keep this as "Custom" for internal use
-        isCustom: true,
-      };
-
-      // Store the selected question
-      currentQuestion = customQuestion;
-      sessionStorage.setItem("currentQuestion", JSON.stringify(customQuestion));
-
-      // Also store in the server session
-      fetch("/store_custom_question", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: customQuestion }),
-      }).catch((error) => {
-        console.error("Error storing custom question:", error);
-      });
-
-      // Update the display
-      updateQuestionDisplay(customQuestion);
-
-      // Hide the overlay
-      document.getElementById("writeQuestionOverlay").classList.add("hidden");
-
-      // Clear the textarea for next time
-      document.getElementById("customQuestion").value = "";
-    });
-}
-
-// Show loading indicator during page transitions
-function showLoadingIndicator() {
-  // Create loading overlay if it doesn't exist
-  let loadingOverlay = document.getElementById("loadingOverlay");
-  if (!loadingOverlay) {
-    loadingOverlay = document.createElement("div");
-    loadingOverlay.id = "loadingOverlay";
-    loadingOverlay.className = "page-loading-overlay";
-
-    const spinner = document.createElement("div");
-    spinner.className = "page-loading-spinner";
-
-    loadingOverlay.appendChild(spinner);
-    document.body.appendChild(loadingOverlay);
-  } else {
-    loadingOverlay.style.display = "flex";
-  }
-}
 
 // Hide loading indicator
 function hideLoadingIndicator() {
@@ -3619,3 +3544,62 @@ document.addEventListener("DOMContentLoaded", function () {
     hideLoadingIndicator();
   });
 });
+
+function updateLocalLevelInfo(totalXp, levelInfo) {
+  // Use dynamic import to access the module function
+  import("./level.js").then((levelModule) => {
+    levelModule.updateLevelInfo(totalXp, levelInfo);
+  });
+}
+
+function updateLocalXpIndicator(totalXp, levelInfo) {
+  // Update the local level info
+  updateLocalLevelInfo(totalXp, levelInfo);
+
+  // Then update level images using dynamic import
+  import("./level.js").then((levelModule) => {
+    // Just update the images since we already updated the level info
+    const levelImages = document.querySelectorAll(".level-image");
+    levelImages.forEach((img) => {
+      img.src = levelInfo.level_image;
+      img.alt = levelInfo.level_label;
+    });
+  });
+}
+
+// Function to load saved categories - restored
+async function loadSavedCategories() {
+  try {
+    const response = await fetch("/get_categories");
+    const data = await response.json();
+    // If no categories are returned, use the defaults
+    selectedCategories =
+      data.categories && data.categories.length > 0
+        ? data.categories
+        : DEFAULT_CATEGORIES;
+
+    // Wait for next tick to ensure DOM is ready
+    setTimeout(() => {
+      updateCategoryUI();
+    }, 0);
+  } catch (error) {
+    console.error("Error loading categories:", error);
+    selectedCategories = DEFAULT_CATEGORIES;
+    setTimeout(() => {
+      updateCategoryUI();
+    }, 0);
+  }
+}
+
+// Local wrappers to use imported functions
+function localScrollToChallengeEvaluation() {
+  import("./evaluation.js").then((evalModule) => {
+    evalModule.scrollToChallengeEvaluation();
+  });
+}
+
+function localScrollToMainEvaluation() {
+  import("./evaluation.js").then((evalModule) => {
+    evalModule.scrollToMainEvaluation();
+  });
+}
