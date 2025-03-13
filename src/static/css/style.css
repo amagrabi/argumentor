@@ -396,6 +396,23 @@ textarea:focus {
     font-size: 0.875rem;
   }
 
+  /* Increase height of challenge textareas for better visibility on mobile */
+  #challengeResponseInput,
+  #challengeVoiceTranscript,
+  #responseInput,
+  #voiceTranscript {
+    height: 180px !important; /* Increased from default 128px (h-32) */
+    line-height: 1.5 !important;
+    font-size: 0.875rem !important; /* Reduced font size (14px) */
+  }
+
+  /* Ensure challenge text is more readable on mobile */
+  #challengeText {
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 1rem !important;
+  }
+
   /* Fix for usage limits grid */
   .grid.grid-cols-2 {
     width: 100%;
@@ -1563,10 +1580,25 @@ textarea:focus {
   .level-indicator.challenge-xp .level-image-container,
   #xpInfo .level-indicator.xp .level-image-container,
   #challengeXpInfo .level-indicator.challenge-xp .level-image-container,
-  #xpInfo.profile-xp .level-indicator.xp .level-image-container {
+  #xpInfo.profile-xp .level-indicator.xp .level-image-container,
+  #evaluationResults .level-indicator.xp .level-image-container,
+  #challengeEvaluationResults
+    .level-indicator.challenge-xp
+    .level-image-container {
     width: 90px !important;
     height: 90px !important;
     border: 2px solid black !important;
+    position: relative !important; /* Ensure proper positioning */
+    z-index: 5 !important; /* Increase z-index to ensure it's above the XP bar */
+  }
+
+  /* Protect XP bar from being affected by other layout changes */
+  .xp-bar-container,
+  .xp-bar-wrapper,
+  .xp-progress-bar {
+    position: relative !important;
+    box-sizing: border-box !important;
+    z-index: 1 !important; /* Ensure XP bar is behind level image */
   }
 
   /* Level number indicator - MORE SPECIFIC */
@@ -1579,6 +1611,8 @@ textarea:focus {
     font-size: 14px !important;
     top: -12px !important;
     border: 2px solid white !important;
+    z-index: 10 !important; /* Higher z-index to ensure it appears above the level image */
+    position: absolute !important; /* Ensure proper positioning */
   }
 
   /* Username and level text - Adjusted positioning and width */
@@ -2011,6 +2045,22 @@ a[data-i18n="profile.changePlan"] {
       word-wrap: break-word;
     }
   }
+
+  /* Improve text visibility in profile page challenge answers */
+  .text-sm.break-words.mt-1.pr-20.sm\:pr-24.md\:pr-28 {
+    max-height: none !important; /* Remove any max-height restriction */
+    white-space: normal !important; /* Allow text to wrap */
+    text-overflow: initial !important; /* Don't truncate text */
+    overflow: visible !important; /* Show all content */
+    margin-bottom: 1rem !important; /* Add spacing between entries */
+  }
+
+  /* Ensure question and answer text is properly formatted */
+  .text-sm.break-words.mt-1.pr-20.sm\:pr-24.md\:pr-28 .text-gray-600 {
+    display: block !important; /* Put on new line for better readability */
+    margin-top: 0.25rem !important;
+    line-height: 1.5 !important;
+  }
 }
 
 /* Align achievement icons with voice/text icon in answer history */
@@ -2129,5 +2179,17 @@ a[data-i18n="profile.changePlan"] {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+/* Reduce font size for all textareas and input fields on very small screens */
+@media (max-width: 480px) {
+  #challengeResponseInput,
+  #challengeVoiceTranscript,
+  #responseInput,
+  #voiceTranscript,
+  textarea,
+  input[type="text"] {
+    font-size: 0.8125rem !important; /* Even smaller font (13px) on very small screens */
   }
 }
