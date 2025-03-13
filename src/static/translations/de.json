@@ -763,6 +763,11 @@
         "name": "Rückschaufehler",
         "description": "Man glaubt nach einem Ereignis, das Ergebnis vorhergesehen zu haben.",
         "example": "Nach einer Niederlage behaupten: 'Ich wusste, dass sie verlieren würden!'"
+      },
+      {
+        "name": "Appell an die Emotion",
+        "description": "Man nutzt emotionale Appelle statt logischer Argumente.",
+        "example": "Diese Politik wird die Zukunft der Kinder zerstören! (ohne Belege)"
       }
     ],
     "logical_fallacies": [
@@ -815,6 +820,50 @@
         "name": "Appell an die Emotion",
         "description": "Man nutzt emotionale Appelle statt logischer Argumente.",
         "example": "Diese Politik wird die Zukunft der Kinder zerstören! (ohne Belege)"
+      },
+      {
+        "name": "Kein wahrer Schotte-Fehlschluss",
+        "description": "Man ändert die Definition einer Gruppe, um Gegenbeispiele auszuschließen.",
+        "example": "Wenn jemand sagt, dass einige Schotten Zucker auf ihren Haferbrei tun, antwortet man: 'Kein wahrer Schotte würde das tun.'"
+      },
+      {
+        "name": "Beweislast-Fehlschluss",
+        "description": "Man behauptet, etwas sei wahr, weil es nicht widerlegt wurde, oder umgekehrt.",
+        "example": "Zu behaupten, Geister existieren, weil niemand bewiesen hat, dass sie nicht existieren."
+      }
+    ],
+    "waltonRulesTitle": "Waltons Argumentationsregeln",
+    "waltonRulesDescription": "Douglas Walton, ein renommierter Argumentationstheoretiker, entwickelte Regeln für konstruktiven Dialog. Diese Regeln helfen, faire, relevante und produktive Argumente zu führen.",
+    "walton_rules": [
+      {
+        "name": "Beweislast-Regel",
+        "description": "Die Person, die eine Behauptung aufstellt, trägt die Verantwortung, Beweise dafür zu liefern.",
+        "example": "Wenn du behauptest, eine neue Politik würde die Kriminalität senken, solltest du Daten oder Begründungen vorlegen, die diese Behauptung stützen."
+      },
+      {
+        "name": "Relevanz-Regel",
+        "description": "Argumente sollten sich direkt auf das diskutierte Thema beziehen.",
+        "example": "In einer Debatte über Bildungsfinanzierung wäre es ein Verstoß gegen diese Regel, über das Privatleben eines Lehrers zu sprechen."
+      },
+      {
+        "name": "Kooperations-Regel",
+        "description": "Teilnehmer sollten zusammenarbeiten, um das Problem zu lösen, anstatt nur zu versuchen, zu gewinnen.",
+        "example": "Gültige Punkte der Gegenseite anerkennen, auch wenn man mit ihrer Schlussfolgerung nicht einverstanden ist."
+      },
+      {
+        "name": "Kritisches Hinterfragen-Regel",
+        "description": "Argumente sollten für kritische Prüfung und Hinterfragung offen sein.",
+        "example": "Bereit sein, Fragen zu den Annahmen zu beantworten, die deinem Argument zugrunde liegen."
+      },
+      {
+        "name": "Klarheits-Regel",
+        "description": "Die Sprache sollte klar sein und Begriffe sollten bei Bedarf definiert werden.",
+        "example": "Fachbegriffe erklären, wenn sie für dein Argument wesentlich sind."
+      },
+      {
+        "name": "Konsistenz-Regel",
+        "description": "Teilnehmer sollten in ihren Aussagen und Verpflichtungen konsistent sein.",
+        "example": "Sich nicht selbst widersprechen, indem man zu Beginn einer Debatte etwas behauptet und später das Gegenteil."
       }
     ]
   },

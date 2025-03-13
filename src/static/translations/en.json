@@ -699,6 +699,50 @@
         "name": "Appeal to Emotion",
         "description": "Using emotion manipulation instead of valid reasoning.",
         "example": "This policy will destroy children's futures! (without evidence)"
+      },
+      {
+        "name": "No True Scotsman Fallacy",
+        "description": "Modifying a generalization to exclude counterexamples by arbitrarily changing the definition.",
+        "example": "When told that some Scots put sugar on porridge, responding 'No true Scotsman would do that.'"
+      },
+      {
+        "name": "Burden of Proof Fallacy",
+        "description": "Claiming something is true because it hasn't been proven false, or vice versa.",
+        "example": "Claiming ghosts exist because no one has proven they don't exist."
+      }
+    ],
+    "waltonRulesTitle": "Walton's Argumentation Rules",
+    "waltonRulesDescription": "Douglas Walton, a renowned argumentation theorist, developed a set of rules for constructive dialogue. These rules help ensure that arguments are fair, relevant, and productive.",
+    "walton_rules": [
+      {
+        "name": "Burden of Proof Rule",
+        "description": "The person who makes a claim has the responsibility to provide evidence for it.",
+        "example": "If you claim a new policy will reduce crime, you should provide data or reasoning to support this claim."
+      },
+      {
+        "name": "Relevance Rule",
+        "description": "Arguments should directly address the issue being discussed.",
+        "example": "In a debate about education funding, discussing the teacher's personal life would violate this rule."
+      },
+      {
+        "name": "Cooperation Rule",
+        "description": "Participants should work together to resolve the issue rather than simply trying to win.",
+        "example": "Acknowledging valid points from the other side even while disagreeing with their conclusion."
+      },
+      {
+        "name": "Critical Questioning Rule",
+        "description": "Arguments should be open to critical examination and questioning.",
+        "example": "Being willing to answer questions about the assumptions underlying your argument."
+      },
+      {
+        "name": "Clarity Rule",
+        "description": "Language should be clear and terms should be defined when necessary.",
+        "example": "Explaining technical terms when they're essential to your argument."
+      },
+      {
+        "name": "Commitment Rule",
+        "description": "Participants should be consistent with their commitments and statements.",
+        "example": "Not contradicting yourself by claiming one thing at the beginning of a debate and the opposite later."
       }
     ]
   },

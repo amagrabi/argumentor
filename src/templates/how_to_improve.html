@@ -191,6 +191,33 @@
         </div>
       </section>
 
+      <!-- Walton's Argumentation Rules -->
+      <section class="mb-8">
+        <h2
+          class="text-2xl font-bold mb-4"
+          data-i18n="howToImprovePage.waltonRulesTitle"
+        >
+          Walton's Argumentation Rules
+        </h2>
+        <p class="mb-6" data-i18n="howToImprovePage.waltonRulesDescription">
+          Douglas Walton, a renowned argumentation theorist, developed a set of
+          rules for constructive dialogue. These rules help ensure that
+          arguments are fair, relevant, and productive.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {% for rule in page_content.walton_rules %}
+          <div class="border border-gray-200 rounded-lg p-4">
+            <h4 class="font-bold mb-2">{{ rule.name }}</h4>
+            <p class="text-sm text-gray-700 mb-2">{{ rule.description }}</p>
+            <p class="text-sm italic text-gray-600">
+              <span data-i18n="howToImprovePage.exampleTitle">Example</span>: {{
+              rule.example }}
+            </p>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
       <!-- Bottom Go Back Button -->
       <div class="text-center my-4">
         <a
