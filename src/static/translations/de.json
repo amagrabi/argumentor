@@ -708,10 +708,11 @@
     },
     "argumentStepsNote": "Diese Schritte helfen dir, Lücken in deiner Argumentation zu erkennen und jeden Teil systematisch zu verbessern.",
     "argumentStepsAdvice": "Suche nach glaubwürdigen Informationen und vermeide es, dich nur auf Annahmen zu stützen. Überprüfe deine Daten und sei bereit, deine Ansichten zu ändern, wenn du neue Beweise erhältst. Das stärkt dein Argument und macht es überzeugender.",
-    "understandingBiasesTitle": "Kognitive Verzerrungen und logische Fehlschlüsse verstehen",
-    "understandingBiasesDescription": "Unser Denken kann durch zwei häufige Fallstricke beeinträchtigt werden. Kognitive Verzerrungen sind Denkfehler, die durch mentale Abkürzungen entstehen. Logische Fehlschlüsse sind häufige Argumentationsfehler, die die Gültigkeit von Argumenten schwächen. Das Bewusstsein für diese Quellen von Denkfehlern kann dir helfen, klarere und objektivere Argumente aufzubauen.",
+    "understandingBiasesTitle": "Verzerrungen, Fehlschlüsse & Rhetorik",
+    "understandingBiasesDescription": "Unser Denken kann durch drei häufige Fallstricke beeinträchtigt werden: Kognitive Verzerrungen sind Denkfehler, die durch mentale Abkürzungen entstehen. Logische Fehlschlüsse sind Argumentationsfehler, die die Gültigkeit von Argumenten schwächen. Rhetorische Techniken sind Überzeugungsmittel, die missbraucht werden können, um zu manipulieren statt zu argumentieren. Das Bewusstsein für diese kann dir helfen, klarere und objektivere Argumente aufzubauen.",
     "cognitiveBiasesTitle": "Kognitive Verzerrungen",
     "logicalFallaciesTitle": "Logische Fehlschlüsse",
+    "rhetoricalTechniquesTitle": "Rhetorische Techniken",
     "exampleTitle": "Beispiel",
     "cognitive_biases": [
       {
@@ -772,6 +773,38 @@
     ],
     "logical_fallacies": [
       {
+        "name": "Falsches Dilemma",
+        "description": "Man stellt nur zwei Optionen dar, obwohl es mehr gibt.",
+        "example": "Entweder verbieten wir alle Autos oder der Klimawandel zerstört die Welt."
+      },
+      {
+        "name": "Basisratenfehlschluss",
+        "description": "Man ignoriert die allgemeine Wahrscheinlichkeit bei der Bewertung von Einzelfällen.",
+        "example": "Sich über einen positiven Krebs-Test zu sorgen, ohne die Seltenheit der Krankheit zu berücksichtigen."
+      },
+      {
+        "name": "Naturalistischer Fehlschluss",
+        "description": "Man argumentiert, dass etwas gut ist, weil es natürlich ist.",
+        "example": "Diese Chemikalie ist gefährlich, weil sie synthetisch ist und nicht in der Natur vorkommt."
+      },
+      {
+        "name": "Spielerfehlschluss",
+        "description": "Man glaubt, dass vergangene unabhängige Ereignisse zukünftige Wahrscheinlichkeiten beeinflussen.",
+        "example": "Nach 5 Mal Zahl beim Münzwurf zu denken, dass nun Kopf 'fällig' ist."
+      },
+      {
+        "name": "Beweislastfehlschluss",
+        "description": "Man behauptet, etwas sei wahr, weil es nicht als falsch bewiesen wurde, oder umgekehrt.",
+        "example": "Zu behaupten, Geister existieren, weil niemand bewiesen hat, dass sie nicht existieren."
+      },
+      {
+        "name": "Kein wahrer Schotte",
+        "description": "Man ändert eine Verallgemeinerung, um Gegenbeispiele auszuschließen, indem man die Definition willkürlich ändert.",
+        "example": "Wenn man hört, dass einige Schotten Zucker auf ihren Haferbrei geben, antwortet man: 'Kein wahrer Schotte würde das tun.'"
+      }
+    ],
+    "rhetorical_techniques": [
+      {
         "name": "Strohmann-Argument",
         "description": "Man stellt ein Argument verzerrt dar, um es leichter anzugreifen.",
         "example": "Wenn jemand strengere Umweltschutzmaßnahmen fordert, behauptet er: 'Sie wollen die ganze Industrie abschaffen!'"
@@ -787,19 +820,9 @@
         "example": "Bei Korruptionsvorwürfen erwidern: 'Was ist mit den Spenden der anderen Partei?'"
       },
       {
-        "name": "Basisratenfehlschluss",
-        "description": "Man ignoriert die allgemeine Wahrscheinlichkeit bei der Bewertung von Einzelfällen.",
-        "example": "Sich über einen positiven Krebs-Test zu sorgen, ohne die Seltenheit der Krankheit zu berücksichtigen."
-      },
-      {
         "name": "Autoritätsargument",
         "description": "Man hält eine Aussage für wahr, weil eine Autorität sie unterstützt.",
         "example": "Diese medizinische Behandlung muss wirken, weil ein berühmter Schauspieler sie bewirbt."
-      },
-      {
-        "name": "Falsches Dilemma",
-        "description": "Man stellt nur zwei Optionen dar, obwohl es mehr gibt.",
-        "example": "Entweder verbieten wir alle Autos oder der Klimawandel zerstört die Welt."
       },
       {
         "name": "Dammbruch-Argument",
@@ -807,29 +830,9 @@
         "example": "Die Legalisierung von Marihuana führt zu einer Heroinabhängigkeitsepidemie."
       },
       {
-        "name": "Berufung auf die Natur",
-        "description": "Man argumentiert, etwas sei gut, weil es natürlich ist.",
-        "example": "Dieses chemische Produkt ist gefährlich, weil es synthetisch ist und in der Natur nicht vorkommt."
-      },
-      {
-        "name": "Spieler-Irrtum",
-        "description": "Man glaubt, vergangene Ereignisse beeinflussen zukünftige Wahrscheinlichkeiten.",
-        "example": "Nach fünf aufeinanderfolgenden Münzwürfen immer 'Zahl' zu sehen, zu glauben, dass jetzt 'Kopf' fällig ist."
-      },
-      {
-        "name": "Appell an die Emotion",
-        "description": "Man nutzt emotionale Appelle statt logischer Argumente.",
-        "example": "Diese Politik wird die Zukunft der Kinder zerstören! (ohne Belege)"
-      },
-      {
-        "name": "Kein wahrer Schotte-Fehlschluss",
-        "description": "Man ändert die Definition einer Gruppe, um Gegenbeispiele auszuschließen.",
-        "example": "Wenn jemand sagt, dass einige Schotten Zucker auf ihren Haferbrei tun, antwortet man: 'Kein wahrer Schotte würde das tun.'"
-      },
-      {
-        "name": "Beweislast-Fehlschluss",
-        "description": "Man behauptet, etwas sei wahr, weil es nicht widerlegt wurde, oder umgekehrt.",
-        "example": "Zu behaupten, Geister existieren, weil niemand bewiesen hat, dass sie nicht existieren."
+        "name": "Appell an Emotionen",
+        "description": "Man verwendet emotionale Manipulation anstelle von sachlicher Argumentation.",
+        "example": "Diese Politik wird die Zukunft unserer Kinder zerstören! (ohne Beweise)"
       }
     ],
     "waltonRulesTitle": "Waltons Argumentationsregeln",

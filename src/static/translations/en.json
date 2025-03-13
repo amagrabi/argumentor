@@ -592,10 +592,11 @@
     },
     "argumentStepsNote": "Breaking your argument into these steps makes it easier to identify gaps in your reasoning and refine each part systematically.",
     "argumentStepsAdvice": "Always seek out credible information and avoid relying solely on assumptions. Validate your data and be open to updating your views when confronted with new evidence. This not only strengthens your argument but also enhances its persuasiveness.",
-    "understandingBiasesTitle": "Understanding Cognitive Biases and Logical Fallacies",
-    "understandingBiasesDescription": "Our reasoning can be impaired by two common pitfalls. Cognitive biases are systematic errors in thinking caused by mental shortcuts, while logical fallacies are common flaws in reasoning that weaken the arguments' validity. Being aware of these sources of reasoning errors can help you build clearer, more objective arguments.",
+    "understandingBiasesTitle": "Biases, Fallacies & Rhetoric",
+    "understandingBiasesDescription": "Our reasoning can be impaired by three common pitfalls: Cognitive biases are systematic errors in thinking caused by mental shortcuts. Logical fallacies are flaws in reasoning that make an argument invalid. Rhetorical techniques are persuasive devices that can be misused to manipulate rather than reason. Being aware of these can help you build clearer, more objective arguments.",
     "cognitiveBiasesTitle": "Cognitive Biases",
     "logicalFallaciesTitle": "Logical Fallacies",
+    "rhetoricalTechniquesTitle": "Rhetorical Techniques",
     "exampleTitle": "Example",
     "cognitive_biases": [
       {
@@ -651,7 +652,39 @@
     ],
     "logical_fallacies": [
       {
-        "name": "Strawman Fallacy",
+        "name": "False Dilemma",
+        "description": "Presenting two options as the only possibilities when others exist.",
+        "example": "Either we ban all cars or we let climate change destroy the planet."
+      },
+      {
+        "name": "Base Rate Fallacy",
+        "description": "Neglecting general statistical probabilities when evaluating specific cases.",
+        "example": "Worrying about a positive cancer test result without considering the disease's rarity in the population."
+      },
+      {
+        "name": "Appeal to Nature",
+        "description": "Arguing something is good because it's natural.",
+        "example": "This chemical is dangerous because it's synthetic and not found in nature."
+      },
+      {
+        "name": "Gambler's Fallacy",
+        "description": "Believing past independent events affect future probabilities.",
+        "example": "Thinking a coin is 'due' for heads after 5 consecutive tails."
+      },
+      {
+        "name": "Burden of Proof Fallacy",
+        "description": "Claiming something is true because it hasn't been proven false, or vice versa.",
+        "example": "Claiming ghosts exist because no one has proven they don't exist."
+      },
+      {
+        "name": "No True Scotsman Fallacy",
+        "description": "Modifying a generalization to exclude counterexamples by arbitrarily changing the definition.",
+        "example": "When told that some Scots put sugar on porridge, responding 'No true Scotsman would do that.'"
+      }
+    ],
+    "rhetorical_techniques": [
+      {
+        "name": "Strawman Argument",
         "description": "Misrepresenting an argument to make it easier to attack.",
         "example": "When someone says we need pollution controls, claiming 'They want to shut down all industry!'"
       },
@@ -666,19 +699,9 @@
         "example": "When accused of corruption, responding 'What about the other party's donations?'"
       },
       {
-        "name": "Base Rate Fallacy",
-        "description": "Neglecting general statistical probabilities when evaluating specific cases.",
-        "example": "Worrying about a positive cancer test result without considering the disease's rarity in the population."
-      },
-      {
         "name": "Appeal to Authority",
         "description": "Assuming a claim is true because an authority figure endorses it.",
         "example": "This medical treatment must work because a famous actor promotes it."
-      },
-      {
-        "name": "False Dilemma",
-        "description": "Presenting two options as the only possibilities when others exist.",
-        "example": "Either we ban all cars or we let climate change destroy the planet."
       },
       {
         "name": "Slippery Slope",
@@ -686,29 +709,9 @@
         "example": "Legalizing marijuana will lead to heroin addiction epidemics."
       },
       {
-        "name": "Appeal to Nature",
-        "description": "Arguing something is good because it's natural.",
-        "example": "This chemical is dangerous because it's synthetic and not found in nature."
-      },
-      {
-        "name": "Gambler's Fallacy",
-        "description": "Believing past independent events affect future probabilities.",
-        "example": "Thinking a coin is 'due' for heads after 5 consecutive tails."
-      },
-      {
         "name": "Appeal to Emotion",
         "description": "Using emotion manipulation instead of valid reasoning.",
         "example": "This policy will destroy children's futures! (without evidence)"
-      },
-      {
-        "name": "No True Scotsman Fallacy",
-        "description": "Modifying a generalization to exclude counterexamples by arbitrarily changing the definition.",
-        "example": "When told that some Scots put sugar on porridge, responding 'No true Scotsman would do that.'"
-      },
-      {
-        "name": "Burden of Proof Fallacy",
-        "description": "Claiming something is true because it hasn't been proven false, or vice versa.",
-        "example": "Claiming ghosts exist because no one has proven they don't exist."
       }
     ],
     "waltonRulesTitle": "Walton's Argumentation Rules",
