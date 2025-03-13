@@ -3459,10 +3459,10 @@ function showLoadingIndicator() {
   if (!loadingOverlay) {
     loadingOverlay = document.createElement("div");
     loadingOverlay.id = "loadingOverlay";
-    loadingOverlay.className = "loading-overlay";
+    loadingOverlay.className = "page-loading-overlay";
 
     const spinner = document.createElement("div");
-    spinner.className = "spinner";
+    spinner.className = "page-loading-spinner";
 
     loadingOverlay.appendChild(spinner);
     document.body.appendChild(loadingOverlay);

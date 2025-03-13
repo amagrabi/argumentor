@@ -170,7 +170,7 @@
       }
 
       /* Loading animation for page transitions */
-      .loading-overlay {
+      .page-loading-overlay {
         position: fixed;
         top: 0;
         left: 0;
@@ -183,7 +183,7 @@
         z-index: 9999;
       }
 
-      .spinner {
+      .page-loading-spinner {
         width: 40px;
         height: 40px;
         border: 4px solid #f3f3f3;
@@ -224,8 +224,8 @@
   </head>
   <body class="bg-white font-sans leading-normal tracking-normal text-gray-900">
     <!-- Loading Indicator -->
-    <div id="loadingOverlay" class="loading-overlay" style="display: none">
-      <div class="spinner"></div>
+    <div id="loadingOverlay" class="page-loading-overlay" style="display: none">
+      <div class="page-loading-spinner"></div>
     </div>
 
     <!-- Header with Go Back Button -->

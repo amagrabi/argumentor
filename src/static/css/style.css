@@ -326,7 +326,6 @@ textarea:focus {
     max-width: 400px !important;
     white-space: nowrap !important;
     overflow: hidden !important;
-    text-overflow: ellipsis !important;
     text-align: left !important; /* Ensure text is left-aligned */
   }
 
@@ -611,6 +610,7 @@ textarea:focus {
   transform: scaleX(1);
 }
 
+/* Submit button spinner */
 .spinner {
   display: inline-block;
   width: 16px;
@@ -626,9 +626,22 @@ textarea:focus {
 }
 
 @keyframes spin {
-  to {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
     transform: rotate(360deg);
   }
+}
+
+/* Page loading spinner */
+.page-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 .g_id_signin {
@@ -1601,7 +1614,6 @@ textarea:focus {
     max-width: 400px !important;
     white-space: nowrap !important;
     overflow: hidden !important;
-    text-overflow: ellipsis !important;
     text-align: left !important; /* Ensure text is left-aligned */
   }
 
@@ -2098,7 +2110,7 @@ a[data-i18n="profile.changePlan"] {
 }
 
 /* Loading animation for page transitions */
-.loading-overlay {
+.page-loading-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -2109,15 +2121,6 @@ a[data-i18n="profile.changePlan"] {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
