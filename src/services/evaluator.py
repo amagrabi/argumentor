@@ -163,7 +163,7 @@ class LLMEvaluator(BaseEvaluator):
                     Question (given to user): {question_text}
                     Claim to answer the question (written by user): {claim}
                     Argument to support the claim (written by user): {argument}
-                    Counterargument rebuttal (written by user; optional): {counterargument}
+                    Refute counterarguments (written by user; optional): {counterargument}
                 """)
 
     def evaluate(

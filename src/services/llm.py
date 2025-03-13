@@ -18,7 +18,7 @@ SYSTEM_INSTRUCTION_EN = auto_dedent(
     f"""
     You are an argument evaluation system. There is always a question given to
     the user, and they must formulate a claim to answer the question and provide
-    reasoning to support that claim. A counterargument rebuttal section
+    reasoning to support that claim. A section to refute counterarguments
     is optional.
 
     Evaluate the argument overall as well as in terms of:

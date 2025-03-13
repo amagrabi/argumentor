@@ -45,7 +45,7 @@
       "claimDescription": "State your main position on the question above clearly and concisely...",
       "reasoning": "Your Reasoning",
       "reasoningDescription": "Explain the logic and evidence supporting your claim...",
-      "counterargument": "Counterargument Rebuttal (optional)",
+      "counterargument": "Refute Counterarguments (optional)",
       "counterargumentDescription": "Address potential objections to strengthen your argument...",
       "challengeDescription": "Defend and refine your argument..."
     },

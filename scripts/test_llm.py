@@ -16,7 +16,7 @@ COUNTERARGUMENT_REBUTTAL = ""
 PROMPT = f"""Question: {QUESTION}
 Claim: {CLAIM}
 Argument: {ARGUMENT}
-Counterargument Rebuttal (Optional): {COUNTERARGUMENT_REBUTTAL}
+Refuting Counterarguments (Optional): {COUNTERARGUMENT_REBUTTAL}
 """
 
 
