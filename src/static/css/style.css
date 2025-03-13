@@ -1715,9 +1715,9 @@ textarea:focus {
 
   /* 2. UPDATED: Even smaller achievement icons for mobile */
   .achievement-icon {
-    width: 1.5rem !important;
-    height: 1.5rem !important;
-    margin: 0.075rem !important;
+    width: 1.75rem !important; /* Increased from 1.5rem */
+    height: 1.75rem !important; /* Increased from 1.5rem */
+    margin: 0.125rem !important; /* Increased from 0.075rem */
     padding: 0.1rem !important;
   }
 
@@ -1725,26 +1725,29 @@ textarea:focus {
   .achievement-icon svg,
   .achievement-icon img,
   .achievement-icon i {
-    width: 0.85rem !important;
-    height: 0.85rem !important;
-    max-width: 0.85rem !important;
-    max-height: 0.85rem !important;
-    font-size: 0.85rem !important;
+    width: 1rem !important; /* Increased from 0.85rem */
+    height: 1rem !important; /* Increased from 0.85rem */
+    max-width: 1rem !important; /* Increased from 0.85rem */
+    max-height: 1rem !important; /* Increased from 0.85rem */
+    font-size: 1rem !important; /* Increased from 0.85rem */
   }
 
   /* Fix for font awesome icons specifically */
   .achievement-icon .fa,
   .achievement-icon .fas,
   .achievement-icon .far {
-    font-size: 0.85rem !important;
-    line-height: 0.85rem !important;
+    font-size: 1rem !important; /* Increased from 0.85rem */
+    line-height: 1rem !important; /* Increased from 0.85rem */
   }
 
   /* 3. NEW: Fewer achievement icons per row */
   .achievements-container {
     display: grid !important;
-    grid-template-columns: repeat(5, 1fr) !important;
-    gap: 0.25rem !important;
+    grid-template-columns: repeat(
+      4,
+      1fr
+    ) !important; /* Changed from 5 to 4 columns */
+    gap: 0.25rem !important; /* Reduced from 0.5rem */
     justify-items: center !important;
   }
 
@@ -2080,6 +2083,23 @@ a[data-i18n="profile.changePlan"] {
   width: 100%; /* Ensure the container takes full width */
 }
 
+/* Improve spacing for achievement icons in challenge section */
+.relative.group\/trophy {
+  margin-left: 0.25rem !important;
+  display: inline-block !important;
+}
+
+.relative.group\/trophy img {
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+}
+
+/* Add more spacing between achievement icons in challenge answers */
+.flex.items-center.justify-end {
+  gap: 0.5rem !important;
+  padding-right: 0.5rem !important;
+}
+
 /* Ensure the voice/text icon is properly aligned */
 .absolute.top-0.right-0 p svg.inline {
   display: block;
@@ -2094,10 +2114,41 @@ a[data-i18n="profile.changePlan"] {
 }
 
 /* Fix for achievement tooltips getting cut off on the left side */
-.group:hover .group-hover\:opacity-100 {
-  transform: translate(calc(-50% + 20px), 0.5rem) !important;
+.group:hover .opacity-0.group-hover\:opacity-100 {
   left: 50%;
-  right: auto;
+  transform: translateX(-50%) translateY(0.5rem);
+}
+
+/* Ensure tooltips are visible on mobile */
+@media (max-width: 640px) {
+  .group .opacity-0.group-hover\:opacity-100 {
+    width: auto;
+    min-width: 150px;
+    max-width: 200px;
+  }
+
+  /* Make achievement icons more compact on mobile */
+  .achievement-icon {
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+    margin: 0.075rem !important;
+    padding: 0.075rem !important;
+  }
+
+  /* Adjust tooltip position for achievements on the right edge */
+  .group:nth-child(6n) .opacity-0.group-hover\:opacity-100,
+  .group:nth-child(6n-1) .opacity-0.group-hover\:opacity-100 {
+    left: auto;
+    right: 0;
+    transform: translateY(0.5rem);
+  }
+
+  /* Adjust tooltip position for achievements on the left edge */
+  .group:nth-child(6n-5) .opacity-0.group-hover\:opacity-100 {
+    left: 0;
+    right: auto;
+    transform: translateY(0.5rem);
+  }
 }
 
 /* First column needs special positioning to avoid cutoff */
@@ -2203,5 +2254,18 @@ a[data-i18n="profile.changePlan"] {
 
   #imageModal .aspect-square {
     max-height: 70vh;
+  }
+}
+
+/* Make achievement section more compact on mobile */
+@media (max-width: 640px) {
+  h2.text-xl[data-i18n="profile.achievements"],
+  h5.text-lg[data-i18n="profile.achievements"] {
+    margin-bottom: 0.5rem !important;
+  }
+
+  h2.text-xl[data-i18n="profile.achievements"] + div,
+  h5.text-lg[data-i18n="profile.achievements"] + div {
+    margin-bottom: 1rem !important;
   }
 }

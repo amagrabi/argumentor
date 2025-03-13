@@ -1047,7 +1047,7 @@
             </h5>
             <div class="flex justify-center w-full">
               <div
-                class="inline-grid grid-cols-10 sm:grid-cols-10 md:grid-cols-12 lg:grid-cols-[repeat(19,minmax(0,40px))] justify-center justify-items-center gap-x-3 gap-y-3 mb-8 max-w-4xl mx-auto px-4"
+                class="inline-grid grid-cols-5 sm:grid-cols-7 md:grid-cols-9 lg:grid-cols-[repeat(19,minmax(0,40px))] justify-center justify-items-center gap-x-4 gap-y-2 mb-8 max-w-4xl mx-auto px-4"
               >
                 {% for achievement in all_achievements %} {% set is_achieved =
                 achievement.id in earned_achievements %}
@@ -1066,7 +1066,7 @@
                   </div>
                   <!-- Tooltip -->
                   <div
-                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute z-10 w-48 -translate-x-1/4 translate-y-2 pointer-events-none bg-gray-800 text-white text-sm rounded-lg p-2 shadow-lg"
+                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute z-10 w-48 left-1/2 -translate-x-1/2 translate-y-2 pointer-events-none bg-gray-800 text-white text-sm rounded-lg p-2 shadow-lg"
                   >
                     <p class="font-bold mb-1" data-i18n="{{ achievement.name_key }}">{{ achievement.name }}</p>
                     <p class="text-gray-200 text-xs" data-i18n="{{ achievement.description_key }}">{{ achievement.description }}</p>

@@ -2364,7 +2364,7 @@ window.addEventListener("DOMContentLoaded", async () => {
               </span>
             </h5>
             <div class="flex justify-center w-full">
-              <div class="inline-grid grid-cols-10 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-[repeat(15,minmax(0,40px))] justify-center justify-items-center gap-x-3 gap-y-3 mb-8 max-w-4xl mx-auto px-4">
+              <div class="inline-grid grid-cols-5 sm:grid-cols-7 md:grid-cols-9 lg:grid-cols-[repeat(15,minmax(0,40px))] justify-center justify-items-center gap-x-4 gap-y-2 mb-8 max-w-4xl mx-auto px-4">
                 ${all_achievements
                   .map((achievement) => {
                     const isEarned =
@@ -2385,7 +2385,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                         }" alt="Trophy" />
                       </div>
                       <!-- Tooltip -->
-                      <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute z-10 w-48 -translate-x-1/4 translate-y-2 pointer-events-none bg-gray-800 text-white text-sm rounded-lg p-2 shadow-lg">
+                      <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute z-10 w-48 left-1/2 -translate-x-1/2 translate-y-2 pointer-events-none bg-gray-800 text-white text-sm rounded-lg p-2 shadow-lg">
                         <p class="font-bold mb-1">${
                           translations.profile.achievementData[achievement.id]
                             .name
@@ -3189,8 +3189,7 @@ function updateCategoryUI() {
       item.classList.add("selected");
       item.classList.add("bg-gray-800");
       item.classList.add("text-white");
-      item.classList.remove("bg-white");
-      item.classList.remove("text-black");
+      item.classList.remove("bg-white", "text-black");
     } else {
       item.classList.remove("selected");
       item.classList.remove("bg-gray-800");
