@@ -26,6 +26,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     {% include 'partials/favicons.html' %}
     <style>
+      /* Override default video controls */
+      video::-webkit-media-controls-overlay-play-button {
+        display: none;
+      }
+
+      video::-webkit-media-controls {
+        display: none;
+      }
+
+      video::-webkit-media-controls-panel {
+        display: none;
+      }
+
+      video {
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
       .video-ended-button {
         position: absolute;
         top: 50%;
