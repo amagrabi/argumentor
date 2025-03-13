@@ -200,8 +200,6 @@
       "consciousness": "Is consciousness exclusive to humans, or could other animals experience it too?",
       "simulation": "Could our reality be a simulation?",
       "truth": "Is 'truth' shaped by personal and cultural views, or do objective truths exist beyond our interpretations?",
-      "human-nature": "Is 'human nature' a constant set of traits, or is it molded by our environment?",
-      "objective-morality": "Is morality objective, or is it just a social construct?",
       "self-meaning": "Do humans need to create their own meaning to escape existential despair?",
       "religion-society": "Is religion good for society?"
     },
@@ -252,6 +250,7 @@
       "user-data": "Should companies be allowed to collect user data extensively if it leads to a more personalized service?"
     },
     "Thought Experiments": {
+      "stop-aging": "If a pill were invented to stop aging, would that be a good thing?",
       "controlled-emotions": "Imagine a world where emotions could be precisely controlled with technology. Would this be a utopia or dystopia?",
       "teleportation-vs-time": "Which breakthrough would have a more profound impact on society: teleportation or time travel?",
       "perfect-happiness": "If a machine could give you perfect happiness but it's just an illusion, is it a good idea you plug in?",
