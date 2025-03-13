@@ -574,11 +574,6 @@
                     data-i18n="profile.overall"
                   ></button>
                   <button
-                    id="showRelevance"
-                    class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
-                    data-i18n="profile.relevance"
-                  ></button>
-                  <button
                     id="showLogic"
                     class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
                     data-i18n="profile.logic"
@@ -602,6 +597,11 @@
                     id="showCreativity"
                     class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
                     data-i18n="profile.creativity"
+                  ></button>
+                  <button
+                    id="showRelevance"
+                    class="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm"
+                    data-i18n="profile.relevance"
                   ></button>
                   <button
                     id="showChallenge"
@@ -918,11 +918,11 @@
                   </svg>
                 </div>
                 <div class="hidden mt-2 space-y-2 text-sm text-gray-600">
-                  {% set ordered_categories = [ ("Relevance", "relevance"),
-                  ("Logical Structure", "logic"), ("Clarity", "clarity"),
-                  ("Depth", "depth"), ("Objectivity", "objectivity"),
-                  ("Creativity", "creativity") ] %} {% for display_name,
-                  translation_key in ordered_categories %}
+                  {% set ordered_categories = [ ("Logical Structure", "logic"),
+                  ("Clarity", "clarity"), ("Depth", "depth"), ("Objectivity",
+                  "objectivity"), ("Creativity", "creativity"), ("Relevance",
+                  "relevance") ] %} {% for display_name, translation_key in
+                  ordered_categories %}
                   <p class="flex flex-col">
                     <span class="flex items-center">
                       <span
@@ -951,12 +951,11 @@
                       >Challenge Details</span
                     >
                   </div>
-                  {% set ordered_challenge_categories = [ ("Relevance",
-                  "relevance"), ("Logical Structure", "logic"), ("Clarity",
-                  "clarity"), ("Depth", "depth"), ("Objectivity",
-                  "objectivity"), ("Creativity", "creativity") ] %} {% for
-                  display_name, translation_key in ordered_challenge_categories
-                  %}
+                  {% set ordered_challenge_categories = [ ("Logical Structure",
+                  "logic"), ("Clarity", "clarity"), ("Depth", "depth"),
+                  ("Objectivity", "objectivity"), ("Creativity", "creativity"),
+                  ("Relevance", "relevance") ] %} {% for display_name,
+                  translation_key in ordered_challenge_categories %}
                   <p class="flex flex-col">
                     <span class="flex items-center">
                       <span

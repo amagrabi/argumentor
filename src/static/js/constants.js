@@ -75,12 +75,12 @@ export const ERROR_MESSAGES = {
 };
 
 export const EVALUATION_CATEGORIES = [
-  "Relevance",
   "Logical Structure",
   "Clarity",
   "Depth",
   "Objectivity",
   "Creativity",
+  "Relevance",
 ];
 
 // Mapping of evaluation category labels to translation keys
