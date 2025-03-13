@@ -3,6 +3,7 @@ import uuid
 from datetime import UTC, datetime
 
 from flask import request, session
+from flask_login import current_user
 
 from extensions import db
 from models import User, Visit
@@ -11,6 +12,17 @@ logger = logging.getLogger(__name__)
 
 
 def ensure_user_id():
+    # If the user is already authenticated through Flask-Login, make sure session user_id matches
+    if current_user.is_authenticated:
+        if "user_id" not in session or session["user_id"] != current_user.uuid:
+            session["user_id"] = current_user.uuid
+            session.modified = True
+            logger.debug(
+                f"Updated session user_id to match authenticated user: {current_user.uuid}"
+            )
+        return
+
+    # For non-authenticated users, create an anonymous user if needed
     if "user_id" not in session:
         new_id = str(uuid.uuid4())
         session["user_id"] = new_id

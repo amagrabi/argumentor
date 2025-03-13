@@ -280,6 +280,15 @@
         if (loadingOverlay) {
           loadingOverlay.style.display = 'none';
         }
+
+        // Check if we should show the login modal
+        {% if show_login %}
+        if (typeof showAuthModal === 'function' && !{{ current_user.is_authenticated | string | lower }}) {
+          setTimeout(function() {
+            showAuthModal();
+          }, 500); // Small delay to ensure everything is loaded
+        }
+        {% endif %}
       });
 
       // Also handle browser back/forward navigation
@@ -1457,6 +1466,54 @@
 
     <!-- Include custom JavaScript -->
     <script type="module" src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script>
+      // Make showAuthModal globally available with proper Google auth handling
+      window.showAuthModal = function() {
+        // Check if showLoginModal is available directly or on window
+        if (typeof showLoginModal === 'function') {
+          showLoginModal();
+        } else if (window.showLoginModal) {
+          window.showLoginModal();
+        } else {
+          // Fallback approach - create a simple login modal that redirects to login page
+          const modal = document.createElement("div");
+          modal.innerHTML = `
+            <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
+                 onclick="event.target === this && this.remove()">
+              <div class="bg-white rounded-lg p-6 w-full max-w-md relative"
+                   onclick="event.stopPropagation()">
+                <div class="flex justify-between items-center mb-4">
+                  <h3 class="text-lg font-semibold">Login</h3>
+                  <button onclick="this.parentElement.parentElement.parentElement.remove(); event.stopPropagation()"
+                          class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                </div>
+                <div class="space-y-4">
+                  <p>Please log in to continue and access higher usage limits.</p>
+                  <div class="flex justify-center">
+                    <a href="/login" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 text-center">
+                      Go to Login Page
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          // Remove any existing modals
+          document.querySelectorAll("div.fixed.inset-0").forEach((el) => el.remove());
+          document.body.appendChild(modal);
+        }
+      };
+
+      // Ensure showAuthModal is available for the load event handler
+      document.addEventListener('DOMContentLoaded', function() {
+        if (!window.showAuthModal) {
+          window.showAuthModal = function() {
+            window.location.href = '/login';
+          };
+        }
+      });
+    </script>
 
     <!-- Feedback Modal -->
     <div

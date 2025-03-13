@@ -162,6 +162,10 @@ export function showLoginModal() {
       }
 
       modal.remove();
+      // Remove show_login parameter from URL if present
+      const url = new URL(window.location);
+      url.searchParams.delete("show_login");
+      // Force a full page reload to refresh the content with the logged-in user's information
       window.location.reload();
     } catch (error) {
       console.error("Login error:", error);
@@ -275,7 +279,10 @@ export function showSignupModal() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Signup failed");
       modal.remove();
-      window.location.reload();
+      // Remove show_login parameter from URL if present
+      const url = new URL(window.location);
+      url.searchParams.delete("show_login");
+      window.location.href = url.toString();
     } catch (error) {
       handleSignupError(error);
     }
@@ -481,7 +488,10 @@ function handleGoogleAuthResponse(response) {
         const modal = authForm.closest('div[class*="fixed inset-0"]');
         if (modal) modal.remove();
       }
-      window.location.reload();
+      // Remove show_login parameter from URL if present
+      const url = new URL(window.location);
+      url.searchParams.delete("show_login");
+      window.location.href = url.toString();
     })
     .catch((error) => {
       if (error.message !== "username_required") {
@@ -546,7 +556,10 @@ function showGoogleUsernameModal(credential) {
           localStorage.setItem("language", data.user.preferred_language);
         }
         modal.remove();
-        window.location.reload();
+        // Remove show_login parameter from URL if present
+        const url = new URL(window.location);
+        url.searchParams.delete("show_login");
+        window.location.href = url.toString();
       })
       .catch((error) => {
         // Translate error messages

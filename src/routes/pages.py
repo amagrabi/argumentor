@@ -88,6 +88,9 @@ def home(lang=None):
     # if the user is a first-time visitor based on localStorage
     is_language_redirect = True if is_first_time_visit else is_language_redirect
 
+    # Check if we should show the login modal
+    show_login = request.args.get("show_login") == "true"
+
     if "user_id" not in session:
         session["user_id"] = str(uuid.uuid4())
 
@@ -141,6 +144,7 @@ def home(lang=None):
             "voice": SETTINGS.MAX_VOICE_ANSWER,
             "challenge": SETTINGS.MAX_CHALLENGE_RESPONSE,
         },
+        show_login=show_login,
     )
 
 
@@ -947,3 +951,17 @@ def plan_change_scheduled():
         subscription_end_date=user.subscription_end_date,
         current_year=datetime.now().year,
     )
+
+
+@pages_bp.route("/login")
+def login_page():
+    """
+    Redirect to home page with a query parameter to open the login modal.
+    This is used for direct links to the login page.
+    """
+    # If user is already authenticated, redirect to home page without show_login parameter
+    if current_user.is_authenticated:
+        return redirect(url_for("pages.home"))
+
+    # Otherwise, redirect to home page with show_login parameter
+    return redirect(url_for("pages.home") + "?show_login=true")

@@ -341,13 +341,11 @@ def check_voice_limits():
         if user.tier == "anonymous":
             error_message += (
                 (
-                    'Log in for higher limits <a href="#" class="underline" '
-                    'onclick="showAuthModal(); return false;">here</a>.'
+                    'Log in for higher limits <a href="/login" class="underline">here</a>.'
                 )
                 if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
                 else (
-                    'Für höhere Limits kannst du dich <a href="#" class="underline" '
-                    'onclick="showAuthModal(); return false;">hier</a> anmelden.'
+                    'Für höhere Limits kannst du dich <a href="/login" class="underline">hier</a> anmelden.'
                 )
             )
         else:
@@ -375,13 +373,11 @@ def check_voice_limits():
         if user.tier == "anonymous":
             error_message += (
                 (
-                    'Log in for higher limits <a href="#" class="underline" '
-                    'onclick="showAuthModal(); return false;">here</a>.'
+                    'Log in for higher limits <a href="/login" class="underline">here</a>.'
                 )
                 if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
                 else (
-                    'Für höhere Limits kannst du dich <a href="#" class="underline" '
-                    'onclick="showAuthModal(); return false;">hier</a> anmelden.'
+                    'Für höhere Limits kannst du dich <a href="/login" class="underline">hier</a> anmelden.'
                 )
             )
         else:
@@ -424,13 +420,11 @@ def transcribe_voice():
         if user.tier == "anonymous":
             error_message += (
                 (
-                    'Log in for higher limits <a href="#" class="underline" '
-                    'onclick="showAuthModal(); return false;">here</a>.'
+                    'Log in for higher limits <a href="/login" class="underline">here</a>.'
                 )
                 if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
                 else (
-                    'Für höhere Limits kannst du dich <a href="#" class="underline" '
-                    'onclick="showAuthModal(); return false;">hier</a> anmelden.'
+                    'Für höhere Limits kannst du dich <a href="/login" class="underline">hier</a> anmelden.'
                 )
             )
         else:
@@ -458,13 +452,11 @@ def transcribe_voice():
         if user.tier == "anonymous":
             error_message += (
                 (
-                    'Log in for higher limits <a href="#" class="underline" '
-                    'onclick="showAuthModal(); return false;">here</a>.'
+                    'Log in for higher limits <a href="/login" class="underline">here</a>.'
                 )
                 if session.get("language", SETTINGS.DEFAULT_LANGUAGE) == "en"
                 else (
-                    'Für höhere Limits kannst du dich <a href="#" class="underline" '
-                    'onclick="showAuthModal(); return false;">hier</a> anmelden.'
+                    'Für höhere Limits kannst du dich <a href="/login" class="underline">hier</a> anmelden.'
                 )
             )
         else:
