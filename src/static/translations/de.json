@@ -464,11 +464,9 @@
       "layoffs": "Sind geplante Kündigungswellen vertretbar, wenn sie dem langfristigen Unternehmenswachstum dienen, oder ist das ein Zeichen von schlechter Führung?",
       "market-dominance": "Ist es bei Fusionen und Übernahmen sinnvoll, rasche Marktdominanz anzustreben, auch wenn kulturelle Konflikte und Integrationsprobleme übersehen werden könnten?",
       "supply-chain": "Sollten Unternehmen für die Umweltauswirkungen ihrer gesamten Lieferkette verantwortlich gemacht werden?",
-      "financial-survival": "Sollten Unternehmen in wirtschaftlich unsicheren Zeiten eher das direkte finanzielle Überleben sichern – zum Beispiel durch Kürzungen bei F&E – oder in Innovation für künftiges Wachstum investieren?",
-      "dividends": "Ist es unter Krisenbedingungen ethisch vertretbar, Mitarbeiter zu entlassen, um die Dividenden der Aktionäre aufrechtzuerhalten?",
+      "financial-survival": "Sollten Unternehmen in wirtschaftlich unsicheren Zeiten eher das direkte finanzielle Überleben sichern oder in Innovation für künftiges Wachstum investieren?",
       "patent-protection": "Sollten Unternehmen den Patentschutz vor offener Zusammenarbeit priorisieren, insbesondere in schnell entwickelnden Technologiefeldern?",
-      "lock-in": "Sind Geschäftspraktiken, die zu starker Kundenbindung führen, ethisch gerechtfertigt, wenn sie der Unternehmensstabilität dienen, oder schränken sie die Freiheit der Verbraucher ein?",
-      "shareholder-welfare": "Sollten Unternehmen die Dividenden der Aktionäre über das Wohlergehen der Mitarbeiter stellen?"
+      "lock-in": "Sind Geschäftspraktiken, die zu starker Kundenbindung führen, ethisch gerechtfertigt, wenn sie der Unternehmensstabilität dienen, oder schränken sie die Freiheit der Verbraucher ein?"
     },
     "Biases & Fallacies": {
       "cancer-drug": "Ein neues Krebstherapeutikum zeigt in Studien eine Überlebensrate von 90%, aber einige Experten zweifeln an seiner Wirksamkeit. Sollte es zugelassen werden?",

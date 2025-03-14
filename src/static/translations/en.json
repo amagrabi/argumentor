@@ -267,10 +267,8 @@
       "market-dominance": "Is aiming for rapid market dominance in mergers worth the risk of cultural clashes and integration issues?",
       "supply-chain": "Should companies be held responsible for the environmental impact of their entire supply chain?",
       "financial-survival": "During economic uncertainty, should businesses cut R&D for survival or keep investing in innovation?",
-      "dividends": "Is it ethical to lay off employees to maintain shareholder dividends during a crisis?",
       "patent-protection": "In fast-paced tech fields, should companies focus on patent protection or open collaboration?",
-      "lock-in": "Are business practices that create 'customer lock-in' ethically justifiable if they ensure business stability, or do they unfairly restrict consumer freedom?",
-      "shareholder-welfare": "Should companies focus more on shareholder dividends or employee welfare?"
+      "lock-in": "Are business practices that create 'customer lock-in' ethically justifiable if they ensure business stability, or do they unfairly restrict consumer freedom?"
     },
     "Biases & Fallacies": {
       "cancer-drug": "Should a cancer drug with a 90% trial survival rate be approved if some experts question its effectiveness?",
