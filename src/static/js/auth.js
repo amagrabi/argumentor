@@ -282,7 +282,8 @@ export function showSignupModal() {
       // Remove show_login parameter from URL if present
       const url = new URL(window.location);
       url.searchParams.delete("show_login");
-      window.location.href = url.toString();
+      // Force a full page reload to refresh the content with the logged-in user's information
+      window.location.reload();
     } catch (error) {
       handleSignupError(error);
     }
