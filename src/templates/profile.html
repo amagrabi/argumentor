@@ -49,7 +49,88 @@
   elif score_float >= 8 %} text-green-600 bg-green-50 {% elif score_float >= 7
   %} text-lime-600 bg-lime-50 {% elif score_float >= 6 %} text-yellow-600
   bg-yellow-50 {% elif score_float >= 4 %} text-amber-600 bg-amber-50 {% else %}
-  text-red-600 bg-red-50 {% endif %} {%- endmacro %}
+  text-red-600 bg-red-50 {% endif %} {%- endmacro %} {% macro
+  pagination_controls(current_page, total_pages, total_answers, position="top")
+  -%} {% if total_pages > 1 %}
+  <!-- Showing X of Y answers -->
+  <div
+    class="text-center text-xs text-gray-500 {% if position == 'top' %}mb-2{% else %}mt-2 mb-2{% endif %}"
+  >
+    <span data-i18n="profile.showingAnswers">Showing</span>
+    {{ ((current_page - 1) * 10) + 1 }}-{{ [current_page * 10, total_answers] |
+    min }}
+    <span data-i18n="profile.of">of</span>
+    {{ total_answers }}
+    <span data-i18n="profile.answers">answers</span>
+  </div>
+
+  <div
+    class="flex justify-center items-center {% if position == 'top' %}mb-4{% else %}mt-2{% endif %} space-x-1 pagination"
+  >
+    <!-- Previous Page Button -->
+    {% if current_page > 1 %}
+    <a
+      href="{{ url_for('pages.profile', page=current_page-1) }}"
+      class="px-2 py-0.5 text-sm rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
+    >
+      <span data-i18n="profile.previous">Previous</span>
+    </a>
+    {% else %}
+    <span
+      class="px-2 py-0.5 text-sm rounded-full bg-gray-50 text-gray-400 cursor-not-allowed"
+    >
+      <span data-i18n="profile.previous">Previous</span>
+    </span>
+    {% endif %}
+
+    <!-- Page Numbers -->
+    <div class="flex space-x-1">
+      {% set start_page = [current_page - 2, 1] | max %} {% set end_page =
+      [start_page + 4, total_pages] | min %} {% set start_page = [end_page - 4,
+      1] | max %} {% if start_page > 1 %}
+      <a
+        href="{{ url_for('pages.profile', page=1) }}"
+        class="px-2 py-0.5 text-sm rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
+        >1</a
+      >
+      {% if start_page > 2 %}
+      <span class="px-1 py-0.5 text-sm text-gray-500">...</span>
+      {% endif %} {% endif %} {% for p in range(start_page, end_page + 1) %}
+      <a
+        href="{{ url_for('pages.profile', page=p) }}"
+        class="px-2 py-0.5 text-sm rounded-full {{ 'bg-gray-800 text-white' if p == current_page else 'bg-gray-100 text-gray-800 hover:bg-gray-200' }} transition-colors"
+      >
+        {{ p }}
+      </a>
+      {% endfor %} {% if end_page < total_pages %} {% if end_page < total_pages
+      - 1 %}
+      <span class="px-1 py-0.5 text-sm text-gray-500">...</span>
+      {% endif %}
+      <a
+        href="{{ url_for('pages.profile', page=total_pages) }}"
+        class="px-2 py-0.5 text-sm rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
+        >{{ total_pages }}</a
+      >
+      {% endif %}
+    </div>
+
+    <!-- Next Page Button -->
+    {% if current_page < total_pages %}
+    <a
+      href="{{ url_for('pages.profile', page=current_page+1) }}"
+      class="px-2 py-0.5 text-sm rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
+    >
+      <span data-i18n="profile.next">Next</span>
+    </a>
+    {% else %}
+    <span
+      class="px-2 py-0.5 text-sm rounded-full bg-gray-50 text-gray-400 cursor-not-allowed"
+    >
+      <span data-i18n="profile.next">Next</span>
+    </span>
+    {% endif %}
+  </div>
+  {% endif %} {%- endmacro %}
 
   <body class="bg-white min-h-screen overflow-x-hidden">
     <script id="answersData" type="application/json">
@@ -372,7 +453,7 @@
             <!-- Level images with arrows in a scrollable container -->
             <div class="w-full overflow-x-auto pb-4 pt-2">
               <div class="flex items-center justify-start px-4">
-                {% for level in all_levels %}
+                {% for level in levels %}
                 <div class="flex items-center">
                   <!-- Level container -->
                   <div
@@ -624,372 +705,388 @@
           ></h2>
 
           {% if answers_json %}
-          <ul class="space-y-4">
-            {% for answer in answers_json %}
-            <li
-              class="border p-4 rounded-lg group hover:bg-gray-50 transition-colors"
-            >
-              <div class="relative">
-                <!-- Add the category badge above the question text -->
-                <div class="mb-2">
-                  {% if answer.category %}
-                  <span
-                    class="bg-gray-700 text-white rounded-full text-xs break-words max-w-[60%] inline-flex items-center category-badge"
-                  >
-                    {% if answer.category == "Philosophy" %}📚 &nbsp; {% elif
-                    answer.category == "AI & Future" %}🤖 &nbsp; {% elif
-                    answer.category == "Personal Growth & Relationships" %}🌱
-                    &nbsp; {% elif answer.category == "Politics" %}🏛️ &nbsp; {%
-                    elif answer.category == "Ethics" %}⚖️ &nbsp; {% elif
-                    answer.category == "Thought Experiments" %}💡 &nbsp; {% elif
-                    answer.category == "Business & Risk" %}💼 &nbsp; {% elif
-                    answer.category == "Biases & Fallacies" %}🔍 &nbsp; {% elif
-                    answer.category == "Fun & Casual" %}🎉 &nbsp; {% elif
-                    answer.category == "Custom" %}📝 &nbsp; {% else %}📝 &nbsp;
-                    {% endif %}
-                    <span data-i18n="categories.{{ answer.category }}"
-                      >{{ answer.category }}</span
-                    >
-                  </span>
-                  {% endif %}
-                </div>
+          <!-- Top pagination controls -->
+          {{ pagination_controls(current_page, total_pages, total_answers,
+          "top") }}
 
-                <p class="font-bold text-gray-800 pr-20 sm:pr-24 md:pr-28">
-                  {{ answer.question_text }}
-                </p>
-                <div
-                  class="absolute top-0 right-0 text-sm text-gray-500 text-right w-20 sm:w-24 md:w-28"
-                >
-                  <p>{{ answer.created_at[:10] }}</p>
-                  <p
-                    class="{% if answer.total_xp > 0 %}text-green-600{% endif %}"
-                  >
-                    +{{ answer.total_xp }} XP
-                  </p>
-                  <p>
-                    Argument:
+          <div id="answers-section">
+            <ul class="space-y-4">
+              {% for answer in answers_json %}
+              <li
+                class="border p-4 rounded-lg group hover:bg-gray-50 transition-colors"
+              >
+                <div class="relative">
+                  <!-- Add the category badge above the question text -->
+                  <div class="mb-2">
+                    {% if answer.category %}
                     <span
-                      class="ml-1 text-sm {{ score_color((answer.evaluation_scores.values() | sum) / (answer.evaluation_scores.values() | length)) }}"
+                      class="bg-gray-700 text-white rounded-full text-xs break-words max-w-[60%] inline-flex items-center category-badge"
                     >
-                      {{ "%.1f"|format((answer.evaluation_scores.values() | sum)
-                      / (answer.evaluation_scores.values() | length)) }}/10
-                    </span>
-                  </p>
-                  {% if answer.challenge and answer.challenge_evaluation_scores
-                  and answer.challenge_evaluation_scores.Overall is defined %}
-                  <p>
-                    Challenge:
-                    <span
-                      class="ml-1 text-sm {{ score_color(answer.challenge_evaluation_scores.Overall) }}"
-                    >
-                      {{
-                      "%.1f"|format(answer.challenge_evaluation_scores.Overall |
-                      float) }}/10
-                    </span>
-                  </p>
-                  {% endif %}
-                  <p class="flex justify-end">
-                    {% if answer.input_mode == 'voice' %}
-                    <svg
-                      class="w-4 h-4 inline ml-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-                      />
-                    </svg>
-                    {% else %}
-                    <svg
-                      class="w-4 h-4 inline ml-auto"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <path
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                      />
-                    </svg>
-                    {% endif %}
-                  </p>
-                  {% if answer.completed_achievements and
-                  answer.completed_achievements|length > 0 %}
-                  <div class="flex items-center justify-end">
-                    {% for achievement_id in answer.completed_achievements %}
-                    <div class="relative group/trophy">
-                      <img
-                        src="{{ url_for('static', filename='img/trophy.webp') }}"
-                        alt="Trophy"
-                        class="w-4 h-4 inline"
-                      />
-                      <div
-                        class="absolute bottom-full right-0 mb-2 w-32 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover/trophy:opacity-100 transition-opacity duration-200 pointer-events-none z-10"
+                      {% if answer.category == "Philosophy" %}📚 &nbsp; {% elif
+                      answer.category == "AI & Future" %}🤖 &nbsp; {% elif
+                      answer.category == "Personal Growth & Relationships" %}🌱
+                      &nbsp; {% elif answer.category == "Politics" %}🏛️ &nbsp;
+                      {% elif answer.category == "Ethics" %}⚖️ &nbsp; {% elif
+                      answer.category == "Thought Experiments" %}💡 &nbsp; {%
+                      elif answer.category == "Business & Risk" %}💼 &nbsp; {%
+                      elif answer.category == "Biases & Fallacies" %}🔍 &nbsp;
+                      {% elif answer.category == "Fun & Casual" %}🎉 &nbsp; {%
+                      elif answer.category == "Custom" %}📝 &nbsp; {% else %}📝
+                      &nbsp; {% endif %}
+                      <span data-i18n="categories.{{ answer.category }}"
+                        >{{ answer.category }}</span
                       >
-                        <span
-                          class="font-bold block mb-1"
-                          data-i18n="{{ 'profile.achievementData.' + achievement_id + '.name' }}"
-                        ></span>
-                        <span
-                          data-i18n="{{ 'profile.achievementData.' + achievement_id + '.description' }}"
-                        ></span>
-                        <!-- Triangle indicator -->
-                        <div
-                          class="absolute -bottom-1 right-2 w-0 h-0 border-l-[6px] border-l-transparent border-t-[6px] border-t-gray-800 border-r-[6px] border-r-transparent"
-                        ></div>
-                      </div>
-                    </div>
-                    {% endfor %} {% if answer.completed_achievement and
-                    answer.completed_achievement not in
-                    answer.completed_achievements %}
-                    <div class="relative group/trophy">
-                      <img
-                        src="{{ url_for('static', filename='img/trophy.webp') }}"
-                        alt="Trophy"
-                        class="w-4 h-4 inline"
-                      />
-                      <div
-                        class="absolute bottom-full right-0 mb-2 w-32 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover/trophy:opacity-100 transition-opacity duration-200 pointer-events-none z-10"
-                      >
-                        <span
-                          class="font-bold block mb-1"
-                          data-i18n="{{ 'profile.achievementData.' + answer.completed_achievement + '.name' }}"
-                        ></span>
-                        <span
-                          data-i18n="{{ 'profile.achievementData.' + answer.completed_achievement + '.description' }}"
-                        ></span>
-                        <!-- Triangle indicator -->
-                        <div
-                          class="absolute -bottom-1 right-2 w-0 h-0 border-l-[6px] border-l-transparent border-t-[6px] border-t-gray-800 border-r-[6px] border-r-transparent"
-                        ></div>
-                      </div>
-                    </div>
+                    </span>
                     {% endif %}
                   </div>
-                  {% elif answer.completed_achievement %}
-                  <div class="flex justify-end">
-                    <div class="relative group/trophy">
-                      <img
-                        src="{{ url_for('static', filename='img/trophy.webp') }}"
-                        alt="Trophy"
-                        class="w-4 h-4 inline"
-                      />
-                      <div
-                        class="absolute bottom-full right-0 mb-2 w-40 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover/trophy:opacity-100 transition-opacity duration-200 pointer-events-none z-10"
-                      >
-                        <span
-                          class="font-bold block mb-1"
-                          data-i18n="{{ 'profile.achievementData.' + answer.completed_achievement + '.name' }}"
-                        ></span>
-                        <span
-                          data-i18n="{{ 'profile.achievementData.' + answer.completed_achievement + '.description' }}"
-                        ></span>
-                        <!-- Triangle indicator -->
-                        <div
-                          class="absolute -bottom-1 right-2 w-0 h-0 border-l-[6px] border-l-transparent border-t-[6px] border-t-gray-800 border-r-[6px] border-r-transparent"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                  {% endif %}
-                </div>
-              </div>
 
-              <div class="mt-2 space-y-2">
-                <div class="mt-2 space-y-2">
-                  <!-- Claim and Argument Sections -->
-                  {% if answer.input_mode == 'voice' %}
-                  <p class="text-sm break-words pr-20 sm:pr-24 md:pr-28">
-                    <span
-                      class="font-medium text-sm text-black"
-                      data-i18n="profile.voiceAnswer"
-                      >Voice Answer:</span
-                    >
-                    <span class="text-gray-600">{{ answer.claim }}</span>
+                  <p class="font-bold text-gray-800 pr-20 sm:pr-24 md:pr-28">
+                    {{ answer.question_text }}
                   </p>
-                  {% else %}
-                  <p class="text-sm break-words pr-20 sm:pr-24 md:pr-28">
-                    <span
-                      class="font-medium text-sm text-black"
-                      data-i18n="profile.claim"
-                    ></span>
-                    <span class="text-gray-600">{{ answer.claim }}</span>
-                  </p>
-                  <p class="text-sm break-words mt-1 pr-20 sm:pr-24 md:pr-28">
-                    <span
-                      class="font-medium text-sm text-black"
-                      data-i18n="profile.argument"
-                    ></span>
-                    <span class="text-gray-600">{{ answer.argument }}</span>
-                  </p>
-
-                  <!-- Move Counterargument Section here -->
-                  {% if answer.counterargument and answer.input_mode != 'voice'
-                  %}
-                  <p class="text-sm break-words mt-1 pr-20 sm:pr-24 md:pr-28">
-                    <span
-                      class="font-medium text-sm text-black"
-                      data-i18n="profile.counterargument"
-                    ></span>
-                    <span class="text-gray-600"
-                      >{{ answer.counterargument }}</span
-                    >
-                  </p>
-                  {% endif %} {% endif %}
-
-                  <!-- New Evaluation Section -->
-                  {% if answer.evaluation_feedback.Overall %}
-                  <p class="text-sm break-words mt-1 pr-20 sm:pr-24 md:pr-28">
-                    <span
-                      class="font-medium text-sm text-black"
-                      data-i18n="profile.evaluation"
-                    ></span>
-                    <span class="text-gray-600"
-                      >{{ answer.evaluation_feedback.Overall }}</span
-                    >
-                  </p>
-                  {% endif %}
-
-                  <!-- Challenge Section (Left Side) -->
-                  {% if answer.challenge %}
-                  <p class="text-sm break-words mt-1 pr-20 sm:pr-24 md:pr-28">
-                    <span
-                      class="font-medium text-sm text-black"
-                      data-i18n="profile.challengeAnswerHistory"
-                    ></span>
-                    <span class="text-gray-600">{{ answer.challenge }}</span>
-                  </p>
-                  {% endif %} {% if answer.challenge_response %}
-                  <p class="text-sm break-words mt-1 pr-20 sm:pr-24 md:pr-28">
-                    <span
-                      class="font-medium text-sm text-black"
-                      data-i18n="profile.challengeResponse"
-                    ></span>
-                    <span class="text-gray-600"
-                      >{{ answer.challenge_response }}</span
-                    >
-                  </p>
-                  {% endif %}
-
-                  <!-- Challenge Evaluation Feedback -->
-                  {% if answer.challenge_evaluation_feedback and
-                  answer.challenge_evaluation_feedback.Overall %}
-                  <p class="text-sm break-words mt-1 pr-20 sm:pr-24 md:pr-28">
-                    <span
-                      class="font-medium text-sm text-black"
-                      data-i18n="profile.challengeEvaluation"
-                    ></span>
-                    <span class="text-gray-600"
-                      >{{ answer.challenge_evaluation_feedback.Overall }}</span
-                    >
-                  </p>
-                  {% endif %}
-                </div>
-              </div>
-
-              <!-- Feedback Section -->
-              <div class="mt-3 pt-3 border-t border-gray-200">
-                <div
-                  class="flex items-center justify-between cursor-pointer"
-                  onclick="this.nextElementSibling.classList.toggle('hidden')"
-                >
-                  <span
-                    class="text-sm font-medium text-black"
-                    data-i18n="profile.feedbackDetails"
-                  ></span>
-                  <svg
-                    class="w-4 h-4 transform transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  <div
+                    class="absolute top-0 right-0 text-sm text-gray-500 text-right w-20 sm:w-24 md:w-28"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-                <div class="hidden mt-2 space-y-2 text-sm text-gray-600">
-                  {% set ordered_categories = [ ("Logical Structure", "logic"),
-                  ("Clarity", "clarity"), ("Depth", "depth"), ("Objectivity",
-                  "objectivity"), ("Creativity", "creativity"), ("Relevance",
-                  "relevance") ] %} {% for display_name, translation_key in
-                  ordered_categories %}
-                  <p class="flex flex-col">
-                    <span class="flex items-center">
-                      <span
-                        class="font-medium text-black"
-                        data-i18n="evaluation.scores.{{ translation_key }}"
-                      >
-                        {{ display_name }}
-                      </span>
-                      {% if answer.evaluation_scores[display_name] is defined %}
-                      <span
-                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.evaluation_scores[display_name]) }}"
-                      >
-                        {{ answer.evaluation_scores[display_name] }}/10
-                      </span>
-                      {% endif %}
-                    </span>
-                    <span>{{ answer.evaluation_feedback[display_name] }}</span>
-                  </p>
-                  {% endfor %}
-
-                  <!-- Optional: If challenge evaluation feedback exists -->
-                  {% if answer.challenge_evaluation_feedback and
-                  answer.challenge_evaluation_feedback.Overall %}
-                  <div class="mt-4 border-t border-gray-200 pt-2">
-                    <span class="text-sm font-medium text-black"
-                      >Challenge Details</span
+                    <p>{{ answer.created_at[:10] }}</p>
+                    <p
+                      class="{% if answer.total_xp > 0 %}text-green-600{% endif %}"
                     >
-                  </div>
-                  {% set ordered_challenge_categories = [ ("Logical Structure",
-                  "logic"), ("Clarity", "clarity"), ("Depth", "depth"),
-                  ("Objectivity", "objectivity"), ("Creativity", "creativity"),
-                  ("Relevance", "relevance") ] %} {% for display_name,
-                  translation_key in ordered_challenge_categories %}
-                  <p class="flex flex-col">
-                    <span class="flex items-center">
+                      +{{ answer.total_xp }} XP
+                    </p>
+                    <p>
+                      Argument:
                       <span
-                        class="font-medium text-black"
-                        data-i18n="evaluation.scores.{{ translation_key }}"
+                        class="ml-1 text-sm {{ score_color((answer.evaluation_scores.values() | sum) / (answer.evaluation_scores.values() | length)) }}"
                       >
-                        {{ display_name }}
-                      </span>
-                      {% if answer.challenge_evaluation_scores[display_name] is
-                      defined %}
-                      <span
-                        class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.challenge_evaluation_scores[display_name]) }}"
-                      >
-                        {{ answer.challenge_evaluation_scores[display_name]
+                        {{ "%.1f"|format((answer.evaluation_scores.values() |
+                        sum) / (answer.evaluation_scores.values() | length))
                         }}/10
                       </span>
+                    </p>
+                    {% if answer.challenge and
+                    answer.challenge_evaluation_scores and
+                    answer.challenge_evaluation_scores.Overall is defined %}
+                    <p>
+                      Challenge:
+                      <span
+                        class="ml-1 text-sm {{ score_color(answer.challenge_evaluation_scores.Overall) }}"
+                      >
+                        {{
+                        "%.1f"|format(answer.challenge_evaluation_scores.Overall
+                        | float) }}/10
+                      </span>
+                    </p>
+                    {% endif %}
+                    <p class="flex justify-end">
+                      {% if answer.input_mode == 'voice' %}
+                      <svg
+                        class="w-4 h-4 inline ml-auto"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                        />
+                      </svg>
+                      {% else %}
+                      <svg
+                        class="w-4 h-4 inline ml-auto"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                        />
+                      </svg>
                       {% endif %}
-                    </span>
-                    <span
-                      >{{ answer.challenge_evaluation_feedback[display_name]
-                      }}</span
-                    >
-                  </p>
-                  {% endfor %} {% endif %}
+                    </p>
+                    {% if answer.completed_achievements and
+                    answer.completed_achievements|length > 0 %}
+                    <div class="flex items-center justify-end">
+                      {% for achievement_id in answer.completed_achievements %}
+                      <div class="relative group/trophy">
+                        <img
+                          src="{{ url_for('static', filename='img/trophy.webp') }}"
+                          alt="Trophy"
+                          class="w-4 h-4 inline"
+                        />
+                        <div
+                          class="absolute bottom-full right-0 mb-2 w-32 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover/trophy:opacity-100 transition-opacity duration-200 pointer-events-none z-10"
+                        >
+                          <span
+                            class="font-bold block mb-1"
+                            data-i18n="{{ 'profile.achievementData.' + achievement_id + '.name' }}"
+                          ></span>
+                          <span
+                            data-i18n="{{ 'profile.achievementData.' + achievement_id + '.description' }}"
+                          ></span>
+                          <!-- Triangle indicator -->
+                          <div
+                            class="absolute -bottom-1 right-2 w-0 h-0 border-l-[6px] border-l-transparent border-t-[6px] border-t-gray-800 border-r-[6px] border-r-transparent"
+                          ></div>
+                        </div>
+                      </div>
+                      {% endfor %} {% if answer.completed_achievement and
+                      answer.completed_achievement not in
+                      answer.completed_achievements %}
+                      <div class="relative group/trophy">
+                        <img
+                          src="{{ url_for('static', filename='img/trophy.webp') }}"
+                          alt="Trophy"
+                          class="w-4 h-4 inline"
+                        />
+                        <div
+                          class="absolute bottom-full right-0 mb-2 w-32 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover/trophy:opacity-100 transition-opacity duration-200 pointer-events-none z-10"
+                        >
+                          <span
+                            class="font-bold block mb-1"
+                            data-i18n="{{ 'profile.achievementData.' + answer.completed_achievement + '.name' }}"
+                          ></span>
+                          <span
+                            data-i18n="{{ 'profile.achievementData.' + answer.completed_achievement + '.description' }}"
+                          ></span>
+                          <!-- Triangle indicator -->
+                          <div
+                            class="absolute -bottom-1 right-2 w-0 h-0 border-l-[6px] border-l-transparent border-t-[6px] border-t-gray-800 border-r-[6px] border-r-transparent"
+                          ></div>
+                        </div>
+                      </div>
+                      {% endif %}
+                    </div>
+                    {% elif answer.completed_achievement %}
+                    <div class="flex justify-end">
+                      <div class="relative group/trophy">
+                        <img
+                          src="{{ url_for('static', filename='img/trophy.webp') }}"
+                          alt="Trophy"
+                          class="w-4 h-4 inline"
+                        />
+                        <div
+                          class="absolute bottom-full right-0 mb-2 w-40 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover/trophy:opacity-100 transition-opacity duration-200 pointer-events-none z-10"
+                        >
+                          <span
+                            class="font-bold block mb-1"
+                            data-i18n="{{ 'profile.achievementData.' + answer.completed_achievement + '.name' }}"
+                          ></span>
+                          <span
+                            data-i18n="{{ 'profile.achievementData.' + answer.completed_achievement + '.description' }}"
+                          ></span>
+                          <!-- Triangle indicator -->
+                          <div
+                            class="absolute -bottom-1 right-2 w-0 h-0 border-l-[6px] border-l-transparent border-t-[6px] border-t-gray-800 border-r-[6px] border-r-transparent"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                    {% endif %}
+                  </div>
                 </div>
-              </div>
-            </li>
-            {% endfor %}
-          </ul>
-          {% else %}
-          <p class="text-gray-600" data-i18n="profile.noAnswersYet">
-            You haven't submitted any answers yet.
-          </p>
-          {% endif %}
+
+                <div class="mt-2 space-y-2">
+                  <div class="mt-2 space-y-2">
+                    <!-- Claim and Argument Sections -->
+                    {% if answer.input_mode == 'voice' %}
+                    <p class="text-sm break-words pr-20 sm:pr-24 md:pr-28">
+                      <span
+                        class="font-medium text-sm text-black"
+                        data-i18n="profile.voiceAnswer"
+                        >Voice Answer:</span
+                      >
+                      <span class="text-gray-600">{{ answer.claim }}</span>
+                    </p>
+                    {% else %}
+                    <p class="text-sm break-words pr-20 sm:pr-24 md:pr-28">
+                      <span
+                        class="font-medium text-sm text-black"
+                        data-i18n="profile.claim"
+                      ></span>
+                      <span class="text-gray-600">{{ answer.claim }}</span>
+                    </p>
+                    <p class="text-sm break-words mt-1 pr-20 sm:pr-24 md:pr-28">
+                      <span
+                        class="font-medium text-sm text-black"
+                        data-i18n="profile.argument"
+                      ></span>
+                      <span class="text-gray-600">{{ answer.argument }}</span>
+                    </p>
+
+                    <!-- Move Counterargument Section here -->
+                    {% if answer.counterargument and answer.input_mode !=
+                    'voice' %}
+                    <p class="text-sm break-words mt-1 pr-20 sm:pr-24 md:pr-28">
+                      <span
+                        class="font-medium text-sm text-black"
+                        data-i18n="profile.counterargument"
+                      ></span>
+                      <span class="text-gray-600"
+                        >{{ answer.counterargument }}</span
+                      >
+                    </p>
+                    {% endif %} {% endif %}
+
+                    <!-- New Evaluation Section -->
+                    {% if answer.evaluation_feedback.Overall %}
+                    <p class="text-sm break-words mt-1 pr-20 sm:pr-24 md:pr-28">
+                      <span
+                        class="font-medium text-sm text-black"
+                        data-i18n="profile.evaluation"
+                      ></span>
+                      <span class="text-gray-600"
+                        >{{ answer.evaluation_feedback.Overall }}</span
+                      >
+                    </p>
+                    {% endif %}
+
+                    <!-- Challenge Section (Left Side) -->
+                    {% if answer.challenge %}
+                    <p class="text-sm break-words mt-1 pr-20 sm:pr-24 md:pr-28">
+                      <span
+                        class="font-medium text-sm text-black"
+                        data-i18n="profile.challengeAnswerHistory"
+                      ></span>
+                      <span class="text-gray-600">{{ answer.challenge }}</span>
+                    </p>
+                    {% endif %} {% if answer.challenge_response %}
+                    <p class="text-sm break-words mt-1 pr-20 sm:pr-24 md:pr-28">
+                      <span
+                        class="font-medium text-sm text-black"
+                        data-i18n="profile.challengeResponse"
+                      ></span>
+                      <span class="text-gray-600"
+                        >{{ answer.challenge_response }}</span
+                      >
+                    </p>
+                    {% endif %}
+
+                    <!-- Challenge Evaluation Feedback -->
+                    {% if answer.challenge_evaluation_feedback and
+                    answer.challenge_evaluation_feedback.Overall %}
+                    <p class="text-sm break-words mt-1 pr-20 sm:pr-24 md:pr-28">
+                      <span
+                        class="font-medium text-sm text-black"
+                        data-i18n="profile.challengeEvaluation"
+                      ></span>
+                      <span class="text-gray-600"
+                        >{{ answer.challenge_evaluation_feedback.Overall
+                        }}</span
+                      >
+                    </p>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Feedback Section -->
+                <div class="mt-3 pt-3 border-t border-gray-200">
+                  <div
+                    class="flex items-center justify-between cursor-pointer"
+                    onclick="this.nextElementSibling.classList.toggle('hidden')"
+                  >
+                    <span
+                      class="text-sm font-medium text-black"
+                      data-i18n="profile.feedbackDetails"
+                    ></span>
+                    <svg
+                      class="w-4 h-4 transform transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </div>
+                  <div class="hidden mt-2 space-y-2 text-sm text-gray-600">
+                    {% set ordered_categories = [ ("Logical Structure",
+                    "logic"), ("Clarity", "clarity"), ("Depth", "depth"),
+                    ("Objectivity", "objectivity"), ("Creativity",
+                    "creativity"), ("Relevance", "relevance") ] %} {% for
+                    display_name, translation_key in ordered_categories %}
+                    <p class="flex flex-col">
+                      <span class="flex items-center">
+                        <span
+                          class="font-medium text-black"
+                          data-i18n="evaluation.scores.{{ translation_key }}"
+                        >
+                          {{ display_name }}
+                        </span>
+                        {% if answer.evaluation_scores[display_name] is defined
+                        %}
+                        <span
+                          class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.evaluation_scores[display_name]) }}"
+                        >
+                          {{ answer.evaluation_scores[display_name] }}/10
+                        </span>
+                        {% endif %}
+                      </span>
+                      <span
+                        >{{ answer.evaluation_feedback[display_name] }}</span
+                      >
+                    </p>
+                    {% endfor %}
+
+                    <!-- Optional: If challenge evaluation feedback exists -->
+                    {% if answer.challenge_evaluation_feedback and
+                    answer.challenge_evaluation_feedback.Overall %}
+                    <div class="mt-4 border-t border-gray-200 pt-2">
+                      <span class="text-sm font-medium text-black"
+                        >Challenge Details</span
+                      >
+                    </div>
+                    {% set ordered_challenge_categories = [ ("Logical
+                    Structure", "logic"), ("Clarity", "clarity"), ("Depth",
+                    "depth"), ("Objectivity", "objectivity"), ("Creativity",
+                    "creativity"), ("Relevance", "relevance") ] %} {% for
+                    display_name, translation_key in
+                    ordered_challenge_categories %}
+                    <p class="flex flex-col">
+                      <span class="flex items-center">
+                        <span
+                          class="font-medium text-black"
+                          data-i18n="evaluation.scores.{{ translation_key }}"
+                        >
+                          {{ display_name }}
+                        </span>
+                        {% if answer.challenge_evaluation_scores[display_name]
+                        is defined %}
+                        <span
+                          class="ml-1 px-2 py-1 rounded-full text-xs {{ score_color(answer.challenge_evaluation_scores[display_name]) }}"
+                        >
+                          {{ answer.challenge_evaluation_scores[display_name]
+                          }}/10
+                        </span>
+                        {% endif %}
+                      </span>
+                      <span
+                        >{{ answer.challenge_evaluation_feedback[display_name]
+                        }}</span
+                      >
+                    </p>
+                    {% endfor %} {% endif %}
+                  </div>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+
+            <!-- Pagination Controls -->
+            {{ pagination_controls(current_page, total_pages, total_answers,
+            "bottom") }} {% else %}
+            <p class="text-gray-600" data-i18n="profile.noAnswersYet">
+              You haven't submitted any answers yet.
+            </p>
+            {% endif %}
+          </div>
         </div>
       </div>
 

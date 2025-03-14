@@ -276,14 +276,6 @@ def profile():
         return redirect(url_for("pages.home"))
 
     # Get language from query parameter or session (default to "en")
-    lang = request.args.get("lang") or session.get("language", "en")
-    trans_file = os.path.join(
-        current_app.root_path, "static", "translations", f"{lang}.json"
-    )
-
-    with open(trans_file, "r", encoding="utf-8") as f:
-        translations = json.load(f)
-
     level_info = get_level_info(user.xp)
     daily_eval_count = get_daily_evaluation_count(user.uuid)
     eval_limit = get_eval_limit(user.tier)
@@ -302,12 +294,22 @@ def profile():
         achievement.achievement_id for achievement in user.achievements
     ]
 
+    # Pagination parameters
+    page = request.args.get("page", 1, type=int)
+    per_page = 10  # Show 10 answers per page
+
     # Query answers sorted by created_at descending and then by id descending to break ties
-    answers = (
-        Answer.query.filter_by(user_uuid=user.uuid)
-        .order_by(Answer.created_at.desc(), Answer.id.desc())
-        .all()
+    answers_query = Answer.query.filter_by(user_uuid=user.uuid).order_by(
+        Answer.created_at.desc(), Answer.id.desc()
     )
+
+    # Get total count for pagination
+    total_answers = answers_query.count()
+    total_pages = (total_answers + per_page - 1) // per_page  # Ceiling division
+
+    # Apply pagination
+    answers = answers_query.limit(per_page).offset((page - 1) * per_page).all()
+
     answers_dict = []
     for answer in answers:
         answer_data = answer.to_dict()
@@ -351,8 +353,10 @@ def profile():
         monthly_voice_limit=monthly_voice_limit,
         all_achievements=all_achievements,
         earned_achievements=earned_achievements,
-        all_levels=levels_with_status,
-        translations=translations,
+        levels=levels_with_status,
+        current_page=page,
+        total_pages=total_pages,
+        total_answers=total_answers,
     )
 
 

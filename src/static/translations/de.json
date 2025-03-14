@@ -149,6 +149,25 @@
     "subscriptionCanceled": "Dein Abonnement wurde gekündigt. Dein {plan} Plan bleibt aktiv bis zum {date}, danach wirst du auf den kostenlosen Plan umgestellt.",
     "subscriptionEndNotice": "Dein Abonnement wurde gekündigt. Dein Plan bleibt aktiv bis zum {date}, danach wirst du auf den kostenlosen Plan umgestellt.",
     "planChangeNotice": "Dein Plan wird am {date} zu {plan} geändert.",
+    "yourAnswers": "Deine Antworten",
+    "noAnswersYet": "Du hast noch keine Antworten eingereicht.",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "showingAnswers": "Zeige",
+    "of": "von",
+    "answers": "Antworten",
+    "claim": "These:",
+    "argument": "Argument:",
+    "counterargument": "Gegenargument:",
+    "evaluation": "Bewertung:",
+    "challengeAnswerHistory": "Challenge:",
+    "challengeResponse": "Challenge-Antwort:",
+    "challengeEvaluation": "Challenge-Bewertung:",
+    "feedbackDetails": "Feedback-Details",
+    "voiceAnswer": "Sprachantwort:",
+    "progressOverTime": "Fortschritt im Zeitverlauf",
+    "rating": "Bewertung",
+    "time": "Zeit",
     "achievementData": {
       "first_argument": {
         "name": "Erste Schritte",
@@ -225,78 +244,6 @@
       "hundred_challenges": {
         "name": "Mastermind",
         "description": "Löse 100 Herausforderungen"
-      }
-    },
-    "yourAnswers": "Deine Antworten",
-    "progressOverTime": "Fortschritt",
-    "rating": "Bewertung",
-    "time": "Zeit",
-    "claim": "These:",
-    "argument": "Argument:",
-    "counterargument": "Gegenargumente:",
-    "voiceAnswer": "Sprachantwort:",
-    "evaluation": "Bewertung:",
-    "challengeAnswerHistory": "Challenge:",
-    "challengeResponse": "Challenge Antwort:",
-    "challengeEvaluation": "Challenge Bewertung:",
-    "feedbackDetails": "Details:",
-    "noAnswersYet": "Du hast noch keine Antworten eingereicht.",
-    "achievementDescriptions": {
-      "first_argument": {
-        "name": "Erste Schritte",
-        "description": "Dein erstes Argument formuliert"
-      },
-      "all_categories": {
-        "name": "Vielseitig",
-        "description": "Eine Frage aus jeder Kategorie beantwortet"
-      },
-      "exceptional_rating": {
-        "name": "Exzellenz erreicht",
-        "description": "Eine außergewöhnliche Bewertung (über 8) erreicht"
-      },
-      "exceptional_all_categories": {
-        "name": "Meister aller Klassen",
-        "description": "Eine außergewöhnliche Bewertung in jeder Kategorie erreicht"
-      },
-      "max_length": {
-        "name": "Wortgewaltiger Visionär",
-        "description": "Ein sehr langes Argument (maximale Zeichenanzahl) eingereicht"
-      },
-      "min_length": {
-        "name": "Prägnanter Kommunikator",
-        "description": "Ein sehr kurzes, aber effektives Argument eingereicht"
-      },
-      "voice_answer": {
-        "name": "Stimme der Vernunft",
-        "description": "Eine Sprachantwort eingereicht"
-      },
-      "answers_10": {
-        "name": "Engagierter Debattierer",
-        "description": "Über 10 Fragen beantwortet"
-      },
-      "answers_25": {
-        "name": "Erfahrener Sprecher",
-        "description": "Über 25 Fragen beantwortet"
-      },
-      "answers_100": {
-        "name": "Argumentationsautorität",
-        "description": "Über 100 Fragen beantwortet"
-      },
-      "first_challenge": {
-        "name": "Herausforderung angenommen",
-        "description": "Deine erste Herausforderung beantwortet"
-      },
-      "challenges_10": {
-        "name": "Herausforderungschampion",
-        "description": "Über 10 Herausforderungen beantwortet"
-      },
-      "challenges_25": {
-        "name": "Herausforderungsmeister",
-        "description": "Über 25 Herausforderungen beantwortet"
-      },
-      "challenges_100": {
-        "name": "Herausforderungslegende",
-        "description": "Über 100 Herausforderungen beantwortet"
       }
     }
   },

@@ -53,7 +53,7 @@ function translateCategories() {
   });
 }
 
-// Initialize the chart variable
+// Global variables
 let progressChart = null;
 
 // Define a color mapping for each metric.
@@ -68,6 +68,195 @@ const colors = {
   challenge: "#a0522d",
 };
 
+// Function to fetch page content via AJAX
+async function fetchPageContent(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const html = await response.text();
+    return html;
+  } catch (error) {
+    console.error("Error fetching page content:", error);
+    return null;
+  }
+}
+
+// Function to update the answers section without reloading the page
+async function updateAnswersSection(url, isBottomPagination = false) {
+  // Store active metrics before updating
+  const activeMetrics = storeActiveMetrics();
+
+  // Fetch the new page content
+  const html = await fetchPageContent(url);
+  if (!html) return;
+
+  // Create a temporary element to parse the HTML
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+
+  // Extract the answers section from the fetched page
+  const newAnswersSection = doc.getElementById("answers-section");
+  const currentAnswersSection = document.getElementById("answers-section");
+
+  if (newAnswersSection && currentAnswersSection) {
+    // Update the answers section content
+    currentAnswersSection.innerHTML = newAnswersSection.innerHTML;
+
+    // Update the pagination controls (both top and bottom)
+    const paginationControls = doc.querySelectorAll(".pagination");
+    const currentPaginationControls = document.querySelectorAll(".pagination");
+
+    paginationControls.forEach((control, index) => {
+      if (currentPaginationControls[index]) {
+        currentPaginationControls[index].innerHTML = control.innerHTML;
+      }
+    });
+
+    // Update the "showing X of Y answers" text
+    const showingTexts = doc.querySelectorAll(
+      ".text-center.text-xs.text-gray-500"
+    );
+    const currentShowingTexts = document.querySelectorAll(
+      ".text-center.text-xs.text-gray-500"
+    );
+
+    showingTexts.forEach((text, index) => {
+      if (currentShowingTexts[index]) {
+        currentShowingTexts[index].innerHTML = text.innerHTML;
+      }
+    });
+
+    // Update the URL without reloading the page
+    history.pushState({}, "", url);
+
+    // Get the new answers data from the script tag
+    const newAnswersDataElement = doc.getElementById("answersData");
+    const currentAnswersDataElement = document.getElementById("answersData");
+
+    if (newAnswersDataElement && currentAnswersDataElement) {
+      // Update the answers data in the current page
+      currentAnswersDataElement.textContent = newAnswersDataElement.textContent;
+
+      // Parse the updated answers data
+      const answers = JSON.parse(currentAnswersDataElement.textContent);
+
+      // Reinitialize the chart with the stored active metrics
+      if (activeMetrics.length > 0) {
+        if (progressChart) {
+          progressChart.destroy();
+          progressChart = null;
+        }
+        initializeChart(answers, activeMetrics);
+      }
+    }
+
+    // Reattach event listeners to the new pagination links
+    attachPaginationListeners();
+
+    // Apply translations to the new content
+    translateCategories();
+
+    // Handle scrolling based on which pagination was used
+    if (isBottomPagination) {
+      // For bottom pagination, scroll to the bottom pagination controls
+      setTimeout(() => {
+        // Find the bottom pagination controls
+        const paginationControls = document.querySelectorAll(".pagination");
+        if (paginationControls.length > 1) {
+          const bottomPagination =
+            paginationControls[paginationControls.length - 1];
+          // Scroll to position the bottom pagination at the center of the viewport
+          const rect = bottomPagination.getBoundingClientRect();
+          const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
+          const targetY =
+            rect.top + scrollTop - window.innerHeight / 2 + rect.height / 2;
+
+          window.scrollTo({
+            top: targetY,
+            behavior: "instant",
+          });
+        }
+      }, 10); // Small delay to ensure DOM is updated
+    } else {
+      // For top pagination, scroll to the top of the answers section
+      const answersSection = document.getElementById("answers-section");
+      if (answersSection) {
+        // Get the position of the top of the answers section
+        const topPosition = answersSection.offsetTop - 20; // Slight offset for better visibility
+        window.scrollTo({
+          top: topPosition,
+          behavior: "instant",
+        });
+      }
+    }
+  }
+}
+
+// Function to store active metrics
+function storeActiveMetrics() {
+  const activeMetrics = [];
+  if (progressChart) {
+    const buttons = {
+      overall: document.getElementById("showOverall"),
+      relevance: document.getElementById("showRelevance"),
+      logic: document.getElementById("showLogic"),
+      clarity: document.getElementById("showClarity"),
+      depth: document.getElementById("showDepth"),
+      objectivity: document.getElementById("showObjectivity"),
+      creativity: document.getElementById("showCreativity"),
+      challenge: document.getElementById("showChallenge"),
+    };
+
+    Object.keys(buttons).forEach((metric) => {
+      if (
+        buttons[metric] &&
+        buttons[metric].classList.contains("button-active")
+      ) {
+        activeMetrics.push(metric);
+      }
+    });
+  }
+  return activeMetrics;
+}
+
+// Function to attach event listeners to pagination links
+function attachPaginationListeners() {
+  const paginationLinks = document.querySelectorAll(".pagination a[href]");
+
+  paginationLinks.forEach((link) => {
+    // Remove any existing event listeners by cloning and replacing the element
+    const newLink = link.cloneNode(true);
+    link.parentNode.replaceChild(newLink, link);
+
+    // Determine if this is a bottom pagination link
+    const isBottomPagination = isBottomPaginationLink(newLink);
+
+    // Add the click event listener to the new element
+    newLink.addEventListener("click", function (e) {
+      e.preventDefault();
+      const url = this.getAttribute("href");
+      updateAnswersSection(url, isBottomPagination);
+    });
+  });
+}
+
+// Function to determine if a pagination link is in the bottom pagination
+function isBottomPaginationLink(link) {
+  // Find all pagination containers
+  const paginationContainers = document.querySelectorAll(".pagination");
+
+  // If there's only one pagination container, it's not a bottom one
+  if (paginationContainers.length <= 1) return false;
+
+  // Check if the link is in the last pagination container
+  const lastPaginationContainer =
+    paginationContainers[paginationContainers.length - 1];
+  return lastPaginationContainer.contains(link);
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   // Load translations first
   await loadTranslations();
@@ -78,6 +267,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Initialize XP progress bar
   initializeXpProgressBar();
 
+  // Get all answers data from the script tag
   const answersDataElement = document.getElementById("answersData");
   const answers = JSON.parse(answersDataElement.textContent);
 
@@ -154,6 +344,67 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateChartMultiple(answers, buttons);
     });
   });
+
+  // Attach event listeners to pagination links
+  attachPaginationListeners();
+
+  // Handle browser back/forward navigation
+  window.addEventListener("popstate", async () => {
+    // Store the current scroll position before updating
+    const scrollPosition = window.scrollY;
+
+    // Update the content
+    await updateAnswersSection(window.location.href);
+
+    // Restore the scroll position
+    setTimeout(() => {
+      window.scrollTo(0, scrollPosition);
+    }, 50);
+  });
+
+  // Check if we have stored active metrics from previous page navigation
+  const storedMetrics = localStorage.getItem("activeMetrics");
+  if (storedMetrics) {
+    try {
+      const activeMetrics = JSON.parse(storedMetrics);
+
+      // Reset all buttons to inactive
+      Object.keys(buttons).forEach((metric) => {
+        buttons[metric].classList.remove("button-active");
+        buttons[metric].classList.add("button-inactive");
+        buttons[metric].style.backgroundColor = "";
+        buttons[metric].classList.remove("bg-gray-800", "text-white");
+        buttons[metric].classList.add("bg-gray-100", "text-gray-800");
+      });
+
+      // Activate stored metrics
+      activeMetrics.forEach((metric) => {
+        if (buttons[metric]) {
+          buttons[metric].classList.remove("button-inactive");
+          buttons[metric].classList.remove("bg-gray-100", "text-gray-800");
+          buttons[metric].classList.add("button-active");
+          buttons[metric].style.backgroundColor = colors[metric];
+          buttons[metric].classList.add("text-white");
+        }
+      });
+
+      // Update chart with stored metrics
+      if (activeMetrics.length > 0) {
+        // Make sure we destroy any existing chart first
+        if (progressChart) {
+          progressChart.destroy();
+          progressChart = null;
+        }
+        initializeChart(answers, activeMetrics);
+      }
+
+      // Clear stored metrics after applying them
+      localStorage.removeItem("activeMetrics");
+    } catch (e) {
+      console.error("Error restoring active metrics:", e);
+      localStorage.removeItem("activeMetrics");
+    }
+  }
 });
 
 // Function to initialize the XP progress bar
@@ -251,6 +502,18 @@ function getDatasetsForMetrics(answers, selectedMetrics) {
 function initializeChart(answers, defaultMetrics = ["overall"]) {
   const ctx = document.getElementById("progressChart")?.getContext("2d");
   if (ctx) {
+    // Destroy existing chart if it exists
+    if (progressChart) {
+      progressChart.destroy();
+      progressChart = null;
+    }
+
+    // Also check for any existing chart instances on this canvas
+    const chartInstance = Chart.getChart("progressChart");
+    if (chartInstance) {
+      chartInstance.destroy();
+    }
+
     // Create reversed copy of answers array to maintain original data
     const reversedAnswers = [...answers].reverse();
 

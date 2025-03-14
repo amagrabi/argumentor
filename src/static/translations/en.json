@@ -336,6 +336,25 @@
     "monthly": "Monthly",
     "monthlyVoiceRecordings": "Monthly Voice Recordings",
     "level": "Level",
+    "yourAnswers": "Your Answers",
+    "noAnswersYet": "You haven't submitted any answers yet.",
+    "previous": "Previous",
+    "next": "Next",
+    "showingAnswers": "Showing",
+    "of": "of",
+    "answers": "answers",
+    "claim": "Claim:",
+    "argument": "Argument:",
+    "counterargument": "Counterargument:",
+    "evaluation": "Evaluation:",
+    "challengeAnswerHistory": "Challenge:",
+    "challengeResponse": "Challenge Response:",
+    "challengeEvaluation": "Challenge Evaluation:",
+    "feedbackDetails": "Feedback Details",
+    "voiceAnswer": "Voice Answer:",
+    "progressOverTime": "Progress Over Time",
+    "rating": "Rating",
+    "time": "Time",
     "achievementData": {
       "first_argument": {
         "name": "First Steps",
@@ -413,21 +432,7 @@
         "name": "Sage of a Hundred Trials",
         "description": "Complete 100 challenges"
       }
-    },
-    "yourAnswers": "Your Answers",
-    "progressOverTime": "Progress Over Time",
-    "rating": "Rating",
-    "time": "Time",
-    "claim": "Claim:",
-    "argument": "Argument:",
-    "counterargument": "Counterargument:",
-    "voiceAnswer": "Voice Answer:",
-    "evaluation": "Evaluation:",
-    "challengeAnswerHistory": "Challenge:",
-    "challengeResponse": "Challenge Response:",
-    "challengeEvaluation": "Challenge Evaluation:",
-    "feedbackDetails": "Details",
-    "noAnswersYet": "You haven't submitted any answers yet."
+    }
   },
   "howItWorksPage": {
     "title": "How It Works",
