@@ -1,3 +1,4 @@
+import gc
 import logging
 import resource
 import sys
@@ -88,9 +89,13 @@ def monitor_memory_usage():
         # Check memory before request
         mem_before = memory_usage_kb()
 
-        # Log if memory usage is high
-        if mem_before > 450 * 1024:  # 450MB (Heroku free tier has 512MB limit)
-            logger.warning(f"High memory usage detected: {mem_before:.2f}KB")
+        # Log if memory usage is high and trigger garbage collection
+        if mem_before > 400 * 1024:  # 400MB (Heroku free tier has 512MB limit)
+            logger.warning(
+                f"High memory usage detected: {mem_before:.2f}KB - triggering garbage collection"
+            )
+            # Force garbage collection to free up memory
+            gc.collect()
 
         @after_this_request
         def after_request(response):
@@ -103,6 +108,8 @@ def monitor_memory_usage():
                 logger.warning(
                     f"Large memory increase: {mem_diff:.2f}KB in request {request.path}"
                 )
+                # Force garbage collection after large memory increases
+                gc.collect()
 
             return response
 
