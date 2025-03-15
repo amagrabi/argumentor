@@ -5,13 +5,70 @@ import sys
 import uuid
 from datetime import UTC, datetime
 
-from flask import after_this_request, request, session
+from flask import Response, after_this_request, request, session
 from flask_login import current_user
 
 from extensions import db
 from models import User, Visit
 
 logger = logging.getLogger(__name__)
+
+# WordPress scanning patterns
+WP_PATTERNS = [
+    "wp-",
+    "wordpress",
+    "xmlrpc.php",
+    "wlwmanifest.xml",
+    "/blog/",
+    "/web/",
+    "/site/",
+    "/cms/",
+    "/wp1/",
+    "/wp2/",
+    "/test/",
+    "/media/",
+    "/shop/",
+    "/news/",
+    "/2018/",
+    "/2019/",
+    "/sito/",
+]
+
+
+def block_wp_scanners():
+    """
+    Middleware to detect and block WordPress scanning attempts.
+    This runs before other middleware to reduce server load.
+    """
+    path = request.path.lower()
+
+    # Check if the request matches known WordPress scanning patterns
+    if any(pattern in path for pattern in WP_PATTERNS):
+        # Apply stricter rate limiting for WordPress scanning IPs
+        # This helps prevent abuse by the same IP address
+        try:
+            # Get the client's IP address
+            ip = request.remote_addr
+
+            # Create a rate limit key specific to WordPress scanning
+            key = f"wp_scan:{ip}"
+
+            # Check if this IP has exceeded the rate limit (10 requests per minute)
+            # Access the limiter instance through the Flask extension
+            from extensions import limiter as limiter_instance
+
+            if not limiter_instance.limiter.hit(key, 10, 60):
+                # If rate limit exceeded, return 429 Too Many Requests
+                return Response("Rate limit exceeded", status=429)
+        except (AttributeError, ImportError):
+            # If limiter is not available or configured correctly, just continue
+            pass
+
+        # Return a minimal 404 response without further processing
+        return Response("", status=404)
+
+    # Continue normal request processing if not a WordPress scanning attempt
+    return None
 
 
 def ensure_user_id():

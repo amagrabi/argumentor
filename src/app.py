@@ -14,7 +14,12 @@ from werkzeug.exceptions import NotFound
 from commands import register_commands
 from config import get_settings
 from extensions import db, limiter, login_manager
-from middleware import ensure_user_id, log_visit, monitor_memory_usage
+from middleware import (
+    block_wp_scanners,
+    ensure_user_id,
+    log_visit,
+    monitor_memory_usage,
+)
 from routes.answers import answers_bp
 from routes.auth import auth_bp
 from routes.pages import pages_bp
@@ -83,6 +88,9 @@ def create_app():
     login_manager.init_app(app)
     limiter.init_app(app)
     mail.init_app(app)
+
+    # Register WordPress scanner blocking middleware
+    app.before_request(block_wp_scanners)
 
     # Register a custom error handler for rate limit errors
     @app.errorhandler(RateLimitExceeded)
@@ -221,18 +229,10 @@ def create_app():
 
     @app.errorhandler(404)
     def handle_not_found(e):
-        # Check if the request is likely from a WordPress scanning bot
-        path = request.path.lower()
-        if (
-            "wp-" in path
-            or "wordpress" in path
-            or "xmlrpc.php" in path
-            or "wlwmanifest.xml" in path
-        ):
-            # For WordPress scanning bots, return a simple 404 without logging
-            return jsonify(error="Not Found"), 404
+        # The WordPress scanning detection is now handled by the middleware
+        # This handler will only be called for legitimate 404s
 
-        # For other 404s, log at a lower level
+        # Log at a lower level
         logger.info(f"404 Not Found: {request.path}")
 
         # Return a JSON response for API endpoints
