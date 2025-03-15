@@ -190,6 +190,16 @@ def create_app():
     def serve_sitemap():
         return send_from_directory(app.static_folder, "sitemap.xml")
 
+    @app.route("/security.txt")
+    def serve_security_txt():
+        return send_from_directory(app.static_folder, "security.txt")
+
+    @app.route("/.well-known/security.txt")
+    def serve_wellknown_security_txt():
+        return send_from_directory(
+            os.path.join(app.static_folder, ".well-known"), "security.txt"
+        )
+
     @app.errorhandler(Exception)
     def handle_exception(e):
         # Skip detailed logging for common routing exceptions that should be handled by specific handlers

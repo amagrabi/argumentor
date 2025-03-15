@@ -1,0 +1,6 @@
+# Security Policy for ArguMentor
+Contact: mailto:amadeus.magrabi@gmail.com
+Expires: 2026-03-15T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://www.argumentorai.com/.well-known/security.txt
+Policy: https://www.argumentorai.com/security-policy
