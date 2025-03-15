@@ -492,7 +492,8 @@ function handleGoogleAuthResponse(response) {
       // Remove show_login parameter from URL if present
       const url = new URL(window.location);
       url.searchParams.delete("show_login");
-      window.location.href = url.toString();
+      // Force a page reload instead of just changing the URL
+      window.location.reload();
     })
     .catch((error) => {
       if (error.message !== "username_required") {
