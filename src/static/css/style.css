@@ -2372,3 +2372,10 @@ a[data-i18n="profile.changePlan"] {
   width: 100%;
   display: block;
 }
+
+/* Ensure Experience Points Gained text is centered */
+#challengeXpInfo > p {
+  text-align: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}

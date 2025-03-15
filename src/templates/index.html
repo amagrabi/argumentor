@@ -1424,6 +1424,7 @@
       <div
         id="writeQuestionOverlay"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden"
+        style="z-index: 9999; position: fixed; top: 0; left: 0; right: 0; bottom: 0;"
       >
         <div
           class="bg-white border border-gray-200 rounded-xl shadow-lg p-4 w-11/12 max-w-2xl"
@@ -1912,7 +1913,6 @@
                         videoContainer.classList.remove("video-needs-interaction");
                       })
                       .catch((error) => {
-                        console.log("Autoplay prevented:", error);
                         // Add a visual indicator that user interaction is needed
                         videoContainer.classList.add("video-needs-interaction");
                       });
@@ -2002,5 +2002,140 @@
       </div>
     </footer>
     <script src="/static/js/achievementTooltips.js" defer></script>
+
+    <!-- Inline script to ensure Write Question button works -->
+    <script>
+      // Make sure the script runs after everything is loaded
+      window.addEventListener('load', function() {
+        // Debug elements
+        const writeBtn = document.getElementById("writeQuestionButton");
+        const overlay = document.getElementById("writeQuestionOverlay");
+        const closeBtn = document.getElementById("closeWriteQuestion");
+        const submitBtn = document.getElementById("submitCustomQuestion");
+
+        if (overlay) {
+        }
+
+        // Force direct manipulation without requiring button click
+        if (writeBtn) {
+
+          // Create a new global function for direct access
+          window.showWriteQuestionOverlay = function() {
+            if (overlay) {
+              overlay.classList.remove("hidden");
+              overlay.style.display = "flex";
+              overlay.style.zIndex = "9999";
+              overlay.style.visibility = "visible";
+
+              setTimeout(() => {
+              }, 100);
+
+              const textarea = document.getElementById("customQuestion");
+              if (textarea) textarea.focus();
+            } else {
+            }
+          };
+
+          // Direct handler that doesn't rely on event bubbling
+          writeBtn.onmousedown = function(e) {
+            e.preventDefault();
+            window.showWriteQuestionOverlay();
+            return false;
+          };
+
+          writeBtn.onclick = function(e) {
+            e.preventDefault();
+            window.showWriteQuestionOverlay();
+            return false;
+          };
+
+          // Also try to trigger immediately for testing
+          setTimeout(() => {
+            // Uncomment to force show on page load (for testing)
+            // window.showWriteQuestionOverlay();
+          }, 2000);
+        } else {
+        }
+
+        // Click outside to close
+        if (overlay) {
+          overlay.onclick = function(e) {
+            if (e.target === overlay) {
+              overlay.classList.add("hidden");
+              overlay.style.display = "none";
+            }
+          };
+        }
+
+        // Close button
+        if (closeBtn) {
+          closeBtn.onclick = function(e) {
+            e.preventDefault();
+            if (overlay) {
+              overlay.classList.add("hidden");
+              overlay.style.display = "none";
+            }
+            return false;
+          };
+        }
+
+        // Submit button
+        if (submitBtn) {
+          submitBtn.onclick = function() {
+            const textarea = document.getElementById("customQuestion");
+            if (!textarea || !textarea.value.trim()) {
+              if (typeof showToast === "function") {
+                showToast("Please enter a question", "error");
+              } else {
+                alert("Please enter a question");
+              }
+              return false;
+            }
+
+            // Create custom question
+            const customQuestion = {
+              id: "custom_" + Date.now(),
+              description: textarea.value.trim(),
+              category: "Custom",
+              isCustom: true
+            };
+
+            // Store the question
+            if (typeof currentQuestion !== "undefined") {
+              currentQuestion = customQuestion;
+            }
+            sessionStorage.setItem("currentQuestion", JSON.stringify(customQuestion));
+
+            // Send to server
+            fetch("/store_custom_question", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ question: customQuestion })
+            }).catch(function(error) {
+            });
+
+            // Update display
+            if (typeof updateQuestionDisplay === "function") {
+              updateQuestionDisplay(customQuestion);
+            } else {
+              const questionDisplay = document.getElementById("questionDescription");
+              if (questionDisplay) questionDisplay.textContent = customQuestion.description;
+            }
+
+            // Hide overlay and clear input
+            if (overlay) {
+              overlay.classList.add("hidden");
+              overlay.style.display = "none";
+            }
+            textarea.value = "";
+
+            return false;
+          };
+        }
+      });
+    </script>
+
+    <!-- Write Question functionality -->
+    <script src="{{ url_for('static', filename='js/write-question.js') }}"></script>
   </body>
 </html>

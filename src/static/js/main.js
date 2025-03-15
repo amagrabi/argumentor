@@ -943,7 +943,6 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     argument,
     counterargument: counterargument || null,
     input_mode: inputMode,
-    question_id: currentQuestion?.id,
   };
 
   // Include voice_answer in the payload when using voice input
@@ -951,12 +950,24 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     payload.voice_answer = voice_answer;
   }
 
-  if (currentQuestion?.id) {
-    payload.question_id = currentQuestion.id;
+  // Get the current question from global state or session storage
+  let questionData = window.currentQuestion;
+  if (!questionData) {
+    const storedQuestion = sessionStorage.getItem("currentQuestion");
+    if (storedQuestion) {
+      try {
+        questionData = JSON.parse(storedQuestion);
+      } catch (e) {
+        console.error("Error parsing stored question:", e);
+      }
+    }
+  }
 
-    // For custom questions, include the question text in the payload
-    if (currentQuestion.isCustom) {
-      payload.question_text = currentQuestion.description;
+  // Include question data in the payload
+  if (questionData) {
+    payload.question_id = questionData.id;
+    if (questionData.isCustom) {
+      payload.question_text = questionData.description;
     }
   }
 
@@ -3251,6 +3262,23 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   // Call it again when navigating to profile page or when achievements are loaded dynamically
   document.addEventListener("achievementsLoaded", setupAchievementTooltips);
+
+  // Write Question button handler is now managed in write-question.js
+  // No need for duplicate event handlers here
+
+  // Hide loading indicator when page is fully loaded
+  window.addEventListener("load", hideLoadingIndicator);
+
+  // Also handle browser back/forward navigation
+  window.addEventListener("pageshow", function (event) {
+    // The pageshow event is fired when the page is shown, including when navigating back
+    hideLoadingIndicator();
+  });
+
+  // Handle popstate event (browser back/forward buttons)
+  window.addEventListener("popstate", function (event) {
+    hideLoadingIndicator();
+  });
 });
 
 // Update selectedCategories based on selected items and possibly re-roll the question
@@ -3508,43 +3536,6 @@ function hideLoadingIndicator() {
   }
 }
 
-// Add event listeners for page transitions
-document.addEventListener("DOMContentLoaded", function () {
-  // Add click event listeners to all links
-  document.addEventListener("click", function (e) {
-    // Check if the clicked element is a link
-    let target = e.target;
-    while (target && target.tagName !== "A") {
-      target = target.parentElement;
-    }
-
-    if (
-      target &&
-      target.tagName === "A" &&
-      target.href &&
-      !target.href.startsWith("javascript:") &&
-      !target.getAttribute("download") &&
-      target.getAttribute("target") !== "_blank"
-    ) {
-      showLoadingIndicator();
-    }
-  });
-
-  // Hide loading indicator when page is fully loaded
-  window.addEventListener("load", hideLoadingIndicator);
-
-  // Also handle browser back/forward navigation
-  window.addEventListener("pageshow", function (event) {
-    // The pageshow event is fired when the page is shown, including when navigating back
-    hideLoadingIndicator();
-  });
-
-  // Handle popstate event (browser back/forward buttons)
-  window.addEventListener("popstate", function (event) {
-    hideLoadingIndicator();
-  });
-});
-
 function updateLocalLevelInfo(totalXp, levelInfo) {
   // Use dynamic import to access the module function
   import("./level.js").then((levelModule) => {
@@ -3602,4 +3593,28 @@ function localScrollToMainEvaluation() {
   import("./evaluation.js").then((evalModule) => {
     evalModule.scrollToMainEvaluation();
   });
+}
+
+// Event listener for achievement updates
+document.addEventListener("refreshAchievements", () => {
+  updateLocalAchievementsDisplay(all_achievements);
+});
+
+// Show loading indicator during page transitions
+function showLoadingIndicator() {
+  // Create loading overlay if it doesn't exist
+  let loadingOverlay = document.getElementById("loadingOverlay");
+  if (!loadingOverlay) {
+    loadingOverlay = document.createElement("div");
+    loadingOverlay.id = "loadingOverlay";
+    loadingOverlay.className = "page-loading-overlay";
+
+    const spinner = document.createElement("div");
+    spinner.className = "page-loading-spinner";
+
+    loadingOverlay.appendChild(spinner);
+    document.body.appendChild(loadingOverlay);
+  } else {
+    loadingOverlay.style.display = "flex";
+  }
 }
