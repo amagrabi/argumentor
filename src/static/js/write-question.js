@@ -79,16 +79,21 @@ function createDynamicOverlay() {
   header.style.alignItems = "center";
   header.style.marginBottom = "16px";
 
+  // Get translations from the global translations object
+  const translations = window.translations || {};
+  const writeQuestionTranslations = translations.writeQuestion || {};
+
   // Title
   const title = document.createElement("h3");
-  title.textContent = "Write Your Own Question";
+  title.textContent =
+    writeQuestionTranslations.title || "Write Your Own Question";
   title.style.fontSize = "18px";
   title.style.fontWeight = "bold";
   title.style.margin = "0";
 
   // Close button
   const closeButton = document.createElement("button");
-  closeButton.textContent = "✕";
+  closeButton.textContent = writeQuestionTranslations.close || "✕";
   closeButton.style.backgroundColor = "#333";
   closeButton.style.color = "white";
   closeButton.style.border = "none";
@@ -114,12 +119,14 @@ function createDynamicOverlay() {
   textArea.style.marginBottom = "8px";
   textArea.style.resize = "vertical";
   textArea.rows = 3;
-  textArea.placeholder = "Enter your question here...";
+  textArea.placeholder =
+    writeQuestionTranslations.label || "Enter your question here...";
   textArea.maxLength = 200;
 
   // Hint text
   const hint = document.createElement("div");
   hint.textContent =
+    writeQuestionTranslations.hint ||
     "Write a clear question that can be argued from multiple perspectives.";
   hint.style.fontSize = "12px";
   hint.style.color = "#666";
@@ -134,7 +141,8 @@ function createDynamicOverlay() {
 
   // Submit button
   const submitButton = document.createElement("button");
-  submitButton.textContent = "Use This Question";
+  submitButton.textContent =
+    writeQuestionTranslations.submit || "Use This Question";
   submitButton.style.backgroundColor = "#444";
   submitButton.style.color = "white";
   submitButton.style.border = "none";
@@ -148,10 +156,16 @@ function createDynamicOverlay() {
     const questionText = textArea.value.trim();
 
     if (!questionText) {
+      // Get error message from translations if available
+      const errorMessage =
+        translations.errors && translations.errors.emptyQuestion
+          ? translations.errors.emptyQuestion
+          : "Please enter a question";
+
       if (typeof showToast === "function") {
-        showToast("Please enter a question", "error");
+        showToast(errorMessage, "error");
       } else {
-        alert("Please enter a question");
+        alert(errorMessage);
       }
       return;
     }

@@ -25,7 +25,8 @@
     "noQuestionsAvailable": "Keine Fragen für die ausgewählten Kategorien verfügbar. Versuche andere Kategorien auszuwählen.",
     "accountLocked": "Konto gesperrt. Bitte versuche es später erneut",
     "tooManyAttempts": "Zu viele Anmeldeversuche. Bitte warte einen Moment",
-    "serverError": "Ein Serverfehler ist aufgetreten. Bitte versuche es später erneut"
+    "serverError": "Ein Serverfehler ist aufgetreten. Bitte versuche es später erneut",
+    "emptyQuestion": "Bitte gib eine Frage ein"
   },
   "header": {
     "login": "Anmelden",
