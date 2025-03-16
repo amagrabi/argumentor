@@ -93,7 +93,7 @@ def post_process_transcription(
         )
         logger.debug(f"Selected system prompt for language {language}")
 
-        prompt = f"""
+        user_prompt = f"""
         Please improve this speech-to-text transcription and make it more readable while preserving its original meaning.
         Focus on fixing punctuation, capitalization, obvious recognition errors, and removing filler words like "um", "uh", "you know".
         The user tried to answer this question: {question_text}
@@ -103,7 +103,7 @@ def post_process_transcription(
         """
 
         if language == "de":
-            prompt = f"""
+            user_prompt = f"""
             Bitte verbessere diese Sprache-zu-Text-Transkription und verbessere die Lesbarkeit unter Beibehaltung ihrer ursprünglichen Bedeutung.
             Konzentriere dich auf die Korrektur von Zeichensetzung, Großschreibung, offensichtlichen Erkennungsfehlern und entferne Füllwörter wie "ähm", "äh", "sozusagen".
             Der Benutzer versucht, diese Frage zu beantworten: {question_text}
@@ -113,12 +113,15 @@ def post_process_transcription(
             """
 
         logger.debug("Starting LLM post-processing")
+        llm_response = None
+        improved_transcript = None
         try:
-            response = CLIENT.models.generate_content(
+            llm_response = CLIENT.models.generate_content(
                 model=SETTINGS.MODEL,
                 contents=[
                     genai.types.Content(
-                        role="user", parts=[genai.types.Part.from_text(text=prompt)]
+                        role="user",
+                        parts=[genai.types.Part.from_text(text=user_prompt)],
                     )
                 ],
                 config=genai.types.GenerateContentConfig(
@@ -145,10 +148,10 @@ def post_process_transcription(
             )
 
             # Extract the text from the response
-            if hasattr(response, "text"):
-                improved_transcript = response.text.strip()
-            elif hasattr(response, "parts") and response.parts:
-                improved_transcript = response.parts[0].text.strip()
+            if hasattr(llm_response, "text"):
+                improved_transcript = llm_response.text.strip()
+            elif hasattr(llm_response, "parts") and llm_response.parts:
+                improved_transcript = llm_response.parts[0].text.strip()
             else:
                 logger.warning(
                     "Unexpected response format from LLM, using original transcript"
@@ -156,8 +159,10 @@ def post_process_transcription(
                 improved_transcript = transcript
 
             # Free up memory
-            del prompt
-            del response
+            if "user_prompt" in locals():
+                del user_prompt
+            if llm_response:
+                del llm_response
             gc.collect()
 
             logger.debug(
@@ -167,10 +172,17 @@ def post_process_transcription(
         except Exception as e:
             logger.error(f"Error in LLM post-processing: {str(e)}", exc_info=True)
             # If LLM processing fails, return the original transcript
+            # Clean up any resources
+            if "user_prompt" in locals():
+                del user_prompt
+            if llm_response:
+                del llm_response
+            gc.collect()
             return transcript
 
     except Exception as e:
         logger.error(f"Error in post-processing setup: {str(e)}", exc_info=True)
+        gc.collect()
         return transcript
 
 
@@ -206,6 +218,7 @@ def transcribe_audio(audio_content, file_mime):
         f"Audio format determined as: {input_format} from mime type: {file_mime}"
     )
 
+    audio = None
     try:
         logger.debug("Loading audio file for processing")
         audio = AudioSegment.from_file(io.BytesIO(audio_content), format=input_format)
@@ -213,10 +226,15 @@ def transcribe_audio(audio_content, file_mime):
             f"Audio loaded successfully. Duration: {len(audio)}ms, Channels: {audio.channels}, Sample width: {audio.sample_width}, Frame rate: {audio.frame_rate}"
         )
         # Free up memory
-        del audio_content
+        if "audio_content" in locals() and audio_content is not None:
+            del audio_content
         gc.collect()
     except Exception as e:
         logger.error(f"Error loading audio file for chunking: {e}", exc_info=True)
+        # Ensure cleanup even on error
+        if "audio_content" in locals() and audio_content is not None:
+            del audio_content
+        gc.collect()
         return ""
 
     # Capture session-dependent data before launching background tasks.
@@ -230,6 +248,10 @@ def transcribe_audio(audio_content, file_mime):
         """
         Exports the given AudioSegment to a WAV byte stream and then performs synchronous speech recognition.
         """
+        buffer = None
+        chunk_bytes = None
+        audio_request = None
+        client = None
         try:
             # Convert the audio segment's sample rate to 16000 Hz, sample width to 16 bit (2 bytes),
             # and ensure it's in mono (1 channel)
@@ -250,7 +272,9 @@ def transcribe_audio(audio_content, file_mime):
             logger.debug(f"Exported WAV chunk size: {len(chunk_bytes)} bytes")
 
             # Free up memory
-            del buffer
+            if buffer:
+                del buffer
+                buffer = None
 
             # Prepare Google Speech API client and config.
             client = speech.SpeechClient(credentials=google_credentials)
@@ -281,8 +305,15 @@ def transcribe_audio(audio_content, file_mime):
                     f"Speech recognition successful. Transcript length: {len(chunk_transcript)}"
                 )
                 # Free up memory
-                del chunk_bytes
-                del audio_request
+                if chunk_bytes:
+                    del chunk_bytes
+                    chunk_bytes = None
+                if audio_request:
+                    del audio_request
+                    audio_request = None
+                if client:
+                    del client
+                    client = None
                 gc.collect()
                 return chunk_transcript
             except Exception as e:
@@ -291,16 +322,27 @@ def transcribe_audio(audio_content, file_mime):
         except Exception as e:
             logger.error(f"Error processing audio chunk: {e}", exc_info=True)
             return ""
+        finally:
+            # Ensure all resources are cleaned up
+            if "buffer" in locals() and buffer:
+                del buffer
+            if "chunk_bytes" in locals() and chunk_bytes:
+                del chunk_bytes
+            if "audio_request" in locals() and audio_request:
+                del audio_request
+            if "client" in locals() and client:
+                del client
+            gc.collect()
 
     # If the entire audio is short enough, process it as one chunk.
-    if len(audio) <= chunk_length_ms:
+    if audio and len(audio) <= chunk_length_ms:
         logger.debug(f"Processing audio as single chunk (duration: {len(audio)}ms)")
         transcript = process_audio_chunk(audio, language_code)
         # Free up memory
         del audio
         gc.collect()
         return transcript.strip()
-    else:
+    elif audio:
         # Split audio into chunks.
         logger.debug(
             f"Splitting audio into chunks. Total duration: {len(audio)}ms, Chunk size: {chunk_length_ms}ms"
@@ -343,7 +385,16 @@ def transcribe_audio(audio_content, file_mime):
         logger.debug(
             f"All chunks processed. Final transcript length: {len(clean_transcript)}"
         )
+
+        # Final cleanup
+        del transcript_chunks
+        del full_transcript
+        gc.collect()
+
         return clean_transcript
+    else:
+        logger.error("No audio data to process")
+        return ""
 
 
 @transcribe_bp.route("/check_voice_limits", methods=["GET"])
@@ -430,6 +481,8 @@ def check_voice_limits():
 
 @transcribe_bp.route("/transcribe_voice", methods=["POST"])
 def transcribe_voice():
+    import gc
+
     logger.debug("Starting voice transcription request")
     user_uuid = session.get("user_id")
     if not user_uuid:
@@ -543,16 +596,29 @@ def transcribe_voice():
 
         # Process the initial transcription
         logger.debug("Starting initial transcription")
+        audio_content = None
+        transcript = None
         try:
-            transcript = transcribe_audio(audio_file.read(), audio_file.content_type)
+            audio_content = audio_file.read()
+            transcript = transcribe_audio(audio_content, audio_file.content_type)
             logger.debug(f"Initial transcription result: {transcript}")
+            # Explicitly clean up large audio content
+            if audio_content:
+                del audio_content
+                audio_content = None
+            gc.collect()
         except Exception as e:
             logger.error(f"Error during initial transcription: {str(e)}", exc_info=True)
+            # Ensure cleanup even on error
+            if "audio_content" in locals() and audio_content:
+                del audio_content
+            gc.collect()
             return jsonify({"error": "Error during transcription"}), 500
 
         # Return early if transcription failed
         if not transcript:
             logger.error("Initial transcription failed - empty transcript")
+            gc.collect()
             return jsonify(
                 {
                     "error": "No text could be identified in the recording",
@@ -562,22 +628,40 @@ def transcribe_voice():
 
         logger.debug("Initial transcription successful, starting post-processing")
         # Post-process the transcription with LLM, including the question context
+        improved_transcript = None
+        original_transcript = transcript  # Save a copy for comparison
         try:
             improved_transcript = post_process_transcription(
                 transcript, language, question_text
             )
             logger.debug(f"Post-processing result: {improved_transcript}")
+            # Clean up after post-processing
+            if transcript:
+                del transcript
+                transcript = None
+            gc.collect()
         except Exception as e:
             logger.error(f"Error during post-processing: {str(e)}", exc_info=True)
+            # Ensure cleanup even on error
+            if "transcript" in locals() and transcript:
+                del transcript
+            gc.collect()
             return jsonify({"error": "Error during transcription"}), 500
 
         if not improved_transcript:
             logger.error("Post-processing failed - empty result")
+            gc.collect()
             return jsonify({"error": "Error during transcription"}), 500
 
-        was_improved = improved_transcript != transcript
+        was_improved = improved_transcript != original_transcript
         logger.info(f"Transcription was improved: {was_improved}")
 
+        # Clean up before returning
+        if "original_transcript" in locals():
+            del original_transcript
+
+        # Final cleanup before returning response
+        gc.collect()
         return jsonify(
             {
                 "transcript": improved_transcript,
@@ -589,4 +673,6 @@ def transcribe_voice():
     except Exception as e:
         logger.error(f"Error in voice transcription: {str(e)}")
         db.session.rollback()
+        # Ensure memory cleanup on any exception
+        gc.collect()
         return jsonify({"error": "Error processing voice recording"}), 500
