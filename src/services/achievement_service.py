@@ -94,10 +94,10 @@ def check_and_award_achievements(
     # Check for master of all categories
     scores = answer_data.get("evaluation_scores", {})
     has_master = user.is_authenticated and user.has_achievement("master_of_all")
-    if all(score >= 9 for score in scores.values()) and not has_master:
+    if all(score >= 8 for score in scores.values()) and not has_master:
         award_achievement("master_of_all")
 
-    # Check for all categories with 7+ rating - only for authenticated users
+    # Check for all categories with 5+ rating - only for authenticated users
     if user.is_authenticated and not user.has_achievement("all_categories"):
         # Get all answers with their categories and scores
         category_high_scores = {}
@@ -114,7 +114,7 @@ def check_and_award_achievements(
                 if answer.evaluation_scores
                 else 0
             )
-            if score >= 7:  # 7+ score threshold
+            if score >= 5:
                 category_high_scores[category] = True
 
             # Check if challenge response also meets criteria
@@ -122,11 +122,10 @@ def check_and_award_achievements(
                 challenge_score = sum(
                     answer.challenge_evaluation_scores.values()
                 ) / len(answer.challenge_evaluation_scores)
-                if challenge_score >= 7:
+                if challenge_score >= 5:
                     category_high_scores[category] = True
 
-        # Check if all categories have at least one 7+ score
-        if len(category_high_scores) >= 9:  # All 9 categories
+        if len(category_high_scores) >= 9:
             award_achievement("all_categories")
 
     # Check for wordsmith (long argument)
@@ -146,17 +145,17 @@ def check_and_award_achievements(
         total_length = len(claim) + len(argument) + len(counterargument)
 
     has_wordsmith = user.is_authenticated and user.has_achievement("wordsmith")
-    if total_length > 1700 and total_score >= 7.5 and not has_wordsmith:
+    if total_length > 1700 and total_score >= 7 and not has_wordsmith:
         award_achievement("wordsmith")
 
     # Check for concise master
     has_concise = user.is_authenticated and user.has_achievement("concise_master")
-    if total_length < 400 and total_score >= 7.5 and not has_concise:
+    if total_length < 400 and total_score >= 7 and not has_concise:
         award_achievement("concise_master")
 
     # Count total answers and award milestones - only for authenticated users
     if user.is_authenticated:
-        MIN_SCORE = 4
+        MIN_SCORE = 5
         answer_count = sum(
             1 for a in user.answers if getattr(a, "total_score", 0) >= MIN_SCORE
         )
@@ -172,7 +171,7 @@ def check_and_award_achievements(
         if answer_count >= 100 and not user.has_achievement("hundred_answers"):
             award_achievement("hundred_answers")
     else:
-        MIN_SCORE = 4
+        MIN_SCORE = 5
 
     # Count voice answers - only for authenticated users
     if user.is_authenticated:
@@ -262,7 +261,7 @@ def check_and_award_achievements(
                 if answer.evaluation_scores
                 else 0
             )
-            if score >= 8:  # 8+ score threshold
+            if score >= 7:
                 category_scores[category] = category_scores.get(category, 0) + 1
 
             # Check if challenge response also meets criteria
@@ -270,7 +269,7 @@ def check_and_award_achievements(
                 challenge_score = sum(
                     answer.challenge_evaluation_scores.values()
                 ) / len(answer.challenge_evaluation_scores)
-                if challenge_score >= 8:
+                if challenge_score >= 7:
                     category_scores[category] = category_scores.get(category, 0) + 1
 
         # Check if any category has 5 or more high scores
