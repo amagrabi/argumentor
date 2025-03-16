@@ -161,7 +161,7 @@ class Visit(db.Model):
         db.String(36), db.ForeignKey("users.uuid", ondelete="CASCADE"), nullable=True
     )
     ip_address = db.Column(db.String(45), nullable=True)
-    user_agent = db.Column(db.String(200), nullable=True)
+    user_agent = db.Column(db.String(500), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now(UTC))
 
     def __repr__(self):

@@ -105,9 +105,14 @@ def log_visit():
         today_str = datetime.now(UTC).strftime("%Y-%m-%d")
         if session.get("last_visit_date") != today_str:
             session["last_visit_date"] = today_str
+            user_agent = request.headers.get("User-Agent", "")
+            # Truncate user_agent if it's too long to prevent database errors
+            if user_agent and len(user_agent) > 500:
+                user_agent = user_agent[:500]
+
             new_visit = Visit(
                 ip_address=request.remote_addr,
-                user_agent=request.headers.get("User-Agent"),
+                user_agent=user_agent,
                 user_uuid=session.get("user_id") if session.get("user_id") else None,
             )
             db.session.add(new_visit)
