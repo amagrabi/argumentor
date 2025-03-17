@@ -1,7 +1,6 @@
 import logging
 import os
 import traceback
-import warnings
 from datetime import timedelta
 
 from flask import Flask, jsonify, request, send_from_directory, session
@@ -45,9 +44,6 @@ root_logger.setLevel(log_level)
 # Create a logger for this module
 logger = logging.getLogger(__name__)
 logger.debug("Logging configured with level: %s", SETTINGS.LOG_LEVEL)
-
-# Suppress misleading pydub warnings for regex patterns with invalid escape sequences
-warnings.filterwarnings("ignore", category=SyntaxWarning, module="pydub.utils")
 
 
 def add_cors_headers(response):
