@@ -1,6 +1,9 @@
 import logging
 import re
+import sys
 import uuid
+import weakref
+from contextlib import contextmanager
 from datetime import UTC, datetime, time
 
 from flask import Blueprint, jsonify, request, session
@@ -21,13 +24,130 @@ logger = logging.getLogger(__name__)
 transcribe_bp = Blueprint("transcribe", __name__)
 SETTINGS = get_settings()
 
-# Initialize Gemini client
-CLIENT = genai.Client(
-    vertexai=True,
-    credentials=google_credentials,
-    project=SETTINGS.GCLOUD_PROJECT_NAME,
-    location=SETTINGS.GCLOUD_PROJECT_REGION,
-)
+# Use weakrefs for the client pool to prevent strong references
+SPEECH_CLIENT_POOL = []
+MAX_POOL_SIZE = 2
+
+# We'll use a weak reference for the Gemini client
+_CLIENT_REF = None
+
+
+def get_gemini_client():
+    """Get or create a Gemini client with weakref tracking"""
+    global _CLIENT_REF
+    client = None if _CLIENT_REF is None else _CLIENT_REF()
+
+    if client is None:
+        client = genai.Client(
+            vertexai=True,
+            credentials=google_credentials,
+            project=SETTINGS.GCLOUD_PROJECT_NAME,
+            location=SETTINGS.GCLOUD_PROJECT_REGION,
+        )
+        # Store as weak reference so it can be garbage collected if memory pressure occurs
+        _CLIENT_REF = weakref.ref(client)
+
+    return client
+
+
+def cleanup_gemini_client():
+    """Force explicit cleanup of Gemini client"""
+    global _CLIENT_REF
+    if _CLIENT_REF is not None:
+        client = _CLIENT_REF()
+        if client is not None:
+            # Try to close client if it has a close method
+            if hasattr(client, "close") and callable(getattr(client, "close")):
+                try:
+                    client.close()
+                except Exception as e:
+                    logger.debug(f"Error closing Gemini client: {e}")
+        _CLIENT_REF = None
+
+    # Force garbage collection
+    import gc
+
+    gc.collect(2)
+
+
+@contextmanager
+def get_speech_client():
+    """
+    Resource manager for speech clients that reuses clients from the pool
+    or creates new ones when needed, with more aggressive cleanup.
+    """
+    client = None
+    try:
+        # Try to get a client from the pool
+        if SPEECH_CLIENT_POOL:
+            client = SPEECH_CLIENT_POOL.pop()
+            # Verify the client is still usable
+            if not hasattr(client, "recognize"):
+                # Client appears to be in an invalid state, create a new one
+                if hasattr(client, "close") and callable(getattr(client, "close")):
+                    try:
+                        client.close()
+                    except Exception:
+                        pass
+                client = speech.SpeechClient(credentials=google_credentials)
+        else:
+            # Create a new client if pool is empty
+            client = speech.SpeechClient(credentials=google_credentials)
+
+        # Yield the client for use
+        yield client
+
+    except Exception as e:
+        logger.error(f"Speech client error: {e}")
+        if client is not None:
+            try:
+                if hasattr(client, "close") and callable(getattr(client, "close")):
+                    client.close()
+            except Exception:
+                pass
+            client = None
+        raise
+
+    finally:
+        # Return client to the pool if it's still valid
+        if client is not None:
+            # Only keep a limited number of clients in the pool
+            if len(SPEECH_CLIENT_POOL) < MAX_POOL_SIZE:
+                SPEECH_CLIENT_POOL.append(client)
+            else:
+                # If pool is full, force close the client
+                try:
+                    if hasattr(client, "close") and callable(getattr(client, "close")):
+                        client.close()
+                except Exception as e:
+                    logger.debug(f"Error closing speech client: {e}")
+                client = None
+
+        # Try to force Python to clear internal caches
+        import gc
+
+        gc.collect(2)
+
+
+def clear_speech_client_pool():
+    """Explicitly close and clear all speech clients in the pool"""
+    global SPEECH_CLIENT_POOL
+
+    for client in SPEECH_CLIENT_POOL:
+        try:
+            if hasattr(client, "close") and callable(getattr(client, "close")):
+                client.close()
+        except Exception as e:
+            logger.debug(f"Error closing pooled speech client: {e}")
+
+    # Clear the pool
+    SPEECH_CLIENT_POOL.clear()
+
+    # Force garbage collection
+    import gc
+
+    gc.collect(2)
+
 
 TRANSCRIPTION_SYSTEM_PROMPT_EN = """
 You are a transcription post-processor. You are seeing text that has
@@ -79,6 +199,9 @@ def post_process_transcription(
     """
     import gc
 
+    # Force a full garbage collection before starting
+    gc.collect(2)
+
     try:
         # Return early if transcript is empty or too short
         if not transcript or len(transcript.strip()) < 3:
@@ -116,7 +239,10 @@ def post_process_transcription(
         llm_response = None
         improved_transcript = None
         try:
-            llm_response = CLIENT.models.generate_content(
+            # Get the shared client
+            client = get_gemini_client()
+
+            llm_response = client.models.generate_content(
                 model=SETTINGS.MODEL,
                 contents=[
                     genai.types.Content(
@@ -161,9 +287,15 @@ def post_process_transcription(
             # Free up memory
             if "user_prompt" in locals():
                 del user_prompt
+            if "system_prompt" in locals():
+                del system_prompt
             if llm_response:
                 del llm_response
-            gc.collect()
+
+            # Force garbage collection
+            gc.collect(0)  # Collect youngest generation first
+            gc.collect(1)  # Collect middle generation
+            gc.collect(2)  # Full collection including oldest objects
 
             logger.debug(
                 f"LLM post-processing completed. Result: {improved_transcript}"
@@ -175,28 +307,88 @@ def post_process_transcription(
             # Clean up any resources
             if "user_prompt" in locals():
                 del user_prompt
+            if "system_prompt" in locals():
+                del system_prompt
             if llm_response:
                 del llm_response
-            gc.collect()
+
+            # Force garbage collection
+            gc.collect(0)
+            gc.collect(1)
+            gc.collect(2)
             return transcript
 
     except Exception as e:
         logger.error(f"Error in post-processing setup: {str(e)}", exc_info=True)
-        gc.collect()
+        # Force garbage collection
+        gc.collect(2)
         return transcript
+
+
+@contextmanager
+def managed_audio_segment(audio_content, format_name):
+    """
+    Context manager for handling AudioSegment objects to ensure proper cleanup.
+    """
+    import gc
+    import io
+
+    from pydub import AudioSegment
+
+    audio = None
+    audio_buffer = None
+
+    try:
+        audio_buffer = io.BytesIO(audio_content)
+        audio = AudioSegment.from_file(audio_buffer, format=format_name)
+        yield audio
+    finally:
+        # Clean up resources in reverse order of creation
+        if audio is not None:
+            # Remove any circular references in the audio object
+            for attr_name in dir(audio):
+                if not attr_name.startswith("_"):
+                    try:
+                        setattr(audio, attr_name, None)
+                    except (AttributeError, TypeError):
+                        pass
+            del audio
+
+        if audio_buffer is not None:
+            audio_buffer.close()
+            del audio_buffer
+
+        # Clear the memory
+        gc.collect(2)
 
 
 def upload_audio_to_gcs(audio_content, file_mime):
     # Initialize a GCS client with our credentials
-    storage_client = storage.Client(credentials=google_credentials)
-    bucket_name = SETTINGS.GCS_BUCKET
-    bucket = storage_client.bucket(bucket_name)
-    extension = "webm" if "webm" in file_mime or "ogg" in file_mime else "wav"
-    filename = f"voice_recordings/{uuid.uuid4()}.{extension}"
-    blob = bucket.blob(filename)
-    blob.upload_from_string(audio_content, content_type=file_mime)
-    logger.debug(f"Uploaded audio file to GCS: gs://{bucket_name}/{filename}")
-    return f"gs://{bucket_name}/{filename}"
+    storage_client = None
+    try:
+        storage_client = storage.Client(credentials=google_credentials)
+        bucket_name = SETTINGS.GCS_BUCKET
+        bucket = storage_client.bucket(bucket_name)
+        extension = "webm" if "webm" in file_mime or "ogg" in file_mime else "wav"
+        filename = f"voice_recordings/{uuid.uuid4()}.{extension}"
+        blob = bucket.blob(filename)
+        blob.upload_from_string(audio_content, content_type=file_mime)
+        logger.debug(f"Uploaded audio file to GCS: gs://{bucket_name}/{filename}")
+        return f"gs://{bucket_name}/{filename}"
+    finally:
+        # Try to clean up the storage client
+        if storage_client:
+            try:
+                if hasattr(storage_client, "close") and callable(
+                    getattr(storage_client, "close")
+                ):
+                    storage_client.close()
+            except Exception as e:
+                logger.debug(f"Error closing storage client: {e}")
+            storage_client = None
+            import gc
+
+            gc.collect(2)
 
 
 def transcribe_audio(audio_content, file_mime):
@@ -206,10 +398,21 @@ def transcribe_audio(audio_content, file_mime):
     """
     import gc
     import io
+    import sys
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
     from flask import session
-    from pydub import AudioSegment
+
+    # Force a full garbage collection before starting
+    gc.collect(0)  # Young generation
+    gc.collect(1)  # Middle generation
+    gc.collect(2)  # Old generation
+
+    # Try to clear type caches
+    try:
+        sys._clear_type_cache()
+    except AttributeError as e:
+        logger.debug(f"Could not clear type cache: {e}")
 
     chunk_length_ms = SETTINGS.VOICE_CHUNK_LIMIT
     # Determine the input format based on file_mime.
@@ -217,25 +420,6 @@ def transcribe_audio(audio_content, file_mime):
     logger.debug(
         f"Audio format determined as: {input_format} from mime type: {file_mime}"
     )
-
-    audio = None
-    try:
-        logger.debug("Loading audio file for processing")
-        audio = AudioSegment.from_file(io.BytesIO(audio_content), format=input_format)
-        logger.debug(
-            f"Audio loaded successfully. Duration: {len(audio)}ms, Channels: {audio.channels}, Sample width: {audio.sample_width}, Frame rate: {audio.frame_rate}"
-        )
-        # Free up memory
-        if "audio_content" in locals() and audio_content is not None:
-            del audio_content
-        gc.collect()
-    except Exception as e:
-        logger.error(f"Error loading audio file for chunking: {e}", exc_info=True)
-        # Ensure cleanup even on error
-        if "audio_content" in locals() and audio_content is not None:
-            del audio_content
-        gc.collect()
-        return ""
 
     # Capture session-dependent data before launching background tasks.
     language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
@@ -248,10 +432,12 @@ def transcribe_audio(audio_content, file_mime):
         """
         Exports the given AudioSegment to a WAV byte stream and then performs synchronous speech recognition.
         """
+        import gc
+
         buffer = None
         chunk_bytes = None
         audio_request = None
-        client = None
+
         try:
             # Convert the audio segment's sample rate to 16000 Hz, sample width to 16 bit (2 bytes),
             # and ensure it's in mono (1 channel)
@@ -259,9 +445,24 @@ def transcribe_audio(audio_content, file_mime):
                 f"Processing chunk. Original properties - Duration: {len(audio_segment)}ms, Channels: {audio_segment.channels}, Sample width: {audio_segment.sample_width}, Frame rate: {audio_segment.frame_rate}"
             )
 
-            audio_segment = (
+            # Create a new audio segment with the proper settings
+            processed_segment = (
                 audio_segment.set_frame_rate(16000).set_sample_width(2).set_channels(1)
             )
+
+            # Clear reference to the original segment if it's different
+            if processed_segment is not audio_segment:
+                # Clean internal references
+                for attr_name in dir(audio_segment):
+                    if not attr_name.startswith("_"):
+                        try:
+                            setattr(audio_segment, attr_name, None)
+                        except (AttributeError, TypeError):
+                            pass
+                del audio_segment
+                gc.collect(2)
+
+            audio_segment = processed_segment
             logger.debug(
                 f"Chunk converted. New properties - Duration: {len(audio_segment)}ms, Channels: {audio_segment.channels}, Sample width: {audio_segment.sample_width}, Frame rate: {audio_segment.frame_rate}"
             )
@@ -273,26 +474,37 @@ def transcribe_audio(audio_content, file_mime):
 
             # Free up memory
             if buffer:
+                buffer.close()
                 del buffer
                 buffer = None
 
-            # Prepare Google Speech API client and config.
-            client = speech.SpeechClient(credentials=google_credentials)
-            config = speech.RecognitionConfig(
-                encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-                sample_rate_hertz=16000,  # Matches the exported WAV header
-                language_code=language_code,
-                model=SETTINGS.VOICE_MODEL,
-                use_enhanced=SETTINGS.VOICE_ENHANCED,
-                enable_automatic_punctuation=SETTINGS.VOICE_PUNCTUATION,
-                audio_channel_count=1,
-            )
-            logger.debug(
-                f"Speech recognition config: model={SETTINGS.VOICE_MODEL}, enhanced={SETTINGS.VOICE_ENHANCED}, punctuation={SETTINGS.VOICE_PUNCTUATION}"
-            )
+            # Clear processed segment as soon as possible
+            for attr_name in dir(audio_segment):
+                if not attr_name.startswith("_"):
+                    try:
+                        setattr(audio_segment, attr_name, None)
+                    except (AttributeError, TypeError):
+                        pass
+            del audio_segment
+            gc.collect(0)
 
-            audio_request = speech.RecognitionAudio(content=chunk_bytes)
-            try:
+            # Use resource manager for speech client
+            with get_speech_client() as client:
+                config = speech.RecognitionConfig(
+                    encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
+                    sample_rate_hertz=16000,  # Matches the exported WAV header
+                    language_code=language_code,
+                    model=SETTINGS.VOICE_MODEL,
+                    use_enhanced=SETTINGS.VOICE_ENHANCED,
+                    enable_automatic_punctuation=SETTINGS.VOICE_PUNCTUATION,
+                    audio_channel_count=1,
+                )
+                logger.debug(
+                    f"Speech recognition config: model={SETTINGS.VOICE_MODEL}, enhanced={SETTINGS.VOICE_ENHANCED}, punctuation={SETTINGS.VOICE_PUNCTUATION}"
+                )
+
+                audio_request = speech.RecognitionAudio(content=chunk_bytes)
+
                 # Use synchronous recognition with a timeout.
                 logger.debug("Starting speech recognition request")
                 response = client.recognize(
@@ -304,97 +516,152 @@ def transcribe_audio(audio_content, file_mime):
                 logger.debug(
                     f"Speech recognition successful. Transcript length: {len(chunk_transcript)}"
                 )
-                # Free up memory
+
+                # Free up memory but don't destroy the client (it's handled by the context manager)
                 if chunk_bytes:
                     del chunk_bytes
                     chunk_bytes = None
                 if audio_request:
                     del audio_request
                     audio_request = None
-                if client:
-                    del client
-                    client = None
-                gc.collect()
+                if response:
+                    # Clear any references in the response
+                    for result in response.results:
+                        for alt in result.alternatives:
+                            alt.transcript = None
+                    del response
+                    response = None
+
+                # Force garbage collection
+                gc.collect(2)
                 return chunk_transcript
-            except Exception as e:
-                logger.error(f"Error transcribing chunk: {e}", exc_info=True)
-                return ""
         except Exception as e:
-            logger.error(f"Error processing audio chunk: {e}", exc_info=True)
+            logger.error(f"Error transcribing chunk: {e}", exc_info=True)
             return ""
         finally:
             # Ensure all resources are cleaned up
             if "buffer" in locals() and buffer:
+                buffer.close()
                 del buffer
             if "chunk_bytes" in locals() and chunk_bytes:
                 del chunk_bytes
             if "audio_request" in locals() and audio_request:
                 del audio_request
-            if "client" in locals() and client:
-                del client
-            gc.collect()
+            gc.collect(2)
 
-    # If the entire audio is short enough, process it as one chunk.
-    if audio and len(audio) <= chunk_length_ms:
-        logger.debug(f"Processing audio as single chunk (duration: {len(audio)}ms)")
-        transcript = process_audio_chunk(audio, language_code)
-        # Free up memory
-        del audio
-        gc.collect()
-        return transcript.strip()
-    elif audio:
-        # Split audio into chunks.
-        logger.debug(
-            f"Splitting audio into chunks. Total duration: {len(audio)}ms, Chunk size: {chunk_length_ms}ms"
-        )
-        chunks = [
-            audio[i : i + chunk_length_ms]
-            for i in range(0, len(audio), chunk_length_ms)
-        ]
-        logger.debug(f"Split into {len(chunks)} chunks")
-        # Free up original audio to save memory
-        del audio
-        gc.collect()
+    # Use a context manager to handle the audio segment
+    with managed_audio_segment(audio_content, input_format) as audio:
+        if not audio:
+            logger.error("Failed to load audio")
+            return ""
 
-        transcript_chunks = ["" for _ in range(len(chunks))]
+        # Free up memory from audio_content since we've loaded the audio
+        del audio_content
+        gc.collect(2)
 
-        # Process each chunk with limited concurrency to avoid memory issues
-        # Limit to max 2 concurrent threads to reduce memory usage
-        max_workers = min(2, len(chunks))
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            future_to_index = {
-                executor.submit(process_audio_chunk, chunk, language_code): idx
-                for idx, chunk in enumerate(chunks)
-            }
-            for future in as_completed(future_to_index):
-                idx = future_to_index[future]
-                try:
-                    transcript_chunks[idx] = future.result().strip()
-                    logger.debug(f"Chunk {idx} processed successfully")
-                except Exception as e:
-                    logger.error(f"Error processing chunk {idx}: {e}", exc_info=True)
-                    transcript_chunks[idx] = ""
+        # If the entire audio is short enough, process it as one chunk.
+        if len(audio) <= chunk_length_ms:
+            logger.debug(f"Processing audio as single chunk (duration: {len(audio)}ms)")
+            transcript = process_audio_chunk(audio, language_code)
+            # Audio will be cleaned up by the context manager
+            # Force garbage collection
+            gc.collect(2)
+            return transcript.strip()
+        else:
+            # Split audio into chunks.
+            logger.debug(
+                f"Splitting audio into chunks. Total duration: {len(audio)}ms, Chunk size: {chunk_length_ms}ms"
+            )
 
-        # Free up chunks to save memory
-        del chunks
-        gc.collect()
+            # Calculate number of chunks and process them
+            num_chunks = (len(audio) + chunk_length_ms - 1) // chunk_length_ms
+            logger.debug(f"Will create {num_chunks} chunks")
 
-        full_transcript = " ".join(transcript_chunks)
-        # Replace any occurrence of multiple whitespace characters with a single space
-        clean_transcript = re.sub(r"\s+", " ", full_transcript).strip()
-        logger.debug(
-            f"All chunks processed. Final transcript length: {len(clean_transcript)}"
-        )
+            transcript_chunks = []
 
-        # Final cleanup
-        del transcript_chunks
-        del full_transcript
-        gc.collect()
+            # Process each chunk with limited concurrency to avoid memory issues
+            # Limit to max 2 concurrent threads to reduce memory usage
+            max_workers = min(2, num_chunks)
 
-        return clean_transcript
-    else:
-        logger.error("No audio data to process")
-        return ""
+            # Use executor as context manager for auto-cleanup
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                futures = []
+
+                # Submit tasks in batches to avoid keeping all chunks in memory
+                for i in range(0, num_chunks):
+                    start_ms = i * chunk_length_ms
+                    end_ms = min(start_ms + chunk_length_ms, len(audio))
+
+                    # Extract chunk and submit for processing
+                    chunk = audio[start_ms:end_ms]
+                    futures.append(
+                        executor.submit(process_audio_chunk, chunk, language_code)
+                    )
+                    # Delete reference to chunk immediately
+                    del chunk
+
+                    # Perform garbage collection every few chunks to prevent memory build-up
+                    if i % 3 == 0:
+                        gc.collect(0)
+
+                # Collect results as they complete
+                for future in as_completed(futures):
+                    try:
+                        result = future.result().strip()
+                        transcript_chunks.append(result)
+                        logger.debug(
+                            f"Chunk processed successfully, result length: {len(result)}"
+                        )
+                    except Exception as e:
+                        logger.error(f"Error processing chunk: {e}", exc_info=True)
+                        transcript_chunks.append("")
+
+                # Clear references to futures
+                futures.clear()
+                del futures
+
+            # Audio will be cleaned up by the context manager
+
+            # Force garbage collection after all chunks are processed
+            gc.collect(0)  # Young generation
+            gc.collect(1)  # Middle generation
+            gc.collect(2)  # Old generation
+
+            # Join the transcripts
+            full_transcript = " ".join(transcript_chunks)
+
+            # Replace any occurrence of multiple whitespace characters with a single space
+            clean_transcript = re.sub(r"\s+", " ", full_transcript).strip()
+            logger.debug(
+                f"All chunks processed. Final transcript length: {len(clean_transcript)}"
+            )
+
+            # Final cleanup
+            del transcript_chunks
+            del full_transcript
+
+            # Try to clear cached imports and internal references
+            try:
+                # Reset import caches
+                import importlib
+
+                importlib.invalidate_caches()
+
+                # Clear Python's internal reference caches
+                sys._clear_type_cache()
+                if hasattr(sys, "gettotalrefcount"):  # Only in debug builds
+                    sys.gettotalrefcount()
+
+                # Force garbage collection on all generations
+                gc.collect(0)
+                gc.collect(1)
+                gc.collect(2)
+            except Exception as e:
+                # If any cleanup step fails, still do basic collection
+                logger.debug(f"Error during advanced cleanup: {e}")
+                gc.collect(2)
+
+            return clean_transcript
 
 
 @transcribe_bp.route("/check_voice_limits", methods=["GET"])
@@ -482,6 +749,9 @@ def check_voice_limits():
 @transcribe_bp.route("/transcribe_voice", methods=["POST"])
 def transcribe_voice():
     import gc
+
+    # Force a full garbage collection before starting
+    gc.collect(2)
 
     logger.debug("Starting voice transcription request")
     user_uuid = session.get("user_id")
@@ -606,19 +876,22 @@ def transcribe_voice():
             if audio_content:
                 del audio_content
                 audio_content = None
-            gc.collect()
+            # Force garbage collection
+            gc.collect(2)
         except Exception as e:
             logger.error(f"Error during initial transcription: {str(e)}", exc_info=True)
             # Ensure cleanup even on error
             if "audio_content" in locals() and audio_content:
                 del audio_content
-            gc.collect()
+            # Force garbage collection
+            gc.collect(2)
             return jsonify({"error": "Error during transcription"}), 500
 
         # Return early if transcription failed
         if not transcript:
             logger.error("Initial transcription failed - empty transcript")
-            gc.collect()
+            # Force garbage collection
+            gc.collect(2)
             return jsonify(
                 {
                     "error": "No text could be identified in the recording",
@@ -639,18 +912,21 @@ def transcribe_voice():
             if transcript:
                 del transcript
                 transcript = None
-            gc.collect()
+            # Force garbage collection
+            gc.collect(2)
         except Exception as e:
             logger.error(f"Error during post-processing: {str(e)}", exc_info=True)
             # Ensure cleanup even on error
             if "transcript" in locals() and transcript:
                 del transcript
-            gc.collect()
+            # Force garbage collection
+            gc.collect(2)
             return jsonify({"error": "Error during transcription"}), 500
 
         if not improved_transcript:
             logger.error("Post-processing failed - empty result")
-            gc.collect()
+            # Force garbage collection
+            gc.collect(2)
             return jsonify({"error": "Error during transcription"}), 500
 
         was_improved = improved_transcript != original_transcript
@@ -660,19 +936,45 @@ def transcribe_voice():
         if "original_transcript" in locals():
             del original_transcript
 
-        # Final cleanup before returning response
-        gc.collect()
-        return jsonify(
-            {
-                "transcript": improved_transcript,
-                "status": "success",
-                "was_improved": was_improved,
-            }
-        )
+        # Try to clear any cached objects in the Google libraries
+        # Don't reset the global client, just ensure it's cleaned up if needed
+        gc.collect(2)
+
+        # After processing, add explicit cleanup of all clients
+        try:
+            # At the end of the request, explicitly clean up clients
+            clear_speech_client_pool()
+            cleanup_gemini_client()
+
+            # Force final garbage collection
+            gc.collect(0)
+            gc.collect(1)
+            gc.collect(2)
+
+            # Try to clear Python's internal caches
+            sys._clear_type_cache()
+
+            return jsonify(
+                {
+                    "transcript": improved_transcript,
+                    "status": "success",
+                    "was_improved": was_improved,
+                }
+            )
+        except Exception as e:
+            logger.error(f"Error in voice transcription: {str(e)}")
+            db.session.rollback()
+            # Ensure memory cleanup on any exception
+            clear_speech_client_pool()
+            cleanup_gemini_client()
+            gc.collect(2)
+            return jsonify({"error": "Error processing voice recording"}), 500
 
     except Exception as e:
         logger.error(f"Error in voice transcription: {str(e)}")
         db.session.rollback()
         # Ensure memory cleanup on any exception
-        gc.collect()
+        clear_speech_client_pool()
+        cleanup_gemini_client()
+        gc.collect(2)
         return jsonify({"error": "Error processing voice recording"}), 500

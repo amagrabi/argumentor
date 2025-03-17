@@ -36,6 +36,8 @@ dependencies = [
 dev = [
     "aiohttp",
     "pre-commit",
+    "psutil",
+    "pympler",
     "pytest",
     "ruff",
     "ipython",
