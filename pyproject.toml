@@ -19,7 +19,6 @@ dependencies = [
     "google-auth",
     "google-genai",
     "google-cloud-aiplatform",
-    "google-cloud-speech",
     "google-cloud-storage",
     "google-auth-oauthlib",
     "gunicorn",
@@ -28,7 +27,6 @@ dependencies = [
     "pydantic-settings",
     "python-dotenv",
     "pyyaml",
-    "pyaudio",
     "stripe",
 ]
 

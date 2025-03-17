@@ -11,10 +11,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     gcc \
     libpq-dev \
-    ffmpeg \
     nodejs \
     npm \
-    portaudio19-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the project files into the container
