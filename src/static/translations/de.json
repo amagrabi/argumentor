@@ -898,7 +898,7 @@
   "privacy": {
     "title": "Datenschutz",
     "goBack": "Zurück",
-    "lastUpdated": "Zuletzt aktualisiert: 19. Februar 2025",
+    "lastUpdated": "Zuletzt aktualisiert: 18. März 2025",
     "sections": {
       "yourPrivacy": {
         "title": "",
@@ -925,6 +925,10 @@
         "and": "und den",
         "practices": "Datenerfassungspraktiken von Google Analytics"
       },
+      "speechData": {
+        "title": "An OpenAI Whisper API übermittelte Daten",
+        "content": "Wenn du die Sprachaufnahmefunktion nutzt, wird deine Audioeingabe über die OpenAI Whisper API transkribiert. Bei der Aufnahme werden deine Audiodaten zur Verarbeitung und Transkription an OpenAI gesendet. OpenAI kann diese Daten gemäß ihrer Datenschutzrichtlinie zum Zweck der Serviceoptimierung und Sicherheitsüberwachung speichern. Weitere Informationen darüber, wie OpenAI mit deinen Daten umgeht, findest du in der <a href='https://openai.com/policies/privacy-policy' target='_blank' rel='noopener noreferrer' class='text-gray-800 underline hover:text-gray-600'>OpenAI-Datenschutzrichtlinie</a>."
+      },
       "changes": {
         "title": "Änderungen dieser Richtlinie",
         "content": "Wir behalten uns das Recht vor, diese Datenschutzerklärung jederzeit zu ändern. Alle Änderungen werden auf dieser Seite zusammen mit einem aktualisierten Datum veröffentlicht. Wir empfehlen dir, diese Richtlinie regelmäßig zu überprüfen, um über den Schutz deiner Daten informiert zu bleiben."
@@ -933,10 +937,6 @@
         "title": "Kontaktinformationen",
         "content": "Wenn du Fragen oder Bedenken zu dieser Datenschutzerklärung oder unseren Datenpraktiken hast, kontaktiere uns bitte",
         "here": "hier"
-      },
-      "speechData": {
-        "title": "An Google Speech API übermittelte Daten",
-        "content": "Wenn du die Sprachaufnahmefunktion nutzt, wird deine Eingabe über die Google Speech-to-Text API transkribiert. Um längere Aufnahmen verarbeiten zu können, werden die Daten temporär im Google Cloud Storage gespeichert. Die Daten werden ausschließlich für die Transkription verwendet und unmittelbar nach der Texterstellung gelöscht."
       }
     }
   },

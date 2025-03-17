@@ -23,11 +23,11 @@ dependencies = [
     "google-cloud-storage",
     "google-auth-oauthlib",
     "gunicorn",
+    "openai",
     "psycopg2-binary",
     "pydantic-settings",
     "python-dotenv",
     "pyyaml",
-    "pydub",
     "pyaudio",
     "stripe",
 ]

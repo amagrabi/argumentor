@@ -834,7 +834,7 @@
   "privacy": {
     "title": "Privacy Policy",
     "goBack": "Go Back",
-    "lastUpdated": "Last Updated: February 19, 2025",
+    "lastUpdated": "Last Updated: March 18, 2025",
     "sections": {
       "yourPrivacy": {
         "title": "",
@@ -855,8 +855,8 @@
         "page": "page"
       },
       "speechData": {
-        "title": "Data Sent to Google Speech API",
-        "content": "If you use the feature to record your voice, your submission will be transcribed via Google's Speech-to-Text API. To be able to process longer recordings, the data is temporarily stored in Google Cloud Storage. The data is only used for the transcription and is immediately deleted it after the text is generated."
+        "title": "Data Sent to OpenAI Whisper API",
+        "content": "If you use the feature to record your voice, your audio submission will be transcribed via OpenAI's Whisper API. When you record audio, it is sent to OpenAI for processing and transcription. OpenAI may store this data for the purpose of service improvement and security monitoring in accordance with their privacy policy. For more information about how your data is handled by OpenAI, please refer to OpenAI's <a href='https://openai.com/policies/privacy-policy' target='_blank' rel='noopener noreferrer' class='text-gray-800 underline hover:text-gray-600'>privacy policy</a>."
       },
       "analyticsData": {
         "title": "Data Sent to Google Analytics",

@@ -28,6 +28,11 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str = Field(default="fallback")
     GOOGLE_CLIENT_SECRET: str = Field(default="fallback")
 
+    # OpenAI API configuration
+    OPENAI_API_KEY: str = Field(default="fallback")
+    WHISPER_MODEL: str = Field(default="whisper-1")  # Current Whisper model version
+    WHISPER_RESPONSE_FORMAT: str = Field(default="text")  # text, vtt, srt, verbose_json
+
     # Stripe settings for subscriptions
     STRIPE_SECRET_KEY: str = Field(default="sk_test_your_test_key")
     STRIPE_PUBLIC_KEY: str = Field(default="pk_test_your_test_key")
@@ -46,15 +51,6 @@ class Settings(BaseSettings):
     USE_LLM_EVALUATOR: bool = Field(default=True)
 
     MODEL: str = Field(default="gemini-2.0-flash-001")  # LLM
-
-    # Voice transcription
-    VOICE_MODEL: str = Field(
-        default="telephony"
-    )  # Alternative: default, telephony, latest_long
-    VOICE_ENHANCED: bool = Field(default=True)
-    VOICE_PUNCTUATION: bool = Field(default=True)
-    # Chunk sizes, larger than 1 minute incompatible with current API
-    VOICE_CHUNK_LIMIT: int = Field(default=50000)
 
     # Maximum characters allowed for each field
     MAX_CLAIM: int = Field(default=200)

@@ -1,3 +1,5 @@
+import gc
+import io
 import logging
 import re
 import uuid
@@ -5,10 +7,10 @@ from datetime import UTC, datetime, time
 
 from flask import Blueprint, jsonify, request, session
 from google import genai
-from google.cloud import speech, storage
+from google.cloud import storage
 
 from config import get_settings
-from extensions import db, google_credentials
+from extensions import db, google_credentials, openai_client
 from models import User
 from utils import (
     get_daily_voice_count,
@@ -77,8 +79,6 @@ def post_process_transcription(
     """
     Uses LLM to improve the transcription quality by fixing common issues.
     """
-    import gc
-
     try:
         # Return early if transcript is empty or too short
         if not transcript or len(transcript.strip()) < 3:
@@ -201,199 +201,82 @@ def upload_audio_to_gcs(audio_content, file_mime):
 
 def transcribe_audio(audio_content, file_mime):
     """
-    Transcribes the audio content. If the audio is longer than a certain threshold,
-    it is split into chunks that are transcribed concurrently.
+    Transcribes the audio content using OpenAI's Whisper API.
     """
     import gc
-    import io
-    from concurrent.futures import ThreadPoolExecutor, as_completed
 
     from flask import session
-    from pydub import AudioSegment
 
-    chunk_length_ms = SETTINGS.VOICE_CHUNK_LIMIT
-    # Determine the input format based on file_mime.
-    input_format = "webm" if "webm" in file_mime or "ogg" in file_mime else "wav"
-    logger.debug(
-        f"Audio format determined as: {input_format} from mime type: {file_mime}"
-    )
-
-    audio = None
-    try:
-        logger.debug("Loading audio file for processing")
-        audio = AudioSegment.from_file(io.BytesIO(audio_content), format=input_format)
-        logger.debug(
-            f"Audio loaded successfully. Duration: {len(audio)}ms, Channels: {audio.channels}, Sample width: {audio.sample_width}, Frame rate: {audio.frame_rate}"
-        )
-        # Free up memory
-        if "audio_content" in locals() and audio_content is not None:
-            del audio_content
-        gc.collect()
-    except Exception as e:
-        logger.error(f"Error loading audio file for chunking: {e}", exc_info=True)
-        # Ensure cleanup even on error
-        if "audio_content" in locals() and audio_content is not None:
-            del audio_content
-        gc.collect()
-        return ""
-
-    # Capture session-dependent data before launching background tasks.
+    # Capture session-dependent data
     language = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
     language_code = getattr(SETTINGS, "LANGUAGE_CODES", {}).get(language, "en-US")
 
-    # Log the language being used for transcription.
+    # Log the language being used for transcription
     logger.info("Transcribing audio using language: %s (%s)", language, language_code)
 
-    def process_audio_chunk(audio_segment, language_code):
-        """
-        Exports the given AudioSegment to a WAV byte stream and then performs synchronous speech recognition.
-        """
-        buffer = None
-        chunk_bytes = None
-        audio_request = None
-        client = None
-        try:
-            # Convert the audio segment's sample rate to 16000 Hz, sample width to 16 bit (2 bytes),
-            # and ensure it's in mono (1 channel)
-            logger.debug(
-                f"Processing chunk. Original properties - Duration: {len(audio_segment)}ms, Channels: {audio_segment.channels}, Sample width: {audio_segment.sample_width}, Frame rate: {audio_segment.frame_rate}"
-            )
+    try:
+        # Determine the file extension based on mime type
+        extension = "webm" if "webm" in file_mime or "ogg" in file_mime else "wav"
+        temp_file_name = f"temp_audio_{uuid.uuid4()}.{extension}"
 
-            audio_segment = (
-                audio_segment.set_frame_rate(16000).set_sample_width(2).set_channels(1)
-            )
-            logger.debug(
-                f"Chunk converted. New properties - Duration: {len(audio_segment)}ms, Channels: {audio_segment.channels}, Sample width: {audio_segment.sample_width}, Frame rate: {audio_segment.frame_rate}"
-            )
+        logger.debug(f"Processing audio for Whisper API, mime type: {file_mime}")
 
-            buffer = io.BytesIO()
-            audio_segment.export(buffer, format="wav")
-            chunk_bytes = buffer.getvalue()
-            logger.debug(f"Exported WAV chunk size: {len(chunk_bytes)} bytes")
+        # Create a temporary file-like object to send to the API
+        audio_file = io.BytesIO(audio_content)
+        audio_file.name = temp_file_name
 
-            # Free up memory
-            if buffer:
-                del buffer
-                buffer = None
+        # Set up the OpenAI API parameters
+        # language parameter is the BCP-47 language tag like 'en' or 'de'
+        # simplified_language_code takes just the first part of language_code (en-US -> en)
+        simplified_language_code = language_code.split("-")[0]
 
-            # Prepare Google Speech API client and config.
-            client = speech.SpeechClient(credentials=google_credentials)
-            config = speech.RecognitionConfig(
-                encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-                sample_rate_hertz=16000,  # Matches the exported WAV header
-                language_code=language_code,
-                model=SETTINGS.VOICE_MODEL,
-                use_enhanced=SETTINGS.VOICE_ENHANCED,
-                enable_automatic_punctuation=SETTINGS.VOICE_PUNCTUATION,
-                audio_channel_count=1,
-            )
-            logger.debug(
-                f"Speech recognition config: model={SETTINGS.VOICE_MODEL}, enhanced={SETTINGS.VOICE_ENHANCED}, punctuation={SETTINGS.VOICE_PUNCTUATION}"
-            )
+        logger.debug(f"Calling Whisper API with language: {simplified_language_code}")
 
-            audio_request = speech.RecognitionAudio(content=chunk_bytes)
-            try:
-                # Use synchronous recognition with a timeout.
-                logger.debug("Starting speech recognition request")
-                response = client.recognize(
-                    config=config, audio=audio_request, timeout=30
-                )
-                chunk_transcript = ""
-                for result in response.results:
-                    chunk_transcript += result.alternatives[0].transcript + " "
-                logger.debug(
-                    f"Speech recognition successful. Transcript length: {len(chunk_transcript)}"
-                )
-                # Free up memory
-                if chunk_bytes:
-                    del chunk_bytes
-                    chunk_bytes = None
-                if audio_request:
-                    del audio_request
-                    audio_request = None
-                if client:
-                    del client
-                    client = None
-                gc.collect()
-                return chunk_transcript
-            except Exception as e:
-                logger.error(f"Error transcribing chunk: {e}", exc_info=True)
-                return ""
-        except Exception as e:
-            logger.error(f"Error processing audio chunk: {e}", exc_info=True)
-            return ""
-        finally:
-            # Ensure all resources are cleaned up
-            if "buffer" in locals() and buffer:
-                del buffer
-            if "chunk_bytes" in locals() and chunk_bytes:
-                del chunk_bytes
-            if "audio_request" in locals() and audio_request:
-                del audio_request
-            if "client" in locals() and client:
-                del client
-            gc.collect()
-
-    # If the entire audio is short enough, process it as one chunk.
-    if audio and len(audio) <= chunk_length_ms:
-        logger.debug(f"Processing audio as single chunk (duration: {len(audio)}ms)")
-        transcript = process_audio_chunk(audio, language_code)
-        # Free up memory
-        del audio
-        gc.collect()
-        return transcript.strip()
-    elif audio:
-        # Split audio into chunks.
-        logger.debug(
-            f"Splitting audio into chunks. Total duration: {len(audio)}ms, Chunk size: {chunk_length_ms}ms"
-        )
-        chunks = [
-            audio[i : i + chunk_length_ms]
-            for i in range(0, len(audio), chunk_length_ms)
-        ]
-        logger.debug(f"Split into {len(chunks)} chunks")
-        # Free up original audio to save memory
-        del audio
-        gc.collect()
-
-        transcript_chunks = ["" for _ in range(len(chunks))]
-
-        # Process each chunk with limited concurrency to avoid memory issues
-        # Limit to max 2 concurrent threads to reduce memory usage
-        max_workers = min(2, len(chunks))
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            future_to_index = {
-                executor.submit(process_audio_chunk, chunk, language_code): idx
-                for idx, chunk in enumerate(chunks)
-            }
-            for future in as_completed(future_to_index):
-                idx = future_to_index[future]
-                try:
-                    transcript_chunks[idx] = future.result().strip()
-                    logger.debug(f"Chunk {idx} processed successfully")
-                except Exception as e:
-                    logger.error(f"Error processing chunk {idx}: {e}", exc_info=True)
-                    transcript_chunks[idx] = ""
-
-        # Free up chunks to save memory
-        del chunks
-        gc.collect()
-
-        full_transcript = " ".join(transcript_chunks)
-        # Replace any occurrence of multiple whitespace characters with a single space
-        clean_transcript = re.sub(r"\s+", " ", full_transcript).strip()
-        logger.debug(
-            f"All chunks processed. Final transcript length: {len(clean_transcript)}"
+        response = openai_client.audio.transcriptions.create(
+            model=SETTINGS.WHISPER_MODEL,
+            file=audio_file,
+            response_format=SETTINGS.WHISPER_RESPONSE_FORMAT,
+            language=simplified_language_code,  # Optional, Whisper can auto-detect language
+            temperature=0,  # Use lower temperature for more accurate transcription
         )
 
-        # Final cleanup
-        del transcript_chunks
-        del full_transcript
+        # Get the transcript text from the response
+        # When response_format is 'text', the response is a string directly
+        if SETTINGS.WHISPER_RESPONSE_FORMAT == "text":
+            # Handle the case where response is already a string
+            transcript = response if isinstance(response, str) else response.text
+        else:
+            # For other formats like JSON, the response has a structure
+            if hasattr(response, "text"):
+                transcript = response.text
+            else:
+                # Fallback for other response formats
+                logger.warning(
+                    f"Handling non-standard response format: {type(response)}"
+                )
+                transcript = str(response)
+
+        logger.debug(
+            f"Whisper API transcription successful. Transcript length: {len(transcript)}"
+        )
+
+        # Clean up
+        if audio_file:
+            audio_file.close()
+        if audio_content:
+            del audio_content
         gc.collect()
 
+        # Return the cleaned transcript
+        clean_transcript = re.sub(r"\s+", " ", transcript).strip()
         return clean_transcript
-    else:
-        logger.error("No audio data to process")
+
+    except Exception as e:
+        logger.error(f"Error in Whisper API transcription: {e}", exc_info=True)
+        # Ensure cleanup even on error
+        if "audio_content" in locals() and audio_content:
+            del audio_content
+        gc.collect()
         return ""
 
 
@@ -626,7 +509,15 @@ def transcribe_voice():
                 }
             ), 204
 
-        logger.debug("Initial transcription successful, starting post-processing")
+        # TEMPORARILY DISABLED: Post-processing with LLM
+        # The Whisper API provides high-quality transcriptions that don't require additional processing
+        logger.debug(
+            "LLM post-processing temporarily disabled, using raw Whisper transcription"
+        )
+        improved_transcript = transcript
+        was_improved = False
+
+        """
         # Post-process the transcription with LLM, including the question context
         improved_transcript = None
         original_transcript = transcript  # Save a copy for comparison
@@ -659,6 +550,7 @@ def transcribe_voice():
         # Clean up before returning
         if "original_transcript" in locals():
             del original_transcript
+        """
 
         # Final cleanup before returning response
         gc.collect()

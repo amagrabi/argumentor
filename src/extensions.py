@@ -1,6 +1,7 @@
 import json
 import os
 
+import openai
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_login import LoginManager
@@ -16,6 +17,9 @@ db = SQLAlchemy()
 limiter = Limiter(key_func=get_remote_address)
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
+
+# Initialize OpenAI client
+openai_client = openai.OpenAI(api_key=SETTINGS.OPENAI_API_KEY)
 
 
 # Initialize Google credentials
