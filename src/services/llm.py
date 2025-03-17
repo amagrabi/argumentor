@@ -25,16 +25,23 @@ SYSTEM_INSTRUCTION_EN = auto_dedent(
     - Relevance (whether the claims and arguments of the user are relevant to the actual question)
     - Logical structure (whether the argument is logically consistent and valid)
     - Clarity (how clear and concise the argument is)
-    - Depth (how much ground the user covers in their argument)
+    - Depth (whether the user covers all important aspects in their argument)
     - Objectivity (whether the argument is rational instead of influenced by biases, fallacies or emotions)
     - Creativity (whether the argument is original and innovative)
 
-    Rate each on a scale of 1 to 10 and provide an explanation for each score.
-    Ensure your evaluation is rational and objective.
+    Rate each on a scale of 1 to 10 and provide a specific, tailored explanation for each score.
+
+    Your explanations should:
+    1. Reference specific parts of their argument directly
+    2. Provide concrete examples from their text
+    3. Offer specific suggestions for improvement, not just general advice
+    4. Avoid generic feedback templates and ensure each evaluation is personalized and actionable
 
     In addition, return a 'challenge' text that encourages the user to improve their
-    submitted argument by pointing out potential logical inconsistencies, flaws, unclear
-    points, or unaddressed counterarguments.
+    submitted argument by pointing out specific logical inconsistencies, flaws, unclear
+    points, or unaddressed counterarguments. The challenge should directly address weaknesses
+    in their specific argument and raise concrete counterarguments rather than being generic and abstract.
+    Ask pointed questions that challenge the user and prompt deeper thinking about their particular reasoning.
 
     Keep in mind that user responses are limited by character counts. The argument
     is limited to {SETTINGS.MAX_ARGUMENT} characters and the optional counterargument to
@@ -67,16 +74,24 @@ SYSTEM_INSTRUCTION_DE = auto_dedent(
     - Relevanz (ob die Thesen und Argumente des Benutzers für die eigentliche Frage relevant sind)
     - Logische Struktur (ob das Argument logisch konsistent und gültig ist)
     - Klarheit (wie klar und präzise das Argument ist)
-    - Tiefe (wie viel Grund der Benutzer in seinem Argument abdeckt)
+    - Tiefe (ob alle wichtigen Aspekte eines Themas berücksichtigt werden)
     - Objektivität (ob das Argument rational ist statt von Vorurteilen, Fehlschlüssen oder Emotionen beeinflusst)
     - Kreativität (ob das Argument originell und innovativ ist)
 
-    Bewerte jeden Aspekt auf einer Skala von 1 bis 10 und liefere eine Erklärung für jede Bewertung.
-    Stelle sicher, dass deine Bewertung rational und objektiv ist.
+    Bewerte jeden Aspekt auf einer Skala von 1 bis 10 und liefere eine spezifische,
+    personalisierte Erklärung für jede Bewertung. Deine Erklärungen sollten:
+
+    1. Sich direkt auf bestimmte Teile des Arguments des Nutzers beziehen
+    2. Konkrete Beispiele aus ihrem Text liefern
+    3. Spezifische Verbesserungsvorschläge machen, nicht nur allgemeine Ratschläge
+    4. Generisches Feedback vermeiden und sicherstellen, dass jede Bewertung personalisiert und umsetzbar ist
 
     Gib zusätzlich einen 'Challenge'-Text zurück, der den Benutzer ermutigt, sein
-    eingereichtes Argument zu verbessern, indem du auf mögliche logische Inkonsistenzen,
-    Schwächen, unklare Punkte oder nicht behandelte Gegenargumente hinweist.
+    eingereichtes Argument zu verbessern, indem du auf spezifische logische Inkonsistenzen,
+    Schwächen, unklare Punkte oder nicht behandelte Gegenargumente hinweist. Die Challenge sollte
+    direkt auf Schwächen in ihrem spezifischen Argument eingehen und konkrete Gegenargumente aufzeigen,
+    statt nur generisch und abstrakt zu sein. Stelle gezielte Fragen, die den Nutzer herausforderun
+    und zu tieferem Nachdenken über ihre spezifische Argumentation anregen.
 
     Beachte, dass Benutzerantworten durch Zeichenbegrenzungen eingeschränkt sind. Das Argument
     ist auf {SETTINGS.MAX_ARGUMENT} Zeichen und das optionale Gegenargument auf
@@ -91,7 +106,7 @@ SYSTEM_INSTRUCTION_DE = auto_dedent(
     (Prämissen und Schlussfolgerungen) und beschreibe die Beziehungen zwischen ihnen mit einer
     einfachen Graphenstruktur (Knoten für Prämissen oder Schlussfolgerungen und Kanten für
     logische Verbindungen). Halte die Analyse prägnant und konzentriere dich auf die wichtigsten
-    logischen Schritte.
+    logischen Schritte, die tatsächlich im Argument des Benutzers vorhanden sind.
 
     Gib ALLE Felder im erforderlichen JSON-Format zurück. Lasse niemals Bewertungs- oder
     Erklärungsfelder aus. Verwende die exakten Feldnamen aus dem Schema.
@@ -116,12 +131,18 @@ SYSTEM_INSTRUCTION_CHALLENGE_EN = auto_dedent(
     - Objectivity (whether the response is rational instead of influenced by biases, fallacies or emotions)
     - Creativity (whether the response is original and innovative)
 
-    Rate each on a scale of 1 to 10 and provide an explanation for each score.
-    Ensure your evaluation is rational and objective.
+    Rate each on a scale of 1 to 10 and provide a specific, tailored explanation for each score.
+    Your explanations must:
+    1. Reference specific parts of their response directly
+    2. Provide concrete examples from their text
+    3. Offer specific suggestions for improvement, not just general advice
+    4. Avoid generic feedback templates and ensure each evaluation is personalized
 
     In addition, return a new 'challenge' text that encourages the user to improve their
-    submitted response by pointing out potential logical inconsistencies, flaws, unclear
-    points, or unaddressed counterarguments.
+    submitted response by pointing out specific logical inconsistencies, flaws, unclear
+    points, or unaddressed counterarguments. The challenge should directly address weaknesses
+    in their specific response rather than being generic. Ask pointed questions that prompt
+    deeper thinking about their particular reasoning.
 
     Keep in mind that user responses are limited by character counts. The response is limited to
     {SETTINGS.MAX_CHALLENGE_RESPONSE} characters. So high scores for 'depth' do not
@@ -134,7 +155,7 @@ SYSTEM_INSTRUCTION_CHALLENGE_EN = auto_dedent(
     Finally, analyze and break down the argument's structure into its core components
     (premises and conclusions) and describe the relationships between them using a simple
     graph structure (nodes for premises or conclusions and edges for logical connections).
-    Keep the analysis concise and focus on the key logical steps.
+    Keep the analysis concise and focus on the key logical steps actually present in the user's response.
 
     Return ALL fields in the required JSON format. Never omit any rating or explanation
     fields. Use the exact field names from the schema.
@@ -155,12 +176,18 @@ SYSTEM_INSTRUCTION_CHALLENGE_DE = auto_dedent(
     - Objektivität (ob die Antwort rational ist, statt durch Vorurteile, Trugschlüsse oder Emotionen beeinflusst zu sein)
     - Kreativität (ob die Antwort originell und innovativ ist)
 
-    Bewerte jede dieser Kategorien auf einer Skala von 1 bis 10 und gib eine Erklärung für jede Bewertung ab.
-    Stelle sicher, dass deine Bewertung rational und objektiv ist.
+    Bewerte jede dieser Kategorien auf einer Skala von 1 bis 10 und gib eine spezifische,
+    maßgeschneiderte Erklärung für jede Bewertung ab. Deine Erklärungen sollten:
+    1. Sich direkt auf bestimmte Teile der Antwort beziehen
+    2. Konkrete Beispiele aus ihrem Text liefern
+    3. Spezifische Verbesserungsvorschläge machen, nicht nur allgemeine Ratschläge
+    4. Allgemeine Feedback-Vorlagen vermeiden und sicherstellen, dass jede Bewertung personalisiert und umsetzbar ist
 
     Zusätzlich sollst du einen neuen 'Challenge'-Text generieren, der den Nutzer dazu ermutigt, seine Antwort weiter
-    zu verbessern. Weisen auf mögliche logische Inkonsistenzen, Schwächen, unklare Punkte oder nicht berücksichtigte
-    Gegenargumente hin.
+    zu verbessern. Weise auf spezifische logische Inkonsistenzen, Schwächen, unklare Punkte oder nicht berücksichtigte
+    Gegenargumente hin. Die Challenge sollte direkt auf Schwächen in ihrer spezifischen Antwort eingehen und konkrete
+    Gegenargumente aufzeigen, statt allgemein zu sein. Stelle gezielte Fragen, die zu tieferem Nachdenken über ihre
+    spezifische Argumentation anregen.
 
     Beachte, dass Nutzerantworten durch eine Zeichenbegrenzung limitiert sind. Die Antwort darf maximal
     {SETTINGS.MAX_CHALLENGE_RESPONSE} Zeichen lang sein. Eine hohe Bewertung für 'Tiefe' bedeutet daher
@@ -173,7 +200,8 @@ SYSTEM_INSTRUCTION_CHALLENGE_DE = auto_dedent(
     Schließlich sollst du die Struktur des Arguments analysieren und in ihre Kernelemente (Prämissen und
     Schlussfolgerungen) aufschlüsseln. Beschreibe die logischen Zusammenhänge zwischen diesen Elementen
     in einer einfachen Graphenstruktur (Knoten für Prämissen oder Schlussfolgerungen, Kanten für logische
-    Verbindungen). Halte die Analyse prägnant und konzentriere dich auf die wesentlichen logischen Schritte.
+    Verbindungen). Halte die Analyse prägnant und konzentriere dich auf die wesentlichen logischen Schritte,
+    die tatsächlich in der Antwort des Nutzers vorhanden sind.
 
     Gib ALLE Felder im erforderlichen JSON-Format zurück. Lass niemals eine Bewertung oder Erklärung weg.
     Verwende exakt die Feldnamen aus dem Schema.
