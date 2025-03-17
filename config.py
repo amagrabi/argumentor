@@ -76,7 +76,7 @@ class Settings(BaseSettings):
         "anonymous": 6,
         "free": 10,
         "plus": 50,
-        "pro": 500,
+        "pro": 250,
     }
 
     # Daily limits are currently not documented
