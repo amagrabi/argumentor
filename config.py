@@ -100,9 +100,10 @@ class Settings(BaseSettings):
 
     DEFAULT_QUESTION: str = "experiences"  # id of first question new users see
 
-    # Memory management thresholds (in MB)
-    MEMORY_WARN_THRESHOLD: int = Field(default=400)  # Log warning and trigger GC
-    MEMORY_RESTART_THRESHOLD: int = Field(default=480)  # Trigger worker restart
+    # Memory management thresholds for individual workers (in MB)
+    # Basic dyno on Heroku has 512MB and we currently use two workers (baseline memory usage per worker around 190mb)
+    MEMORY_WARN_THRESHOLD: int = Field(default=220)  # Log warning and trigger GC
+    MEMORY_RESTART_THRESHOLD: int = Field(default=250)  # Trigger worker restart
 
     model_config = SettingsConfigDict(
         env_file=".env",
