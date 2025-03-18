@@ -8,10 +8,12 @@ from datetime import UTC, datetime
 from flask import Response, after_this_request, request, session
 from flask_login import current_user
 
+from config import get_settings
 from extensions import db
 from models import User, Visit
 
 logger = logging.getLogger(__name__)
+SETTINGS = get_settings()
 
 # WordPress scanning patterns
 WP_PATTERNS = [
@@ -151,13 +153,39 @@ def monitor_memory_usage():
         # Check memory before request
         mem_before = memory_usage_kb()
 
+        # Convert MB thresholds to KB for comparison with memory_usage_kb
+        warn_threshold_kb = SETTINGS.MEMORY_WARN_THRESHOLD * 1024
+        restart_threshold_kb = SETTINGS.MEMORY_RESTART_THRESHOLD * 1024
+
         # Log if memory usage is high and trigger garbage collection
-        if mem_before > 400 * 1024:  # 400MB (Heroku free tier has 512MB limit)
+        if mem_before > warn_threshold_kb:
             logger.warning(
                 f"High memory usage detected: {mem_before:.2f}KB - triggering garbage collection"
             )
             # Force garbage collection to free up memory
             gc.collect()
+
+            # Check if memory is still critical after garbage collection
+            mem_after_gc = memory_usage_kb()
+
+            # If memory usage is too high even after GC, gracefully restart worker
+            if mem_after_gc > restart_threshold_kb:
+                import os
+                import signal
+                from threading import Timer
+
+                def delayed_exit():
+                    logger.warning(
+                        f"Worker exceeded memory threshold ({mem_after_gc / 1024:.2f}MB), shutting down gracefully"
+                    )
+                    # Send SIGTERM to self - Gunicorn will handle worker replacement
+                    os.kill(os.getpid(), signal.SIGTERM)
+
+                # Schedule exit after response is sent
+                Timer(1.0, delayed_exit).start()
+                logger.warning(
+                    f"Scheduled worker shutdown due to high memory usage: {mem_after_gc / 1024:.2f}MB"
+                )
 
         @after_this_request
         def after_request(response):

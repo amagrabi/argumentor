@@ -100,6 +100,10 @@ class Settings(BaseSettings):
 
     DEFAULT_QUESTION: str = "experiences"  # id of first question new users see
 
+    # Memory management thresholds (in MB)
+    MEMORY_WARN_THRESHOLD: int = Field(default=400)  # Log warning and trigger GC
+    MEMORY_RESTART_THRESHOLD: int = Field(default=480)  # Trigger worker restart
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

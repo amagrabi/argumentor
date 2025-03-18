@@ -1,5 +1,11 @@
+import gc
 import logging
 import os
+import platform
+import resource
+import signal
+import threading
+import time
 import traceback
 from datetime import timedelta
 
@@ -85,6 +91,50 @@ def create_app():
     limiter.init_app(app)
     mail.init_app(app)
 
+    # Start memory monitor thread in production
+    if not SETTINGS.DEV:
+
+        def memory_monitor_thread():
+            """Background thread that monitors memory usage and restarts worker if needed"""
+            logger.info("Starting memory monitor thread")
+            while True:
+                try:
+                    # Check every 60 seconds
+                    time.sleep(60)
+
+                    # Force garbage collection
+                    gc.collect()
+
+                    # Get memory usage
+                    memory_divisor = (
+                        1024 if platform.system() != "Darwin" else 1024 * 1024
+                    )
+                    mem_usage = (
+                        resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+                        / memory_divisor
+                    )
+
+                    # Log memory usage periodically
+                    logger.info(f"Current memory usage: {mem_usage:.2f}MB")
+
+                    # If memory exceeds threshold, trigger restart
+                    if mem_usage > SETTINGS.MEMORY_RESTART_THRESHOLD:
+                        logger.warning(
+                            f"Memory monitor detected high usage: {mem_usage:.2f}MB, restarting worker"
+                        )
+                        # Give a moment for any in-progress requests
+                        time.sleep(2)
+                        # Send SIGTERM to self - Gunicorn will handle worker replacement
+                        os.kill(os.getpid(), signal.SIGTERM)
+                        break
+                except Exception as e:
+                    logger.error(f"Error in memory monitor thread: {e}")
+                    # Continue running even if there's an error
+
+        # Start the thread
+        monitor_thread = threading.Thread(target=memory_monitor_thread, daemon=True)
+        monitor_thread.start()
+
     # Register WordPress scanner blocking middleware
     app.before_request(block_wp_scanners)
 
@@ -110,9 +160,8 @@ def create_app():
     app.before_request(ensure_user_id)
     app.before_request(log_visit)
 
-    # Register memory monitoring middleware in production
-    if not SETTINGS.DEV:
-        app.before_request(monitor_memory_usage())
+    # Register memory monitoring middleware (always active)
+    app.before_request(monitor_memory_usage())
     app.after_request(add_cors_headers)
 
     @app.context_processor
@@ -202,6 +251,28 @@ def create_app():
     def serve_wellknown_security_txt():
         return send_from_directory(
             os.path.join(app.static_folder, ".well-known"), "security.txt"
+        )
+
+    @app.route("/health")
+    def health_check():
+        # Force garbage collection before reporting memory
+        gc.collect()
+
+        # Get memory usage
+        memory_divisor = 1024 if platform.system() != "Darwin" else 1024 * 1024
+        mem_usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / memory_divisor
+
+        # Return health status with memory info
+        return jsonify(
+            {
+                "status": "ok",
+                "memory_mb": round(mem_usage, 2),
+                "memory_pct": round(
+                    (mem_usage / 512) * 100, 2
+                ),  # Percentage of 512MB limit
+                "warn_threshold_mb": SETTINGS.MEMORY_WARN_THRESHOLD,
+                "restart_threshold_mb": SETTINGS.MEMORY_RESTART_THRESHOLD,
+            }
         )
 
     @app.errorhandler(Exception)
