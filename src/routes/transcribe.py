@@ -584,5 +584,3 @@ def transcribe_voice():
             logger.info(stat)
 
         tracemalloc.stop()
-
-        openai_client.close()
