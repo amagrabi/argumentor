@@ -74,6 +74,10 @@ def block_wp_scanners():
 
 
 def ensure_user_id():
+    # Skip user identification for static files to improve performance
+    if request.path.startswith("/static/"):
+        return
+
     # If the user is already authenticated through Flask-Login, make sure session user_id matches
     if current_user.is_authenticated:
         if "user_id" not in session or session["user_id"] != current_user.uuid:
@@ -103,6 +107,10 @@ def ensure_user_id():
 
 
 def log_visit():
+    # Skip logging for static files to improve performance
+    if request.path.startswith("/static/"):
+        return
+
     if request.endpoint and request.endpoint != "static":
         today_str = datetime.now(UTC).strftime("%Y-%m-%d")
         if session.get("last_visit_date") != today_str:

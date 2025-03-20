@@ -59,6 +59,17 @@ def add_cors_headers(response):
     return response
 
 
+def add_cache_headers(response):
+    """Add cache headers to static files to improve performance."""
+    if request.path.startswith("/static/"):
+        # Cache static files for 1 week (604800 seconds)
+        response.headers["Cache-Control"] = "public, max-age=604800, immutable"
+        response.headers["Expires"] = time.strftime(
+            "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 604800)
+        )
+    return response
+
+
 def create_app():
     instance_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)), "..", "instance"
@@ -163,6 +174,7 @@ def create_app():
     # Register memory monitoring middleware (always active)
     app.before_request(monitor_memory_usage())
     app.after_request(add_cors_headers)
+    app.after_request(add_cache_headers)
 
     @app.context_processor
     def inject_client_id():
