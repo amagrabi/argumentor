@@ -58,7 +58,6 @@ google-api-core==2.24.2
     #   google-cloud-bigquery
     #   google-cloud-core
     #   google-cloud-resource-manager
-    #   google-cloud-speech
     #   google-cloud-storage
 google-auth==2.38.0
     # via
@@ -69,7 +68,6 @@ google-auth==2.38.0
     #   google-cloud-bigquery
     #   google-cloud-core
     #   google-cloud-resource-manager
-    #   google-cloud-speech
     #   google-cloud-storage
     #   google-genai
 google-auth-oauthlib==1.2.1
@@ -84,8 +82,6 @@ google-cloud-core==2.4.3
     #   google-cloud-storage
 google-cloud-resource-manager==1.14.2
     # via google-cloud-aiplatform
-google-cloud-speech==2.31.1
-    # via argumentor (pyproject.toml)
 google-cloud-storage==2.19.0
     # via
     #   argumentor (pyproject.toml)
@@ -170,13 +166,11 @@ proto-plus==1.26.1
     #   google-api-core
     #   google-cloud-aiplatform
     #   google-cloud-resource-manager
-    #   google-cloud-speech
 protobuf==5.29.3
     # via
     #   google-api-core
     #   google-cloud-aiplatform
     #   google-cloud-resource-manager
-    #   google-cloud-speech
     #   googleapis-common-protos
     #   grpc-google-iam-v1
     #   grpcio-status
@@ -189,8 +183,6 @@ pyasn1==0.6.1
     #   rsa
 pyasn1-modules==0.4.1
     # via google-auth
-pyaudio==0.2.14
-    # via argumentor (pyproject.toml)
 pydantic==2.10.6
     # via
     #   google-cloud-aiplatform
