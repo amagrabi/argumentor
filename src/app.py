@@ -62,33 +62,11 @@ def add_cors_headers(response):
 def add_cache_headers(response):
     """Add cache headers to static files to improve performance."""
     if request.path.startswith("/static/"):
-        # Set different cache times based on content type
-        if request.path.endswith((".js", ".css")):
-            # Cache JS and CSS files for 1 week
-            response.headers["Cache-Control"] = "public, max-age=604800, immutable"
-            response.headers["Expires"] = time.strftime(
-                "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 604800)
-            )
-        elif request.path.endswith(
-            (".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".svg", ".webm")
-        ):
-            # Cache images and media for 2 weeks
-            response.headers["Cache-Control"] = "public, max-age=1209600, immutable"
-            response.headers["Expires"] = time.strftime(
-                "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 1209600)
-            )
-        elif request.path.endswith(".json"):
-            # Cache JSON files (like translations) for 1 day
-            response.headers["Cache-Control"] = "public, max-age=86400"
-            response.headers["Expires"] = time.strftime(
-                "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 86400)
-            )
-        else:
-            # Default cache for other static files - 1 week
-            response.headers["Cache-Control"] = "public, max-age=604800"
-            response.headers["Expires"] = time.strftime(
-                "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 604800)
-            )
+        # Cache static files for 1 week (604800 seconds)
+        response.headers["Cache-Control"] = "public, max-age=604800, immutable"
+        response.headers["Expires"] = time.strftime(
+            "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 604800)
+        )
     return response
 
 
