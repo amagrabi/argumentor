@@ -1,5 +1,6 @@
 // Translation Manager - Handles centralized translation loading and caching
 const TRANSLATION_VERSION = "1.0"; // Increment this when translations structure changes
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 class TranslationManager {
   constructor() {
@@ -47,7 +48,11 @@ class TranslationManager {
       const cached = JSON.parse(
         localStorage.getItem(`translations_${this.currentLanguage}`)
       );
-      if (cached && cached.version === TRANSLATION_VERSION) {
+      if (
+        cached &&
+        cached.version === TRANSLATION_VERSION &&
+        Date.now() - cached.timestamp < CACHE_TTL
+      ) {
         return cached;
       }
       return null;

@@ -30,6 +30,48 @@ import {
 } from "./evaluation.js";
 import { initMainVoiceInput, initChallengeVoiceInput } from "./voice.js";
 
+// Simple API response cache to prevent duplicate calls
+const apiCache = {
+  data: {},
+  // Default TTL of 5 minutes for most data
+  defaultTTL: 5 * 60 * 1000,
+
+  async fetch(url, options = {}, ttl = this.defaultTTL) {
+    const cacheKey = url + JSON.stringify(options);
+
+    // Check if we have a valid cached response
+    if (
+      this.data[cacheKey] &&
+      Date.now() - this.data[cacheKey].timestamp < ttl
+    ) {
+      return this.data[cacheKey].data;
+    }
+
+    // Make the actual fetch request
+    const response = await fetch(url, options);
+    if (!response.ok) throw new Error("API request failed");
+
+    const data = await response.json();
+
+    // Cache the response
+    this.data[cacheKey] = {
+      timestamp: Date.now(),
+      data: data,
+    };
+
+    return data;
+  },
+
+  invalidate(url) {
+    // Invalidate all cache entries that start with the given URL
+    Object.keys(this.data).forEach((key) => {
+      if (key.startsWith(url)) {
+        delete this.data[key];
+      }
+    });
+  },
+};
+
 // Initialize mermaid
 mermaid.initialize({
   startOnLoad: true,
@@ -3561,8 +3603,9 @@ function updateLocalXpIndicator(totalXp, levelInfo) {
 // Function to load saved categories - restored
 async function loadSavedCategories() {
   try {
-    const response = await fetch("/get_categories");
-    const data = await response.json();
+    // Use the cache with a 5-minute TTL for categories
+    const data = await apiCache.fetch("/get_categories");
+
     // If no categories are returned, use the defaults
     selectedCategories =
       data.categories && data.categories.length > 0
@@ -3576,6 +3619,8 @@ async function loadSavedCategories() {
   } catch (error) {
     console.error("Error loading categories:", error);
     selectedCategories = DEFAULT_CATEGORIES;
+
+    // Wait for next tick to ensure DOM is ready
     setTimeout(() => {
       updateCategoryUI();
     }, 0);
