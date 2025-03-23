@@ -4,6 +4,7 @@ import resource
 import sys
 import uuid
 from datetime import UTC, datetime
+from functools import lru_cache
 
 from flask import Response, after_this_request, request, session
 from flask_login import current_user
@@ -34,36 +35,70 @@ WP_PATTERNS = [
     "/2018/",
     "/2019/",
     "/sito/",
+    # Additional common WordPress scanning patterns
+    "wp-content",
+    "wp-includes",
+    "wp-admin",
+    "wp-login",
+    "wp-config",
+    "wp-cron",
+    "wp-json",
+    "wp-load",
+    "wp-mail",
+    "wp-signup",
+    ".php",  # Most WordPress exploits target PHP files
 ]
+
+
+# Cache for blocked IPs to avoid repeated database lookups
+@lru_cache(maxsize=1000)
+def is_ip_blocked(ip: str) -> bool:
+    """Check if an IP is currently blocked based on recent scanning attempts."""
+    return False  # Will be updated by the rate limiter
 
 
 def block_wp_scanners():
     """
-    Middleware to detect and block WordPress scanning attempts.
+    Enhanced middleware to detect and block WordPress scanning attempts.
     This runs before other middleware to reduce server load.
     """
     path = request.path.lower()
+    ip = request.remote_addr
+
+    # Quick return for static files and allowed paths
+    if path.startswith(("/static/", "/health", "/favicon.ico")):
+        return None
 
     # Check if the request matches known WordPress scanning patterns
     if any(pattern in path for pattern in WP_PATTERNS):
-        # Apply stricter rate limiting for WordPress scanning IPs
-        # This helps prevent abuse by the same IP address
-        try:
-            # Get the client's IP address
-            ip = request.remote_addr
+        # Check if IP is already blocked
+        if is_ip_blocked(ip):
+            return Response("", status=403)
 
+        try:
             # Create a rate limit key specific to WordPress scanning
             key = f"wp_scan:{ip}"
 
-            # Check if this IP has exceeded the rate limit (10 requests per minute)
-            # Access the limiter instance through the Flask extension
+            # Use stricter rate limiting for scanning attempts
+            # Allow only 5 requests per minute, then block for an hour
             from extensions import limiter as limiter_instance
 
-            if not limiter_instance.limiter.hit(key, 10, 60):
-                # If rate limit exceeded, return 429 Too Many Requests
-                return Response("Rate limit exceeded", status=429)
-        except (AttributeError, ImportError):
-            # If limiter is not available or configured correctly, just continue
+            if not limiter_instance.limiter.hit(key, 5, 60):
+                # If rate limit exceeded, mark IP as blocked
+                is_ip_blocked.cache_clear()  # Clear cache to update blocked status
+
+                # Log the blocking event
+                logger.warning(
+                    f"Blocked WordPress scanning attempt from IP: {ip}, path: {path}"
+                )
+
+                # Return 403 Forbidden instead of 404
+                # This tells the scanner the site is actively blocking them
+                return Response("", status=403)
+
+        except Exception as e:
+            logger.error(f"Error in WordPress scanning protection: {e}")
+            # Continue with normal request processing if rate limiting fails
             pass
 
         # Return a minimal 404 response without further processing
