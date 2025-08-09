@@ -50,7 +50,7 @@ class Settings(BaseSettings):
     # If false, cheaper dummy responses will be returned
     USE_LLM_EVALUATOR: bool = Field(default=True)
 
-    MODEL: str = Field(default="gemini-2.0-flash-001")  # LLM
+    MODEL: str = Field(default="gemini-2.5-flash")  # LLM
 
     # Maximum characters allowed for each field
     MAX_CLAIM: int = Field(default=200)
