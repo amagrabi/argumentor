@@ -149,6 +149,22 @@ Rotate a specific value later:
 ./scripts/set_secrets.sh --rotate STRIPE_SECRET_KEY
 ```
 
+Cloud Run resolves `:latest` at **instance startup**, so a new secret version does not
+reach already-running instances. Force a fresh revision off the existing image rather
+than rebuilding:
+
+```bash
+gcloud run services update argumentor --region=europe-west1 --update-secrets "STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest"
+```
+
+In `--update-secrets ENV_VAR=NAME:VERSION`, the right-hand side is a **Secret Manager
+resource name, never a secret value**. Pasting the value there creates a reference to a
+secret that does not exist, and the deploy fails with
+`secret .../versions/latest was not found` — with the value itself now sitting in the
+Service spec, your shell history, and the audit log. If that happens, repair the
+reference and then roll the leaked credential at its source. Note that the failed
+deploy still writes the bad spec, so "the deploy failed" does not mean nothing changed.
+
 ### 7. Restore the database into Supabase
 
 The last production dump is at
