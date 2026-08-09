@@ -19,6 +19,13 @@ class Settings(BaseSettings):
     )
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = Field(default=False)
 
+    # Connection pool sizing. These are per gunicorn worker, so the ceiling is
+    # DB_POOL_SIZE + DB_MAX_OVERFLOW, times workers, times running instances.
+    # Cloud Run runs several instances, so keep these small enough that a
+    # scale-out cannot exhaust the database's connection limit.
+    DB_POOL_SIZE: int = Field(default=2)
+    DB_MAX_OVERFLOW: int = Field(default=3)
+
     GCLOUD_PROJECT_NAME: str = Field(default="fallback")
     GCLOUD_PROJECT_REGION: str = Field(default="us-central1")
     GOOGLE_APPLICATION_CREDENTIALS: str = Field(default="fallback")
@@ -26,6 +33,9 @@ class Settings(BaseSettings):
 
     # For Google logins
     GOOGLE_CLIENT_ID: str = Field(default="fallback")
+    # Unused: sign-in uses Google Identity Services and verifies the returned ID
+    # token against GOOGLE_CLIENT_ID, which needs no secret. Only an
+    # authorization-code exchange would, and we do not perform one.
     GOOGLE_CLIENT_SECRET: str = Field(default="fallback")
 
     # OpenAI API configuration

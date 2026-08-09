@@ -132,6 +132,11 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+# Database dumps and data exports (may contain production user data)
+*.dump
+*.sql
+dataclips_*.csv
+
 # Environments
 .env
 .venv

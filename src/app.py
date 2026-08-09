@@ -85,8 +85,8 @@ def create_app():
 
     # Add SQLAlchemy engine options tuned for production
     app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-        "pool_size": 5,  # Reduced from 10 to save memory
-        "max_overflow": 10,  # Reduced from 20 to save memory
+        "pool_size": SETTINGS.DB_POOL_SIZE,
+        "max_overflow": SETTINGS.DB_MAX_OVERFLOW,
         "pool_timeout": 30,  # Increased wait time (in seconds) for a free connection
         "pool_recycle": 180,  # Recycle connections older than 3 minutes (helps avoid stale connections)
         "pool_pre_ping": True,  # Check connection health before using it

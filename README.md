@@ -91,17 +91,14 @@ Run tests:
 pytest tests/
 ```
 
-Deploy to Heroku:
+Deploy to Google Cloud Run:
 
 ```sh
-git push heroku main
+./scripts/deploy_cloudrun.sh
 ```
 
-Setting up buildpacks for heroku (in case app needs to be configured from scratch):
-
-```sh
-heroku buildpacks:add heroku/python
-```
+See [DEPLOY.md](DEPLOY.md) for one-time setup, secrets, Cloudflare configuration, and
+cost guardrails.
 
 Recreate db for local development:
 
@@ -136,36 +133,14 @@ This will generate a migration script in the `migrations/versions/` directory. A
 flask db upgrade
 ```
 
-4. Push changes and deploy to Heroku
+4. Push changes and deploy
 
-The `Procfile` is configured to run migrations on each deploy, which ensures that Heroku automatically applies any pending migration scripts during the release phase.
+`scripts/deploy_cloudrun.sh` runs `flask db upgrade` as a Cloud Run Job before rolling
+out the new revision. Unlike Heroku, Cloud Run has no release phase, so migrations are
+an explicit step in the deploy script rather than something the `Procfile` handles.
 
-### Heroku Scheduler for Subscription Management
+### Scheduled Subscription Management
 
-To handle expired subscriptions automatically, set up a daily check using Heroku Scheduler:
-
-1. Install the Heroku Scheduler add-on:
-
-```bash
-heroku addons:create scheduler:standard
-```
-
-2. Open the Scheduler dashboard:
-
-```bash
-heroku addons:open scheduler
-```
-
-3. Add a new job with the following settings:
-
-   - Frequency: Daily
-   - Time: Select a low-traffic time (e.g., 3:00 AM UTC)
-   - Command: `curl "https://<add-domain-here>.herokuapp.com/check-subscription-expirations?api_key=$SECRET_KEY"`
-
-4. Make sure the `SECRET_KEY` environment variable is set in your Heroku app:
-
-```bash
-heroku config:set SECRET_KEY=your_secure_api_key
-```
-
-This ensures expired subscriptions are automatically downgraded to the free tier when they reach their end date.
+Expired subscriptions are downgraded to the free tier by a daily Cloud Scheduler job
+that calls `/check-subscription-expirations`. See [DEPLOY.md](DEPLOY.md) for the setup
+command.

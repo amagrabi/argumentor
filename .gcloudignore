@@ -1,0 +1,27 @@
+# Files not uploaded to Cloud Build when running `gcloud run deploy --source .`
+.git/
+.gitignore
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+node_modules/
+
+# Local env and secrets — never ship these into an image
+.env
+*.json.key
+service-account*.json
+
+# Database dumps and data exports
+*.dump
+*.sql
+dataclips_*.csv
+
+# Dev tooling
+.vscode/
+.cursorignore
+.pre-commit-config.yaml
+logfile
+scripts/load_test.py

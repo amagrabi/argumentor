@@ -17,7 +17,7 @@ dependencies = [
     "flask-migrate",
     "flask-talisman",
     "google-auth",
-    "google-genai",
+    "google-genai>=1.67.0",
     "google-cloud-aiplatform",
     "google-cloud-storage",
     "google-auth-oauthlib",
