@@ -221,35 +221,68 @@ free way to attach the domain — a Global External Application Load Balancer co
 mappings "preview, not recommended for production" on latency grounds; Cloudflare's
 cache absorbs most of that for static assets.
 
-1. Map the domain:
+1. Map both hostnames (`gcloud components install beta` first if needed):
 
 ```bash
-gcloud beta run domain-mappings create --service=argumentor --domain=argumentorai.com --region=europe-west1
+gcloud beta run domain-mappings create --service=argumentor --domain=argumentorai.com --region=europe-west1 && gcloud beta run domain-mappings create --service=argumentor --domain=www.argumentorai.com --region=europe-west1
 ```
 
-2. Add the `CNAME` record it prints (target `ghs.googlehosted.com`) in Cloudflare, and
-   **leave it DNS-only (grey cloud) at first**. Google's managed certificate cannot
-   validate while Cloudflare proxies the record.
-3. Wait for the certificate to go active:
-   `gcloud beta run domain-mappings describe --domain=argumentorai.com --region=europe-west1`
-4. Then switch the record to **proxied (orange cloud)** and set SSL/TLS to
-   **Full (strict)**. Google presents a valid certificate for the domain, so strict
-   verification succeeds.
-5. Add a cache rule for static assets — the single highest-value step, since it keeps
-   33 MB of video out of Cloud Run egress:
-   - Match: `URI Path starts with /static/`
+2. Add the records it prints. The **apex takes A/AAAA records, not a CNAME** — only the
+   `www` subdomain gets a CNAME:
+
+| Type | Name | Value |
+| --- | --- | --- |
+| A | `argumentorai.com` | `216.239.32.21`, `216.239.34.21`, `216.239.36.21`, `216.239.38.21` |
+| AAAA | `argumentorai.com` | `2001:4860:4802:32::15`, `:34::15`, `:36::15`, `:38::15` |
+| CNAME | `www` | `ghs.googlehosted.com` |
+
+   Keep the existing `google-site-verification` TXT record — it is what lets the domain
+   mapping verify ownership.
+
+3. Create all of them **DNS-only (grey cloud)**. Google's managed certificate cannot
+   validate while Cloudflare proxies the record, and proxying too early leaves you
+   stuck without a cert.
+4. Wait for the certificate. `DomainRoutable` goes `True` as soon as DNS is right, but
+   `CertificateProvisioned` lags — Google re-polls every 5 minutes and it can take an
+   hour or more:
+
+```bash
+gcloud beta run domain-mappings describe --domain=argumentorai.com --region=europe-west1 --format=json | python3 -c "import json,sys; [print(c['type'], c['status']) for c in json.load(sys.stdin)['status']['conditions']]"
+```
+
+5. Only once that reads `True`, switch the records to **proxied (orange cloud)**.
+   SSL/TLS is already **Full (strict)** on this zone, which is correct — Google
+   presents a valid certificate, so strict verification succeeds.
+6. Cache rule for static assets — the highest-value step, since it keeps 33 MB of video
+   out of Cloud Run egress:
+   - Expression: `starts_with(http.request.uri.path, "/static/")`
    - Cache eligibility: Eligible for cache
-   - Edge TTL: 1 month (the app already sets cache headers, added in `e9f85d9`)
-6. Enable the free WAF managed ruleset. The `block_wp_scanners` middleware in
-   `src/middleware.py` becomes largely redundant once this is on.
+   - **Leave Edge TTL unset** so Cloudflare respects the origin. The app sends
+     `max-age=604800, immutable` but its assets are *not* fingerprinted (no `?v=` in
+     the templates), so a longer edge TTL would keep serving stale CSS/JS for weeks
+     after a deploy. Even the origin's own 7 days is aggressive for unversioned files;
+     adding cache-busting query strings would be the real fix.
+7. WAF: **managed rulesets are not available on the Free plan** — that section offers
+   only "Upgrade plan". Free gives 5 custom rules and 1 rate-limiting rule instead. A
+   custom rule named "Block WordPress scanners" blocks the unambiguous patterns at the
+   edge, saving Cloud Run invocations and cold starts:
+
+```
+(lower(http.request.uri.path) contains "wp-") or (lower(http.request.uri.path) contains "wordpress") or (lower(http.request.uri.path) contains "xmlrpc.php") or (lower(http.request.uri.path) contains "wlwmanifest.xml")
+```
+
+   The broader patterns in `WP_PATTERNS` (`/blog/`, `/test/`, `/media/`, `/news/` …)
+   are deliberately *not* in the edge rule — they are generic enough to collide with
+   real routes later. `block_wp_scanners` in `src/middleware.py` still handles those
+   and is **not** redundant.
 
 If the domain mapping proves flaky or a certificate renewal fails, the fallback is a
 Cloudflare Worker reverse-proxying to the `*.run.app` URL — fully supported, free up
 to 100k requests/day, at the cost of an extra hop and some code.
 
-Note that the `*.run.app` URL stays publicly reachable either way, so Cloudflare's WAF
-can be bypassed by hitting it directly. Acceptable at this stage; closing it means
-requiring a shared secret header at the origin.
+Note that the `*.run.app` URL stays publicly reachable either way, so the Cloudflare
+rules can be bypassed by hitting it directly. Acceptable at this stage; closing it
+means requiring a shared secret header at the origin.
 
 ### Optional: move voice recordings to R2
 
