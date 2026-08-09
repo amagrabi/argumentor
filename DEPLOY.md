@@ -29,12 +29,15 @@ Two guardrails keep this inside the free tier, both already set in
   free allowance in days.
 - **Default CPU throttling.** Never pass `--no-cpu-throttling`.
 
-**Set a budget alert before going live.** Cloud Run has no spending cap, and unlike
-Heroku's flat $10 this bill is variable:
+**A budget alert is in place** (`argumentor monthly`, €5, alerting at 50/90/100%).
+Cloud Run has no spending cap, and unlike Heroku's flat $10 this bill is variable.
 
 ```bash
-gcloud billing budgets create --billing-account=$(gcloud billing projects describe argumentor-449922 --format='value(billingAccountName)' | cut -d/ -f2) --display-name="argumentor" --budget-amount=5USD --threshold-rule=percent=0.5 --threshold-rule=percent=1.0
+gcloud billing budgets create --billing-account=01776F-0801D0-FC095B --display-name="argumentor monthly" --budget-amount=5EUR --threshold-rule=percent=0.5 --threshold-rule=percent=0.9 --threshold-rule=percent=1.0
 ```
+
+The amount **must be in the billing account's own currency** — this account is EUR,
+and passing `5USD` fails with a bare `INVALID_ARGUMENT` that names no field.
 
 The tradeoff you are accepting is **cold starts** — the app imports `grpcio`,
 `google-cloud-aiplatform`, and `numpy` at boot. This is not a regression: Heroku Eco
@@ -200,18 +203,29 @@ which means it lands in Cloud Scheduler config and access logs. Worth moving to 
 header at some point.
 
 Nightly backup — Supabase's free tier takes **no** backups, so this is the only copy
-of the data outside the live database:
+of the data outside the live database. Already created, running 04:00 Europe/Berlin.
+
+The runtime service account needs `run.invoker` **on the job** or Cloud Scheduler gets
+a 403 and no execution is ever created — a silent failure, since the scheduler job
+itself still looks healthy:
 
 ```bash
-gcloud scheduler jobs create http argumentor-backup --location=europe-west1 --schedule="0 4 * * *" --uri="https://europe-west1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/argumentor-449922/jobs/argumentor-backup:run" --http-method=POST --oauth-service-account-email="argumentor-run@argumentor-449922.iam.gserviceaccount.com"
+gcloud run jobs add-iam-policy-binding argumentor-backup --region=europe-west1 --member="serviceAccount:argumentor-run@argumentor-449922.iam.gserviceaccount.com" --role=roles/run.invoker
 ```
-
-Verify it end to end before trusting it — a backup you have never restored is not a
-backup:
 
 ```bash
-gcloud run jobs execute argumentor-backup --region=europe-west1 --wait && gcloud storage ls gs://argumentor-449922-backups/backups/
+gcloud scheduler jobs create http argumentor-backup --location=europe-west1 --schedule="0 4 * * *" --time-zone="Europe/Berlin" --uri="https://europe-west1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/argumentor-449922/jobs/argumentor-backup:run" --http-method=POST --oauth-service-account-email="argumentor-run@argumentor-449922.iam.gserviceaccount.com"
 ```
+
+Verify through the scheduler rather than just running the job directly — invoking the
+job by hand does not exercise the IAM path that the scheduler uses:
+
+```bash
+gcloud scheduler jobs run argumentor-backup --location=europe-west1 && sleep 90 && gcloud storage ls gs://argumentor-449922-backups/backups/
+```
+
+A backup you have never restored is not a backup; restore one into a scratch database
+before you rely on it.
 
 ## Cloudflare setup
 
