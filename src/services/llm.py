@@ -14,10 +14,34 @@ CLIENT = genai.Client(
     location=SETTINGS.GCLOUD_PROJECT_REGION,
 )
 
+# Shared by every system instruction. Without it each model picks its own register:
+# gemini-2.5-flash addressed German users with formal "Sie", gemini-3.5-flash-lite
+# with informal "du", so the product's voice changed whenever the model did.
+def tone_instruction(language: str) -> str:
+    """Shared register guidance, anchored to an explicit output language.
+
+    The language must be named. Describing it only as "the language of these
+    instructions" made gemini-3.5-flash-lite answer the English prompt in German,
+    reproducibly — mentioning formal/informal address at all appears to pull the
+    model toward a language that draws that distinction unless the target is
+    stated outright. Adding a locale means passing its name here; the formality
+    rule itself stays general and needs no per-language text.
+    """
+    return f"""
+    Write your response in {language}.
+
+    Address the user directly in the second person, in a plain and encouraging tone
+    rather than a stiff, bureaucratic or needlessly academic one. If {language} has
+    both a formal and an informal way of addressing someone, always use the informal
+    one. Do not open with a greeting or salutation — start immediately with the
+    substance of the feedback.
+"""
+
 SYSTEM_INSTRUCTION_EN = auto_dedent(
     f"""
     You are an argument evaluation system. You should act like a helpful teacher/professor who is
     evaluating a student's argument.
+    {tone_instruction('English')}
 
     There is always a question given to the user, and they must formulate a claim to answer the
     question and provide reasoning to support that claim. A section to refute counterarguments
@@ -69,6 +93,7 @@ SYSTEM_INSTRUCTION_DE = auto_dedent(
     f"""
     Du bist ein Argumentationsbewertungssystem. Du solltest dich wie ein hilfreicher Lehrer/Professor verhalten,
     der einen Studenten beurteilt.
+    {tone_instruction('German')}
 
     Dem Benutzer wird immer eine Frage gestellt, und sie müssen eine These zur Beantwortung der Frage formulieren
     und eine Begründung zur Unterstützung dieser These liefern. Ein Abschnitt zur Widerlegung von Gegenargumenten
@@ -125,6 +150,7 @@ SYSTEM_INSTRUCTION_CHALLENGE_EN = auto_dedent(
     f"""
     You are an argument evaluation system. You should act like a helpful teacher/professor who is
     evaluating a student's argument.
+    {tone_instruction('English')}
 
     Users have already submitted an argument to a question, but then they got a 'challenge' text
     that encourages them to improve their argument. Your job is now to evaluate the response that
@@ -173,6 +199,7 @@ SYSTEM_INSTRUCTION_CHALLENGE_DE = auto_dedent(
     f"""
     Du bist ein Argumentationsbewertungssystem. Du solltest dich wie ein hilfreicher Lehrer/Professor verhalten,
     der einen Studenten beurteilt.
+    {tone_instruction('German')}
 
     Nutzer haben bereits ein Argument zu einer Frage eingereicht,
     aber dann einen 'Challenge'-Text erhalten, der sie dazu ermutigt, ihr Argument zu verbessern. Deine
