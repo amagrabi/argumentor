@@ -12,7 +12,7 @@ from google import genai
 from google.cloud import storage
 
 from config import get_settings
-from extensions import db, google_credentials, openai_client
+from extensions import db, google_credentials, limiter, openai_client
 from models import User
 from utils import (
     get_daily_voice_count,
@@ -356,6 +356,10 @@ def check_voice_limits():
 
 
 @transcribe_bp.route("/transcribe_voice", methods=["POST"])
+@limiter.limit(
+    SETTINGS.VOICE_RATE_LIMITS,
+    error_message="Too many transcription requests. Please wait a moment.",
+)
 def transcribe_voice():
     import tracemalloc
 

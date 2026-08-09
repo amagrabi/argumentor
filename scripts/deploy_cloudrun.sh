@@ -48,7 +48,9 @@ SECRETS+=",STRIPE_PRO_PRICE_ID=STRIPE_PRO_PRICE_ID:latest"
 # src/extensions.py falls back to Application Default Credentials, which on
 # Cloud Run resolves to the attached service account.
 ENV_VARS="GCLOUD_PROJECT_NAME=${PROJECT_ID}"
-ENV_VARS+=",GCLOUD_PROJECT_REGION=${GCLOUD_PROJECT_REGION:-us-central1}"
+# Vertex AI location for the genai clients. Gemini 3.x is served only from the
+# "global" endpoint and 404s in regional ones.
+ENV_VARS+=",GCLOUD_PROJECT_REGION=${GCLOUD_PROJECT_REGION:-global}"
 ENV_VARS+=",GCS_BUCKET=${GCS_BUCKET:-argumentor}"
 # Per-worker pool caps. 2 workers x (2 + 3) x 3 max instances = 30 connections
 # worst case, which stays under Supabase's pooler limit.

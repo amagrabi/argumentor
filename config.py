@@ -27,7 +27,9 @@ class Settings(BaseSettings):
     DB_MAX_OVERFLOW: int = Field(default=3)
 
     GCLOUD_PROJECT_NAME: str = Field(default="fallback")
-    GCLOUD_PROJECT_REGION: str = Field(default="us-central1")
+    # Only used as the Vertex AI location for the genai clients. Gemini 3.x is
+    # served exclusively from the "global" endpoint — it 404s in us-central1.
+    GCLOUD_PROJECT_REGION: str = Field(default="global")
     GOOGLE_APPLICATION_CREDENTIALS: str = Field(default="fallback")
     GCS_BUCKET: str = Field(default="fallback")  # for voice recordings
 
@@ -60,7 +62,12 @@ class Settings(BaseSettings):
     # If false, cheaper dummy responses will be returned
     USE_LLM_EVALUATOR: bool = Field(default=True)
 
-    MODEL: str = Field(default="gemini-2.5-flash")  # LLM
+    # Measured against the production prompt (both languages) in Aug 2026:
+    # gemini-2.5-flash took 17-22s and $6.90-10.00 per 1k evaluations, because it
+    # spends 1200-2400 hidden thinking tokens per call. This model is ~3.5x faster
+    # and ~2.6x cheaper with comparable feedback length. gemini-3.6-flash was both
+    # slower and dearer than this with no visible quality gain.
+    MODEL: str = Field(default="gemini-3.5-flash-lite")  # LLM
 
     # Maximum characters allowed for each field
     MAX_CLAIM: int = Field(default=200)
@@ -75,33 +82,44 @@ class Settings(BaseSettings):
     SIMILARITY_THRESHOLD: float = Field(default=0.8)
 
     SUBMISSION_RATE_LIMITS: str = Field(default="10 per minute, 100 per day")
+    # Transcription is the most expensive endpoint (Whisper + GCS + an LLM call),
+    # so it gets a tighter burst limit than text submissions.
+    VOICE_RATE_LIMITS: str = Field(default="5 per minute, 30 per hour")
 
+    # Anonymous is a taster, not a usable tier: every anonymous evaluation is an
+    # unauthenticated LLM call. Free is deliberately generous enough to build a
+    # habit — this is a practice product, and users only convert once they have
+    # felt themselves improve. At current model cost a free user is ~8 cents/month.
     TIER_MONTHLY_EVAL_LIMITS: ClassVar[Dict[str, int]] = {
-        "anonymous": 6,
-        "free": 10,
-        "plus": 50,
+        "anonymous": 3,
+        "free": 30,
+        "plus": 150,
         "pro": 500,
     }
+    # Voice costs more than text (transcription + storage + the same LLM call), so
+    # it is the paid differentiator rather than being offered at parity.
     TIER_MONTHLY_VOICE_LIMITS: ClassVar[Dict[str, int]] = {
-        "anonymous": 6,
-        "free": 10,
+        "anonymous": 1,
+        "free": 5,
         "plus": 50,
         "pro": 250,
     }
 
-    # Daily limits are currently not documented
-    # They quietly disabled by setting them above monthly limits, but they might be enforced in the future
+    # Burst protection: roughly a fifth of the monthly allowance, so a compromised
+    # or scripted account cannot spend a whole month's budget in one sitting.
+    # These are enforced — previously they were set above the monthly limits,
+    # which silently disabled them.
     TIER_DAILY_EVAL_LIMITS: ClassVar[Dict[str, int]] = {
-        "anonymous": 7,
-        "free": 11,
-        "plus": 51,
-        "pro": 501,
+        "anonymous": 3,
+        "free": 8,
+        "plus": 30,
+        "pro": 100,
     }
     TIER_DAILY_VOICE_LIMITS: ClassVar[Dict[str, int]] = {
-        "anonymous": 7,
-        "free": 11,
-        "plus": 51,
-        "pro": 501,
+        "anonymous": 1,
+        "free": 3,
+        "plus": 12,
+        "pro": 50,
     }
 
     SUPPORTED_LANGUAGES: ClassVar[List[str]] = ["en", "de"]

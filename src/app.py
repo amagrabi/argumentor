@@ -15,6 +15,7 @@ from flask_login import current_user
 from flask_migrate import Migrate
 from flask_talisman import Talisman
 from werkzeug.exceptions import NotFound
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from commands import register_commands
 from config import get_settings
@@ -77,6 +78,13 @@ def create_app():
     os.makedirs(instance_path, exist_ok=True)
 
     app = Flask(__name__, instance_path=instance_path, static_folder="static")
+
+    # Requests arrive via Cloudflare and then Cloud Run, so X-Forwarded-For holds
+    # "<client>, <cloudflare-edge>" by the time it reaches gunicorn. Without this
+    # the app sees the Cloud Run frontend as the client and every visitor shares a
+    # single rate-limit bucket. See client_identifier() in extensions.py.
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=2, x_proto=1, x_host=1)
+
     app.config.from_mapping(get_settings())
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
     app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size

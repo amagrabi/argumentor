@@ -43,6 +43,36 @@ The tradeoff you are accepting is **cold starts** — the app imports `grpcio`,
 `google-cloud-aiplatform`, and `numpy` at boot. This is not a regression: Heroku Eco
 dynos also slept after 30 minutes idle.
 
+## Abuse and cost controls
+
+Layered, cheapest first. None of these is sufficient alone.
+
+| Layer | What it does | Where |
+| --- | --- | --- |
+| Cloudflare rate limit | 5 req/10s per IP on `/submit_answer`, `/transcribe_voice`, `/submit_challenge_response`, then a 10s block. Runs at the edge before Cloud Run wakes, and sees the true client IP | Security → Security rules → Rate limiting (1/1 free rules used) |
+| Cloudflare custom rule | Blocks WordPress scanner paths | Security → Security rules (1/5 free rules used) |
+| Vertex AI daily quota | 1M input tokens/day for `gemini-3.5-flash-lite` ≈ 600 evaluations, capping LLM spend near $2/day. The default was 5 **billion** | `gcloud quotas preferences list` |
+| Vertex AI per-minute quota | 100k input tokens/min, so a burst cannot exhaust the daily budget in one minute | same |
+| OpenAI hard spend cap | **Set this manually** — Project settings → Limits → Spend → enforce a hard limit. Returns 429 `project_spend_limit_exceeded` | platform.openai.com |
+| App tier limits | Per-user monthly and daily caps, DB-backed so they survive restarts | `config.py` |
+| Flask-Limiter | Per-instance burst backstop only. In-memory, so buckets reset on cold start — Cloudflare is the real gate | `config.py`, `extensions.py` |
+
+Google has **no hard spend cap**. The €5 budget alert notifies; it does not stop
+anything. Quotas are the only real ceiling short of a billing-disable function.
+
+Note the residual gap: the `*.run.app` URL bypasses Cloudflare entirely, so the edge
+rules can be sidestepped by anyone who finds it. Closing that means requiring a shared
+secret header at the origin.
+
+To adjust a quota:
+
+```bash
+gcloud quotas preferences create --project=argumentor-449922 --service=aiplatform.googleapis.com --quota-id=GlobalGenerateContentInputTokensPerDayPerBaseModel --preferred-value=2000000 --dimensions=base_model=gemini-3.5-flash-lite-qcd --preference-id=argumentor-daily-input-tokens --allow-high-percentage-quota-decrease
+```
+
+Gemini 3.x models are dimensioned as `<model>-qcd` in quotas, and only exist on the
+`global` endpoint — the per-region quota rejects `global` as a region name.
+
 ## One-time setup
 
 ### 1. Authenticate

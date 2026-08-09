@@ -3,6 +3,7 @@ import os
 
 import google.auth
 import openai
+from flask import request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_login import LoginManager
@@ -15,7 +16,28 @@ SETTINGS = get_settings()
 
 # Initialize Flask extensions
 db = SQLAlchemy()
-limiter = Limiter(key_func=get_remote_address)
+
+def client_identifier():
+    """Best-effort client IP for rate limiting.
+
+    Cloudflare sets CF-Connecting-IP to the true visitor address, which is more
+    reliable than walking X-Forwarded-For. Falls back to the ProxyFix-corrected
+    remote address for local development and for requests that somehow bypass
+    Cloudflare.
+
+    This is a backstop, not the primary defence: the *.run.app URL stays publicly
+    reachable, so a caller going direct can forge CF-Connecting-IP. The
+    authoritative per-IP gate is the Cloudflare rate-limiting rule, which sees the
+    real client and runs before Cloud Run is ever invoked.
+    """
+    return request.headers.get("CF-Connecting-IP") or get_remote_address()
+
+
+# Storage is deliberately in-memory. Shared storage would mean paying for Redis,
+# and buckets here are only a per-instance backstop — Cloudflare owns real rate
+# limiting. Consequence: these limits are per gunicorn worker and reset when an
+# instance is recycled, so do not rely on the long windows.
+limiter = Limiter(key_func=client_identifier)
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 
