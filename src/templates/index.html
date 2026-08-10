@@ -569,52 +569,9 @@
         <p class="text-xs md:text-lg text-black mb-6 text-center" data-i18n="main.slogan"></p>
 
         <!-- Demo Video Section with spacers (Only shown to first-time visitors) -->
-        <div id="firstTimeVideoSection" class="hidden">
-          <!-- Spacer above video -->
-          <div style="height: 4px;"></div>
-
-          <!-- Video container -->
-          <div class="w-full flex justify-center mb-6">
-            <div class="w-full max-w-3xl rounded-lg overflow-hidden shadow-lg">
-              <div id="videoContainer" class="relative">
-                <video
-                  id="demoVideo"
-                  class="w-full cursor-pointer"
-                  preload="auto"
-                  autoplay
-                  muted
-                  playsinline
-                  poster="{{ url_for('static', filename='img/video_poster.webp') }}"
-                >
-                  <!-- High resolution for desktop -->
-                  <source
-                    media="(min-width: 768px)"
-                    src="{{ url_for('static', filename='vid/demo.webm') }}"
-                    type="video/webm"
-                  />
-                  <!-- Medium resolution for tablets -->
-                  <source
-                    media="(min-width: 480px)"
-                    src="{{ url_for('static', filename='vid/demo_medium.webm') }}"
-                    type="video/webm"
-                  />
-                  <!-- Low resolution for mobile -->
-                  <source
-                    src="{{ url_for('static', filename='vid/demo_mobile.webm') }}"
-                    type="video/webm"
-                  />
-                  Your browser does not support the video tag.
-                </video>
-                <div class="video-hover-effect">❚❚</div>
-                <div class="video-play-button hidden">▶</div>
-                <div class="video-ended-button hidden">▶</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Spacer below video -->
-          <div style="height: 2px;"></div>
-        </div>
+        <!-- The demo video used to live here and pushed the form below the fold
+             for first-time desktop visitors. It now lives on the How It Works
+             page; the landing page leads with the question and the form. -->
 
         <!-- Simple Links (visible on mobile and tablet) -->
         <div class="flex justify-center md:hidden">
@@ -685,6 +642,18 @@
             id="questionDescription"
             class="text-2xl md:text-3xl font-bold flex-1"
           ></h2>
+          <!-- Prefills the form with a worked answer *to this question*. 85% of
+               zero-XP submissions were written against the pre-loaded question
+               but about an unrelated topic, so the point of the example is to
+               make the question-to-answer link concrete before people type. -->
+          <button
+            id="tryExampleBtn"
+            type="button"
+            class="hidden mt-2 md:mt-1 md:ml-4 shrink-0 text-sm underline text-gray-600 hover:text-black"
+            data-i18n="main.inputLabels.tryExample"
+          >
+            Try an example
+          </button>
           <div
             class="flex flex-col items-start md:ml-6 md:items-end mt-4 md:mt-0"
           >
@@ -808,6 +777,13 @@
 
         <!-- Text Input Section (Default Mode) -->
         <div id="textInputSection">
+          <p
+            id="exampleLoadedNote"
+            class="hidden mb-3 text-sm text-gray-600 italic"
+            data-i18n="main.inputLabels.exampleLoaded"
+          >
+            Example loaded — edit it, then submit to see the feedback.
+          </p>
           <div class="space-y-4">
             <div>
               <label
@@ -822,7 +798,7 @@
                 data-i18n-placeholder="main.inputLabels.claimDescription"
                 maxlength="{{ char_limits.claim }}"
               ></textarea>
-              <div class="mt-1 text-sm text-gray-500">
+              <div class="mt-1 text-sm text-gray-500 char-hint" data-hidden-until-typing>
                 <span data-i18n="challenge.charactersRemaining"
                   >Characters remaining:</span
                 >
@@ -843,7 +819,7 @@
                 data-i18n-placeholder="main.inputLabels.reasoningDescription"
                 maxlength="{{ char_limits.argument }}"
               ></textarea>
-              <div class="mt-1 text-sm text-gray-500">
+              <div class="mt-1 text-sm text-gray-500 char-hint" data-hidden-until-typing>
                 <span data-i18n="challenge.charactersRemaining"
                   >Characters remaining:</span
                 >
@@ -851,26 +827,30 @@
               </div>
             </div>
 
-            <div>
-              <label
-                data-i18n="main.inputLabels.counterargument"
-                class="block text-lg font-bold mb-2"
+            <!-- Optional, and only used in 36% of submissions, so it starts
+                 collapsed rather than presenting a third empty box up front. -->
+            <details id="counterargumentDisclosure" class="group">
+              <summary
+                class="cursor-pointer text-lg font-bold list-none flex items-center gap-2 py-1"
+                data-i18n="main.inputLabels.showCounterargument"
               >
-                Counterargument (Optional)
-              </label>
-              <textarea
-                id="counterargumentInput"
-                class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
-                data-i18n-placeholder="main.inputLabels.counterargumentDescription"
-                maxlength="{{ char_limits.counterargument }}"
-              ></textarea>
-              <div class="mt-1 text-sm text-gray-500">
-                <span data-i18n="challenge.charactersRemaining"
-                  >Characters remaining:</span
-                >
-                <span id="counterargumentCount">{{ char_limits.counterargument }}</span>
+                Add a counterargument rebuttal (optional)
+              </summary>
+              <div class="mt-2">
+                <textarea
+                  id="counterargumentInput"
+                  class="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-gray-700 h-32"
+                  data-i18n-placeholder="main.inputLabels.counterargumentDescription"
+                  maxlength="{{ char_limits.counterargument }}"
+                ></textarea>
+                <div class="mt-1 text-sm text-gray-500 char-hint" data-hidden-until-typing>
+                  <span data-i18n="challenge.charactersRemaining"
+                    >Characters remaining:</span
+                  >
+                  <span id="counterargumentCount">{{ char_limits.counterargument }}</span>
+                </div>
               </div>
-            </div>
+            </details>
           </div>
         </div>
 
@@ -2137,5 +2117,71 @@
 
     <!-- Write Question functionality -->
     <script src="{{ url_for('static', filename='js/write-question.js') }}"></script>
+
+    <!-- Form ergonomics: prefill example, deferred character hints, auto-grow.
+         Median real argument is ~307 chars against a 2000 limit, so the boxes
+         start small and the countdown stays out of the way until it matters. -->
+    <script>
+      (function () {
+        const HINT_AT_FRACTION = 0.8; // show the countdown only near the limit
+
+        function syncHint(input, hint) {
+          if (!input || !hint) return;
+          const max = parseInt(input.getAttribute("maxlength") || "0", 10);
+          const used = input.value.length;
+          hint.style.display = max && used >= max * HINT_AT_FRACTION ? "" : "none";
+        }
+
+        function autoGrow(el) {
+          if (!el) return;
+          el.style.height = "auto";
+          el.style.height = Math.min(el.scrollHeight, 520) + "px";
+        }
+
+        function wire(id) {
+          const input = document.getElementById(id);
+          if (!input) return;
+          const hint = input.parentElement.querySelector("[data-hidden-until-typing]");
+          syncHint(input, hint);
+          autoGrow(input);
+          input.addEventListener("input", function () {
+            syncHint(input, hint);
+            autoGrow(input);
+          });
+        }
+
+        function init() {
+          ["claimInput", "argumentInput", "counterargumentInput"].forEach(wire);
+
+          const btn = document.getElementById("tryExampleBtn");
+          if (btn) {
+            btn.addEventListener("click", function () {
+              const ex = window.translations?.exampleAnswers?.[btn.dataset.questionId];
+              if (!ex) return;
+              const claim = document.getElementById("claimInput");
+              const argument = document.getElementById("argumentInput");
+              if (claim) claim.value = ex.claim || "";
+              if (argument) argument.value = ex.argument || "";
+              [claim, argument].forEach(function (el) {
+                if (el) el.dispatchEvent(new Event("input", { bubbles: true }));
+              });
+              // Deliberately does not submit: editing it is the point.
+              if (argument) {
+                argument.focus();
+                argument.setSelectionRange(argument.value.length, argument.value.length);
+              }
+              const note = document.getElementById("exampleLoadedNote");
+              if (note) note.classList.remove("hidden");
+            });
+          }
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", init);
+        } else {
+          init();
+        }
+      })();
+    </script>
   </body>
 </html>

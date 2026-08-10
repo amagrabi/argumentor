@@ -29,6 +29,10 @@ def load_questions():
     with open(translations_path, "r", encoding="utf-8") as f:
         data = json.load(f)
         questions_data = data.get("questions", {})
+        # Optional worked example per question, used by the "Try an example"
+        # button to prefill the form. Most questions have none, and the button
+        # is hidden in that case.
+        examples = data.get("exampleAnswers", {})
 
         # Transform the data into the format expected by the application
         _questions_cache = {
@@ -37,6 +41,7 @@ def load_questions():
                     "id": question_id,
                     "description": question_text,
                     "category": category,
+                    "example": examples.get(question_id),
                 }
                 for question_id, question_text in questions_data.get(
                     category, {}

@@ -72,7 +72,10 @@
       "reasoningDescription": "Erkläre die Argumente für deine These...",
       "counterargument": "Gegenargumente entkräften (optional)",
       "counterargumentDescription": "Gehe auf mögliche Einwände ein, um dein Argument zu stärken...",
-      "challengeDescription": "Verteidige und verbessere dein Argument..."
+      "challengeDescription": "Verteidige und verbessere dein Argument...",
+      "tryExample": "Beispiel ausprobieren",
+      "exampleLoaded": "Beispiel eingefügt – bearbeite es und sende es ab, um das Feedback zu sehen.",
+      "showCounterargument": "Gegenargument widerlegen (optional)"
     },
     "inputModes": {
       "write": "Text",
@@ -1077,6 +1080,12 @@
       "invalidToken": "Dein Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen. Bitte fordere einen neuen an.",
       "updateFailed": "Fehler beim Aktualisieren des Passworts. Bitte versuche es erneut.",
       "generic": "Ein Fehler ist aufgetreten"
+    }
+  },
+  "exampleAnswers": {
+    "experiences": {
+      "claim": "Erlebnisse sind wichtiger als Besitz, weil Erinnerungen länger halten als Gegenstände.",
+      "argument": "Wenn Menschen auf ihr Leben zurückblicken, erzählen sie meist von Reisen, Freundschaften und einzelnen Momenten – nicht von den Dingen, die sie besessen haben. Gegenstände verlieren außerdem schnell ihren Reiz: Ein neues Handy fühlt sich nach wenigen Wochen normal an, während eine schöne Erinnerung noch Jahre später Freude macht. Erlebnisse teilt man zudem meist mit anderen, was sie wertvoller macht als etwas, das man allein besitzt."
     }
   }
 }

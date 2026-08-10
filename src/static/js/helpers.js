@@ -34,6 +34,16 @@ export function updateQuestionDisplay(question) {
     }
   }
 
+  // "Try an example" is only offered where a worked example exists for this
+  // question. Reading it from window.translations means it follows the active
+  // language without a second request.
+  const exampleBtn = document.getElementById("tryExampleBtn");
+  if (exampleBtn && question) {
+    const example = window.translations?.exampleAnswers?.[question.id];
+    exampleBtn.classList.toggle("hidden", !example || !!question.isCustom);
+    exampleBtn.dataset.questionId = question.id || "";
+  }
+
   const categoryBadge = document.getElementById("categoryBadge");
   if (categoryBadge) {
     // For custom questions, show "Custom" category

@@ -47,7 +47,10 @@
       "reasoningDescription": "Explain the logic and evidence supporting your claim...",
       "counterargument": "Refute Counterarguments (optional)",
       "counterargumentDescription": "Address potential objections to strengthen your argument...",
-      "challengeDescription": "Defend and refine your argument..."
+      "challengeDescription": "Defend and refine your argument...",
+      "tryExample": "Try an example",
+      "exampleLoaded": "Example loaded — edit it, then submit to see the feedback.",
+      "showCounterargument": "Add a counterargument rebuttal (optional)"
     },
     "inputModes": {
       "write": "Text",
@@ -993,5 +996,11 @@
     "statusLabel": "Status:",
     "priceLabel": "Price:",
     "active": "Active"
+  },
+  "exampleAnswers": {
+    "experiences": {
+      "claim": "Experiences matter more than possessions, because memories last longer than objects.",
+      "argument": "When people look back on their lives they talk about trips, friendships and particular moments, not about the things they owned. Objects also lose their appeal quickly: a new phone feels ordinary within a few weeks, while a good memory can still be enjoyed years later. Experiences are usually shared with other people too, which makes them worth more than something you own on your own."
+    }
   }
 }
