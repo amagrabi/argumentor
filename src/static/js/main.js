@@ -16,6 +16,7 @@ import {
   updateQuestionDisplay,
   scoreToColor,
   setupCharCounter,
+  syncExampleButton,
 } from "./helpers.js";
 import { translations } from "./translations.js";
 import {
@@ -289,6 +290,7 @@ async function getNewQuestion(shouldScroll = true) {
       description: question.description,
     };
     sessionStorage.setItem("currentQuestion", JSON.stringify(currentQuestion));
+    syncExampleButton(currentQuestion);
 
     document.getElementById("claimInput").value = "";
     document.getElementById("argumentInput").value = "";

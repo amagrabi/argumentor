@@ -19,6 +19,21 @@ export function typeWriter(element, text, speed) {
   }, speed);
 }
 
+// "Try an example" is only offered where a worked example exists for the
+// current question. Reading it from window.translations means it follows the
+// active language without a second request.
+//
+// Exported because there are two question-render paths: updateQuestionDisplay
+// here, and fetchNewQuestion in main.js which writes the element directly via
+// typeWriter. Both must call this or the button silently never appears.
+export function syncExampleButton(question) {
+  const exampleBtn = document.getElementById("tryExampleBtn");
+  if (!exampleBtn || !question) return;
+  const example = window.translations?.exampleAnswers?.[question.id];
+  exampleBtn.classList.toggle("hidden", !example || !!question.isCustom);
+  exampleBtn.dataset.questionId = question.id || "";
+}
+
 // Helper function to update the question display
 export function updateQuestionDisplay(question) {
   const questionElem = document.getElementById("questionDescription");
@@ -34,15 +49,7 @@ export function updateQuestionDisplay(question) {
     }
   }
 
-  // "Try an example" is only offered where a worked example exists for this
-  // question. Reading it from window.translations means it follows the active
-  // language without a second request.
-  const exampleBtn = document.getElementById("tryExampleBtn");
-  if (exampleBtn && question) {
-    const example = window.translations?.exampleAnswers?.[question.id];
-    exampleBtn.classList.toggle("hidden", !example || !!question.isCustom);
-    exampleBtn.dataset.questionId = question.id || "";
-  }
+  syncExampleButton(question);
 
   const categoryBadge = document.getElementById("categoryBadge");
   if (categoryBadge) {
