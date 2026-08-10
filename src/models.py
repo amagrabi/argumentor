@@ -16,7 +16,12 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(255), unique=True, nullable=False)
     preferred_language = db.Column(db.String(2), default="en")
     xp = db.Column(db.Integer, default=0)
-    created_at = db.Column(db.DateTime, default=datetime.now(UTC))
+    # The default has to be a callable. Passing datetime.now(UTC) directly
+    # evaluates it once at import, so every row written by a worker got that
+    # worker's boot time instead of its own insert time — which made the
+    # timestamps on visit and user_achievements useless for anything that reads
+    # them, retention included.
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
     tier = db.Column(db.String(20), nullable=False, default="anonymous")
     # Stripe-related fields
     stripe_customer_id = db.Column(db.String(255), unique=True, nullable=True)
@@ -99,7 +104,7 @@ class Answer(db.Model):
     challenge_evaluation_feedback = db.Column(db.JSON, default=dict, nullable=False)
     challenge_xp_earned = db.Column(db.Integer, nullable=False, default=0)
 
-    created_at = db.Column(db.DateTime, default=datetime.now(UTC))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
 
     input_mode = db.Column(db.String(10), nullable=True)  # "text" or "voice"
 
@@ -162,7 +167,7 @@ class Visit(db.Model):
     )
     ip_address = db.Column(db.String(45), nullable=True)
     user_agent = db.Column(db.String(500), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.now(UTC))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
 
     def __repr__(self):
         return f"<Visit {self.id}: {self.ip_address} at {self.created_at}>"
@@ -178,7 +183,7 @@ class Feedback(db.Model):
         db.String(50), nullable=False
     )  # e.g., 'bug', 'feature', 'general'
     email = db.Column(db.String(255), nullable=True)  # Optional email for contact
-    created_at = db.Column(db.DateTime, default=datetime.now(UTC))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
 
     def __repr__(self):
         return f"<Feedback {self.id}>"
@@ -192,7 +197,7 @@ class UserAchievement(db.Model):
     achievement_id = db.Column(
         db.String(50), nullable=False
     )  # References achievement ID from constants
-    earned_at = db.Column(db.DateTime, default=datetime.now(UTC))
+    earned_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
 
     def __repr__(self):
         return f"<UserAchievement {self.achievement_id}>"

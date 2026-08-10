@@ -13,7 +13,7 @@ from google.cloud import storage
 
 from config import get_settings
 from extensions import db, google_credentials, limiter, openai_client
-from models import User
+from services.user_service import get_session_user, persist_session_user
 from utils import (
     get_daily_voice_count,
     get_monthly_voice_count,
@@ -283,10 +283,9 @@ def check_voice_limits():
     if not user_uuid:
         return jsonify({"error": "User not identified."}), 400
 
-    # Check daily voice recording count
-    user = User.query.filter_by(uuid=user_uuid).first()
-    if not user:
-        return jsonify({"error": "User not found"}), 400
+    # Read-only: a visitor who has never recorded has no users row, and asking
+    # whether they are over their limit must not create one.
+    user = get_session_user()
 
     daily_count = get_daily_voice_count(user_uuid)
     voice_limit = get_voice_limit(user.tier)
@@ -371,10 +370,9 @@ def transcribe_voice():
         if not user_uuid:
             return jsonify({"error": "User not identified."}), 400
 
-        # Check daily voice recording count
-        user = User.query.filter_by(uuid=user_uuid).first()
-        if not user:
-            return jsonify({"error": "User not found"}), 400
+        # Read-only until the recording is accepted below, so a request that is
+        # over its limit or carries no audio writes nothing.
+        user = get_session_user()
 
         daily_count = get_daily_voice_count(user_uuid)
         voice_limit = get_voice_limit(user.tier)
@@ -449,6 +447,11 @@ def transcribe_voice():
 
         try:
             logger.debug("Processing voice transcription")
+
+            # The voice counters live on the user row, so this is the point where
+            # an anonymous visitor has to become one.
+            user = persist_session_user()
+
             # Update voice transcription count
             today_start = datetime.combine(datetime.now(UTC).date(), time.min)
             today_start = today_start.replace(tzinfo=UTC)

@@ -139,8 +139,30 @@ flask db upgrade
 out the new revision. Unlike Heroku, Cloud Run has no release phase, so migrations are
 an explicit step in the deploy script rather than something the `Procfile` handles.
 
-### Scheduled Subscription Management
+### Anonymous Users
 
-Expired subscriptions are downgraded to the free tier by a daily Cloud Scheduler job
-that calls `/check-subscription-expirations`. See [DEPLOY.md](DEPLOY.md) for the setup
-command.
+Anonymous visitors are identified by a UUID in their session cookie, and are **not**
+written to the database until they do something that needs a row: submit an answer,
+record voice, leave feedback, or start a checkout. So `session["user_id"]` usually has
+no `users` row behind it, and read paths must not assume one.
+
+`src/services/user_service.py` is the only place that decides this:
+
+- `get_session_user()` for read paths. Returns the persisted row when there is one, and
+  otherwise an unsaved placeholder that reads like a fresh anonymous user.
+- `persist_session_user()` immediately before writing anything with a foreign key to
+  `users.uuid`. Idempotent, and returns a committed row.
+
+Persisting eagerly instead — which is what `ensure_user_id` used to do — means a row for
+every bot and scanner that hits the site, because they never return a cookie. That is
+how the table reached 253k rows with 162 real answers behind them. `tests/` guards the
+invariant.
+
+### Scheduled Jobs
+
+Three daily Cloud Scheduler jobs, all set up in [DEPLOY.md](DEPLOY.md):
+
+- `/check-subscription-expirations` downgrades expired subscriptions to the free tier.
+- `/prune-visits` trims the `visit` table to `VISIT_RETENTION_DAYS`, which is the only
+  thing keeping it from growing forever against Supabase's 500 MB cap.
+- A Cloud Run job takes the nightly database backup.

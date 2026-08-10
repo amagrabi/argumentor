@@ -11,6 +11,11 @@ from services.achievement_service import check_and_award_achievements
 from services.evaluator import DummyEvaluator
 from services.level_service import get_level_for_xp, get_level_info, get_level_name
 from services.question_service import get_questions
+from services.user_service import (
+    get_session_user,
+    load_session_user,
+    persist_session_user,
+)
 from utils import (
     get_daily_evaluation_count,
     get_eval_limit,
@@ -123,9 +128,13 @@ def submit_answer():
         if not user_uuid:
             return jsonify({"error": "User not identified."}), 400
 
+        # Read-only for now. An anonymous visitor has no users row until the
+        # submission actually goes through, so everything below the limit checks
+        # runs against a placeholder and a rejected submission writes nothing.
+        user = get_session_user()
+
         # Check today's evaluation count (initial submission counts as one)
         daily_count = get_daily_evaluation_count(user_uuid)
-        user = User.query.filter_by(uuid=user_uuid).first()
         eval_limit = get_eval_limit(user.tier)
 
         if daily_count >= eval_limit:
@@ -233,7 +242,7 @@ def submit_answer():
         # Add relevance_too_low flag to response
         relevance_too_low = scores["Relevance"] < SETTINGS.RELEVANCE_THRESHOLD_FOR_XP
 
-        old_xp = user.xp if user else 0
+        old_xp = user.xp
 
         existing_answers = (
             Answer.query.filter_by(user_uuid=user.uuid)
@@ -266,13 +275,11 @@ def submit_answer():
                         # Neither submission has a counterargument.
                         return jsonify({"error": "similarAnswer"}), 409
                 # If one has a counterargument and the other doesn't, we treat them as different.
-        if not user:
-            # Generate a default username using a prefix and a short version of the UUID
-            default_username = f"anonymous_{user_uuid[:8]}"
-            user = User(uuid=user_uuid, username=default_username, xp=old_xp)
-            db.session.add(user)
-        else:
-            user.xp = old_xp
+
+        # The submission is going to be stored, so this is the point where an
+        # anonymous visitor becomes a real row. Everything from here on needs one:
+        # answers, achievements and the XP total are all keyed on users.uuid.
+        user = persist_session_user()
 
         # Use consistent property name without quotes to avoid issues
         scores_dict = {**evaluation["scores"]}
@@ -411,8 +418,23 @@ def submit_challenge_response():
         ):
             return jsonify({"error": "Character limit exceeded"}), 400
 
+        user_uuid = session.get("user_id")
+        if not user_uuid:
+            return jsonify({"error": "User not identified."}), 400
+
         answer = Answer.query.filter_by(id=answer_id).first()
         if not answer:
+            return jsonify({"error": "Answer not found"}), 404
+        # Ownership was not checked here before: anyone who knew an answer id could
+        # respond to someone else's challenge and take the XP onto their own
+        # account. It is also load-bearing now — the session user is only
+        # guaranteed to have a row if they own an answer. 404 rather than 403, so
+        # this does not confirm that an id exists.
+        if answer.user_uuid != user_uuid:
+            logger.warning(
+                f"User {user_uuid} attempted to answer a challenge on answer "
+                f"{answer_id}, owned by {answer.user_uuid}"
+            )
             return jsonify({"error": "Answer not found"}), 404
         if not answer.challenge:
             return jsonify({"error": "No challenge available for this answer"}), 400
@@ -421,13 +443,14 @@ def submit_challenge_response():
                 {"error": "You have already submitted a response to this challenge."}
             ), 400
 
-        user_uuid = session.get("user_id")
-        if not user_uuid:
+        # Answers cannot exist without their user row, so the ownership check
+        # above means this always finds one.
+        user = load_session_user()
+        if user is None:
             return jsonify({"error": "User not identified."}), 400
 
         # Check today's evaluation count (initial submission counts as one)
         daily_count = get_daily_evaluation_count(user_uuid)
-        user = User.query.filter_by(uuid=user_uuid).first()
         eval_limit = get_eval_limit(user.tier)
 
         if daily_count >= eval_limit:

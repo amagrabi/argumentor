@@ -13,6 +13,7 @@ from config import get_settings
 from extensions import login_manager
 from models import Answer, User, UserAchievement, db
 from services.level_service import get_level_info
+from services.user_service import get_session_user
 
 logger = logging.getLogger(__name__)
 SETTINGS = get_settings()
@@ -336,16 +337,16 @@ def update_session():
         user_data = data.get("user", None)
         if not user_data:
             if "user_id" in session:
-                user = User.query.filter_by(uuid=session["user_id"]).first()
-                if user:
-                    # Build a user_data dict with the needed info.
-                    user_data = {
-                        "uuid": user.uuid,
-                        "xp": user.xp,
-                        "level_info": get_level_info(user.xp),
-                    }
-                else:
-                    return jsonify({"error": "User not found"}), 400
+                # Placeholder rather than a lookup failure: the header calls this
+                # on every page load, and an anonymous visitor who has submitted
+                # nothing has no row to find. They get zero XP and level one,
+                # which is what their empty row used to report.
+                user = get_session_user()
+                user_data = {
+                    "uuid": user.uuid,
+                    "xp": user.xp,
+                    "level_info": get_level_info(user.xp),
+                }
             else:
                 return jsonify({"error": "No user in session"}), 400
         else:

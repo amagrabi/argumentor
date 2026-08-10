@@ -2,7 +2,6 @@ import gc
 import logging
 import resource
 import sys
-import uuid
 from datetime import UTC, datetime
 
 from flask import Response, after_this_request, request, session
@@ -10,7 +9,8 @@ from flask_login import current_user
 
 from config import get_settings
 from extensions import db
-from models import User, Visit
+from models import Visit
+from services.user_service import session_is_new, session_user_uuid
 
 logger = logging.getLogger(__name__)
 SETTINGS = get_settings()
@@ -78,37 +78,22 @@ def ensure_user_id():
     if request.path.startswith("/static/"):
         return
 
-    # If the user is already authenticated through Flask-Login, make sure session user_id matches
-    if current_user.is_authenticated:
-        if "user_id" not in session or session["user_id"] != current_user.uuid:
-            session["user_id"] = current_user.uuid
-            session.modified = True
-            logger.debug(
-                f"Updated session user_id to match authenticated user: {current_user.uuid}"
-            )
-        return
-
-    # For non-authenticated users, create an anonymous user if needed
-    if "user_id" not in session:
-        new_id = str(uuid.uuid4())
-        session["user_id"] = new_id
-        # Generate a default username using a prefix and a short version of the UUID.
-        default_username = f"anonymous_{new_id[:8]}"
-        new_user = User(uuid=new_id, username=default_username)
-        db.session.add(new_user)
-        db.session.commit()
-        # Make the session permanent to ensure it persists
-        session.permanent = True
-        logger.debug(
-            f"Anonymous user created with id: {new_id} and username: {default_username}"
-        )
-    else:
-        logger.debug(f"Existing user found with id: {session.get('user_id')}")
+    # Identity only, no database write. This used to INSERT a users row for every
+    # visitor arriving without a session cookie, which meant one row per request
+    # for every bot, crawler and vulnerability scanner. The row is now created
+    # lazily by persist_session_user() at the first action that needs one.
+    session_user_uuid()
 
 
 def log_visit():
     # Skip logging for static files to improve performance
     if request.path.startswith("/static/"):
+        return
+
+    # A client that returned no session cookie is almost certainly not a browser:
+    # a real one sends the cookie back on its next request, which is within the
+    # same page view. Logging the cookie-less ones is what filled this table.
+    if session_is_new():
         return
 
     if request.endpoint and request.endpoint != "static":
@@ -123,7 +108,11 @@ def log_visit():
             new_visit = Visit(
                 ip_address=request.remote_addr,
                 user_agent=user_agent,
-                user_uuid=session.get("user_id") if session.get("user_id") else None,
+                # user_uuid is a foreign key, and an anonymous visitor usually
+                # has no users row to point at, so only authenticated visits are
+                # linked. Nothing joins visit to users today, so the anonymous
+                # rows carry exactly the information they always did.
+                user_uuid=current_user.uuid if current_user.is_authenticated else None,
             )
             db.session.add(new_visit)
             db.session.commit()

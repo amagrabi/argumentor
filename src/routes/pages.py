@@ -1,8 +1,8 @@
+import hmac
 import json
 import logging
 import os
-import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 import stripe
 from flask import (
@@ -22,11 +22,16 @@ from config import get_settings
 from constants.achievements import ACHIEVEMENTS
 from constants.levels import Level
 from extensions import db, limiter
-from models import Answer, Feedback, User
+from models import Answer, Feedback, User, Visit
 from routes.password_reset import mail
 from services.achievement_service import get_question_category
 from services.level_service import get_level_info
 from services.question_service import load_questions
+from services.user_service import (
+    get_session_user,
+    load_session_user,
+    persist_session_user,
+)
 from utils import (
     get_daily_evaluation_count,
     get_daily_voice_count,
@@ -91,18 +96,11 @@ def home(lang=None):
     # Check if we should show the login modal
     show_login = request.args.get("show_login") == "true"
 
-    if "user_id" not in session:
-        session["user_id"] = str(uuid.uuid4())
-
-    user = User.query.filter_by(uuid=session["user_id"]).first()
-    if not user:
-        # Generate a default username using a prefix and a short version of the UUID
-        default_username = f"anonymous_{session['user_id'][:8]}"
-        user = User(
-            uuid=session["user_id"], username=default_username, tier="anonymous"
-        )
-        db.session.add(user)
-        db.session.commit()
+    # Rendering the home page is not an action worth a database row — this is the
+    # page every crawler that follows a link lands on. get_session_user() returns
+    # an unsaved placeholder for a visitor who has never done anything, which
+    # renders identically to the empty row it used to create here.
+    user = get_session_user()
 
     level_info = get_level_info(user.xp)
     daily_eval_count = get_daily_evaluation_count(user.uuid)
@@ -271,9 +269,9 @@ def profile():
     if "user_id" not in session:
         return redirect(url_for("pages.home"))
 
-    user = User.query.filter_by(uuid=session["user_id"]).first()
-    if not user:
-        return redirect(url_for("pages.home"))
+    # An anonymous visitor who has submitted nothing has no row, and gets the
+    # same empty profile their placeholder row used to give them.
+    user = get_session_user()
 
     # Get language from query parameter or session (default to "en")
     level_info = get_level_info(user.xp)
@@ -366,9 +364,9 @@ def subscription():
     if "user_id" not in session:
         return redirect(url_for("pages.home"))
 
-    user = User.query.filter_by(uuid=session["user_id"]).first()
-    if not user:
-        return redirect(url_for("pages.home"))
+    # Read-only: the plan table renders the same for a visitor with no row as it
+    # did for an anonymous-tier one.
+    user = get_session_user()
 
     # Set up Stripe
     stripe.api_key = SETTINGS.STRIPE_SECRET_KEY
@@ -388,9 +386,10 @@ def create_checkout_session():
     if "user_id" not in session:
         return jsonify({"error": "User not authenticated"}), 401
 
-    user = User.query.filter_by(uuid=session["user_id"]).first()
-    if not user:
-        return jsonify({"error": "User not found"}), 404
+    # Checkout writes the Stripe customer and subscription ids back onto the user
+    # and hands uuid to Stripe as client_reference_id, so the row has to exist
+    # before the first Stripe call.
+    user = persist_session_user()
 
     # Set up Stripe
     stripe.api_key = SETTINGS.STRIPE_SECRET_KEY
@@ -602,7 +601,8 @@ def update_subscription():
     if "user_id" not in session:
         return redirect(url_for("pages.home"))
 
-    user = User.query.filter_by(uuid=session["user_id"]).first()
+    # No row means no subscription to change, so there is nothing to do here.
+    user = load_session_user()
     if not user:
         return redirect(url_for("pages.home"))
 
@@ -790,8 +790,14 @@ def submit_feedback():
         if not message or not category:
             return jsonify({"error": "Message and category are required"}), 400
 
+        # Feedback.user_uuid is a foreign key, so a row has to exist to point at.
+        # Creating one here is deliberate: writing feedback is a considered human
+        # action, the volume is negligible next to page views, and a user_uuid
+        # that joins to nothing would make the record useless.
+        user = persist_session_user()
+
         feedback = Feedback(
-            user_uuid=session.get("user_id"),
+            user_uuid=user.uuid,
             message=message,
             category=category,
             email=email if email else None,
@@ -802,11 +808,7 @@ def submit_feedback():
 
         # Send email notification to admin
         try:
-            user_info = ""
-            if session.get("user_id"):
-                user = User.query.filter_by(uuid=session.get("user_id")).first()
-                if user:
-                    user_info = f"From user: {user.username} (ID: {user.uuid})"
+            user_info = f"From user: {user.username} (ID: {user.uuid})"
 
             contact_info = (
                 f"Contact email: {email}" if email else "No contact email provided"
@@ -882,12 +884,28 @@ def contact():
     return render_template("contact.html")
 
 
+def maintenance_key_ok():
+    """Authorise a Cloud Scheduler call against the app's SECRET_KEY.
+
+    There is no separate API key. The value arrives in the query string, which is
+    how the first of these endpoints was written and therefore how the existing
+    scheduler job is configured — see the note in DEPLOY.md about moving it to a
+    header, which would need both endpoints and both jobs changed together.
+    """
+    api_key = request.args.get("api_key")
+    if not api_key:
+        return False
+    # Encoded, because compare_digest rejects str containing non-ASCII, and the
+    # secret is whatever was put in Secret Manager.
+    return hmac.compare_digest(
+        api_key.encode(), current_app.config["SECRET_KEY"].encode()
+    )
+
+
 @pages_bp.route("/check-subscription-expirations", methods=["GET"])
 def check_subscription_expirations():
     """Check for expired subscriptions and update user tiers."""
-    # Verify using the existing SECRET_KEY instead of a separate API_KEY
-    api_key = request.args.get("api_key")
-    if not api_key or api_key != current_app.config["SECRET_KEY"]:
+    if not maintenance_key_ok():
         return jsonify({"error": "Unauthorized"}), 401
 
     # Set up Stripe
@@ -933,13 +951,56 @@ def check_subscription_expirations():
     )
 
 
+@pages_bp.route("/prune-visits", methods=["GET"])
+def prune_visits():
+    """Delete visit rows older than the retention window.
+
+    The visit table is append-only and nothing in the app reads it, so without a
+    retention policy it grows forever against a 500 MB Supabase cap.
+
+    Note that deleting rows does not shrink the database on disk — Postgres marks
+    the space reusable, it does not return it to the filesystem. That is fine for
+    an ongoing trim, where the freed space is immediately reused by new rows, but
+    it means this endpoint alone will not recover the size of a backlog. See the
+    VACUUM FULL step in DEPLOY.md for that.
+    """
+    if not maintenance_key_ok():
+        return jsonify({"error": "Unauthorized"}), 401
+
+    # Naive UTC, because created_at is `timestamp without time zone` holding UTC
+    # wall time. Passing an aware datetime would leave the comparison at the
+    # mercy of the server's TimeZone setting.
+    cutoff = (
+        datetime.now(UTC) - timedelta(days=SETTINGS.VISIT_RETENTION_DAYS)
+    ).replace(tzinfo=None)
+
+    deleted = (
+        db.session.query(Visit)
+        .filter(Visit.created_at < cutoff)
+        .delete(synchronize_session=False)
+    )
+    db.session.commit()
+
+    logging.info(f"Pruned {deleted} visits older than {cutoff.isoformat()}")
+
+    return jsonify(
+        {
+            "success": True,
+            "deleted": deleted,
+            "cutoff": cutoff.isoformat(),
+            "retention_days": SETTINGS.VISIT_RETENTION_DAYS,
+        }
+    )
+
+
 @pages_bp.route("/plan-change-scheduled")
 def plan_change_scheduled():
     """Show confirmation page for scheduled plan changes."""
     if "user_id" not in session:
         return redirect(url_for("pages.home"))
 
-    user = User.query.filter_by(uuid=session["user_id"]).first()
+    # Only a user with a row can have a pending plan change.
+    user = load_session_user()
     if not user:
         return redirect(url_for("pages.home"))
 

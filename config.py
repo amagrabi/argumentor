@@ -122,6 +122,12 @@ class Settings(BaseSettings):
         "pro": 50,
     }
 
+    # The visit table is append-only and nothing reads it, so it is kept only as
+    # a rough first-party traffic record and trimmed nightly by /prune-visits.
+    # Ninety days is enough to compare this month against last quarter; at a
+    # 500 MB Supabase cap, keeping it forever is not an option.
+    VISIT_RETENTION_DAYS: int = Field(default=90)
+
     SUPPORTED_LANGUAGES: ClassVar[List[str]] = ["en", "de"]
     DEFAULT_LANGUAGE: str = "en"
     LANGUAGE_CODES: ClassVar[Dict[str, str]] = {"en": "en-US", "de": "de-DE"}

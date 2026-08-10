@@ -17,7 +17,7 @@ Effectively free at low traffic, but not literally $0:
 | Artifact Registry | 0.5 GB | The image is 1.22 GB, so expect a few cents/month. Prune old tags |
 | Secret Manager | 6 active versions, 10k accesses/month | We use ~13 secrets; slightly over |
 | Cloud Build | 2,500 build-min/month | Fine |
-| Cloud Scheduler | 3 jobs | We use 2 (subscriptions, backups) |
+| Cloud Scheduler | 3 jobs | We use all 3 (subscriptions, backups, visit pruning) |
 | GCS (backups) | 5 GB free in us regions only | Dumps are ~17 MB; 30 days retention is well under a cent |
 | Supabase | Free tier | **No backups** — hence the backup job below |
 | Cloudflare | Free plan | DNS, CDN, WAF, cache rules |
@@ -63,6 +63,15 @@ anything. Quotas are the only real ceiling short of a billing-disable function.
 Note the residual gap: the `*.run.app` URL bypasses Cloudflare entirely, so the edge
 rules can be sidestepped by anyone who finds it. Closing that means requiring a shared
 secret header at the origin.
+
+A second gap: the app tier limits are keyed on the anonymous visitor's session cookie,
+so clearing cookies buys another anonymous allowance (3 evaluations, 1 voice
+recording). Not persisting those visitors removed the *storage* cost of that — see
+[Database size](#database-size) — but not the abuse itself. For a caller who is willing
+to cycle cookies, the real ceiling is the Cloudflare per-IP rate limit and the Vertex
+daily quota, not the tier limit. Making the tier limit bind would mean counting
+anonymous usage per IP rather than per identity, which is a different design: it needs
+storage that survives a cold start, and it lumps everyone behind a shared NAT together.
 
 To adjust a quota:
 
@@ -270,8 +279,91 @@ job by hand does not exercise the IAM path that the scheduler uses:
 gcloud scheduler jobs run argumentor-backup --location=europe-west1 && sleep 90 && gcloud storage ls gs://argumentor-449922-backups/backups/
 ```
 
+Visit pruning, keeping the `visit` table inside `VISIT_RETENTION_DAYS` (90):
+
+```bash
+gcloud scheduler jobs create http argumentor-prune-visits --location=europe-west1 --schedule="0 5 * * *" --uri="https://argumentorai.com/prune-visits?api_key=YOUR_SECRET_KEY" --http-method=GET
+```
+
+Same query-string key as the subscription job, with the same caveat. This is the third
+of Cloud Scheduler's three free jobs — a fourth starts costing.
+
 A backup you have never restored is not a backup; restore one into a scratch database
 before you rely on it.
+
+## Database size
+
+Supabase's free tier caps the database at 500 MB and gives no warning before it bites.
+Two tables used to grow without bound, measured on a restored Aug 2026 backup that held
+**162 answers**:
+
+- **`users`, 86 MB.** Every visitor arriving without a session cookie got a row, on
+  every non-static request — which, since bots never return a cookie, meant one row per
+  bot request. 253,915 rows, 253,841 of them (99.97%) with zero answers. Anonymous
+  identities now live in the session cookie only, and a row is written at the first real
+  action: an answer, a voice recording, feedback, or a checkout. See
+  `src/services/user_service.py`.
+- **`visit`, 47 MB.** Append-only, and nothing in the app reads it. Requests that return
+  no session cookie are no longer logged at all, and `/prune-visits` trims the rest
+  nightly.
+
+Both changes stop the growth. Neither removes what is already there.
+
+### One-time purge of the backlog
+
+Take a backup first — the nightly job is the only copy of this data:
+
+```bash
+gcloud scheduler jobs run argumentor-backup --location=europe-west1
+```
+
+Then see what would go. This touches nothing:
+
+```bash
+python scripts/purge_orphan_users.py
+```
+
+It only considers users on the anonymous tier with no credentials, no Stripe ids, **no
+answers and no feedback**. The feedback condition matters: `feedback.user_uuid` is
+`ON DELETE CASCADE`, so deleting the user would silently take their message with it.
+`user_achievements` is the mirror image — its foreign key was created with no cascade at
+all, so the script deletes those rows itself first or the users delete fails.
+
+When the counts look right:
+
+```bash
+python scripts/purge_orphan_users.py --apply --visits
+```
+
+`--visits` also trims the visit backlog, so both tables can be reclaimed in one pass.
+Deletes run in batches of 5,000 with a commit each, so the run is safe to interrupt and
+re-run.
+
+### Reclaiming the space
+
+**Deleting rows does not shrink the database.** Postgres marks the space reusable and
+leaves the file the same size, so the Supabase dashboard will barely move and you are
+still as close to the 500 MB cap as you were. Getting the space back needs a rewrite:
+
+```bash
+psql "$SUPABASE_SESSION_POOLER_URL" -c 'VACUUM FULL VERBOSE users; VACUUM FULL VERBOSE visit;'
+```
+
+Two things to know before running it. `VACUUM FULL` takes an `ACCESS EXCLUSIVE` lock for
+its duration, so reads *and* writes on that table block — at this size that is seconds,
+but do it off-peak. And it builds the new copy before dropping the old, so it needs free
+disk roughly equal to the table's current size.
+
+Use the **session** pooler, as in the command above: `VACUUM` cannot run inside a
+transaction block, which is all the transaction pooler offers. Confirm afterwards:
+
+```bash
+psql "$SUPABASE_SESSION_POOLER_URL" -c "select pg_size_pretty(pg_database_size(current_database()));"
+```
+
+The nightly `/prune-visits` job needs no VACUUM of its own — the space it frees is
+immediately reused by new rows, which is exactly what autovacuum is for. VACUUM FULL is
+only for recovering a backlog.
 
 ## Cloudflare setup
 
