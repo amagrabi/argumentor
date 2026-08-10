@@ -1399,8 +1399,13 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
                 behavior: "smooth",
                 block: "start",
               });
+              // preventScroll matters: the results panel is still growing while
+              // the smooth scroll animates (charts, structure graph), and a
+              // plain focus() re-scrolls to the input, overshooting the
+              // challenge text by thousands of pixels.
               const input = document.getElementById("challengeResponseInput");
-              if (input) setTimeout(() => input.focus(), 400);
+              if (input)
+                setTimeout(() => input.focus({ preventScroll: true }), 600);
             });
           }
         }
