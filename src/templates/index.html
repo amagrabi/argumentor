@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ session.get('language', 'en') }}">
+<html lang="{{ page_lang }}">
   <head>
     <!-- Google tag (gtag.js) -->
     <script
@@ -25,27 +25,16 @@
     />
     <meta name="user-authenticated" content="{{ current_user.is_authenticated | string | lower }}" />
     <meta name="user-username" content="{{ current_user.username if current_user.is_authenticated else 'Anonymous' }}" />
-    <title>ArguMentor - Train Logical Reasoning</title>
-    <meta
-      name="description"
-      content="ArguMentor is a platform that helps you build & refine your reasoning skills. Construct compelling arguments and receive AI-driven feedback to improve your decision-making."
-    />
-    <link rel="canonical" href="https://www.argumentorai.com" />
-    <meta
-      property="og:description"
-      content="Test and improve your reasoning skills. Construct arguments to challenging questions and receive in-depth, AI-driven feedback."
-    />
-    <meta property="og:url" content="https://www.argumentorai.com" />
+    <title>{{ page_title }}</title>
+    <meta name="description" content="{{ page_description }}" />
+    <meta property="og:description" content="{{ page_description }}" />
+    <meta property="og:title" content="{{ page_title }}" />
+    <meta property="og:locale" content="{{ page_lang }}" />
+    <meta property="og:url" content="{{ canonical_url }}" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content="ArguMentor - Sharpen Your Reasoning Skills"
-    />
-    <meta
-      name="twitter:description"
-      content="Join a community focused on building better arguments and decision-making skills through AI-driven feedback."
-    />
+    <meta name="twitter:title" content="{{ page_title }}" />
+    <meta name="twitter:description" content="{{ page_description }}" />
     <script>
       // Load translations immediately
       (async function loadTranslations() {
@@ -301,6 +290,11 @@
         }
       });
     </script>
+    <link rel="canonical" href="{{ canonical_url }}" />
+{%- for code, url in hreflang_alternates.items() %}
+    <link rel="alternate" hreflang="{{ code }}" href="{{ url }}" />
+{%- endfor %}
+    <link rel="alternate" hreflang="x-default" href="{{ x_default_url }}" />
   </head>
   <body class="bg-white min-h-screen">
     <!-- Loading Indicator -->

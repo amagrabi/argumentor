@@ -1,7 +1,9 @@
 {
   "meta": {
     "title": "ArguMentor",
-    "description": "Teste deine Argumentationsfähigkeiten mit herausfordernden Fragen und verbessere dich durch KI-gestütztes Feedback."
+    "description": "Teste deine Argumentationsfähigkeiten mit herausfordernden Fragen und verbessere dich durch KI-gestütztes Feedback.",
+    "pageTitle": "ArguMentor – Logisches Denken trainieren mit KI-Feedback",
+    "pageDescription": "Übe, Argumente zu anspruchsvollen Fragen zu formulieren, und erhalte detailliertes KI-Feedback zu Relevanz, Logik, Klarheit, Tiefe, Objektivität und Kreativität."
   },
   "errors": {
     "requiredFields": "Bitte fülle die Felder für These und Argument aus, bevor du abschickst.",

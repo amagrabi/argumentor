@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ page_lang }}">
   <head>
     <!-- Google tag (gtag.js) -->
     <script
@@ -24,6 +24,11 @@
       type="module"
       src="{{ url_for('static', filename='js/translations.js') }}"
     ></script>
+    <link rel="canonical" href="{{ canonical_url }}" />
+{%- for code, url in hreflang_alternates.items() %}
+    <link rel="alternate" hreflang="{{ code }}" href="{{ url }}" />
+{%- endfor %}
+    <link rel="alternate" hreflang="x-default" href="{{ x_default_url }}" />
   </head>
   <body class="bg-white font-sans leading-normal tracking-normal text-gray-900">
     <!-- Header with Go Back Button -->

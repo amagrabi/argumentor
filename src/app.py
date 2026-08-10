@@ -1,4 +1,5 @@
 import gc
+import json
 import logging
 import os
 import platform
@@ -8,6 +9,8 @@ import threading
 import time
 import traceback
 from datetime import timedelta
+from functools import lru_cache
+from pathlib import Path
 
 from flask import Flask, jsonify, request, send_from_directory, session
 from flask_limiter.errors import RateLimitExceeded
@@ -69,6 +72,21 @@ def add_cache_headers(response):
             "%a, %d %b %Y %H:%M:%S GMT", time.gmtime(time.time() + 604800)
         )
     return response
+
+
+@lru_cache(maxsize=4)
+def _load_meta(language):
+    """Localized <title>/<meta description>, cached per language.
+
+    Read straight from the translation files so there is a single source of
+    truth with the client-side data-i18n strings.
+    """
+    path = Path(__file__).parent / "static" / "translations" / f"{language}.json"
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f).get("meta", {})
+    except (OSError, ValueError):
+        return {}
 
 
 def create_app():
@@ -187,6 +205,45 @@ def create_app():
     @app.context_processor
     def inject_client_id():
         return dict(GOOGLE_CLIENT_ID=app.config.get("GOOGLE_CLIENT_ID"))
+
+    @app.context_processor
+    def inject_seo():
+        """Server-rendered SEO metadata.
+
+        Titles and descriptions are otherwise applied client-side via data-i18n,
+        so a crawler fetching /de received an English title. The canonical host
+        is www because the existing canonical tag, the sitemap and the Stripe
+        webhook endpoint all already use it.
+        """
+        lang = session.get("language", SETTINGS.DEFAULT_LANGUAGE)
+        if lang not in SETTINGS.SUPPORTED_LANGUAGES:
+            lang = SETTINGS.DEFAULT_LANGUAGE
+
+        base = "https://www.argumentorai.com"
+        # Strip any /<lang> prefix so alternates are built from the bare path.
+        path = request.path or "/"
+        for code in SETTINGS.SUPPORTED_LANGUAGES:
+            if path == f"/{code}":
+                path = "/"
+                break
+            if path.startswith(f"/{code}/"):
+                path = path[len(code) + 1 :]
+                break
+
+        default = SETTINGS.DEFAULT_LANGUAGE
+        alternates = {
+            code: f"{base}{path}" if code == default else f"{base}/{code}{path.rstrip('/')}"
+            for code in SETTINGS.SUPPORTED_LANGUAGES
+        }
+        meta = _load_meta(lang)
+        return dict(
+            page_lang=lang,
+            canonical_url=alternates[lang],
+            hreflang_alternates=alternates,
+            x_default_url=alternates[default],
+            page_title=meta.get("pageTitle", "ArguMentor"),
+            page_description=meta.get("pageDescription", ""),
+        )
 
     # Ensure the URL scheme is set to HTTPS for URL generation
     app.config["PREFERRED_URL_SCHEME"] = "https"

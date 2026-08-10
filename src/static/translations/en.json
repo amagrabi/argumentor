@@ -1,7 +1,9 @@
 {
   "meta": {
     "title": "ArguMentor",
-    "description": "Sharpen your reasoning skills with challenging questions and improve with AI-driven feedback."
+    "description": "Sharpen your reasoning skills with challenging questions and improve with AI-driven feedback.",
+    "pageTitle": "ArguMentor – Train Logical Reasoning with AI Feedback",
+    "pageDescription": "Practise building arguments to challenging questions and get detailed AI feedback on relevance, logic, clarity, depth, objectivity and creativity."
   },
   "header": {
     "login": "Login",
