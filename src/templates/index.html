@@ -937,6 +937,26 @@
         <h2 class="text-2xl font-bold mb-6" data-i18n="evaluation.title">
           Evaluation
         </h2>
+        <!-- The challenge card sits below the full results panel, so nothing
+             previously told the reader it existed: only 20% of answers ever got
+             a challenge response. This cue appears with the scores and jumps
+             down to it. -->
+        <button
+          id="challengeCue"
+          type="button"
+          class="hidden w-full mb-6 flex items-center gap-3 text-left p-4 rounded-lg border-2 border-amber-300 bg-amber-50 hover:bg-amber-100 transition-colors"
+        >
+          <span class="text-2xl shrink-0" aria-hidden="true">⚔️</span>
+          <span class="flex-1">
+            <span class="block font-bold" data-i18n="challenge.cueTitle">
+              A follow-up challenge is ready
+            </span>
+            <span class="block text-sm text-gray-700" data-i18n="challenge.cueBody">
+              Answering it earns about as much XP again as your original answer.
+            </span>
+          </span>
+          <span class="shrink-0 text-xl" aria-hidden="true">↓</span>
+        </button>
         <div id="overallEvaluation" class="mb-6"></div>
         <div id="scores" class="grid gap-4 mb-8">
           <div class="score-item">
@@ -1104,12 +1124,12 @@
         <!-- New Challenge Response Section -->
         <div
           id="challengeSection"
-          class="hidden mt-8 p-8 bg-white border-2 border-gray-200 rounded-lg shadow-sm"
+          class="hidden mt-8 p-8 bg-amber-50 border-2 border-amber-300 rounded-lg shadow-sm"
           style="box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1)"
         >
-          <div class="flex items-center gap-2 mb-4">
+          <div class="flex items-center gap-2 mb-2">
             <div
-              class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"
+              class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center"
             >
               ⚔️
             </div>
@@ -1117,7 +1137,12 @@
               Challenge
             </h2>
           </div>
-          <p id="challengeText" class="mb-4 text-gray-700"></p>
+          <!-- "Challenge" alone did not say what it was for, or that it is
+               worth XP. Both are the reason to engage. -->
+          <p class="mb-4 text-sm text-gray-700" data-i18n="challenge.subtitle">
+            Answer the follow-up below to strengthen your argument and earn more XP.
+          </p>
+          <p id="challengeText" class="mb-4 text-gray-800 font-medium"></p>
 
           <!-- Toggle for Challenge Input Mode -->
           <div class="mt-4 mb-6 flex border-b border-gray-200">

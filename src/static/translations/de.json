@@ -122,7 +122,10 @@
     "analyzing": "Analysiere...",
     "charactersRemaining": "Verbleibende Zeichen:",
     "tryAnother": "Andere Frage versuchen",
-    "errorMessage": "Fehler beim Absenden der Antwort"
+    "errorMessage": "Fehler beim Absenden der Antwort",
+    "cueTitle": "Eine Anschluss-Challenge wartet",
+    "cueBody": "Wenn du sie beantwortest, bekommst du noch etwa so viel XP wie für deine erste Antwort.",
+    "subtitle": "Beantworte die Rückfrage unten, um dein Argument zu schärfen und mehr XP zu verdienen."
   },
   "profile": {
     "title": "Dein Profil",

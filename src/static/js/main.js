@@ -976,6 +976,11 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
   if (challengeSection) {
     challengeSection.classList.add("hidden");
   }
+  // Hide the cue too, otherwise it points at a challenge that is no longer shown.
+  const challengeCue = document.getElementById("challengeCue");
+  if (challengeCue) {
+    challengeCue.classList.add("hidden");
+  }
   const challengeResponseInput = document.getElementById(
     "challengeResponseInput"
   );
@@ -1378,6 +1383,25 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
         challengeTextElem.textContent = data.evaluation.challenge;
         challengeSection.classList.remove("hidden");
         challengeSection.style.display = "block"; // Explicitly set display to block
+
+        // Surface the challenge from inside the results panel. Deliberately a
+        // cue rather than an auto-scroll: people want to read their own
+        // feedback first, but previously nothing signalled the challenge at all.
+        const cue = document.getElementById("challengeCue");
+        if (cue) {
+          cue.classList.remove("hidden");
+          if (!cue.dataset.wired) {
+            cue.dataset.wired = "1";
+            cue.addEventListener("click", function () {
+              challengeSection.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+              const input = document.getElementById("challengeResponseInput");
+              if (input) setTimeout(() => input.focus(), 400);
+            });
+          }
+        }
       } else {
         console.error("Challenge section or text element not found:", {
           challengeSection,

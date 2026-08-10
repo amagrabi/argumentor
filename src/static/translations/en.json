@@ -97,7 +97,10 @@
     "analyzing": "Analyzing...",
     "charactersRemaining": "Characters remaining:",
     "tryAnother": "Try Another Question",
-    "errorMessage": "Error submitting response"
+    "errorMessage": "Error submitting response",
+    "cueTitle": "A follow-up challenge is ready",
+    "cueBody": "Answering it earns about as much XP again as your original answer.",
+    "subtitle": "Answer the follow-up below to strengthen your argument and earn more XP."
   },
   "evaluation": {
     "title": "Evaluation",
