@@ -268,9 +268,13 @@ def transcribe_audio(audio_content, file_mime):
         return clean_transcript
 
     except Exception as e:
+        # Return None, not "", so the caller can tell a broken transcription
+        # service from a recording that genuinely contained no speech. Reporting
+        # a billing or auth failure as "no text detected" sends the user back to
+        # re-record something that can never succeed.
         logger.error(f"Error in Whisper API transcription: {e}", exc_info=True)
         gc.collect()
-        return ""
+        return None
 
 
 @transcribe_bp.route("/check_voice_limits", methods=["GET"])
@@ -360,9 +364,6 @@ def check_voice_limits():
     error_message="Too many transcription requests. Please wait a moment.",
 )
 def transcribe_voice():
-    import tracemalloc
-
-    tracemalloc.start()
 
     try:
         logger.debug("Starting voice transcription request")
@@ -503,9 +504,22 @@ def transcribe_voice():
                     del audio_content
                 gc.collect()
 
-            # Return early if transcription failed
+            # The transcription service itself failed (billing, auth, network).
+            # 500 makes the frontend show "Error during transcription" instead of
+            # blaming the recording.
+            if transcript is None:
+                logger.error("Transcription service failed - see preceding error")
+                gc.collect()
+                return jsonify(
+                    {
+                        "error": "Transcription service is unavailable",
+                        "status": "transcription_unavailable",
+                    }
+                ), 500
+
+            # Genuinely empty: the recording contained no recognisable speech.
             if not transcript:
-                logger.error("Initial transcription failed - empty transcript")
+                logger.info("Transcription returned no speech")
                 gc.collect()
                 return jsonify(
                     {
@@ -582,12 +596,3 @@ def transcribe_voice():
         if "audio_content" in locals() and audio_content:
             del audio_content
         gc.collect()
-
-        # After processing
-        snapshot = tracemalloc.take_snapshot()
-        top_stats = snapshot.statistics("lineno")
-        logger.info("[ Top 10 memory allocations ]")
-        for stat in top_stats[:10]:
-            logger.info(stat)
-
-        tracemalloc.stop()

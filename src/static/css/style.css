@@ -717,6 +717,12 @@ textarea:focus {
   display: flex;
   justify-content: center;
   padding: 1rem 0;
+  /* Mermaid sizes the flowchart from its content, and the nodes are
+     LLM-generated premises, so a verbose structure can render thousands of
+     pixels tall with nothing to stop it. Bound it and let the diagram scroll
+     inside its own box rather than stretching the results page. */
+  max-height: 70vh;
+  overflow: auto;
 }
 
 @media (max-width: 768px) {
