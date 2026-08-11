@@ -50,7 +50,16 @@ function render(analysis) {
   output.replaceChildren();
 
   output.appendChild(el("h2", "text-2xl font-bold mb-1", s.title || "Deep analysis"));
-  output.appendChild(el("p", "text-sm text-gray-600 mb-6", s.subtitle || ""));
+  output.appendChild(
+    el(
+      "p",
+      "text-sm text-gray-600 mb-6",
+      s.subtitle ||
+        "A structural critique of this argument: what it actually establishes, " +
+          "what it assumes without arguing for, the strongest objections it never " +
+          "met, and how to rebuild it."
+    )
+  );
 
   if (analysis.verdict) {
     output.appendChild(
@@ -179,7 +188,11 @@ if (btn && output) {
         return;
       }
       if (res.status === 429) {
-        showStatus(data.error || s.limitReached || "");
+        showStatus(
+          data.error ||
+            interpolate(s.limitReached, { limit: btn.dataset.limit || "" }) ||
+            "You have used all of this month's deep analyses."
+        );
         return;
       }
       if (!res.ok || !data.analysis) {
@@ -194,7 +207,7 @@ if (btn && output) {
         showStatus(s.cached || "");
       } else if (typeof data.remaining === "number" && btn.dataset.limit) {
         showStatus(
-          interpolate(s.remaining, {
+          interpolate(s.remaining || "{remaining} of {limit} left this month.", {
             remaining: data.remaining,
             limit: btn.dataset.limit,
           })
