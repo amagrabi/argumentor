@@ -369,7 +369,26 @@
     "shareCopied": "Link kopiert – wer ihn hat, kann diese Bewertung ansehen.",
     "shareFailed": "Der Link konnte nicht erstellt werden.",
     "relevanceTitle": "Diese Antwort ging nicht auf die Frage ein",
-    "relevanceBody": "Die Relevanz wurde mit {score}/10 bewertet, daher gab es keine XP. Die übrigen Bewertungen gelten weiterhin, beschreiben aber, wie gut du etwas anderes als das Gefragte argumentiert hast."
+    "relevanceBody": "Die Relevanz wurde mit {score}/10 bewertet, daher gab es keine XP. Die übrigen Bewertungen gelten weiterhin, beschreiben aber, wie gut du etwas anderes als das Gefragte argumentiert hast.",
+    "deepAnalysis": {
+      "button": "Tiefenanalyse",
+      "buttonHint": "Dauert bis zu einer Minute",
+      "running": "Dein Argument wird analysiert…",
+      "runningHint": "Hierfür läuft ein langsameres, stärkeres Modell über dein Argument. Das dauert bis zu einer Minute — verlass die Seite nicht.",
+      "title": "Tiefenanalyse",
+      "subtitle": "Eine strukturelle Kritik dieses Arguments: was es tatsächlich zeigt, was es ohne Begründung voraussetzt, die stärksten Einwände, auf die es nie eingeht, und wie du es neu aufbaust.",
+      "verdict": "Was dieses Argument tatsächlich zeigt",
+      "reconstruction": "Wie das Argument Schritt für Schritt funktioniert",
+      "assumptions": "Was es ohne Begründung voraussetzt",
+      "counterarguments": "Die stärksten Einwände, auf die es nicht eingeht",
+      "whyItBites": "Warum er trifft",
+      "whatWouldAnswerIt": "Was ihn beantworten würde",
+      "rebuild": "Wie du es neu aufbaust",
+      "remaining": "Noch {remaining} von {limit} in diesem Monat.",
+      "limitReached": "Du hast alle {limit} Tiefenanalysen dieses Monats verbraucht. Das Guthaben wird am 1. zurückgesetzt.",
+      "failed": "Die Tiefenanalyse ist fehlgeschlagen. Bitte versuche es erneut.",
+      "cached": "Hier ist die Analyse, die für dieses Argument schon erstellt wurde — sie hat kein Guthaben verbraucht."
+    }
   },
   "auth": {
     "loginTitle": "Anmelden",

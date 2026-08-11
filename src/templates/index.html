@@ -245,6 +245,7 @@
     <script type="module" src="/static/js/helpers.js"></script>
     <script type="module" src="/static/js/voice.js" defer></script>
     <script type="module" src="/static/js/main.js" defer></script>
+    <script type="module" src="/static/js/deepAnalysis.js" defer></script>
 
     <!-- Initialize translations -->
     <script>
@@ -995,7 +996,29 @@
           >
             Share this evaluation
           </button>
+          {% if current_user.is_authenticated and current_user.tier in ('plus',
+          'pro') %}
+          {# Paid capability, so only rendered where it works -- an
+             always-visible button that 402s would be worse than no button, the
+             same reasoning as the export button on the profile page. The button
+             needs no reveal logic of its own: the whole results panel is hidden
+             until there is an evaluation to analyse. #}
+          <button
+            id="deepAnalysisBtn"
+            type="button"
+            data-limit="{{ monthly_deep_analysis_limit }}"
+            title="{{ monthly_deep_analysis_count }}/{{ monthly_deep_analysis_limit }}"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-white bg-gray-800 border border-gray-800 hover:bg-gray-700 disabled:opacity-60 transition-colors"
+            data-i18n="evaluation.deepAnalysis.button"
+          >
+            Deep analysis
+          </button>
+          {% endif %}
           <span id="shareStatus" class="hidden text-sm text-gray-600"></span>
+          <span
+            id="deepAnalysisStatus"
+            class="hidden text-sm text-gray-600 basis-full"
+          ></span>
         </div>
         <!-- Relevance is no longer one of the displayed dimensions (see
              EVALUATION_CATEGORIES) because it behaves as a gate, not a grade.
@@ -1031,6 +1054,13 @@
             <span data-i18n="evaluation.scores.relevance">Relevance</span>
           </div>
         </div>
+        <!-- Deep analysis output. Sits with the feedback rather than below the
+             XP and achievements block: it is argument criticism, not a reward.
+             Populated by deepAnalysis.js on an explicit button press. -->
+        <div
+          id="deepAnalysisResult"
+          class="hidden mb-8 p-6 rounded-lg border-2 border-gray-300 bg-white"
+        ></div>
         <!-- XP and Level Info Section -->
         <div id="xpInfo" class="mt-4 text-center profile-xp">
           <!-- Updated error/message paragraphs with inline style overriding left text-align -->

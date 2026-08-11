@@ -54,6 +54,8 @@ class User(db.Model, UserMixin):
     monthly_voice_count = db.Column(db.Integer, default=0, nullable=True)
     last_monthly_eval_reset = db.Column(db.DateTime, nullable=True)
     last_monthly_voice_reset = db.Column(db.DateTime, nullable=True)
+    monthly_deep_analysis_count = db.Column(db.Integer, default=0, nullable=True)
+    last_monthly_deep_analysis_reset = db.Column(db.DateTime, nullable=True)
 
     achievements = db.relationship("UserAchievement", backref="user", lazy=True)
 
@@ -108,6 +110,13 @@ class Answer(db.Model):
 
     input_mode = db.Column(db.String(10), nullable=True)  # "text" or "voice"
 
+    # Deep analysis: the parsed result of the paid second pass, stored so a
+    # revisit is free. Nullable rather than defaulting to {} because "never run"
+    # and "run and returned nothing" have to stay distinguishable — a truthiness
+    # check on this column is what stops a second call spending quota again.
+    deep_analysis = db.Column(db.JSON, nullable=True)
+    deep_analysis_created_at = db.Column(db.DateTime, nullable=True)
+
     # Achievement that was completed by this answer (if any)
     completed_achievement = db.Column(db.String(50), nullable=True)
 
@@ -157,6 +166,7 @@ class Answer(db.Model):
             "category": "Custom" if is_custom else None,
             "completed_achievement": getattr(self, "completed_achievement", None),
             "completed_achievements": getattr(self, "completed_achievements", []),
+            "deep_analysis": self.deep_analysis,
         }
 
 

@@ -31,6 +31,7 @@ from middleware import (
 )
 from routes.answers import answers_bp
 from routes.auth import auth_bp
+from routes.deep_analysis import deep_analysis_bp
 from routes.pages import pages_bp
 from routes.password_reset import mail, password_reset_bp
 from routes.preferences import preferences_bp
@@ -193,6 +194,7 @@ def create_app():
     app.register_blueprint(transcribe_bp)
     app.register_blueprint(share_bp)
     app.register_blueprint(export_bp)
+    app.register_blueprint(deep_analysis_bp)
 
     # Register CLI commands
     register_commands(app)
@@ -236,7 +238,9 @@ def create_app():
 
         default = SETTINGS.DEFAULT_LANGUAGE
         alternates = {
-            code: f"{base}{path}" if code == default else f"{base}/{code}{path.rstrip('/')}"
+            code: f"{base}{path}"
+            if code == default
+            else f"{base}/{code}{path.rstrip('/')}"
             for code in SETTINGS.SUPPORTED_LANGUAGES
         }
         meta = _load_meta(lang)

@@ -132,7 +132,26 @@
     "shareCopied": "Link copied — anyone with it can view this evaluation.",
     "shareFailed": "Could not create a share link.",
     "relevanceTitle": "This answer did not address the question",
-    "relevanceBody": "Relevance was scored {score}/10, so no XP was awarded. The other scores still apply, but they describe how well you argued something other than what was asked."
+    "relevanceBody": "Relevance was scored {score}/10, so no XP was awarded. The other scores still apply, but they describe how well you argued something other than what was asked.",
+    "deepAnalysis": {
+      "button": "Deep analysis",
+      "buttonHint": "Takes up to a minute",
+      "running": "Analysing your argument…",
+      "runningHint": "This runs a slower, stronger model over your argument. It takes up to a minute — don't leave the page.",
+      "title": "Deep analysis",
+      "subtitle": "A structural critique of this argument: what it actually establishes, what it assumes without arguing for, the strongest objections it never met, and how to rebuild it.",
+      "verdict": "What this argument actually establishes",
+      "reconstruction": "How the argument works, step by step",
+      "assumptions": "What it assumes without arguing for",
+      "counterarguments": "The strongest objections it does not address",
+      "whyItBites": "Why it bites",
+      "whatWouldAnswerIt": "What would answer it",
+      "rebuild": "How to rebuild it",
+      "remaining": "{remaining} of {limit} left this month.",
+      "limitReached": "You have used all {limit} deep analyses this month. The allowance resets on the 1st.",
+      "failed": "Deep analysis failed. Please try again.",
+      "cached": "Showing the analysis already run for this argument — this did not use an allowance."
+    }
   },
   "auth": {
     "loginTitle": "Login",

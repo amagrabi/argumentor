@@ -98,6 +98,13 @@ def get_monthly_voice_limit(tier):
     )
 
 
+def get_monthly_deep_analysis_limit(tier):
+    """Returns the monthly deep analysis limit for a given user tier."""
+    return SETTINGS.TIER_MONTHLY_DEEP_ANALYSIS_LIMITS.get(
+        tier, SETTINGS.TIER_MONTHLY_DEEP_ANALYSIS_LIMITS["anonymous"]
+    )
+
+
 def get_monthly_evaluation_count(user_uuid):
     """
     Returns the total number of evaluation attempts made by the user in the current month.
@@ -166,3 +173,36 @@ def get_monthly_voice_count(user_uuid):
         return 0
 
     return user.monthly_voice_count
+
+
+def get_monthly_deep_analysis_count(user_uuid):
+    """
+    Returns the number of deep analyses the user has run in the current month.
+    Also resets the counter if we're in a new month.
+    """
+    user = User.query.filter_by(uuid=user_uuid).first()
+    if not user:
+        return 0
+
+    now = datetime.now(UTC)
+    first_day_of_month = datetime(now.year, now.month, 1, tzinfo=UTC)
+
+    # If we've never reset or it's a new month, reset the counter
+    if not user.last_monthly_deep_analysis_reset:
+        user.monthly_deep_analysis_count = 0
+        user.last_monthly_deep_analysis_reset = now
+        db.session.commit()
+        return 0
+
+    # Ensure the datetime is timezone-aware before comparison
+    last_reset = user.last_monthly_deep_analysis_reset
+    if last_reset.tzinfo is None:
+        last_reset = last_reset.replace(tzinfo=UTC)
+
+    if last_reset < first_day_of_month:
+        user.monthly_deep_analysis_count = 0
+        user.last_monthly_deep_analysis_reset = now
+        db.session.commit()
+        return 0
+
+    return user.monthly_deep_analysis_count or 0

@@ -36,6 +36,8 @@ from utils import (
     get_daily_evaluation_count,
     get_daily_voice_count,
     get_eval_limit,
+    get_monthly_deep_analysis_count,
+    get_monthly_deep_analysis_limit,
     get_monthly_eval_limit,
     get_monthly_evaluation_count,
     get_monthly_voice_count,
@@ -114,6 +116,15 @@ def home(lang=None):
     monthly_voice_count = get_monthly_voice_count(user.uuid)
     monthly_voice_limit = get_monthly_voice_limit(user.tier)
 
+    # Deep analysis is Plus/Pro only, and the button is rendered only for those
+    # tiers, so the count is looked up only where it can be shown. The counter
+    # helper writes on reset, and rendering the home page has to stay read-only
+    # for a visitor who has no users row.
+    monthly_deep_analysis_limit = get_monthly_deep_analysis_limit(user.tier)
+    monthly_deep_analysis_count = (
+        get_monthly_deep_analysis_count(user.uuid) if monthly_deep_analysis_limit else 0
+    )
+
     # Get all achievements and user's earned achievements
     all_achievements = ACHIEVEMENTS
     earned_achievements = [
@@ -131,6 +142,8 @@ def home(lang=None):
         monthly_eval_limit=monthly_eval_limit,
         monthly_voice_count=monthly_voice_count,
         monthly_voice_limit=monthly_voice_limit,
+        monthly_deep_analysis_count=monthly_deep_analysis_count,
+        monthly_deep_analysis_limit=monthly_deep_analysis_limit,
         all_achievements=all_achievements,
         earned_achievements=earned_achievements,
         user=user,

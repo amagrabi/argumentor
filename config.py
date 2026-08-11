@@ -69,6 +69,32 @@ class Settings(BaseSettings):
     # slower and dearer than this with no visible quality gain.
     MODEL: str = Field(default="gemini-3.5-flash-lite")  # LLM
 
+    # Deep analysis runs a different prompt through a Pro-tier model, and is the
+    # only place this app spends real money per call on purpose. Measured against
+    # the production deep-analysis prompt (both languages, 3 repeats of the EN
+    # case) in Aug 2026:
+    #
+    #   gemini-2.5-pro     43-52s   $42-45 / 1k calls   ~8k chars out
+    #   gemini-3.5-flash   20-24s   $29 / 1k            ~5k chars
+    #   gemini-3.6-flash   11-12s   $14-17 / 1k         ~4.6k chars
+    #
+    # gemini-3.5-flash is dominated — slower *and* dearer than 3.6-flash for
+    # comparable output — so the real choice was pro vs 3.6-flash. Pro was the
+    # only one to find the objection that turns the user's own concession against
+    # them, which is exactly the kind of thing the scored pass cannot do and the
+    # reason someone would pay for a second pass. At ~16x the scored pass this is
+    # a limited action, not an upgrade applied to every evaluation.
+    #
+    # There is no Gemini 3.x Pro to use instead: gemini-3.5-pro and
+    # gemini-3.6-pro both 404 on the global endpoint as of Aug 2026. Probe before
+    # switching — 3.x is served nowhere but "global", and only under v1beta1.
+    DEEP_ANALYSIS_MODEL: str = Field(default="gemini-2.5-pro")
+    # Thinking is billed as output, so it is the cost driver. The model spends
+    # 2400-2700 thought tokens unprompted; 4096 caps the tail without binding in
+    # the normal case. max_output_tokens must cover thinking as well as the
+    # response — see services/deep_analysis.py.
+    DEEP_ANALYSIS_THINKING_BUDGET: int = Field(default=4096)
+
     # Maximum characters allowed for each field
     MAX_CLAIM: int = Field(default=200)
     MAX_ARGUMENT: int = Field(default=2000)
@@ -103,6 +129,19 @@ class Settings(BaseSettings):
         "free": 5,
         "plus": 50,
         "pro": 250,
+    }
+
+    # Deep analysis is a paid capability, not a bigger number: free and anonymous
+    # get none of it. At DEEP_ANALYSIS_MODEL's measured ~$0.043 per call, a Plus
+    # user exhausting their allowance costs ~$0.43/month and a Pro user ~$2.15,
+    # which is what bounds these figures. No daily limit to go with them — one
+    # deliberate button press on an argument you have already written is not a
+    # burst risk, and the monthly cap is the spend ceiling.
+    TIER_MONTHLY_DEEP_ANALYSIS_LIMITS: ClassVar[Dict[str, int]] = {
+        "anonymous": 0,
+        "free": 0,
+        "plus": 10,
+        "pro": 50,
     }
 
     # Burst protection: roughly a fifth of the monthly allowance, so a compromised

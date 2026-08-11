@@ -1044,6 +1044,13 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     challengeEvalDiv.innerHTML = "";
     challengeEvalDiv.classList.add("hidden");
   }
+  // Clear any deep analysis from the previous answer, or it reads as criticism
+  // of the one just submitted. deepAnalysis.js is a separate module and sets
+  // this on window, so guard the call -- this file is cached for 7 days and a
+  // stale copy of it must not throw here.
+  if (typeof window.resetDeepAnalysis === "function") {
+    window.resetDeepAnalysis();
+  }
   document.getElementById("challengeErrorMessage").textContent = "";
 
   // Disable button and show loading state
