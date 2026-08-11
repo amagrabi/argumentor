@@ -2394,3 +2394,15 @@ a[data-i18n="profile.changePlan"] {
 #challengeSection p[data-i18n="challenge.subtitle"] {
   text-align: left !important;
 }
+
+
+/* Tailwind's group-open: variant did not apply here -- the computed transform
+   stayed at the identity matrix -- so the rotation is done explicitly. */
+.disclosure-chevron {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+details[open] > summary .disclosure-chevron {
+  transform: rotate(90deg);
+}
