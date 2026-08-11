@@ -980,6 +980,19 @@
           </button>
           <span id="shareStatus" class="hidden text-sm text-gray-600"></span>
         </div>
+        <!-- Relevance is no longer one of the displayed dimensions (see
+             EVALUATION_CATEGORIES) because it behaves as a gate, not a grade.
+             It still has to be unmissable when it fails, since it is the reason
+             no XP was awarded. -->
+        <div
+          id="relevanceNotice"
+          class="hidden mb-6 p-4 rounded-lg border-2 border-red-300 bg-red-50"
+        >
+          <p class="font-bold" data-i18n="evaluation.relevanceTitle">
+            This answer did not address the question
+          </p>
+          <p id="relevanceNoticeBody" class="text-sm text-gray-800 mt-1"></p>
+        </div>
         <div id="overallEvaluation" class="mb-6"></div>
         <div id="scores" class="grid gap-4 mb-8">
           <div class="score-item">

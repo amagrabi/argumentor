@@ -129,7 +129,9 @@
     "relevanceWarning": "Your response did not meet the minimum relevance required to earn XP.",
     "shareButton": "Share this evaluation",
     "shareCopied": "Link copied — anyone with it can view this evaluation.",
-    "shareFailed": "Could not create a share link."
+    "shareFailed": "Could not create a share link.",
+    "relevanceTitle": "This answer did not address the question",
+    "relevanceBody": "Relevance was scored {score}/10, so no XP was awarded. The other scores still apply, but they describe how well you argued something other than what was asked."
   },
   "auth": {
     "loginTitle": "Login",
@@ -884,6 +886,10 @@
         "title": "Contact Information",
         "content": "If you have any questions or concerns about this privacy policy or our data practices, please contact us",
         "here": "here"
+      },
+      "serviceContact": {
+        "title": "Contacting you about the service",
+        "content": "If you register an account, your email address may be used to contact you about the service itself — for example to ask why you stopped using it, or for occasional feedback requests that help decide how it develops. This rests on legitimate interest (Art. 6(1)(f) GDPR) in understanding and improving the service. It is never used for advertising or newsletters, and you can object at any time by replying and asking not to be contacted again."
       }
     }
   },

@@ -361,7 +361,9 @@
     "relevanceWarning": "Deine Antwort hat nicht die erforderliche Mindest-Relevanz erreicht, um XP zu erhalten.",
     "shareButton": "Diese Bewertung teilen",
     "shareCopied": "Link kopiert – wer ihn hat, kann diese Bewertung ansehen.",
-    "shareFailed": "Der Link konnte nicht erstellt werden."
+    "shareFailed": "Der Link konnte nicht erstellt werden.",
+    "relevanceTitle": "Diese Antwort ging nicht auf die Frage ein",
+    "relevanceBody": "Die Relevanz wurde mit {score}/10 bewertet, daher gab es keine XP. Die übrigen Bewertungen gelten weiterhin, beschreiben aber, wie gut du etwas anderes als das Gefragte argumentiert hast."
   },
   "auth": {
     "loginTitle": "Anmelden",
@@ -948,6 +950,10 @@
         "title": "Kontaktinformationen",
         "content": "Wenn du Fragen oder Bedenken zu dieser Datenschutzerklärung oder unseren Datenpraktiken hast, kontaktiere uns bitte",
         "here": "hier"
+      },
+      "serviceContact": {
+        "title": "Kontaktaufnahme zum Dienst",
+        "content": "Wenn du ein Konto anlegst, kann deine E-Mail-Adresse genutzt werden, um dich zum Dienst selbst zu kontaktieren – etwa mit der Frage, warum du ihn nicht mehr nutzt, oder mit gelegentlichen Rückfragen zu deiner Erfahrung, die in die Weiterentwicklung einfließen. Grundlage ist das berechtigte Interesse (Art. 6 Abs. 1 lit. f DSGVO) daran, den Dienst zu verstehen und zu verbessern. Sie wird nicht für Werbung oder Newsletter verwendet, und du kannst jederzeit widersprechen, indem du antwortest und darum bittest, nicht mehr kontaktiert zu werden."
       }
     }
   },

@@ -1280,6 +1280,25 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     }
 
     // Now populate the detailed individual factor scores (the look and animation remain unchanged)
+    // Relevance failing is the reason XP is withheld, so say so plainly rather
+    // than leaving the user to infer it from a number that is no longer shown.
+    const relevanceNotice = document.getElementById("relevanceNotice");
+    if (relevanceNotice) {
+      if (data.relevance_too_low) {
+        const relScore = data.evaluation?.scores?.["Relevance"];
+        const body = document.getElementById("relevanceNoticeBody");
+        if (body) {
+          const tmpl =
+            translations?.evaluation?.relevanceBody ||
+            "Relevance was scored {score}/10, so no XP was awarded.";
+          body.textContent = tmpl.replace("{score}", relScore ?? "?");
+        }
+        relevanceNotice.classList.remove("hidden");
+      } else {
+        relevanceNotice.classList.add("hidden");
+      }
+    }
+
     const scoresDiv = document.getElementById("scores");
     scoresDiv.innerHTML = "";
 

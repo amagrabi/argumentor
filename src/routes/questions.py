@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, session
 
 from errors import json_error
+from services.user_service import get_session_user
 from services.question_service import (
     find_question_by_id,
     get_all_questions,
@@ -60,6 +61,19 @@ def handle_store_custom_question():
     question_data = request.json.get("question")
     if not question_data:
         return json_error("Question data is required", 400)
+
+    # Custom questions are a paid capability. Quota alone cannot convert engaged
+    # users -- the most active free user ever averaged 3 answers a month against
+    # a 30/month allowance, so he never met a wall. Writing your own question is
+    # the thing someone with a real decision to argue through will pay for.
+    user = get_session_user()
+    if not user or user.tier not in ("plus", "pro"):
+        return jsonify(
+            {
+                "error": "Custom questions are available on Plus and Pro.",
+                "status": "upgrade_required",
+            }
+        ), 402
 
     # Store the custom question in the session
     session["current_question"] = question_data

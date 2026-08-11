@@ -51,7 +51,8 @@ SYSTEM_INSTRUCTION_EN = auto_dedent(
     - Relevance (whether the claims and arguments of the user are relevant to the actual question)
     - Logical structure (whether the argument is logically consistent and valid)
     - Clarity (how clear and concise the argument is)
-    - Depth (whether the user covers all important aspects in their argument)
+    - Depth (whether the argument engages the strongest opposing consideration and
+      gives reasons for its own premises rather than asserting them)
     - Objectivity (whether the response is rational instead of influenced by prejudices, emotions or known cognitive biases/logical fallacies)
     - Creativity (whether the argument is original and innovative)
 
@@ -69,11 +70,14 @@ SYSTEM_INSTRUCTION_EN = auto_dedent(
     in their specific argument and raise concrete counterarguments rather than being generic and abstract.
     Ask pointed questions that challenge the user and prompt deeper thinking about their particular reasoning.
 
-    Keep in mind that user responses are limited by character counts. The argument
-    is limited to {SETTINGS.MAX_ARGUMENT} characters and the optional counterargument to
-    {SETTINGS.MAX_COUNTERARGUMENT} characters. So high scores for 'depth' do not
-    necessarily mean that the argument is a big wall of text, it's about the quality of
-    what is possible within the character limits.
+    Judge 'depth' by what the argument does, never by how long it is. Measured over
+    past evaluations, depth scores correlated 0.60 with raw character count, which is
+    wrong: a 300-character argument that names and answers the best objection to itself
+    is deeper than a 1500-character one that never does. Typical answers here are around
+    300 characters, so a short answer must be able to score highly on depth. The
+    argument is limited to {SETTINGS.MAX_ARGUMENT} characters and the optional
+    counterargument to {SETTINGS.MAX_COUNTERARGUMENT}, so length is not available as a
+    signal of effort.
 
     Even if a claim sounds unpopular or unconventional, a well-constructed argument
     should still score high.
@@ -103,7 +107,8 @@ SYSTEM_INSTRUCTION_DE = auto_dedent(
     - Relevanz (ob die Thesen und Argumente des Benutzers für die eigentliche Frage relevant sind)
     - Logische Struktur (ob das Argument logisch konsistent und gültig ist)
     - Klarheit (wie klar und präzise das Argument ist)
-    - Tiefe (ob alle wichtigen Aspekte eines Themas berücksichtigt werden)
+    - Tiefe (ob das Argument den stärksten Gegeneinwand aufgreift und seine eigenen
+      Prämissen begründet, statt sie nur zu behaupten)
     - Objektivität (ob die Antwort rational ist, statt durch Vorurteile, Emotionen oder bekannte Logische Fehlschlüsse oder Kognitive Verzerrungen beeinflusst zu sein)
     - Kreativität (ob das Argument originell und innovativ ist)
 
@@ -122,11 +127,14 @@ SYSTEM_INSTRUCTION_DE = auto_dedent(
     statt nur generisch und abstrakt zu sein. Stelle gezielte Fragen, die den Nutzer herausforderun
     und zu tieferem Nachdenken über ihre spezifische Argumentation anregen.
 
-    Beachte, dass Benutzerantworten durch Zeichenbegrenzungen eingeschränkt sind. Das Argument
-    ist auf {SETTINGS.MAX_ARGUMENT} Zeichen und das optionale Gegenargument auf
-    {SETTINGS.MAX_COUNTERARGUMENT} Zeichen begrenzt. Hohe Bewertungen für 'Tiefe' bedeuten also nicht
-    unbedingt, dass das Argument ein großer Textblock ist, es geht um die Qualität dessen,
-    was innerhalb der Zeichenbegrenzung möglich ist.
+    Bewerte 'Tiefe' danach, was das Argument leistet, nie danach, wie lang es ist. In
+    bisherigen Bewertungen korrelierte die Tiefe mit 0,60 mit der reinen Zeichenzahl –
+    das ist falsch: Ein Argument mit 300 Zeichen, das den stärksten Einwand gegen sich
+    selbst benennt und beantwortet, ist tiefer als eines mit 1500 Zeichen, das das nie
+    tut. Typische Antworten haben hier rund 300 Zeichen, eine kurze Antwort muss also
+    hohe Tiefe erreichen können. Das Argument ist auf {SETTINGS.MAX_ARGUMENT} Zeichen und
+    das optionale Gegenargument auf {SETTINGS.MAX_COUNTERARGUMENT} Zeichen begrenzt,
+    Länge ist daher kein Signal für Aufwand.
 
     Auch wenn eine These unpopulär oder unkonventionell klingt, sollte ein gut konstruiertes
     Argument trotzdem hohe Bewertungen erhalten.

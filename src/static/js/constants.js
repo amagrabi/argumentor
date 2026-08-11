@@ -74,13 +74,18 @@ export const ERROR_MESSAGES = {
     "Please fill in both required fields (Claim and Argument) before submitting.",
 };
 
+// Relevance is deliberately absent. Measured across 162 evaluations its
+// standard deviation was 3.80, nearly double every other dimension: off-topic
+// scores 1, on-topic scores 8-10, with almost nothing in between. It is a
+// binary gate, not a graded dimension, and showing it alongside the others made
+// the overall score lurch. It is surfaced as its own notice instead -- see
+// #relevanceNotice.
 export const EVALUATION_CATEGORIES = [
   "Logical Structure",
   "Clarity",
   "Depth",
   "Objectivity",
   "Creativity",
-  "Relevance",
 ];
 
 // Mapping of evaluation category labels to translation keys
