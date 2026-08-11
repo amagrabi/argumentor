@@ -30,6 +30,21 @@ both the repo root and `src/` end up on `sys.path`. Don't "fix" the imports.
 endpoint and 404s in `us-central1`. `GCLOUD_PROJECT_REGION` is the location for
 the genai clients, nothing else.
 
+**Probing a model id over REST needs `v1beta1`, not `v1`.** On the `global`
+endpoint `v1` returns Google's *HTML* 404 page for every model, including ones
+that exist — so a model-availability probe on `v1` reports that nothing is
+available. The same probe is also flaky when fired in a tight loop: retry twice
+with a pause before believing a 404. Measured Aug 2026, the ids that answer are
+`gemini-3.6-flash`, `gemini-3.5-flash`, `gemini-3.5-flash-lite`, `gemini-2.5-pro`
+and `gemini-2.5-flash`. There is **no Gemini 3.x Pro** — `gemini-3.5-pro` and
+`gemini-3.6-pro` both 404. `scripts/compare_deep_analysis_models.py` has the
+working request shape, and runs without ADC off a `gcloud` access token.
+
+**Thinking tokens are billed and counted as output.** They come out of
+`max_output_tokens`, so a thinking model on the scored pass's 8192 can spend the
+whole budget on thoughts and return `MAX_TOKENS` with an empty body. Deep
+analysis uses 16384 for that reason.
+
 **Two question-render paths exist.** `updateQuestionDisplay` in
 `src/static/js/helpers.js` and `fetchNewQuestion` in `src/static/js/main.js`,
 which writes the element directly via `typeWriter`. Anything that reacts to the
@@ -40,6 +55,18 @@ page load. `syncExampleButton` exists because of this.
 A CSS or JS change will not reach returning visitors, or Cloudflare's edge, for a
 week. There is no cache-busting query string. Budget for this when shipping
 frontend changes.
+
+This bites `src/static/translations/*.json` too, which is worse than it sounds:
+the templates carry English fallback text inside every `data-i18n` element, and
+`applyTranslations` only assigns when the key resolves, so **English silently
+falls back to whatever the template says while German goes live immediately** —
+whichever file happened to be at the edge decides. Deep analysis shipped in that
+state. Give any string the JS reads a hardcoded fallback, or purge the edge.
+
+A *new* filename dodges the cache exactly once. `deepAnalysis.js` was split out
+of `main.js` for that reason and it worked — then the follow-up fix to the same
+new file was stale at the edge twenty minutes later. Land new frontend files
+right the first time, or purge.
 
 **Tailwind comes from the Play CDN.** Some variants do not behave as documented —
 `group-open:rotate-90` computed to the identity matrix, and a plain
@@ -102,6 +129,22 @@ Prompt changes need empirical checking. `scripts/test_llm.py` holds fixed EN/DE
 cases. The tone instruction must name its output language explicitly: describing
 it as "the language of these instructions" made the model answer the English
 prompt in German, reproducibly.
+
+## Deep analysis: the one deliberately expensive call
+
+`/deep_analysis` runs a second, unscored pass over an already-evaluated argument
+on `gemini-2.5-pro` — ~$43 per 1000 calls against the scored pass's $2.65, and
+40-52s per call. That ratio is the whole design: it is Plus/Pro only, capped
+monthly, and never automatic. Measurements and the rejected alternatives are in
+`DEEP_ANALYSIS_MODEL` in `config.py`; re-run
+`scripts/compare_deep_analysis_models.py` before changing the model.
+
+Two things follow from the latency. The result is stored on `answer` so a revisit
+costs nothing, and a failed call must not count against the allowance — both are
+covered in `tests/test_deep_analysis.py`. And a ~45s response has to clear
+Cloudflare's 100s free-plan origin timeout; gunicorn's `--timeout 30` is *not* a
+per-request deadline under `gthread`, because the worker heartbeats from its own
+event loop independently of request threads.
 
 ## Conventions
 
