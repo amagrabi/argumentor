@@ -468,7 +468,8 @@
     "exportUpgrade": "Export is available on Plus and Pro.",
     "historyCapped": "Showing your most recent 10 arguments.",
     "historyCappedTotal": "Plus and Pro show your full history and trend.",
-    "historyCappedLink": "See plans"
+    "historyCappedLink": "See plans",
+    "deepAnalyses": "Deep Analyses"
   },
   "howItWorksPage": {
     "title": "How It Works",
@@ -1011,7 +1012,12 @@
       "voicePerMonth": "voice recordings per month",
       "customQuestions": "Add your own questions",
       "prioritySupport": "Priority support",
-      "roadmapInfluence": "Influence on feature roadmap"
+      "roadmapInfluence": "Influence on feature roadmap",
+      "recentHistoryOnly": "most recent answers in your history",
+      "deepAnalysisPerMonth": "deep analyses per month",
+      "deepAnalysisHint": "A second, far more thorough critique of an argument you have already submitted.",
+      "fullHistory": "Your complete answer history and progress",
+      "exportAnswers": "Export everything you have written"
     },
     "footer": {
       "billingInfo": "All subscriptions are billed monthly and can be canceled at any time. If you cancel, you'll keep your premium features until the end of your current billing period.",

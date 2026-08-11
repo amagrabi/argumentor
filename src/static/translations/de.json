@@ -260,7 +260,8 @@
     "exportUpgrade": "Der Export ist in Plus und Pro verfügbar.",
     "historyCapped": "Es werden deine 10 neuesten Argumente angezeigt.",
     "historyCappedTotal": "Plus und Pro zeigen deinen vollständigen Verlauf und Trend.",
-    "historyCappedLink": "Tarife ansehen"
+    "historyCappedLink": "Tarife ansehen",
+    "deepAnalyses": "Tiefenanalysen"
   },
   "achievements": {
     "first_argument": {
@@ -1077,7 +1078,12 @@
       "voicePerMonth": "Sprachaufnahmen pro Monat",
       "customQuestions": "Eigene Fragen hinzufügen",
       "prioritySupport": "Prioritäts-Support",
-      "roadmapInfluence": "Einfluss auf die Feature-Roadmap"
+      "roadmapInfluence": "Einfluss auf die Feature-Roadmap",
+      "recentHistoryOnly": "neueste Antworten in deinem Verlauf",
+      "deepAnalysisPerMonth": "Tiefenanalysen pro Monat",
+      "deepAnalysisHint": "Eine zweite, deutlich gründlichere Kritik zu einem Argument, das du schon abgeschickt hast.",
+      "fullHistory": "Dein vollständiger Antwortverlauf und Fortschritt",
+      "exportAnswers": "Exportiere alles, was du geschrieben hast"
     },
     "footer": {
       "billingInfo": "Alle Abonnements werden monatlich abgerechnet und können jederzeit gekündigt werden. Bei Kündigung behältst du deine Premium-Funktionen bis zum Ende deiner aktuellen Abrechnungsperiode.",

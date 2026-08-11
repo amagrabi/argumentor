@@ -416,6 +416,40 @@
                   {{ monthly_voice_count }} / {{ monthly_voice_limit }}
                 </div>
               </div>
+
+              {# Only on the tiers that have any. Showing a 0 / 0 card to a free
+                 user advertises the feature in the least appealing way possible;
+                 the subscription page is where the pitch belongs. #}
+              {% if monthly_deep_analysis_limit %}
+              <!-- Deep Analyses Card -->
+              <div
+                class="bg-gray-50 rounded-lg p-2 sm:p-3 border border-gray-200 flex flex-col min-h-[70px] sm:min-h-[90px]"
+              >
+                <div class="flex items-center mb-1 sm:mb-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 sm:h-5 sm:w-5 text-gray-800 mr-2 flex-shrink-0"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <span
+                    class="font-medium text-sm sm:text-base"
+                    data-i18n="profile.deepAnalyses"
+                    >Deep Analyses</span
+                  >
+                </div>
+                <div class="font-medium text-sm sm:text-base mt-auto">
+                  {{ monthly_deep_analysis_count }} / {{
+                  monthly_deep_analysis_limit }}
+                </div>
+              </div>
+              {% endif %}
             </div>
           </div>
         </div>

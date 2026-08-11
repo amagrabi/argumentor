@@ -36,6 +36,7 @@ from utils import (
     get_daily_evaluation_count,
     get_daily_voice_count,
     get_eval_limit,
+    get_monthly_deep_analysis_count,
     get_monthly_deep_analysis_limit,
     get_monthly_eval_limit,
     get_monthly_evaluation_count,
@@ -294,6 +295,11 @@ def profile():
     monthly_eval_limit = get_monthly_eval_limit(user.tier)
     monthly_voice_count = get_monthly_voice_count(user.uuid)
     monthly_voice_limit = get_monthly_voice_limit(user.tier)
+    # Unlike the home page, reading the count here is the point: this section is
+    # the only place a subscriber can see what is left before spending 45s on a
+    # call that may be refused.
+    monthly_deep_analysis_count = get_monthly_deep_analysis_count(user.uuid)
+    monthly_deep_analysis_limit = get_monthly_deep_analysis_limit(user.tier)
 
     # Get all achievements and user's earned achievements
     all_achievements = ACHIEVEMENTS
@@ -377,6 +383,8 @@ def profile():
         monthly_eval_limit=monthly_eval_limit,
         monthly_voice_count=monthly_voice_count,
         monthly_voice_limit=monthly_voice_limit,
+        monthly_deep_analysis_count=monthly_deep_analysis_count,
+        monthly_deep_analysis_limit=monthly_deep_analysis_limit,
         all_achievements=all_achievements,
         earned_achievements=earned_achievements,
         levels=levels_with_status,
