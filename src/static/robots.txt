@@ -8,6 +8,7 @@ Disallow: /login
 Disallow: /register
 Disallow: /reset-password
 Disallow: /profile
+Disallow: /share/
 Disallow: /subscription
 Disallow: /subscription_success
 Disallow: /plan_change_scheduled

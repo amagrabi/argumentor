@@ -126,7 +126,10 @@
       "objectivity": "Objectivity",
       "creativity": "Creativity"
     },
-    "relevanceWarning": "Your response did not meet the minimum relevance required to earn XP."
+    "relevanceWarning": "Your response did not meet the minimum relevance required to earn XP.",
+    "shareButton": "Share this evaluation",
+    "shareCopied": "Link copied — anyone with it can view this evaluation.",
+    "shareFailed": "Could not create a share link."
   },
   "auth": {
     "loginTitle": "Login",

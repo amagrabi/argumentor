@@ -42,6 +42,54 @@ mermaid.initialize({
   },
 });
 
+// Share links are minted on demand and are unlisted: noindex, and reachable
+// only by the signed URL. Nothing is published, so no consent flow is needed.
+function wireShareButton(answerId) {
+  const btn = document.getElementById("shareEvaluationBtn");
+  const status = document.getElementById("shareStatus");
+  if (!btn || !answerId) return;
+  btn.classList.remove("hidden");
+  if (status) status.classList.add("hidden");
+  if (btn.dataset.wired === answerId) return;
+  btn.dataset.wired = answerId;
+
+  btn.addEventListener("click", async () => {
+    btn.disabled = true;
+    try {
+      const res = await fetch("/create_share_link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answer_id: answerId }),
+      });
+      if (!res.ok) throw new Error(`status ${res.status}`);
+      const { url } = await res.json();
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        // Clipboard needs a secure context and permission; showing the URL is a
+        // usable fallback rather than a dead end.
+        window.prompt("Copy this link:", url);
+      }
+      if (status) {
+        status.textContent =
+          translations?.evaluation?.shareCopied ||
+          "Link copied — anyone with it can view this evaluation.";
+        status.classList.remove("hidden");
+      }
+    } catch (err) {
+      console.error("Could not create share link:", err);
+      if (status) {
+        status.textContent =
+          translations?.evaluation?.shareFailed ||
+          "Could not create a share link.";
+        status.classList.remove("hidden");
+      }
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
 // Global variable that stores your selected category values.
 let selectedCategories = [];
 // Global variable to store the currently displayed question.
@@ -1375,6 +1423,7 @@ document.getElementById("submitAnswer").addEventListener("click", async () => {
     // After a successful answer submission, store the answer ID for later use:
     if (data.answer_id) {
       sessionStorage.setItem("lastAnswerId", data.answer_id);
+      wireShareButton(data.answer_id);
     }
 
     // If the evaluation contains a challenge, display the challenge text and reveal the challenge section.

@@ -358,7 +358,10 @@
       "objectivity": "Objektivität",
       "creativity": "Kreativität"
     },
-    "relevanceWarning": "Deine Antwort hat nicht die erforderliche Mindest-Relevanz erreicht, um XP zu erhalten."
+    "relevanceWarning": "Deine Antwort hat nicht die erforderliche Mindest-Relevanz erreicht, um XP zu erhalten.",
+    "shareButton": "Diese Bewertung teilen",
+    "shareCopied": "Link kopiert – wer ihn hat, kann diese Bewertung ansehen.",
+    "shareFailed": "Der Link konnte nicht erstellt werden."
   },
   "auth": {
     "loginTitle": "Anmelden",

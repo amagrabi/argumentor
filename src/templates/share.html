@@ -1,0 +1,82 @@
+{# Unlisted share page. noindex/nofollow is deliberate: v1 is link-only so that
+   no user's writing gets published or indexed without an explicit consent flow.
+   Promoting this to indexable is a product decision, not a template tweak. #}
+<html lang="{{ page_lang }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{{ answer.question_text|truncate(60) }} — ArguMentor</title>
+    <meta
+      name="description"
+      content="An argument scored on relevance, logic, clarity, depth, objectivity and creativity."
+    />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="{{ answer.question_text|truncate(80) }}" />
+    <meta
+      property="og:description"
+      content="{% if scores.get('Overall') %}Scored {{ scores.get('Overall')|round(1) }}/10 overall. {% endif %}{{ answer.claim|truncate(140) }}"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  </head>
+  <body class="bg-gray-50">
+    <main class="max-w-3xl mx-auto p-6">
+      <a href="/" class="inline-flex items-center gap-2 mb-6 text-xl font-bold">
+        ArguMentor
+      </a>
+
+      <article class="bg-white rounded-lg border-2 border-gray-200 p-6 md:p-8">
+        <p class="text-sm text-gray-500 mb-1">{{ answer.question_id }}</p>
+        <h1 class="text-2xl md:text-3xl font-bold mb-6">{{ answer.question_text }}</h1>
+
+        <h2 class="text-lg font-bold mb-1">Claim</h2>
+        <p class="mb-5 whitespace-pre-line">{{ answer.claim }}</p>
+
+        <h2 class="text-lg font-bold mb-1">Reasoning</h2>
+        <p class="mb-5 whitespace-pre-line">{{ answer.argument }}</p>
+
+        {% if answer.counterargument %}
+        <h2 class="text-lg font-bold mb-1">Counterargument rebuttal</h2>
+        <p class="mb-5 whitespace-pre-line">{{ answer.counterargument }}</p>
+        {% endif %}
+
+        {% if dimensions %}
+        <h2 class="text-lg font-bold mb-3 pt-4 border-t border-gray-200">Evaluation</h2>
+        {% if scores.get('Overall') %}
+        <p class="mb-4 text-3xl font-bold">
+          {{ scores.get('Overall')|round(1) }}<span class="text-lg text-gray-500">/10</span>
+        </p>
+        {% endif %}
+        {% if overall_feedback %}
+        <p class="mb-5 text-gray-800">{{ overall_feedback }}</p>
+        {% endif %}
+        <dl class="space-y-3">
+          {% for name, score, note in dimensions %}
+          <div>
+            <dt class="font-semibold">{{ name }} — {{ score }}/10</dt>
+            {% if note %}<dd class="text-sm text-gray-700">{{ note }}</dd>{% endif %}
+          </div>
+          {% endfor %}
+        </dl>
+        {% endif %}
+
+        {% if answer.challenge %}
+        <div class="mt-6 p-5 rounded-lg bg-amber-50 border-2 border-amber-300">
+          <h2 class="text-lg font-bold mb-2">⚔️ Challenge</h2>
+          <p class="text-gray-800">{{ answer.challenge }}</p>
+          {% if answer.challenge_response %}
+          <h3 class="font-semibold mt-4 mb-1">Response</h3>
+          <p class="whitespace-pre-line text-gray-800">{{ answer.challenge_response }}</p>
+          {% endif %}
+        </div>
+        {% endif %}
+      </article>
+
+      <p class="mt-6 text-center text-gray-700">
+        <a href="/" class="underline font-medium">Write your own argument on ArguMentor</a>
+      </p>
+    </main>
+  </body>
+</html>
