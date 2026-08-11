@@ -368,7 +368,24 @@
           >
             Logout
           </button>
-          {% else %}
+          {% endif %}
+          {% if current_user.is_authenticated and current_user.tier not in ('plus', 'pro') %}
+          {# Shown only to logged-in free users. Anonymous visitors get Login --
+             their next step is registering, not paying, and asking someone to
+             pay before they have written a single argument is the fastest way to
+             lose the 69% who never return. Paid users see nothing. It exists at
+             all because nothing previously pointed at /subscription, which is a
+             plausible contributor to zero conversions ever. #}
+          <a
+            id="upgradeButton"
+            href="/subscription"
+            class="bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm h-8 sm:h-8 inline-flex items-center"
+            data-i18n="header.upgrade"
+          >
+            Upgrade
+          </a>
+          {% endif %}
+          {% if not current_user.is_authenticated %}
           <button
             id="loginButton"
             onclick="showAuthModal()"

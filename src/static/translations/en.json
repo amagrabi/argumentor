@@ -8,7 +8,8 @@
   "header": {
     "login": "Login",
     "logout": "Logout",
-    "profile": "Profile"
+    "profile": "Profile",
+    "upgrade": "Upgrade"
   },
   "steps": {
     "chooseQuestion": "Choose Question",

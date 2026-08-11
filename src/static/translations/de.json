@@ -33,7 +33,8 @@
   "header": {
     "login": "Anmelden",
     "logout": "Abmelden",
-    "profile": "Profil"
+    "profile": "Profil",
+    "upgrade": "Upgraden"
   },
   "steps": {
     "chooseQuestion": "Frage auswählen",
