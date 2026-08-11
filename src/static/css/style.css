@@ -2385,3 +2385,12 @@ a[data-i18n="profile.changePlan"] {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
+
+
+/* The challenge subtitle and prompt are body copy, several lines long, and were
+   inheriting text-align: center from an ancestor. Centred prose of that length
+   is markedly harder to read because every line starts at a different x. */
+#challengeSection #challengeText,
+#challengeSection p[data-i18n="challenge.subtitle"] {
+  text-align: left !important;
+}

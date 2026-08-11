@@ -643,7 +643,7 @@
           <button
             id="tryExampleBtn"
             type="button"
-            class="hidden mt-2 md:mt-1 md:ml-4 shrink-0 text-sm underline text-gray-600 hover:text-black"
+            class="hidden mt-2 md:mt-1 md:ml-4 shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-amber-900 bg-amber-100 border border-amber-300 hover:bg-amber-200 transition-colors"
             data-i18n="main.inputLabels.tryExample"
           >
             Try an example
@@ -824,11 +824,23 @@
             <!-- Optional, and only used in 36% of submissions, so it starts
                  collapsed rather than presenting a third empty box up front. -->
             <details id="counterargumentDisclosure" class="group">
+              <!-- list-none removes the native marker, so the chevron below is
+                   the only affordance signalling this is expandable. Without it
+                   the summary reads as a plain bold label. -->
               <summary
-                class="cursor-pointer text-lg font-bold list-none flex items-center gap-2 py-1"
-                data-i18n="main.inputLabels.showCounterargument"
+                class="cursor-pointer list-none flex items-center gap-2 py-2 px-3 -mx-3 rounded-lg text-gray-700 hover:text-black hover:bg-gray-50 transition-colors"
               >
-                Add a counterargument rebuttal (optional)
+                <span
+                  class="text-gray-400 transition-transform duration-200 group-open:rotate-90"
+                  aria-hidden="true"
+                  >&#9656;</span
+                >
+                <span
+                  class="font-semibold underline decoration-dotted decoration-gray-400 underline-offset-4"
+                  data-i18n="main.inputLabels.showCounterargument"
+                >
+                  Add a counterargument rebuttal (optional)
+                </span>
               </summary>
               <div class="mt-2">
                 <textarea
