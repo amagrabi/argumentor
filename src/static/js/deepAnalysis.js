@@ -188,9 +188,12 @@ if (btn && output) {
         return;
       }
       if (res.status === 429) {
+        // The translated string first, not data.error: the server's message is
+        // just the number, and the useful part is when the allowance comes back.
+        // data.error stays as the fallback for a client with stale translations.
         showStatus(
-          data.error ||
-            interpolate(s.limitReached, { limit: btn.dataset.limit || "" }) ||
+          interpolate(s.limitReached, { limit: btn.dataset.limit || "" }) ||
+            data.error ||
             "You have used all of this month's deep analyses."
         );
         return;

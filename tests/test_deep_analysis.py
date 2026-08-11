@@ -148,6 +148,38 @@ def test_it_blocks_at_the_limit(client):
     run.assert_not_called()
 
 
+def test_the_limit_message_names_the_limit(client):
+    # deepAnalysis.js prefers the translated string, which says when the
+    # allowance resets; this one is the fallback for a stale client, so it still
+    # has to say what the limit was rather than just failing.
+    answer_id = _answer_for(client, tier="plus")
+    limit = SETTINGS.TIER_MONTHLY_DEEP_ANALYSIS_LIMITS["plus"]
+    user = User.query.one()
+    user.monthly_deep_analysis_count = limit
+    user.last_monthly_deep_analysis_reset = datetime.now(UTC)
+    db.session.commit()
+
+    response, _ = _request(client, answer_id)
+
+    assert str(limit) in response.get_json()["error"]
+
+
+def test_the_limit_message_is_localised(client):
+    answer_id = _answer_for(client, tier="plus")
+    user = User.query.one()
+    user.monthly_deep_analysis_count = SETTINGS.TIER_MONTHLY_DEEP_ANALYSIS_LIMITS[
+        "plus"
+    ]
+    user.last_monthly_deep_analysis_reset = datetime.now(UTC)
+    db.session.commit()
+    with client.session_transaction() as flask_session:
+        flask_session["language"] = "de"
+
+    response, _ = _request(client, answer_id)
+
+    assert "Tiefenanalysen" in response.get_json()["error"]
+
+
 def test_the_counter_resets_in_a_new_month(client):
     answer_id = _answer_for(client, tier="plus")
     user = User.query.one()
