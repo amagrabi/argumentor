@@ -2156,6 +2156,23 @@
       (function () {
         const HINT_AT_FRACTION = 0.8; // show the countdown only near the limit
 
+        // Rotate the disclosure chevron from JS rather than CSS. summary uses
+        // display:flex, which suppresses the native ::marker, so the chevron is
+        // a plain span -- and both Tailwind's group-open: variant and a
+        // details[open] rule lost to something in the cascade (the computed
+        // transform stayed at the identity matrix). An inline style cannot lose.
+        function wireDisclosure(id) {
+          const details = document.getElementById(id);
+          if (!details) return;
+          const chevron = details.querySelector(".disclosure-chevron");
+          if (!chevron) return;
+          const sync = () => {
+            chevron.style.transform = details.open ? "rotate(90deg)" : "rotate(0deg)";
+          };
+          details.addEventListener("toggle", sync);
+          sync();
+        }
+
         function syncHint(input, hint) {
           if (!input || !hint) return;
           const max = parseInt(input.getAttribute("maxlength") || "0", 10);
@@ -2183,6 +2200,7 @@
 
         function init() {
           ["claimInput", "argumentInput", "counterargumentInput"].forEach(wire);
+          wireDisclosure("counterargumentDisclosure");
 
           const btn = document.getElementById("tryExampleBtn");
           if (btn) {
