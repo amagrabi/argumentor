@@ -35,6 +35,7 @@ from routes.pages import pages_bp
 from routes.password_reset import mail, password_reset_bp
 from routes.preferences import preferences_bp
 from routes.questions import questions_bp
+from routes.export import export_bp
 from routes.share import share_bp
 from routes.transcribe import transcribe_bp
 
@@ -191,6 +192,7 @@ def create_app():
     app.register_blueprint(password_reset_bp)
     app.register_blueprint(transcribe_bp)
     app.register_blueprint(share_bp)
+    app.register_blueprint(export_bp)
 
     # Register CLI commands
     register_commands(app)

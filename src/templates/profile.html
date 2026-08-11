@@ -153,6 +153,20 @@
     </header>
 
     <main class="max-w-5xl mx-auto p-4 overflow-x-hidden">
+      {% if current_user.is_authenticated and current_user.tier in ('plus', 'pro') %}
+      {# Paid capability, so only shown where it works -- an always-visible
+         button that 402s would be worse than no button. #}
+      <div class="flex justify-end mb-2">
+        <a
+          href="/export"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 hover:bg-gray-200 transition-colors"
+          data-i18n="profile.exportButton"
+          download
+        >
+          Export my arguments
+        </a>
+      </div>
+      {% endif %}
       {% if not current_user.is_authenticated %}
       <div
         class="mt-4 mb-4 max-w-full md:w-max mx-auto bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded text-sm"

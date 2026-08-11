@@ -1,0 +1,90 @@
+{# Standalone export: no external CSS or JS, so the downloaded file still renders
+   years later and offline. Print styles included because the intended path to a
+   PDF is the browser's own print dialog. #}
+<html lang="{{ page_lang }}">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ArguMentor — {{ user.username }} — {{ generated_at }}</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+             max-width: 46rem; margin: 0 auto; padding: 2rem 1.25rem; color: #1a1a1a;
+             line-height: 1.55; }
+      h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+      .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+      article { border-top: 2px solid #e5e5e5; padding-top: 1.5rem; margin-top: 2rem; }
+      h2 { font-size: 1.15rem; margin-bottom: 0.15rem; }
+      .date { color: #666; font-size: 0.85rem; margin-bottom: 1rem; }
+      h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em;
+           color: #666; margin-bottom: 0.2rem; margin-top: 1.1rem; }
+      p { margin: 0 0 0.6rem; white-space: pre-line; }
+      .overall { font-size: 1.5rem; font-weight: 700; }
+      dl { margin: 0.5rem 0 0; }
+      dt { font-weight: 600; margin-top: 0.6rem; }
+      dd { margin: 0.1rem 0 0; color: #333; font-size: 0.93rem; }
+      .challenge { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 6px;
+                   padding: 0.9rem 1rem; margin-top: 1.1rem; }
+      footer { margin-top: 3rem; color: #666; font-size: 0.85rem; }
+      @media print {
+        article { page-break-inside: avoid; }
+        body { max-width: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>{{ user.username }} — arguments</h1>
+    <p class="meta">
+      {{ entries|length }} argument{{ '' if entries|length == 1 else 's' }} ·
+      {{ user.xp or 0 }} XP · exported {{ generated_at }} from argumentorai.com
+    </p>
+
+    {% for e in entries %}
+    <article>
+      <h2>{{ e.answer.question_text }}</h2>
+      <p class="date">
+        {{ e.answer.created_at.strftime('%Y-%m-%d') if e.answer.created_at else '' }}
+        {%- if e.answer.input_mode %} · {{ e.answer.input_mode }}{% endif %}
+        {%- if e.answer.xp_earned %} · {{ e.answer.xp_earned }} XP{% endif %}
+      </p>
+
+      <h3>Claim</h3>
+      <p>{{ e.answer.claim }}</p>
+      <h3>Reasoning</h3>
+      <p>{{ e.answer.argument }}</p>
+      {% if e.answer.counterargument %}
+      <h3>Counterargument rebuttal</h3>
+      <p>{{ e.answer.counterargument }}</p>
+      {% endif %}
+
+      {% if e.overall %}
+      <h3>Evaluation</h3>
+      <p class="overall">{{ e.overall|round(1) }}<span style="font-size:1rem;color:#666">/10</span></p>
+      {% endif %}
+      {% if e.overall_feedback %}<p>{{ e.overall_feedback }}</p>{% endif %}
+      {% if e.dimensions %}
+      <dl>
+        {% for name, score, note in e.dimensions %}
+        <dt>{{ name }} — {{ score }}/10</dt>
+        {% if note %}<dd>{{ note }}</dd>{% endif %}
+        {% endfor %}
+      </dl>
+      {% endif %}
+
+      {% if e.answer.challenge %}
+      <div class="challenge">
+        <h3 style="margin-top:0">Challenge</h3>
+        <p>{{ e.answer.challenge }}</p>
+        {% if e.answer.challenge_response %}
+        <h3>Response</h3>
+        <p>{{ e.answer.challenge_response }}</p>
+        {% endif %}
+      </div>
+      {% endif %}
+    </article>
+    {% else %}
+    <p>No arguments yet.</p>
+    {% endfor %}
+
+    <footer>Exported from argumentorai.com</footer>
+  </body>
+</html>

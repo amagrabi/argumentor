@@ -443,7 +443,9 @@
         "name": "Sage of a Hundred Trials",
         "description": "Complete 100 challenges"
       }
-    }
+    },
+    "exportButton": "Export my arguments",
+    "exportUpgrade": "Export is available on Plus and Pro."
   },
   "howItWorksPage": {
     "title": "How It Works",

@@ -1,8 +1,15 @@
 # Deploying argumentor
 
-The app runs as a container on **Google Cloud Run** (project `argumentor-449922`,
+> **Identifiers in this file are redacted.** This repository is public. Replace
+> `<PROJECT_ID>`, `<PROJECT_NUMBER>`, `<BILLING_ACCOUNT_ID>`,
+> `<SUPABASE_PROJECT_REF>`, `<CF_ACCOUNT_ID>` and `<SERVICE>` with the real
+> values from your password manager before running any command below. They are
+> not credentials, but they are free reconnaissance for anyone probing the setup,
+> and the `*.run.app` hostname in particular bypasses Cloudflare entirely.
+
+The app runs as a container on **Google Cloud Run** (project `<PROJECT_ID>`,
 region `europe-west1`), behind **Cloudflare** for DNS, CDN, and WAF on
-`argumentorai.com`. Postgres is hosted on **Supabase** (project `ujkqrggdodazhldrcgbx`).
+`argumentorai.com`. Postgres is hosted on **Supabase** (project `<SUPABASE_PROJECT_REF>`).
 
 This replaces the previous Heroku setup, which no longer exists.
 
@@ -33,7 +40,7 @@ Two guardrails keep this inside the free tier, both already set in
 Cloud Run has no spending cap, and unlike Heroku's flat $10 this bill is variable.
 
 ```bash
-gcloud billing budgets create --billing-account=01776F-0801D0-FC095B --display-name="argumentor monthly" --budget-amount=5EUR --threshold-rule=percent=0.5 --threshold-rule=percent=0.9 --threshold-rule=percent=1.0
+gcloud billing budgets create --billing-account=<BILLING_ACCOUNT_ID> --display-name="argumentor monthly" --budget-amount=5EUR --threshold-rule=percent=0.5 --threshold-rule=percent=0.9 --threshold-rule=percent=1.0
 ```
 
 The amount **must be in the billing account's own currency** — this account is EUR,
@@ -76,7 +83,7 @@ storage that survives a cold start, and it lumps everyone behind a shared NAT to
 To adjust a quota:
 
 ```bash
-gcloud quotas preferences create --project=argumentor-449922 --service=aiplatform.googleapis.com --quota-id=GlobalGenerateContentInputTokensPerDayPerBaseModel --preferred-value=2000000 --dimensions=base_model=gemini-3.5-flash-lite-qcd --preference-id=argumentor-daily-input-tokens --allow-high-percentage-quota-decrease
+gcloud quotas preferences create --project=<PROJECT_ID> --service=aiplatform.googleapis.com --quota-id=GlobalGenerateContentInputTokensPerDayPerBaseModel --preferred-value=2000000 --dimensions=base_model=gemini-3.5-flash-lite-qcd --preference-id=argumentor-daily-input-tokens --allow-high-percentage-quota-decrease
 ```
 
 Gemini 3.x models are dimensioned as `<model>-qcd` in quotas, and only exist on the
@@ -87,7 +94,7 @@ Gemini 3.x models are dimensioned as `<model>-qcd` in quotas, and only exist on 
 ### 1. Authenticate
 
 ```bash
-gcloud auth login && gcloud config set project argumentor-449922
+gcloud auth login && gcloud config set project <PROJECT_ID>
 ```
 
 ### 2. Enable APIs
@@ -103,7 +110,7 @@ gcloud artifacts repositories create argumentor --repository-format=docker --loc
 ```
 
 ```bash
-gcloud storage buckets create gs://argumentor-449922-backups --location=europe-west1 --uniform-bucket-level-access
+gcloud storage buckets create gs://<PROJECT_ID>-backups --location=europe-west1 --uniform-bucket-level-access
 ```
 
 The voice-recording bucket from the Heroku era survives as `gs://argumentor`
@@ -122,20 +129,20 @@ gcloud iam service-accounts create argumentor-run --display-name="argumentor Clo
 ```
 
 ```bash
-SA="argumentor-run@argumentor-449922.iam.gserviceaccount.com"; for ROLE in roles/aiplatform.user roles/storage.objectAdmin roles/secretmanager.secretAccessor; do gcloud projects add-iam-policy-binding argumentor-449922 --member="serviceAccount:${SA}" --role="$ROLE"; done
+SA="argumentor-run@<PROJECT_ID>.iam.gserviceaccount.com"; for ROLE in roles/aiplatform.user roles/storage.objectAdmin roles/secretmanager.secretAccessor; do gcloud projects add-iam-policy-binding <PROJECT_ID> --member="serviceAccount:${SA}" --role="$ROLE"; done
 ```
 
 ### 5. Get the Supabase connection string
 
 **Use the pooler, not the direct connection.** Supabase's direct connection
-(`db.ujkqrggdodazhldrcgbx.supabase.co`) is IPv6-only on the free tier, and Cloud Run
+(`db.<SUPABASE_PROJECT_REF>.supabase.co`) is IPv6-only on the free tier, and Cloud Run
 egresses over IPv4 — a direct connection will simply fail to resolve.
 
 From the Supabase dashboard → Connect, take the **Session pooler** string. It looks
 like:
 
 ```
-postgresql://postgres.ujkqrggdodazhldrcgbx:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres
+postgresql://postgres.<SUPABASE_PROJECT_REF>:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres
 ```
 
 Session mode (port 5432) suits this app better than transaction mode (6543), because
@@ -143,7 +150,7 @@ SQLAlchemy manages its own connection pool and transaction mode does not support
 prepared statements. Store it with the `+psycopg2` driver prefix:
 
 ```
-postgresql+psycopg2://postgres.ujkqrggdodazhldrcgbx:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres
+postgresql+psycopg2://postgres.<SUPABASE_PROJECT_REF>:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres
 ```
 
 Connection budget: `DB_POOL_SIZE=2` and `DB_MAX_OVERFLOW=3` are set per gunicorn
@@ -265,18 +272,18 @@ a 403 and no execution is ever created — a silent failure, since the scheduler
 itself still looks healthy:
 
 ```bash
-gcloud run jobs add-iam-policy-binding argumentor-backup --region=europe-west1 --member="serviceAccount:argumentor-run@argumentor-449922.iam.gserviceaccount.com" --role=roles/run.invoker
+gcloud run jobs add-iam-policy-binding argumentor-backup --region=europe-west1 --member="serviceAccount:argumentor-run@<PROJECT_ID>.iam.gserviceaccount.com" --role=roles/run.invoker
 ```
 
 ```bash
-gcloud scheduler jobs create http argumentor-backup --location=europe-west1 --schedule="0 4 * * *" --time-zone="Europe/Berlin" --uri="https://europe-west1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/argumentor-449922/jobs/argumentor-backup:run" --http-method=POST --oauth-service-account-email="argumentor-run@argumentor-449922.iam.gserviceaccount.com"
+gcloud scheduler jobs create http argumentor-backup --location=europe-west1 --schedule="0 4 * * *" --time-zone="Europe/Berlin" --uri="https://europe-west1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/<PROJECT_ID>/jobs/argumentor-backup:run" --http-method=POST --oauth-service-account-email="argumentor-run@<PROJECT_ID>.iam.gserviceaccount.com"
 ```
 
 Verify through the scheduler rather than just running the job directly — invoking the
 job by hand does not exercise the IAM path that the scheduler uses:
 
 ```bash
-gcloud scheduler jobs run argumentor-backup --location=europe-west1 && sleep 90 && gcloud storage ls gs://argumentor-449922-backups/backups/
+gcloud scheduler jobs run argumentor-backup --location=europe-west1 && sleep 90 && gcloud storage ls gs://<PROJECT_ID>-backups/backups/
 ```
 
 Visit pruning, keeping the `visit` table inside `VISIT_RETENTION_DAYS` (90):

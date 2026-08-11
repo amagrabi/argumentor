@@ -254,7 +254,9 @@
         "name": "Mastermind",
         "description": "Löse 100 Herausforderungen"
       }
-    }
+    },
+    "exportButton": "Meine Argumente exportieren",
+    "exportUpgrade": "Der Export ist in Plus und Pro verfügbar."
   },
   "achievements": {
     "first_argument": {
