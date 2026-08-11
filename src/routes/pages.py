@@ -301,12 +301,33 @@ def profile():
         Answer.created_at.desc(), Answer.id.desc()
     )
 
-    # Get total count for pagination
-    total_answers = answers_query.count()
+    # Total the user actually has, before any tier cap.
+    total_answers_all_time = answers_query.count()
+
+    # Free tiers see only their most recent answers. Reported explicitly rather
+    # than silently truncated, so a short history reads as a limit rather than as
+    # lost data or a broken chart.
+    history_limit = SETTINGS.TIER_HISTORY_LIMITS.get(
+        user.tier, SETTINGS.TIER_HISTORY_LIMITS["free"]
+    )
+    history_capped = (
+        history_limit is not None and total_answers_all_time > history_limit
+    )
+    total_answers = (
+        min(total_answers_all_time, history_limit)
+        if history_limit is not None
+        else total_answers_all_time
+    )
     total_pages = (total_answers + per_page - 1) // per_page  # Ceiling division
 
-    # Apply pagination
-    answers = answers_query.limit(per_page).offset((page - 1) * per_page).all()
+    # Apply pagination, never reaching past the tier's window.
+    offset = (page - 1) * per_page
+    page_size = per_page
+    if history_limit is not None:
+        page_size = max(0, min(per_page, history_limit - offset))
+    answers = (
+        answers_query.limit(page_size).offset(offset).all() if page_size else []
+    )
 
     answers_dict = []
     for answer in answers:
@@ -355,6 +376,9 @@ def profile():
         current_page=page,
         total_pages=total_pages,
         total_answers=total_answers,
+        history_capped=history_capped,
+        history_limit=history_limit,
+        total_answers_all_time=total_answers_all_time,
     )
 
 

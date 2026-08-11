@@ -445,7 +445,10 @@
       }
     },
     "exportButton": "Export my arguments",
-    "exportUpgrade": "Export is available on Plus and Pro."
+    "exportUpgrade": "Export is available on Plus and Pro.",
+    "historyCapped": "Showing your most recent 10 arguments.",
+    "historyCappedTotal": "Plus and Pro show your full history and trend.",
+    "historyCappedLink": "See plans"
   },
   "howItWorksPage": {
     "title": "How It Works",

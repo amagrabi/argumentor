@@ -122,6 +122,18 @@ class Settings(BaseSettings):
         "pro": 50,
     }
 
+    # How far back the profile history and progress chart reach. None means the
+    # full record. Depth of history is a capability difference rather than a
+    # bigger number, which is what the paid tiers were missing -- see the note on
+    # TIER_MONTHLY_EVAL_LIMITS. For a practice product the long-run trend *is*
+    # the product, so free users see recent answers and paid users see everything.
+    TIER_HISTORY_LIMITS: ClassVar[Dict[str, object]] = {
+        "anonymous": 10,
+        "free": 10,
+        "plus": None,
+        "pro": None,
+    }
+
     # The visit table is append-only and nothing reads it, so it is kept only as
     # a rough first-party traffic record and trimmed nightly by /prune-visits.
     # Ninety days is enough to compare this month against last quarter; at a
