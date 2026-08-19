@@ -315,12 +315,15 @@ increasing order of durability:
    `service_role` / `sb_secret_…` key, because `service_role` has `rolbypassrls` and
    walks through RLS by design. It lives only in the dashboard — nothing in the repo or
    the database records it, so it cannot be verified from code.
-2. **RLS is enabled with no policies, and the `anon`/`authenticated` grants are revoked**,
-   by migration `c4e8a1d5f207`. Safe for the app because `postgres` also has
-   `rolbypassrls`. Of the two halves only RLS survives a restore: `backup_db.py` dumps
-   with `--no-acl`, which omits GRANT/REVOKE, while `ENABLE ROW LEVEL SECURITY` is part
-   of the table definition. A **new table gets neither by default** — enable RLS in the
-   same migration that creates it.
+2. **RLS is enabled with an explicit `deny_all` policy, and the `anon`/`authenticated`
+   grants are revoked** — migrations `c4e8a1d5f207` and `d7b3e05a9c14`. Safe for the app
+   because `postgres` also has `rolbypassrls`. RLS with no policies already denied
+   everything; the `FOR ALL USING (false) WITH CHECK (false)` policy exists so the intent
+   is legible and the advisor's `rls_enabled_no_policy` can tell deny-all from an
+   oversight. RLS and the policies survive a restore, the REVOKEs do not: `backup_db.py`
+   dumps with `--no-acl`, which omits GRANT/REVOKE, while RLS and policies are part of
+   the schema. A **new table gets none of them by default** — enable RLS and add the
+   policy in the migration that creates it.
 3. **`pg_stat_statements` was moved out of `public`** into `extensions`, so its views are
    not in an API-exposed schema at all. Supabase installed it in `public` and owns it as
    `supabase_admin`, and its two views keep `anon` grants that `postgres` cannot revoke;

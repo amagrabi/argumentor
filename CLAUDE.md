@@ -81,17 +81,18 @@ PostgREST Data API off the `public` schema, and its default privileges grant
 holding a key that maps to `anon` — the legacy `anon` JWT or its replacement
 `sb_publishable_…`, both meant to ship in public client code — could then read
 or delete the lot; Supabase's Security Advisor flags it as
-`rls_disabled_in_public`. Migration `c4e8a1d5f207` enabled RLS with no policies
-on all six tables and revoked those grants, which denies the API roles while
-the app is unaffected: it connects as `postgres`, and `postgres` and
-`service_role` both have `rolbypassrls`. That same `rolbypassrls` is why RLS is
-*no* defence against a leaked `service_role` / `sb_secret_…` key — only
-disabling the Data API is.
+`rls_disabled_in_public`. Migration `c4e8a1d5f207` enabled RLS on all six tables
+and revoked those grants, and `d7b3e05a9c14` added an explicit `deny_all` policy
+to each. That denies the API roles while the app is unaffected: it connects as
+`postgres`, and `postgres` and `service_role` both have `rolbypassrls`. That same
+`rolbypassrls` is why RLS is *no* defence against a leaked `service_role` /
+`sb_secret_…` key — only disabling the Data API is.
 
-RLS is the half that survives a restore. `scripts/backup_db.py` dumps with
-`--no-acl`, so the REVOKEs are *not* in the backup and default privileges come
-back on restore — but `ENABLE ROW LEVEL SECURITY` is part of the table
-definition and is dumped. A new table gets neither, so add it explicitly.
+RLS and the policies are the halves that survive a restore.
+`scripts/backup_db.py` dumps with `--no-acl`, so the REVOKEs are *not* in the
+backup and default privileges come back on restore — but RLS and policies are
+part of the schema and are dumped. A new table gets none of them, so add them
+explicitly.
 
 ## Verifying changes
 
