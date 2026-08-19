@@ -298,6 +298,46 @@ of Cloud Scheduler's three free jobs — a fourth starts costing.
 A backup you have never restored is not a backup; restore one into a scratch database
 before you rely on it.
 
+## Database security
+
+Supabase serves a PostgREST **Data API** off the `public` schema. This app never calls
+it — it reaches Postgres as `postgres` through the session pooler via SQLAlchemy — but
+Supabase's default privileges had granted `anon` and `authenticated` full DML on every
+table anyway, with RLS off. Any key mapping to `anon` (the legacy `anon` JWT or a
+`sb_publishable_…` key, both meant to ship in public client code) could therefore have
+read or deleted everything. Three things now stand between that and the data, in
+increasing order of durability:
+
+1. **The Data API is disabled**, at
+   `dashboard/project/<SUPABASE_PROJECT_REF>/integrations/data_api/overview` →
+   *Enable Data API* off. With it off no auto-generated endpoint responds, whatever the
+   grants or RLS say. This is the only control that also stops a leaked
+   `service_role` / `sb_secret_…` key, because `service_role` has `rolbypassrls` and
+   walks through RLS by design. It lives only in the dashboard — nothing in the repo or
+   the database records it, so it cannot be verified from code.
+2. **RLS is enabled with no policies, and the `anon`/`authenticated` grants are revoked**,
+   by migration `c4e8a1d5f207`. Safe for the app because `postgres` also has
+   `rolbypassrls`. Of the two halves only RLS survives a restore: `backup_db.py` dumps
+   with `--no-acl`, which omits GRANT/REVOKE, while `ENABLE ROW LEVEL SECURITY` is part
+   of the table definition. A **new table gets neither by default** — enable RLS in the
+   same migration that creates it.
+3. **`pg_stat_statements` was moved out of `public`** into `extensions`, so its views are
+   not in an API-exposed schema at all. Supabase installed it in `public` and owns it as
+   `supabase_admin`, and its two views keep `anon` grants that `postgres` cannot revoke;
+   relocating the extension sidesteps that instead. Applied as a one-off rather than a
+   migration, because it is Supabase-provisioned infra rather than app schema and a fresh
+   project already places extensions in `extensions`:
+
+   ```bash
+   psql "$SUPABASE_SESSION_POOLER_URL" -c 'ALTER EXTENSION pg_stat_statements SET SCHEMA extensions;'
+   ```
+
+   `postgres` is permitted this despite not owning the extension (supautils). Reverse
+   with `SET SCHEMA public` if it ever disturbs the dashboard's Query Performance page.
+
+After restoring into a fresh project, re-check all three — then re-run the Security
+Advisor, which should report zero errors and zero warnings.
+
 ## Database size
 
 Supabase's free tier caps the database at 500 MB and gives no warning before it bites.
