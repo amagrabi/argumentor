@@ -75,6 +75,20 @@ cascade even though the rule was in the loaded stylesheet and its selector
 matched. When a transform silently doesn't apply, stop debugging the cascade and
 set it from JS.
 
+**A new table needs RLS enabled in the same migration.** Supabase serves a
+PostgREST Data API off the `public` schema, and its default privileges grant
+`anon` and `authenticated` full DML on every table `postgres` creates. Anyone
+holding the project's *publishable* anon key could then read or delete the lot —
+Supabase's Security Advisor flags this as `rls_disabled_in_public`. Migration
+`c4e8a1d5f207` enabled RLS with no policies on all six tables and revoked those
+grants, which denies the API roles while the app is unaffected: it connects as
+`postgres`, and `postgres` and `service_role` both have `rolbypassrls`.
+
+RLS is the half that survives a restore. `scripts/backup_db.py` dumps with
+`--no-acl`, so the REVOKEs are *not* in the backup and default privileges come
+back on restore — but `ENABLE ROW LEVEL SECURITY` is part of the table
+definition and is dumped. A new table gets neither, so add it explicitly.
+
 ## Verifying changes
 
 Deploy is the test loop: `./scripts/deploy_cloudrun.sh`. Then check the live
