@@ -78,11 +78,15 @@ set it from JS.
 **A new table needs RLS enabled in the same migration.** Supabase serves a
 PostgREST Data API off the `public` schema, and its default privileges grant
 `anon` and `authenticated` full DML on every table `postgres` creates. Anyone
-holding the project's *publishable* anon key could then read or delete the lot —
-Supabase's Security Advisor flags this as `rls_disabled_in_public`. Migration
-`c4e8a1d5f207` enabled RLS with no policies on all six tables and revoked those
-grants, which denies the API roles while the app is unaffected: it connects as
-`postgres`, and `postgres` and `service_role` both have `rolbypassrls`.
+holding a key that maps to `anon` — the legacy `anon` JWT or its replacement
+`sb_publishable_…`, both meant to ship in public client code — could then read
+or delete the lot; Supabase's Security Advisor flags it as
+`rls_disabled_in_public`. Migration `c4e8a1d5f207` enabled RLS with no policies
+on all six tables and revoked those grants, which denies the API roles while
+the app is unaffected: it connects as `postgres`, and `postgres` and
+`service_role` both have `rolbypassrls`. That same `rolbypassrls` is why RLS is
+*no* defence against a leaked `service_role` / `sb_secret_…` key — only
+disabling the Data API is.
 
 RLS is the half that survives a restore. `scripts/backup_db.py` dumps with
 `--no-acl`, so the REVOKEs are *not* in the backup and default privileges come
